@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Reports &amp; Verification | VERAQIS</title>
+<meta name="description" content="VERAQIS makes every result verifiable: a two-axis evidence model, structured reports in JSON/Markdown/HTML, and proof-carrying certificates a third party can re-check independently — without trusting VERAQIS." />
+<link rel="canonical" href="https://veraqis.tech/reports.html" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Reports &amp; Verification | VERAQIS" />
+<meta property="og:description" content="A two-axis evidence model, structured reports, and certificates a third party can re-check independently." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/reports.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Reports &amp; Verification | VERAQIS" />
+<meta name="twitter:description" content="A two-axis evidence model, structured reports, and independently re-checkable certificates." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/reports.html#webpage",
+      "url": "https://veraqis.tech/reports.html",
+      "name": "Reports & Verification",
+      "description": "VERAQIS makes every result verifiable: a two-axis evidence model, structured reports in JSON/Markdown/HTML, and proof-carrying certificates a third party can re-check independently — without trusting VERAQIS.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      },
+      "dateModified": "2026-07-19",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/reports.html#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Reports and Verification",
+          "item": "https://veraqis.tech/reports.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/reports.html#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a VERAQIS evidence record?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "An evidence record links a result to rule IDs, byte ranges, verifier type and confidence. It explains why a byte, row, part or object was emitted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the tautology rule?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A verifier only counts if it is independent of the candidate generator. A checksum that a solver was fitted to contributes zero evidence bits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a proof-carrying certificate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is a self-contained recovery certificate that a standalone verifier can re-check against the damaged input and recovered output without trusting the recovery solver."
+          }
+        }
+      ],
+      "mainEntityOfPage": {
+        "@id": "https://veraqis.tech/reports.html#webpage"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="desktop.html">Desktop</a>
+        <a href="reports.html" class="active">Reports</a>
+        <a href="testing.html">Tests</a>
+        <a href="security.html">Security</a>
+        <a href="download.html">Download</a>
+        <a href="docs.html">Docs</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">VERAQIS</a> / Products / Reports</div>
+    <h1>Reports &amp; Verification</h1>
+    <p class="lead">A recovery you can't verify is just a claim. VERAQIS attaches evidence to every
+      result and lets a third party re-check it — without trusting VERAQIS.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>The two-axis evidence model</h2>
+    <p class="sub">Every emitted byte, row or object carries an evidence record on one of two
+      orthogonal axes. They are never collapsed into a single score, and a checksum the solver was
+      fitted to counts for nothing (the tautology rule).</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3 style="font-size:17px">Axis P — probabilistic, in bits</h3>
+        <p>Strength is quantified: a CRC-32 that the solver was <em>not</em> fitted to contributes 32
+        bits; a checksum it solved against contributes <strong>zero</strong>. A result with zero
+        evidence bits and no exact-erasure basis may not be emitted at all.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:17px">Axis L — structural uniqueness</h3>
+        <p>"Unique under the stated structural constraints" — e.g. a PDF object reachable from Root, a
+        SQLite page consistent with exactly one schema. Validated empirically at
+        <span class="mono">false = 0</span> on a differential corpus. Health never rises on a guess.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Reports you can read and machines can parse</h2>
+    <p class="sub">The auditor produces a human console report and machine-readable output, written to
+      a file or stdout.</p>
+    <div class="grid g3">
+      <div class="card"><h3 style="font-size:17px">Console</h3><p>Health bar, ranked issues, recoverability
+        factors and a recommendation — the default human view.</p></div>
+      <div class="card"><h3 style="font-size:17px">JSON</h3><p>A stable <code>PlatformReport</code>
+        (<code>format_version 2.0</code>) for pipelines, dashboards and OEM integration.</p></div>
+      <div class="card"><h3 style="font-size:17px">Markdown / HTML</h3><p>A self-contained report you can
+        archive, attach to a ticket, or hand to a colleague.</p></div>
+    </div>
+<pre style="margin-top:20px"><span class="c"># machine-readable report to a file</span>
+<span class="p">VERAQIS</span> analyze backup.zip <span class="a">--format</span> json <span class="a">--output</span> report.json
+<span class="p">VERAQIS</span> report  backup.zip <span class="a">--format</span> html <span class="a">--output</span> report.html</pre>
+  </div>
+</section>
+
+<section id="real-report-demo">
+  <div class="wrap">
+    <h2>Real report from a damaged file</h2>
+    <p class="sub">This is a live CLI-generated HTML report for
+      <code>testdata/zip/truncated/ZIP_0006.zip</code>. VERAQIS detected the missing ZIP end-of-central-directory
+      signature, scored health at <code>15/100</code>, and the recovery run rebuilt the central directory.</p>
+    <div class="grid g3">
+      <div class="card metric"><div class="n">15/100</div><div class="l">health in the generated report</div></div>
+      <div class="card metric"><div class="n">0.58</div><div class="l">recoverability probability reported by VERAQIS</div></div>
+      <div class="card metric"><div class="n">8412B</div><div class="l">recovered by <code>zip-rebuild</code>, with <code>0B</code> lost</div></div>
+    </div>
+    <figure class="evidence-shot">
+      <img src="assets/product-demo-screenshot.png" alt="VERAQIS HTML report for ZIP_0006.zip showing ZIP_EOCD_001, health 15/100, and damage detected" />
+      <figcaption>Generated locally with <code>veraqis report</code>. See the full
+        <a href="assets/demo-zip0006-report.html">HTML report</a> or the full
+        <a href="testing.html">benchmark statistics page</a>.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Proof-carrying certificates</h2>
+    <p class="sub">Recovery tracks that compete on verified-correctness emit a self-contained
+      certificate. The point is independence: a separate verifier re-checks it, and that verifier
+      shares no code with the solver.</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3 style="font-size:17px">Re-check without trusting VERAQIS</h3>
+        <p>A standalone re-verifier validates a certificate against the damaged input — tamper, a
+        wrong artifact, or a tautological "proof" are all rejected. Independence from the solver is
+        enforced by a build-time fitness test.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:17px">Honest bounds, and provable loss</h3>
+        <p>Without the original, VERAQIS reports a bound — <span class="mono">P(wrong) &#8804; 2^(&#8722;evidence_bits)</span>
+        — never "verified correct." Genuinely unrecoverable regions can carry a negative
+        certificate, gated so a recoverable region is never certified as lost.</p>
+      </div>
+    </div>
+<pre style="margin-top:20px"><span class="c"># re-verify a certificate independently of the recovery tool</span>
+<span class="p">phx-verify-cert</span> cert.json <span class="a">--against</span> damaged.bin <span class="a">--recovered</span> out.bin</pre>
+    <p class="note" style="margin-top:14px">Certificate emission is wired per recovery path and expands
+      during beta. The benchmark and certificate tooling are standing infrastructure today.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Verification questions</h2>
+    <p class="sub">Core proof terms, stated directly.</p>
+    <div class="faq">
+      <div class="qa">
+        <h3>What is a VERAQIS evidence record?</h3>
+        <p>An evidence record links a result to rule IDs, byte ranges, verifier type and confidence. It explains why a byte, row, part or object was emitted.</p>
+      </div>
+      <div class="qa">
+        <h3>What is the tautology rule?</h3>
+        <p>A verifier only counts if it is independent of the candidate generator. A checksum that a solver was fitted to contributes zero evidence bits.</p>
+      </div>
+      <div class="qa">
+        <h3>What is a proof-carrying certificate?</h3>
+        <p>It is a self-contained recovery certificate that a standalone verifier can re-check against the damaged input and recovered output without trusting the recovery solver.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="desktop.html">VERAQIS Recovery</a>
+        <a href="download.html">VERAQIS Recovery CLI</a>
+        <a href="mobile.html">VERAQIS Archiver</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="testing.html">Test Record</a>
+        <a href="security.html">Security</a>
+        <a href="reports.html">Reports &amp; Verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="about.html">About VERAQIS</a>
+        <a href="contact.html">Contact / Support</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+</body>
+</html>

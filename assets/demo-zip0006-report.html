@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VERAQIS Report</title>
+<style>:root{color-scheme:light dark}*{box-sizing:border-box}body{margin:0;font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0e1116;color:#e6edf3}main{max-width:880px;margin:0 auto;padding:24px}h1{font-size:24px;margin:0 0 4px}h2{font-size:16px;margin:24px 0 8px;border-bottom:1px solid #30363d;padding-bottom:4px}.sub{color:#9da7b3;margin:0 0 8px}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:#9ad}.bar{background:#21262d;border-radius:6px;overflow:hidden;height:26px;margin:8px 0}.fill{height:100%;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;color:#0e1116;font-weight:600}.fill.good{background:#3fb950}.fill.warn{background:#d29922}.fill.bad{background:#f85149}ul.kv{list-style:none;padding:0;margin:0}ul.kv li{display:flex;gap:8px;padding:3px 0;border-bottom:1px solid #1b2128}ul.kv li span{min-width:140px;color:#9da7b3}.strip{position:relative;height:28px;background:#21262d;border-radius:6px;overflow:hidden}.seg{position:absolute;top:0;height:100%;min-width:2px}.seg.catastrophic,.sw.catastrophic{background:#f85149}.seg.major,.sw.major{background:#db8b2a}.seg.minor,.sw.minor{background:#d2c022}.seg.benign,.sw.benign{background:#6e7681}.legend{color:#9da7b3;font-size:12px;margin-top:6px}.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #21262d}th{color:#9da7b3;font-weight:600}td.catastrophic{color:#f85149}td.major{color:#db8b2a}td.minor{color:#d2c022}td.benign{color:#9da7b3}.meta{color:#9da7b3}</style>
+</head><body><main>
+<h1>VERAQIS Report</h1>
+<p class="sub">Target: <code>testdata\zip\truncated\ZIP_0006.zip</code> · schema 2.0</p>
+<section><h2>Summary</h2>
+<div class="bar"><div class="fill bad" style="width:15%">15/100</div></div>
+<ul class="kv">
+<li><span>Health</span><b>15/100</b> — Catastrophic</li>
+<li><span>Recoverability</span><b>0.58</b> (confidence 1.00)</li>
+<li><span>Verdict</span><b>Damage detected</b></li>
+<li><span>Protection</span><b>none</b></li>
+</ul></section>
+<section><h2>Damage map</h2>
+<div class="strip">
+</div>
+<p class="legend"><span class="sw catastrophic"></span>Catastrophic <span class="sw major"></span>Major <span class="sw minor"></span>Minor <span class="sw benign"></span>Benign · 11604 bytes</p>
+</section>
+<section><h2>Evidence</h2>
+<table><thead><tr><th>Offset</th><th>Rule</th><th>Category</th><th>Severity</th><th>Conf</th><th>Expected → Actual</th></tr></thead><tbody>
+<tr><td><code>0x0</code></td><td>ZIP_EOCD_001</td><td>structural_corruption</td><td class="catastrophic">catastrophic</td><td>100%</td><td><code>504b0506 → ∅</code></td></tr>
+</tbody></table></section>
+<section><h2>Recommendations</h2><ul>
+<li>Immediate recovery attempt: `veraqis recover --aggressive`.</li>
+<li>No protection found. Sensitive data: consider `veraqis protect --encrypt`.</li>
+</ul></section>
+<section class="meta"><h2>Metadata</h2><ul class="kv">
+<li><span>Format</span><b>zip</b></li>
+<li><span>Size</span><b>11604 bytes</b></li>
+<li><span>Duration</span><b>0 ms</b></li>
+<li><span>Engine</span><b>0.2.1</b></li>
+</ul></section>
+</main></body></html>

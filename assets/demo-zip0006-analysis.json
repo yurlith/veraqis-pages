@@ -1,0 +1,78 @@
+{
+  "format_version": "2.0",
+  "analysis": {
+    "target_path": "testdata\\zip\\truncated\\ZIP_0006.zip",
+    "total_size_bytes": 11604,
+    "archive_format": "Zip",
+    "integrity_result": {
+      "hash_type": "Sha256",
+      "expected_hash": null,
+      "actual_hash": "69fe36498efdbebe8e2bf9df09f9a05fbd51a984b08583fef303931808b8181d",
+      "matches": false,
+      "manifest_present": false,
+      "verified_blocks": [],
+      "signature_verification": null
+    },
+    "corruptions": [
+      {
+        "id": "6ca9d801-04d7-49f8-aa29-23edb3da74e9",
+        "location": {
+          "file_path": null,
+          "offset_start": 0,
+          "offset_end": 11604
+        },
+        "category": "StructuralCorruption",
+        "severity": "Catastrophic",
+        "description": "ZIP_EOCD_001: EOCD.signature at offset 0x0 (confidence 100%)",
+        "byte_range": null,
+        "chain": {
+          "primary": {
+            "offset": 0,
+            "expected_bytes": [
+              80,
+              75,
+              5,
+              6
+            ],
+            "actual_bytes": [],
+            "field_name": "EOCD.signature",
+            "field_description": "EOCD signature missing or zeroed",
+            "confidence": 1.0,
+            "rule_id": "ZIP_EOCD_001",
+            "evidence_type": "SignatureMismatch"
+          },
+          "supporting": [],
+          "aggregate_confidence": 1.0
+        }
+      }
+    ],
+    "health_score": {
+      "overall": 15,
+      "structural_health": 15,
+      "data_health": 15,
+      "metadata_health": 15
+    },
+    "recoverability_score": {
+      "probability": 0.58,
+      "confidence": 1.0,
+      "factors": [
+        {
+          "name": "ZIP central directory intact",
+          "positive": true,
+          "weight": 0.2
+        },
+        {
+          "name": "no manifest and no checksums",
+          "positive": false,
+          "weight": -0.12
+        }
+      ]
+    },
+    "per_file_results": [],
+    "analysis_duration_ms": 0,
+    "warnings": []
+  },
+  "recovery": null,
+  "protection": null,
+  "oem_extensions": []
+}

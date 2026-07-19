@@ -1,0 +1,25 @@
+{
+  "format_version": "phxr-1.0",
+  "tool": "VERAQIS 0.2.1",
+  "source_path": "testdata\\zip\\truncated\\ZIP_0006.zip",
+  "output_path": "demo\\live_zip0006_out\\ZIP_0006.zip.recovered",
+  "source_sha256": "69fe36498efdbebe8e2bf9df09f9a05fbd51a984b08583fef303931808b8181d",
+  "output_sha256": "f128f89330ebc97a45e6d114236d05ab712cc2bf8553dd2d723958f5c4c3a34a",
+  "repairs": [
+    {
+      "rule_id": "ZIP_EOCD_001",
+      "technique": "CentralDirRebuild",
+      "target_range": null,
+      "risk": "Safe",
+      "guarantee": "Unverified"
+    }
+  ],
+  "guarantees": {
+    "verified_bytes": 0,
+    "unverified_bytes": 8412,
+    "lost_bytes": 0
+  },
+  "key_id": "0d22a6682f9e8da6",
+  "public_key": "273afc13d8212863c5c470d966854c59c0d8cdd0f3b47a868e99ae6394d34d01",
+  "signature": "74ffb7295154cf85d7f8c02dde11f3f62bf5471932cc25a568f5a12adcba6742e930d0114cab6880d1fdaf8eb26f82edae2066fb2c69a29de40ae60daa19480b"
+}

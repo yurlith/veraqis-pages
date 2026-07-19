@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Documentation | VERAQIS</title>
+<meta name="description" content="VERAQIS Recovery documentation: installation, safe workflow, CLI commands, supported formats, recovery modes, reports, verification and current limitations for v0.2.1 beta." />
+<link rel="canonical" href="https://veraqis.tech/docs.html" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Documentation | VERAQIS" />
+<meta property="og:description" content="Build, CLI surface, recovery modes, evidence model, and where the deep-dive docs live." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/docs.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Documentation | VERAQIS" />
+<meta name="twitter:description" content="Build, CLI surface, recovery modes, evidence model, and where the deep-dive docs live." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/docs.html#webpage",
+      "url": "https://veraqis.tech/docs.html",
+      "name": "Documentation",
+      "description": "VERAQIS Recovery documentation: installation, safe workflow, CLI commands, supported formats, recovery modes, reports, verification and current limitations for v0.2.1 beta.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      },
+      "dateModified": "2026-07-19",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/docs.html#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Documentation",
+          "item": "https://veraqis.tech/docs.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/docs.html#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the first command to run?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run veraqis analyze <file> first. It is the free, read-only audit path and does not modify the input file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where are the detailed recovery benchmarks?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The public Test Record summarizes measured outcomes. Reports & Verification explains the evidence model and certificate checks. Detailed reproducibility records are included with the source."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can the certificate verifier be run separately?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. phx-verify-cert is built from the source workspace as a separate executable. It is not included in the current Windows beta download set."
+          }
+        }
+      ],
+      "mainEntityOfPage": {
+        "@id": "https://veraqis.tech/docs.html#webpage"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="desktop.html">Desktop</a>
+        <a href="reports.html">Reports</a>
+        <a href="testing.html">Tests</a>
+        <a href="security.html">Security</a>
+        <a href="download.html">Download</a>
+        <a href="docs.html" class="active">Docs</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">VERAQIS</a> / Documentation</div>
+    <h1>Documentation</h1>
+    <p class="lead">Installation, commands, supported formats, safety rules and verification
+      references for <span class="mono">v0.2.1 beta</span>.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>Get started</h2>
+    <p class="sub">Download the reviewed Windows beta and verify its checksum. Always analyze before recovery.</p>
+    <div class="terminal">
+      <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+<pre><span class="c"># downloaded Windows beta</span>
+<span class="p">veraqis.exe</span> --version
+<span class="p">veraqis.exe</span> analyze damaged.zip <span class="a">--format</span> json
+
+<span class="c"># audit first — read-only, never changes the source</span>
+<span class="p">veraqis</span> analyze damaged.zip
+
+<span class="c"># preview the rule-keyed repair plan without writing output</span>
+<span class="p">veraqis</span> recover damaged.zip <span class="a">--plan</span>
+
+<span class="c"># recover into a new folder; never overwrite the source</span>
+<span class="p">veraqis</span> recover damaged.zip <span class="a">--output</span> out/</pre>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>The <code>VERAQIS</code> command surface</h2>
+    <p class="sub">Recovery is opt-in and gated by default. <code>analyze</code> is the permanently-free,
+      read-only auditor.</p>
+    <div class="card" style="padding:6px 6px 2px">
+    <div class="table-scroll"><table>
+      <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td class="f">veraqis analyze &lt;file&gt;</td><td>Read-only audit. Use <code>--format json|md|html</code>; use <code>--recursive</code> for nested containers.</td></tr>
+        <tr><td class="f">veraqis verify &lt;file&gt;</td><td>Human "is it healthy?" check.</td></tr>
+        <tr><td class="f">veraqis report &lt;file&gt;</td><td>Write a structured analysis report without recovering data.</td></tr>
+        <tr><td class="f">veraqis score &lt;file&gt;</td><td>Print the calibrated recoverability assessment.</td></tr>
+        <tr><td class="f">veraqis recover &lt;file&gt; --output out/</td><td><strong>Beta-free:</strong> default exact, provenance-backed recovery.</td></tr>
+        <tr><td class="f">veraqis recover … --semantic sqlite|opc|pdf|7z|rar</td><td><strong>Beta-free:</strong> opt-in Tier-3 semantic reconstruction.</td></tr>
+        <tr><td class="f">veraqis recover … --salvage</td><td><strong>Beta-free:</strong> partial-decompression salvage (bzip2 / xz).</td></tr>
+        <tr><td class="f">veraqis recover … --reconcile</td><td><strong>Beta-free:</strong> intra-file redundancy mining (ISO 9660 / ZIP).</td></tr>
+        <tr><td class="f">veraqis protect shield &lt;file&gt;</td><td>Create a producer-side parity sidecar (<code>.phxs</code>) before damage occurs.</td></tr>
+        <tr><td class="f">veraqis protect check &lt;path&gt;</td><td>Read-only check of a protected file or folder manifest.</td></tr>
+        <tr><td class="f">veraqis protect repair &lt;path&gt;</td><td>Reconstruct protected content into a separate output path.</td></tr>
+        <tr><td class="f">veraqis license info|verify</td><td>Offline license inspection (no network).</td></tr>
+        <tr><td class="f">phx-verify-cert &lt;cert&gt; --against &lt;file&gt;</td><td>Standalone source-built certificate re-verifier; not in the current Windows download set.</td></tr>
+      </tbody>
+    </table></div>
+    </div>
+    <p class="note" style="margin-top:14px">Optional modes are never enabled silently. Semantic
+      recovery, salvage, reconciliation and exact-copy reconstruction require their explicit flags.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Concepts</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="reports.html"><h3 style="font-size:17px">Evidence model</h3><p>Two
+        orthogonal axes; the tautology rule; why <code>false_recovered_bytes = 0</code> is a hard gate.</p></a>
+      <a class="card link-card" href="desktop.html"><h3 style="font-size:17px">Formats &amp; scope</h3><p>Exactly
+        what is recoverable per format — including measured NO-GO cases.</p></a>
+      <a class="card link-card" href="security.html"><h3 style="font-size:17px">Safety model</h3><p>Read-only
+        source, sandboxing, encryption → abstain, no telemetry.</p></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Safe recovery workflow</h2>
+    <p class="sub">The source file stays read-only. Every write goes to a separate output location.</p>
+    <div class="grid g3">
+      <div class="card"><div class="ic">01</div><h3>Analyze</h3><p>Detect the format, encryption state,
+        structural findings and recoverability without modifying the input.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Plan</h3><p>Run <code>recover --plan</code> to see
+        the rule-keyed operations that would be attempted. This mode writes no recovered data.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Recover separately</h3><p>Choose a new output directory.
+        Review the manifest and keep the original until the result has been independently checked.</p></div>
+    </div>
+    <div class="callout warn" style="margin-top:18px"><strong>Encryption is not bypassed.</strong>
+      Unknown passwords, unsupported encryption and encrypted formats outside the narrowly supported
+      user-supplied traditional-ZIP opening path are detected and refused.</div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Recovery modes</h2>
+    <p class="sub">Higher-trust methods run first. A mode emits only what its verifier can support;
+      otherwise it reports an unknown region.</p>
+    <div class="card" style="padding:6px 6px 2px">
+    <div class="table-scroll"><table>
+      <thead><tr><th>Mode</th><th>Enable it</th><th>Output and proof</th><th>Main limits</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Structural recovery</strong></td><td>default <code>recover</code></td><td>Format-aware structural bytes with checksum or parser confirmation.</td><td>Abstains when surviving structure cannot prove a repair.</td></tr>
+        <tr><td><strong>Semantic recovery</strong></td><td><code>--semantic sqlite|opc|pdf|7z|rar</code></td><td>Verified rows, parts, objects or inventory with provenance.</td><td>Partial output is labelled partial; unproven objects are not promoted to verified.</td></tr>
+        <tr><td><strong>Block salvage</strong></td><td><code>--salvage</code></td><td>Independently CRC-verified bzip2 or xz blocks.</td><td>No recovery claim for LZ-coupled lz4/zstd blocks.</td></tr>
+        <tr><td><strong>Reconciliation</strong></td><td><code>--reconcile</code></td><td>ISO/ZIP values accepted only when independent copies agree.</td><td>Ambiguous or contradictory copies are refused.</td></tr>
+        <tr><td><strong>Shield reconstruction</strong></td><td><code>--shield file.phxs</code></td><td>Byte-exact reconstruction checked against the protected original's hash.</td><td>The sidecar must have been created while the file was healthy.</td></tr>
+        <tr><td><strong>Exact-copy research</strong></td><td><code>--xcr --index owner-set</code></td><td>Exact same-owner duplicate chunks with independent placement confirmation and a certificate.</td><td>Experimental; same-owner only; no cross-user search.</td></tr>
+      </tbody>
+    </table></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Formats and current limits</h2>
+    <p class="sub">Support is damage-dependent. A listed format is not a promise that every damaged
+      file can be recovered.</p>
+    <div class="card" style="padding:6px 6px 2px">
+    <div class="table-scroll"><table>
+      <thead><tr><th>Format</th><th>Current verified surface</th><th>Important limitation</th></tr></thead>
+      <tbody>
+        <tr><td class="f">ZIP / JAR / APK</td><td>Structural repair, safe extraction and duplicate-field reconciliation.</td><td>Encrypted input is refused unless it is a supported traditional ZIP opened with the password supplied for that operation.</td></tr>
+        <tr><td class="f">DOCX / XLSX / PPTX</td><td>CRC-verified parts plus content-type and relationship-graph checks.</td><td>Missing application content is not invented merely to make a document open.</td></tr>
+        <tr><td class="f">TAR / GZIP / DEFLATE</td><td>Header repair, resynchronization and exact continuation where independent checks survive.</td><td>Compressed regions without a surviving verifier remain unknown.</td></tr>
+        <tr><td class="f">bzip2 / xz</td><td>Partial-decompression salvage of independently checked blocks.</td><td>Single atomic streams and missing block-size information can limit salvage.</td></tr>
+        <tr><td class="f">ISO 9660</td><td>Descriptor repair and dual path-table reconciliation.</td><td>Conflicting copies without a unique result are refused.</td></tr>
+        <tr><td class="f">SQLite</td><td>Schema, verified rows, WAL overlay and overflow-chain recovery.</td><td>Deleted/free-list content is excluded unless the separate forensic opt-in is explicitly selected.</td></tr>
+        <tr><td class="f">PDF</td><td>Object scan, xref reconstruction and objects reachable from a recovered Root.</td><td>Encrypted PDFs are detected and refused; unreachable objects are not labelled verified.</td></tr>
+        <tr><td class="f">7z</td><td>Signature/start-header repair, verified inventory and intact non-solid folder extraction.</td><td>Solid LZMA payload corruption and encrypted headers remain unrecoverable by the current engine.</td></tr>
+        <tr><td class="f">RAR</td><td>RAR4/RAR5 detection, verified inventory and stored-entry extraction.</td><td>Compressed proprietary payload recovery is not claimed.</td></tr>
+      </tbody>
+    </table></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Reports, manifests and certificates</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Analysis report</h3><p>JSON, Markdown and self-contained HTML reports
+        contain rule IDs, severity, byte ranges and calibrated health or recoverability information.</p></div>
+      <div class="card"><h3>Recovery manifest</h3><p>Recovery writes a provenance sidecar by default.
+        It records what changed and why; <code>--no-manifest</code> disables that sidecar and is not
+        recommended for evaluation.</p></div>
+      <div class="card"><h3>Proof certificate</h3><p>Certificate-enabled recovery paths can be checked
+        by <code>phx-verify-cert</code>, a separately built verifier that does not depend on the recovery solver.</p></div>
+    </div>
+    <div class="terminal" style="margin-top:18px">
+      <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+<pre><span class="c"># produce a self-contained HTML analysis report</span>
+<span class="p">veraqis</span> report damaged.zip <span class="a">--format</span> html <span class="a">--output</span> report.html
+
+<span class="c"># source-built standalone certificate check</span>
+<span class="p">phx-verify-cert</span> cert.json <span class="a">--against</span> damaged.bin <span class="a">--recovered</span> recovered.bin</pre>
+    </div>
+    <p class="note" style="margin-top:14px">Without the original ground truth, VERAQIS reports the
+      evidence bound and certificate result. It does not claim measured correctness in the field.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Verify the release</h2>
+    <p class="sub">Product source and development repositories are private. Verify the public beta artifact before running it.</p>
+    <div class="terminal">
+      <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+<pre><span class="c"># verify downloaded artifacts before running them</span>
+<span class="p">CertUtil</span> -hashfile veraqis.exe SHA256</pre>
+    </div>
+    <div class="callout info" style="margin-top:18px"><strong>Public beta access:</strong> every current
+      Recovery capability is temporarily free. The offline entitlement implementation remains in the
+      source for later development, but no license file is required by the current public-beta build.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Documentation questions</h2>
+    <p class="sub">Fast entry points for developers and evaluators.</p>
+    <div class="faq">
+      <div class="qa">
+        <h3>What is the first command to run?</h3>
+        <p>Run <code>veraqis analyze &lt;file&gt;</code> first. It is the free, read-only audit path and does not modify the input file.</p>
+      </div>
+      <div class="qa">
+        <h3>Where are the detailed recovery benchmarks?</h3>
+        <p>See the public <a href="testing.html">Test Record</a> for measured outcomes and
+          <a href="reports.html">Reports &amp; Verification</a> for proof and certificate details.</p>
+      </div>
+      <div class="qa">
+        <h3>Can the certificate verifier be run separately?</h3>
+        <p>Yes. Build <code>phx-verify-cert</code> from the source workspace as a separate executable.
+          It is not included in the current Windows beta download set.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="desktop.html">VERAQIS Recovery</a>
+        <a href="download.html">VERAQIS Recovery CLI</a>
+        <a href="mobile.html">VERAQIS Archiver</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="testing.html">Test Record</a>
+        <a href="security.html">Security</a>
+        <a href="reports.html">Reports &amp; Verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="about.html">About VERAQIS</a>
+        <a href="contact.html">Contact / Support</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+</body>
+</html>

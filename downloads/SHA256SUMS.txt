@@ -1,0 +1,7 @@
+# VERAQIS public-beta release artifact checksums
+# Windows Recovery and ColdPass artifacts were withdrawn on 2026-07-19 pending clean rebuilds.
+# Verify from this directory:
+#   sha256sum -c SHA256SUMS.txt
+#   CertUtil -hashfile VERAQIS-Archiver-Android-1.7.0-rc1.apk SHA256
+# size 1123629 bytes - VERAQIS Archiver for Android (production-key-signed public-beta APK)
+46845f28223bf22ff22746214ecf6e3f591c5aadaac857360fa1c7245e129837  VERAQIS-Archiver-Android-1.7.0-rc1.apk

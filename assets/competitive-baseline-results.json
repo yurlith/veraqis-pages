@@ -1,0 +1,474 @@
+{
+  "generated_at": "2026-07-04",
+  "artifact_kind": "local_demonstrator_benchmark",
+  "note": "Local demonstrator benchmark. Official free/demo competitor downloads were captured where available. Portable/CLI tools were executed; proprietary GUI installers are recorded with hashes/signatures but are not scored until a scripted or manual VM run produces verifiable output.",
+  "privacy": "The static site publishes commands, versions, damage classes, and outcomes only. Raw corpus bytes and absolute local paths are not included in this artifact.",
+  "veraqis_version": "VERAQIS 0.2.1",
+  "tool_versions": {
+    "python": "Python 3.12.13 from the bundled local runtime",
+    "pypdf": "6.10.0",
+    "windows_tar": "bsdtar 3.8.4 / libarchive 3.8.4",
+    "powershell_expand_archive": "Windows PowerShell Expand-Archive",
+    "qpdf": "qpdf 12.3.2, downloaded from the official GitHub release"
+  },
+  "local_direct_competitor_probe": {
+    "checked_on_path": [
+      "WINWORD.EXE",
+      "EXCEL.EXE",
+      "POWERPNT.EXE",
+      "Acrobat.exe",
+      "AcroRd32.exe",
+      "WinRAR.exe",
+      "WinZip64.exe",
+      "wzzip.exe",
+      "qpdf.exe",
+      "gswin64c.exe",
+      "7z.exe",
+      "7za.exe"
+    ],
+    "found": [],
+    "meaning": "No direct competitor binary was initially available on PATH. qpdf 12.3.2 was then downloaded as a portable official release and executed locally. Proprietary GUI installers were downloaded and fingerprinted, but not scored as executed because no documented scripted repair interface was available in this lab."
+  },
+  "methodology": [
+    "Run VERAQIS on synthetic damaged lab files and record only emitted recovery/provenance summaries.",
+    "Run baseline parsers in read/list/decompress mode against the same damaged files.",
+    "Download official free/demo competitor binaries into target/competitor-lab, record file size, SHA-256, Authenticode status, version metadata, and source URL.",
+    "Execute only portable/CLI tools that can be reproduced without GUI interaction or installation side effects.",
+    "Treat baseline listing as parser access only, not as a proof-carrying repair.",
+    "Do not score proprietary GUI tools until the exact binary, version, license state, corpus, output, and verifier procedure are recorded."
+  ],
+  "direct_competitors": [
+    {
+      "name": "DiskInternals ZIP Repair",
+      "url": "https://www.diskinternals.com/zip-repair/",
+      "direct_overlap": "ZIP repair",
+      "public_claim_summary": "Scans damaged ZIP files, restores archive structure, and extracts intact files into a new archive.",
+      "local_lab_status": "downloaded; GUI run not automated",
+      "veraqis_comparison_point": "Direct ZIP competitor; reviewed page did not expose a proof-carrying certificate or false-output gate."
+    },
+    {
+      "name": "DataNumen Zip Repair",
+      "url": "https://www.datanumen.com/zip-repair/",
+      "direct_overlap": "ZIP / SFX repair",
+      "public_claim_summary": "Repairs corrupt or damaged ZIP files and recovers as much data as possible.",
+      "local_lab_status": "downloaded; installer run not automated",
+      "veraqis_comparison_point": "Compare on verified bytes, abstentions, and replayable provenance rather than broad recovery wording."
+    },
+    {
+      "name": "DataNumen Archive Repair",
+      "url": "https://www.datanumen.com/archive-repair/",
+      "direct_overlap": "ZIP, RAR, TAR, CAB repair",
+      "public_claim_summary": "Archive recovery suite for corrupt ZIP, RAR, Unix TAR, and CAB archives.",
+      "local_lab_status": "downloaded; installer run not automated",
+      "veraqis_comparison_point": "Direct archive-suite competitor across VERAQIS archive formats; needs corpus run before any win/loss claim."
+    },
+    {
+      "name": "WinZip repair / wzzip -yf",
+      "url": "https://www.winzip.com/en/learn/features/repair-zip-files/",
+      "direct_overlap": "ZIP repair",
+      "public_claim_summary": "Documents a command-line repair flow for corrupted ZIP files using WinZip Command Line.",
+      "local_lab_status": "not installed on this host",
+      "veraqis_comparison_point": "Direct ZIP baseline candidate once exact WinZip and command-line versions are installed."
+    },
+    {
+      "name": "SysTools ZIP Repair",
+      "url": "https://www.systoolsgroup.com/zip-repair.html",
+      "direct_overlap": "ZIP recovery",
+      "public_claim_summary": "Scans, previews, and extracts from corrupted ZIP files.",
+      "local_lab_status": "downloaded; demo preview-only, GUI run not automated",
+      "veraqis_comparison_point": "Direct ZIP competitor; compare previewable output against verified recovered bytes."
+    },
+    {
+      "name": "BitRecover ZIP Repair Wizard",
+      "url": "https://www.bitrecover.com/free/zip-repair/",
+      "direct_overlap": "ZIP repair",
+      "public_claim_summary": "Repairs corrupt ZIP files with a free demo; demo shows recovered file names only.",
+      "local_lab_status": "downloaded; demo preview-only, GUI run not automated",
+      "veraqis_comparison_point": "Direct ZIP competitor; a scored comparison needs saved output, not only previewed filenames."
+    },
+    {
+      "name": "RecoveryTools Zip Repair",
+      "url": "https://www.recoverytools.com/zip/repair/",
+      "direct_overlap": "ZIP repair",
+      "public_claim_summary": "Repairs corrupted, damaged, broken, CRC-error, large, and batch ZIP archives into a healthy ZIP file.",
+      "local_lab_status": "downloaded; GUI run not automated",
+      "veraqis_comparison_point": "Direct ZIP competitor; demo/full limitations should be captured before scored comparison."
+    },
+    {
+      "name": "ZIP Recovery Kit / Recovery Toolbox",
+      "url": "https://zip.all-recovery-inc.com/",
+      "direct_overlap": "ZIP repair",
+      "public_claim_summary": "Demo opens damaged ZIP files for preview; unregistered users cannot save recovered data.",
+      "local_lab_status": "downloaded; demo cannot save output without license",
+      "veraqis_comparison_point": "Direct ZIP competitor; preview-only demo output is not comparable to verified recovered bytes."
+    },
+    {
+      "name": "Remo Repair ZIP",
+      "url": "https://www.remosoftware.com/remo-repair-zip-file",
+      "direct_overlap": "ZIP / ZIPX repair",
+      "public_claim_summary": "Official page located but crawler received a verification gate instead of reviewable product text.",
+      "local_lab_status": "pending source capture + lab run",
+      "veraqis_comparison_point": "Direct ZIP/ZIPX competitor; keep in the lab plan, but do not quote claims until source or binary is captured."
+    },
+    {
+      "name": "OfficeRecovery Online",
+      "url": "https://online.officerecovery.com/",
+      "direct_overlap": "ZIP, Office, PDF, image and database repair",
+      "public_claim_summary": "Upload-based repair for corrupted files that native apps cannot open.",
+      "local_lab_status": "upload not run",
+      "veraqis_comparison_point": "Direct online competitor; VERAQIS differentiates with offline operation and local evidence artifacts."
+    },
+    {
+      "name": "Stellar Repair for Excel / Toolkit",
+      "url": "https://www.stellarinfo.com/repair-excel-file.php",
+      "direct_overlap": "Excel plus Office/PDF toolkit",
+      "public_claim_summary": "Claims Excel object recovery, preview, batch repair, and toolkit coverage for Word, PowerPoint, and PDF.",
+      "local_lab_status": "pending licensed lab run",
+      "veraqis_comparison_point": "Direct Office repair competitor; compare against VERAQIS OPC verified parts and graph-proofed object recovery."
+    },
+    {
+      "name": "DataNumen Office Repair",
+      "url": "https://www.datanumen.com/office-repair/",
+      "direct_overlap": "Word, Excel, PowerPoint, Access, Outlook repair",
+      "public_claim_summary": "Lists repair/recovery tools for corrupt Microsoft Office and database files.",
+      "local_lab_status": "downloaded; installer run not automated",
+      "veraqis_comparison_point": "Direct Office-suite competitor; VERAQIS should report per-part proof, not a single broad recovery percentage."
+    },
+    {
+      "name": "Microsoft Office Open and Repair",
+      "url": "https://support.microsoft.com/en-us/word/open-a-document-after-a-file-corruption-error",
+      "direct_overlap": "Word, Excel, PowerPoint native repair",
+      "public_claim_summary": "Open and Repair might recover a damaged document, workbook, or presentation.",
+      "local_lab_status": "Office not found on PATH",
+      "veraqis_comparison_point": "Important native-app baseline for OPC/OOXML; should be run in a dedicated lab VM."
+    },
+    {
+      "name": "DataNumen PDF Repair",
+      "url": "https://www.datanumen.com/pdf-repair/",
+      "direct_overlap": "PDF repair",
+      "public_claim_summary": "Repairs corrupt or damaged PDF files and recovers pages, images, fonts, and other elements.",
+      "local_lab_status": "pending installer lab run",
+      "veraqis_comparison_point": "Direct PDF competitor; compare graph-verified objects separately from orphan objects."
+    },
+    {
+      "name": "iLovePDF Repair PDF",
+      "url": "https://www.ilovepdf.com/repair-pdf",
+      "direct_overlap": "Online PDF repair",
+      "public_claim_summary": "Online repair of corrupt PDF files with partial or complete recovery depending on damage.",
+      "local_lab_status": "upload not run",
+      "veraqis_comparison_point": "Direct online PDF competitor; VERAQIS keeps files local and exposes object-level provenance."
+    },
+    {
+      "name": "PDF24 Repair PDF",
+      "url": "https://tools.pdf24.org/en/repair-pdf",
+      "direct_overlap": "Online PDF repair",
+      "public_claim_summary": "Browser-based PDF repair, defect repair, and partial recovery when not all pages are repairable.",
+      "local_lab_status": "upload not run",
+      "veraqis_comparison_point": "Direct online PDF competitor; VERAQIS should win on offline operation and explicit verified/orphan split."
+    },
+    {
+      "name": "qpdf",
+      "url": "https://qpdf.readthedocs.io/en/stable/cli.html",
+      "direct_overlap": "PDF structural repair/checking",
+      "public_claim_summary": "qpdf --check can attempt recovery and then operate on the recovered file.",
+      "local_lab_status": "downloaded and executed",
+      "veraqis_comparison_point": "Direct open-source PDF baseline. On the same damaged PDF, qpdf reconstructed a rewritten PDF with warnings; VERAQIS still reports object-level provenance and verified/orphan split."
+    }
+  ],
+  "downloaded_competitor_lab": [
+    {
+      "name": "qpdf",
+      "download_url": "https://github.com/qpdf/qpdf/releases/download/v12.3.2/qpdf-12.3.2-msvc64.zip",
+      "downloaded_file": "target/competitor-lab/downloads/qpdf-12.3.2-msvc64.zip",
+      "download_status": "downloaded",
+      "bytes": 24555583,
+      "sha256": "8941870a604e7c87ed24566b038d46c24ce76616254d2383c578f60c0677f202",
+      "signature_status": "UnknownError for ZIP container",
+      "version": "qpdf 12.3.2",
+      "scripted_run": "executed",
+      "same_file_tested": "research_notes_pdf_startxref_damaged.pdf",
+      "result": "qpdf --check and qpdf input output both exited 3 with warnings on the damaged PDF, reconstructed the cross-reference table, and wrote an 11,429-byte PDF. qpdf --check on the rewritten output exited 0; pypdf opened the output and counted 10 pages.",
+      "proof_note": "qpdf emits parser/check diagnostics, not a VERAQIS-style PCC certificate or per-object verified/orphan provenance split."
+    },
+    {
+      "name": "DiskInternals ZIP Repair",
+      "download_url": "https://eu.diskinternals.com/download/zip_repair.exe",
+      "downloaded_file": "target/competitor-lab/downloads/diskinternals_zip_repair.exe",
+      "download_status": "downloaded",
+      "bytes": 532606,
+      "sha256": "0ffb1f63749877807bd61fcceb6e178c2902ab15f80a7bf41535bb892463ac25",
+      "signature_status": "NotSigned",
+      "version": "Zip Repair Tool, DiskInternals Research",
+      "scripted_run": "not executed",
+      "same_file_tested": "science_pack_zip_eocd_truncated.zip pending",
+      "result": "GUI/freeware executable downloaded and fingerprinted. No documented headless repair interface was found on the official page, so no scripted output was produced.",
+      "proof_note": "Pending manual or VM run with saved output and independent verification."
+    },
+    {
+      "name": "SysTools ZIP Repair",
+      "download_url": "https://downloads.systoolsgroup.com/zip-repair.exe",
+      "downloaded_file": "target/competitor-lab/downloads/systools_zip_repair.exe",
+      "download_status": "downloaded",
+      "bytes": 826696,
+      "sha256": "9fee4730b92c573f0994139273b563796b193d6bfbdc061ad0abe5fbb4ee0e5a",
+      "signature_status": "Valid Authenticode signature",
+      "version": "3.0.0.0 demo setup",
+      "scripted_run": "not executed",
+      "same_file_tested": "science_pack_zip_eocd_truncated.zip pending",
+      "result": "Installer downloaded and fingerprinted. Official page states the free demo only previews recovered ZIP files; no scripted output was produced.",
+      "proof_note": "Pending licensed/manual run if saved output is required for scoring."
+    },
+    {
+      "name": "BitRecover ZIP Repair Wizard",
+      "download_url": "https://dl.bitrecover.com/bitrecover-zip-repair-wizard.exe",
+      "downloaded_file": "target/competitor-lab/downloads/bitrecover_zip_repair_wizard.exe",
+      "download_status": "downloaded",
+      "bytes": 4037168,
+      "sha256": "3564baeb19f47dfa7a045feb4f851b1031a11c8e3aff3e4b8d885086b258673d",
+      "signature_status": "Valid Authenticode signature",
+      "version": "5.4 setup",
+      "scripted_run": "not executed",
+      "same_file_tested": "science_pack_zip_eocd_truncated.zip pending",
+      "result": "Installer downloaded and fingerprinted. Official page states the demo shows recovered file names only; no scripted saved-output run was produced.",
+      "proof_note": "Preview-only demo is not scored as verified recovery."
+    },
+    {
+      "name": "ZIP Recovery Kit / Recovery Toolbox",
+      "download_url": "https://all-recovery-inc.com/download/ZipRecoveryKitInstall.exe",
+      "downloaded_file": "target/competitor-lab/downloads/zip_recovery_kit_install.exe",
+      "download_status": "downloaded",
+      "bytes": 3159920,
+      "sha256": "24c4627385a899cd91b3bc71d654e525998e2662046fd9cc5eb25aaf2375524f",
+      "signature_status": "Valid Authenticode signature",
+      "version": "Zip Recovery Kit setup",
+      "scripted_run": "not executed",
+      "same_file_tested": "science_pack_zip_eocd_truncated.zip pending",
+      "result": "Installer downloaded and fingerprinted. Official page describes a GUI demo and says saving recovered data requires the full version.",
+      "proof_note": "Preview-only demo is not scored as verified recovery."
+    },
+    {
+      "name": "RecoveryTools Zip Repair",
+      "download_url": "https://www.recoverytools.com/dl/setup-zip-repair.exe",
+      "downloaded_file": "target/competitor-lab/downloads/recoverytools_setup_zip_repair.exe",
+      "download_status": "downloaded",
+      "bytes": 4302784,
+      "sha256": "051bb1458a13ff20dd27216e88b47a9f4b51f2dac7388d82ce833ae407ae4f2f",
+      "signature_status": "Valid Authenticode signature",
+      "version": "6.0 setup",
+      "scripted_run": "not executed",
+      "same_file_tested": "science_pack_zip_eocd_truncated.zip pending",
+      "result": "Installer downloaded and fingerprinted. No documented headless repair interface was found on the official page, so no scripted output was produced.",
+      "proof_note": "Pending manual or VM run with saved output and independent verification."
+    },
+    {
+      "name": "DataNumen Zip Repair",
+      "download_url": "https://download.datanumen.com/downloads/file/dzipr.exe",
+      "downloaded_file": "target/competitor-lab/downloads/datanumen_dzipr.exe",
+      "download_status": "downloaded",
+      "bytes": 14889992,
+      "sha256": "fd1895dd9dbe30db30a1bd7fc79bb3ed20c45e4dc982334f08acf31be0c2f650",
+      "signature_status": "Valid Authenticode signature",
+      "version": "4.0.0000 setup",
+      "scripted_run": "not executed",
+      "same_file_tested": "science_pack_zip_eocd_truncated.zip pending",
+      "result": "Installer downloaded and fingerprinted. No documented headless repair interface was found on the official page, so no scripted output was produced.",
+      "proof_note": "Pending manual or VM run with saved output and independent verification."
+    },
+    {
+      "name": "DataNumen PDF Repair",
+      "download_url": "https://download.datanumen.com/downloads/file/dpdfr.exe",
+      "downloaded_file": "target/competitor-lab/downloads/datanumen_dpdfr.exe",
+      "download_status": "downloaded",
+      "bytes": 15375192,
+      "sha256": "aba12fcd6382659a857111474a556cd85e1ba8a2937529366ba3b8c5b4bd9b0c",
+      "signature_status": "Valid Authenticode signature",
+      "version": "4.00.0000 setup",
+      "scripted_run": "not executed",
+      "same_file_tested": "research_notes_pdf_startxref_damaged.pdf pending",
+      "result": "Installer downloaded and fingerprinted. No documented headless repair interface was found on the official page, so no scripted output was produced.",
+      "proof_note": "Pending manual or VM run with saved output and independent verification."
+    },
+    {
+      "name": "DataNumen Archive Repair",
+      "download_url": "https://download.datanumen.com/downloads/file/darcr.exe",
+      "downloaded_file": "target/competitor-lab/downloads/datanumen_darcr.exe",
+      "download_status": "downloaded",
+      "bytes": 38923520,
+      "sha256": "41b294c915b4c7877100457e33de36fdd0f77cd1c9602292050d105d33d0d3f3",
+      "signature_status": "Valid Authenticode signature",
+      "version": "4.00.0000 setup",
+      "scripted_run": "not executed",
+      "same_file_tested": "science_pack_zip_eocd_truncated.zip and science_pack_tar_early_zero.tar pending",
+      "result": "Installer downloaded and fingerprinted. No documented headless repair interface was found on the official page, so no scripted output was produced.",
+      "proof_note": "Pending manual or VM run with saved output and independent verification."
+    }
+  ],
+  "rows": [
+    {
+      "sample": "ZIP: EOCD truncated science pack",
+      "damage_class": "ZIP central directory / EOCD loss",
+      "veraqis_command": "veraqis recover science_pack_zip_eocd_truncated.zip --aggressive --output zip_aggressive",
+      "veraqis_result": {
+        "status": "recovered",
+        "summary": "zip-rebuild + partial-extract",
+        "bytes_recovered": 336414,
+        "bytes_lost": 0,
+        "provenance": "manifest emitted; rebuilt central directory for 6 members from local headers"
+      },
+      "baselines": {
+        "Python 3.12.13 zipfile": {
+          "status": "failed",
+          "detail": "BadZipFile: File is not a zip file",
+          "evidence": "none"
+        },
+        "PowerShell Expand-Archive": {
+          "status": "failed",
+          "detail": "End of Central Directory record could not be found; extracted 0 files",
+          "evidence": "none"
+        },
+        "Windows tar/libarchive list": {
+          "status": "opened_for_listing",
+          "detail": "exit 0; listed 6 members",
+          "evidence": "parser/listing only, no repair certificate"
+        }
+      }
+    },
+    {
+      "sample": "DOCX: OPC package with ZIP central directory truncated",
+      "damage_class": "OPC/OOXML ZIP directory loss",
+      "veraqis_command": "veraqis recover research_notes_docx_cd_truncated.docx --semantic opc --output docx_opc_semantic",
+      "veraqis_result": {
+        "status": "semantic_recovery",
+        "summary": "17 byte-verified parts; 17 semantically verified; main document part verified",
+        "verified_parts": 17,
+        "semantically_verified_parts": 17,
+        "provenance": "part CRCs plus OPC content-types/relationship graph; package report emitted"
+      },
+      "baselines": {
+        "Python 3.12.13 zipfile": {
+          "status": "failed",
+          "detail": "BadZipFile: File is not a zip file",
+          "evidence": "none"
+        },
+        "PowerShell Expand-Archive": {
+          "status": "failed",
+          "detail": ".docx is not a supported archive file format for this command; extracted 0 files",
+          "evidence": "none"
+        },
+        "Windows tar/libarchive list": {
+          "status": "opened_for_listing",
+          "detail": "exit 0; listed 17 members",
+          "evidence": "parser/listing only, no OPC proof certificate"
+        }
+      }
+    },
+    {
+      "sample": "TAR: early zero block before remaining members",
+      "damage_class": "TAR premature end marker / continuation salvage",
+      "veraqis_command": "veraqis recover science_pack_tar_early_zero.tar --aggressive --output tar_aggressive",
+      "veraqis_result": {
+        "status": "result_recorded",
+        "summary": "tar-size-resync + tar-continuation-salvage",
+        "members_verified": 11,
+        "bytes_recovered": 2594816,
+        "bytes_lost": 16384,
+        "provenance": "TAR header checksum per salvaged member; manifest emitted"
+      },
+      "baselines": {
+        "Python 3.12.13 tarfile": {
+          "status": "failed",
+          "detail": "ReadError: end of file header",
+          "evidence": "none"
+        },
+        "Windows tar/libarchive list": {
+          "status": "opened_for_listing",
+          "detail": "exit 0; listed 0 members",
+          "evidence": "parser/listing only, no repair certificate"
+        }
+      }
+    },
+    {
+      "sample": "GZIP: multi-member stream with middle member corrupted",
+      "damage_class": "GZIP member-level corruption",
+      "veraqis_command": "veraqis recover multi_member_science_mid_corrupt.gz --aggressive --output gzip_aggressive",
+      "veraqis_result": {
+        "status": "recovered",
+        "summary": "2 CRC-verified members salvaged; corrupt member dropped",
+        "bytes_recovered": 1465,
+        "bytes_lost": 0,
+        "provenance": "independent member CRC32 plus ISIZE verification; manifest emitted"
+      },
+      "baselines": {
+        "Python 3.12.13 gzip": {
+          "status": "failed",
+          "detail": "error: invalid code -- missing end-of-block",
+          "evidence": "none"
+        }
+      }
+    },
+    {
+      "sample": "BZIP2: block-independent stream with mid corruption",
+      "damage_class": "BZIP2 independently checkable block salvage",
+      "veraqis_command": "veraqis recover sensor_log_mid_corrupt.bz2 --salvage --output bz2_salvage",
+      "veraqis_result": {
+        "status": "recovered",
+        "summary": "2 blocks recovered, 1 block abstained",
+        "bytes_salvaged": 1629728,
+        "evidence_bits": 64,
+        "provenance": "per-block CRC checks; salvage report emitted"
+      },
+      "baselines": {
+        "Python 3.12.13 bz2": {
+          "status": "failed",
+          "detail": "OSError: Invalid data stream",
+          "evidence": "none"
+        }
+      }
+    },
+    {
+      "sample": "XZ: single/frame-atomic damaged stream",
+      "damage_class": "XZ decoder-limited / no safe block surface in this file",
+      "veraqis_command": "veraqis recover sensor_log_mid_corrupt.xz --salvage --output xz_salvage",
+      "veraqis_result": {
+        "status": "abstained",
+        "summary": "0 blocks recovered, 1 block abstained",
+        "bytes_salvaged": 0,
+        "evidence_bits": 0,
+        "provenance": "no independent proof surface found, so VERAQIS emitted no bytes"
+      },
+      "baselines": {
+        "Python 3.12.13 lzma": {
+          "status": "failed",
+          "detail": "LZMAError: Corrupt input data",
+          "evidence": "none"
+        }
+      }
+    },
+    {
+      "sample": "PDF: startxref/trailer damage on 10-page paper",
+      "damage_class": "PDF xref/trailer graph damage",
+      "veraqis_command": "veraqis recover research_notes_pdf_startxref_damaged.pdf --semantic pdf --output pdf_semantic",
+      "veraqis_result": {
+        "status": "semantic_recovery",
+        "summary": "26 objects recovered, 25 graph-verified, 1 orphan; 10 pages/streams exported",
+        "objects_recovered": 26,
+        "objects_verified": 25,
+        "pages": 10,
+        "streams_exported": 10,
+        "provenance": "PDF Root/object graph proof; orphan separated from verified objects; report emitted"
+      },
+      "baselines": {
+        "Python 3.12.13 pypdf strict=False": {
+          "status": "failed",
+          "detail": "PdfReadError: startxref not found",
+          "evidence": "none"
+        },
+        "qpdf 12.3.2": {
+          "status": "rewritten_with_warnings",
+          "detail": "qpdf --check and qpdf input output exited 3 with warnings on the damaged input, reconstructed the cross-reference table, wrote an 11,429-byte PDF, and qpdf --check on the output exited 0; pypdf opened 10 pages.",
+          "evidence": "parser/check output only; no VERAQIS-style PCC or per-object verified/orphan split"
+        }
+      }
+    }
+  ]
+}

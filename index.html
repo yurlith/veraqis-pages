@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VERAQIS - Honest archive safety and recovery</title>
+<meta name="description" content="VERAQIS is an offline-first beta toolkit for archive safety, damaged-file analysis, proof-gated recovery, verifiable reports, and transparent test records. No telemetry. No password recovery. No invented data." />
+<link rel="canonical" href="https://veraqis.tech/" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="VERAQIS - Honest archive safety and recovery" />
+<meta property="og:description" content="Check damaged files, recover only what can be proven, and review the test record behind the beta." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="VERAQIS - Honest archive safety and recovery" />
+<meta name="twitter:description" content="Check damaged files, recover only what can be proven, and review the test record behind the beta." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/#webpage",
+      "url": "https://veraqis.tech/",
+      "name": "VERAQIS - Honest archive safety and recovery",
+      "description": "VERAQIS is an offline-first beta toolkit for archive safety, damaged-file analysis, proof-gated recovery, verifiable reports, and transparent test records. No telemetry. No password recovery. No invented data.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      },
+      "dateModified": "2026-07-19",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is VERAQIS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "VERAQIS is a beta file safety and recovery toolkit. It audits archives and damaged files, recovers only data that surviving bytes can prove, and reports unknown regions honestly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What makes VERAQIS different from ordinary recovery tools?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "VERAQIS is built around an evidence model. A recovery result must be backed by checksum, structural, object-graph or independent-copy proof; otherwise VERAQIS abstains instead of inventing data."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does VERAQIS send files to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The beta tools are offline-first, make no telemetry calls, and keep analysis and recovery on the user's machine."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can veraqis recover encrypted files or passwords?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Encrypted archives and documents are detected and reported, but VERAQIS does not decrypt, recover passwords, or bypass restrictions."
+          }
+        }
+      ],
+      "mainEntityOfPage": {
+        "@id": "https://veraqis.tech/#webpage"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="index.html" class="active">Home</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="desktop.html">Desktop</a>
+        <a href="coldpass.html">ColdPass by VERAQIS</a>
+        <a href="reports.html">Reports</a>
+        <a href="testing.html">Tests</a>
+        <a href="security.html">Security</a>
+        <a href="download.html">Download</a>
+        <a href="docs.html">Docs</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <div class="kicker">Archive safety and recovery, honestly</div>
+      <h1>Files fail. VERAQIS tells you what is safe, what can be recovered, and what cannot.</h1>
+      <p class="lead">VERAQIS is a beta toolkit for damaged archives and data files. It checks first,
+        recovers only what the surviving bytes can prove, and leaves uncertain regions marked as
+        unknown instead of pretending.</p>
+      <div class="cta">
+        <a class="btn primary" href="download.html">Download beta</a>
+        <a class="btn ghost" href="testing.html">See the test record</a>
+      </div>
+      <p class="note" style="margin-top:22px">Signed Android Archiver APK available | Windows Recovery and ColdPass clean rebuilds pending | SHA-256 published</p>
+    </div>
+    <figure class="hero-visual">
+      <img src="assets/desktop-protect-2026-07.png" alt="Current VERAQIS Recovery Protect screen with folder protection, checking, repair and signing controls" />
+      <figcaption>Current v0.2.1 Desktop UI. Long folder-protection jobs expose correlated progress and a cooperative cancel action at safe file boundaries.</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- BETA BANNER -->
+<section style="padding:26px 0">
+  <div class="wrap">
+    <div class="callout info" style="margin:0">
+      <strong>VERAQIS is in public beta.</strong> Evaluation downloads carry checksums, but the Windows
+      artifacts are not yet production-signed. The local release gate blocks publication on an exact-ref Linux
+      gate and an installed Windows capability self-test. Recovery is always best-effort and never
+      guaranteed; the product is designed to abstain when proof is missing.
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="wrap">
+    <h2>What you can use today</h2>
+    <p class="sub">A small product family built around one rule: the report must explain why a result
+      should be trusted.</p>
+    <div class="grid g4">
+      <a class="card link-card" href="desktop.html">
+        <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
+        <p>Analyze damaged files and use proof-gated recovery for free during public beta, then save a report that separates recovered,
+        unknown and unsupported regions.</p>
+      </a>
+      <a class="card link-card" href="download.html">
+        <div class="ic">CLI</div><h3>VERAQIS Recovery CLI</h3>
+        <p>Run the read-only auditor and recovery workflows from the terminal. Release artifacts are
+        rebuilt from the exact tagged commit and published with SHA-256 checksums.</p>
+      </a>
+      <a class="card link-card" href="reports.html">
+        <div class="ic">REP</div><h3>Reports</h3>
+        <p>Every accepted recovery result carries evidence: byte ranges, rule IDs, verifier type and
+        enough context to review the decision.</p>
+      </a>
+      <a class="card link-card" href="testing.html">
+        <div class="ic">QA</div><h3>Test Record</h3>
+        <p>See exact-ref Linux checks, installed-runtime evidence, mobile device gates, artifact hashes
+        and the remaining release limitation: no trusted Windows code signing yet.</p>
+      </a>
+      <a class="card link-card" href="coldpass.html">
+        <div class="ic">KEY</div><h3>ColdPass by VERAQIS — free</h3>
+        <p>Keep passwords in a local encrypted Windows vault. No account, cloud, telemetry,
+        subscription or purchase path; the verified v1.0.0 portable release is available now.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- REAL STORY -->
+<section class="band">
+  <div class="wrap">
+    <div class="kicker">Real beta result</div>
+    <p class="proof-line">Damaged ZIP, health <span class="mono">15/100</span> → VERAQIS found
+      <span class="mono">ZIP_EOCD_001</span> → rebuilt the archive → <span class="mono">8412B</span>
+      recovered, <span class="mono">0B</span> lost.</p>
+    <p class="sub">This is the product position in one case: prove the recoverable structure, write a
+      manifest, and refuse to dress guesses up as recovered data.</p>
+    <div class="flow" aria-label="VERAQIS proof-first recovery flow">
+      <div class="flow-step">
+        <div class="num">before</div>
+        <h3>Broken structure</h3>
+        <p>The ZIP end-of-central-directory record is missing after truncation.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">diagnose</div>
+        <h3>Rule-keyed finding</h3>
+        <p>The report names <code>ZIP_EOCD_001</code> and scores health at <code>15/100</code>.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">repair</div>
+        <h3>Central directory rebuild</h3>
+        <p>VERAQIS rebuilds from surviving local headers instead of inventing missing bytes.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">after</div>
+        <h3>Manifested result</h3>
+        <p><code>8412B</code> recovered, <code>0B</code> lost, with a recovery manifest.</p>
+      </div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="testing.html#live-product-run">See the real report</a>
+      <a class="btn ghost" href="testing.html#benchmark-stats">Read benchmark statistics</a>
+    </div>
+  </div>
+</section>
+
+<!-- POSITIONING -->
+<section>
+  <div class="wrap">
+    <div class="kicker">Positioning</div>
+    <p class="quote">VERAQIS is not a miracle recovery button. It is an evidence-first safety tool for
+      archives and damaged files: check the risk, recover the provable parts, and say clearly when the
+      data is not recoverable.</p>
+    <div class="zero mono">ship rule | <span class="good">do not emit unproven data</span></div>
+    <div class="compare">
+      <div class="side">
+        <h3>Most recovery tools sell output</h3>
+        <ul>
+          <li>They lead with how much data was returned.</li>
+          <li>They may not separate proven data from guessed data.</li>
+          <li>They rarely show what was safely refused.</li>
+        </ul>
+      </div>
+      <div class="side veraqis">
+        <h3>VERAQIS sells proof</h3>
+        <ul>
+          <li>Verified bytes, rows, parts and objects are counted separately.</li>
+          <li>False output is a hard gate, not a footnote.</li>
+          <li>Unknown regions remain unknown when evidence is missing.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid g3" style="margin-top:34px">
+      <div class="card"><h3>Security before recovery</h3><p>Inputs are treated as hostile. Source files
+        are opened read-only, untrusted work is sandboxed, and output goes to a destination you choose.</p></div>
+      <div class="card"><h3>No password or restriction bypass</h3><p>Encrypted files are detected and
+        reported. VERAQIS does not decrypt, recover passwords, remove restrictions or claim otherwise.</p></div>
+      <div class="card"><h3>Useful even when it abstains</h3><p>An honest report can still help: it tells
+        you the format, the defect, what was checked, and why a recovery was refused.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUESTIONS -->
+<section>
+  <div class="wrap">
+    <h2>Common questions</h2>
+    <p class="sub">Plain answers for people deciding whether VERAQIS belongs in their recovery workflow.</p>
+    <div class="faq">
+      <div class="qa">
+        <h3>What is VERAQIS?</h3>
+        <p>VERAQIS is a beta file safety and recovery toolkit. It audits archives and damaged files, recovers only data that surviving bytes can prove, and reports unknown regions honestly.</p>
+      </div>
+      <div class="qa">
+        <h3>What makes VERAQIS different from ordinary recovery tools?</h3>
+        <p>VERAQIS is built around an evidence model. A recovery result must be backed by checksum, structural, object-graph or independent-copy proof; otherwise VERAQIS abstains instead of inventing data.</p>
+      </div>
+      <div class="qa">
+        <h3>Does VERAQIS send files to a server?</h3>
+        <p>No. The beta tools are offline-first, make no telemetry calls, and keep analysis and recovery on the user's machine.</p>
+      </div>
+      <div class="qa">
+        <h3>Can veraqis recover encrypted files or passwords?</h3>
+        <p>No. Encrypted archives and documents are detected and reported, but VERAQIS does not decrypt, recover passwords, or bypass restrictions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTS -->
+<section id="proof" class="band">
+  <div class="wrap">
+    <h2>What has actually been checked</h2>
+    <p class="sub">The beta release page is intentionally conservative: it shows checks that passed,
+      warns about what is missing, and does not hide beta limits.</p>
+    <div class="grid g4">
+      <div class="card metric"><div class="n">PASS</div><div class="l"><code>cargo test --workspace --all-targets</code></div></div>
+      <div class="card metric"><div class="n">PASS</div><div class="l">Rust fmt and clippy with warnings denied</div></div>
+      <div class="card metric"><div class="n">0</div><div class="l">moderate-or-higher vulnerabilities in the Desktop UI npm audit</div></div>
+      <div class="card metric"><div class="n">1</div><div class="l">reviewed public beta artifact currently published: the signed Android APK</div></div>
+    </div>
+    <div class="callout warn" style="margin-top:22px">
+      <strong>Release limit:</strong> the Android APK is release-key signed. Previous Windows artifacts
+      were withdrawn; Recovery and ColdPass are being rebuilt and reviewed before republishing.
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="testing.html">Read the full test record</a>
+      <a class="btn ghost" href="security.html">Review security model</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING TEASER -->
+<section>
+  <div class="wrap">
+    <h2>Everything is free during public beta.</h2>
+    <p class="sub">VERAQIS Archiver, ColdPass and every current Recovery capability are available
+      without an account, payment or license file while we collect feedback and measured results.</p>
+    <div class="cta">
+      <a class="btn primary" href="download.html">Download the free CLI</a>
+      <a class="btn ghost" href="contact.html">Send feedback</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="desktop.html">VERAQIS Recovery</a>
+        <a href="download.html">VERAQIS Recovery CLI</a>
+        <a href="mobile.html">VERAQIS Archiver</a>
+        <a href="coldpass.html">ColdPass by VERAQIS — free password manager</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="testing.html">Test Record</a>
+        <a href="security.html">Security</a>
+        <a href="reports.html">Reports &amp; Verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="about.html">About VERAQIS</a>
+        <a href="contact.html">Contact / Support</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.</p>
+  </div>
+</footer>
+
+</body>
+</html>

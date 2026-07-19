@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Changelog / Release Notes | VERAQIS</title>
+<meta name="description" content="VERAQIS release notes: what shipped in the v0.2.1 beta and the milestones that led here — proof-carrying engines, Tier-3 semantic recovery, 7z/RAR support, the mobile safety app, and 7-language localization." />
+<link rel="canonical" href="https://veraqis.tech/changelog.html" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Changelog / Release Notes | VERAQIS" />
+<meta property="og:description" content="What shipped in the v0.2.1 beta and the milestones that led here." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/changelog.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Changelog / Release Notes | VERAQIS" />
+<meta name="twitter:description" content="What shipped in the v0.2.1 beta and the milestones that led here." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/changelog.html#webpage",
+      "url": "https://veraqis.tech/changelog.html",
+      "name": "Changelog / Release Notes",
+      "description": "VERAQIS release notes: what shipped in the v0.2.1 beta and the milestones that led here — proof-carrying engines, Tier-3 semantic recovery, 7z/RAR support, the mobile safety app, and 7-language localization.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      },
+      "dateModified": "2026-07-19",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/changelog.html#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Changelog and Release Notes",
+          "item": "https://veraqis.tech/changelog.html"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="desktop.html">Desktop</a>
+        <a href="reports.html">Reports</a>
+        <a href="testing.html">Tests</a>
+        <a href="security.html">Security</a>
+        <a href="download.html">Download</a>
+        <a href="docs.html">Docs</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">VERAQIS</a> / Changelog</div>
+    <h1>Changelog / Release Notes</h1>
+    <p class="lead">An honest record of what's shipped. Dates are when the work landed in the build, not
+      marketing announcements.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap prose">
+    <h2>Unreleased — Protect-first <span class="tag t-beta">in source, next build</span></h2>
+    <p class="note">2 July 2026 · not yet in the hosted v0.2.1 artifacts</p>
+    <ul class="checks">
+      <li>Folder-level Shield: <code>veraqis protect shield &lt;dir&gt; --recursive</code> protects a whole
+        tree (a parity sidecar per file + a folder manifest), with incremental
+        <code>--update</code> re-shielding only changed files. Gated to the future Pro tier in code;
+        single-file Shield stays free.</li>
+      <li><code>veraqis protect check</code> — free, read-only rot detection over a protected folder
+        (per-shard damage localization, repairable / not-repairable verdict per file); and
+        <code>veraqis protect repair</code> — free, reconstructs damaged or missing protected files
+        byte-exact into a separate output folder, verified against the original's SHA-256, never in
+        place, never unproven bytes.</li>
+      <li>VERAQIS Recovery gains a Protect screen (protect a folder · check · repair) driving the same
+        engine through the same policy table as the CLI.</li>
+      <li>VERAQIS Archiver (Android) can now <em>verify</em> a file against its <code>.phxs</code> sidecar
+        on-device — a golden-tested port of the engine's damage scan (verify-only; reconstruction
+        stays on desktop/CLI, and the app says so honestly).</li>
+    </ul>
+
+    <h2>Public-beta access update <span class="tag t-beta">current source</span></h2>
+    <p class="note">18 July 2026</p>
+    <ul class="checks">
+      <li>Every current VERAQIS Recovery capability is temporarily free during public beta so early
+        users can provide feedback and measured recovery results.</li>
+      <li>No account, checkout or license file is required for structural recovery, semantic recovery,
+        salvage, reconcile, streaming, Shield or experimental exact-copy recovery.</li>
+      <li>The offline license implementation remains in development for a later commercial release;
+        activating paid enforcement requires a separate release decision.</li>
+    </ul>
+
+    <h2>Commercial-boundary implementation <span class="tag">superseded beta plan</span></h2>
+    <p class="note">18 July 2026</p>
+    <ul class="checks">
+      <li>The offline entitlement model was implemented with analysis, diagnosis, verification, safe
+        inspection and safe extraction in its permanent Free scope.</li>
+      <li>The planned commercial policy grouped structural, semantic, salvage, reconcile, streaming
+        and exact-copy recovery behind one entitlement gate. Public-beta free access now overrides
+        that plan until a separately approved commercial release.</li>
+      <li>Recovery from an existing Shield sidecar remains Free so protected customer data is never
+        held hostage. VERAQIS Archiver and ColdPass remain separate free products.</li>
+    </ul>
+
+    <h2>v0.2.1 — public beta</h2>
+    <p class="note">26 June 2026; Linux CLI artifact added 29 June 2026</p>
+    <ul class="checks">
+      <li>First public-beta launch surface: the VERAQIS site now documents the mobile, desktop and
+        verification products honestly, with pricing that matches what the code enforces.</li>
+      <li>Workspace and apps aligned at version 0.2.1; the non-Android release path passed Rust tests, formatting, clippy, Desktop UI audit, Desktop bundle creation, Linux CLI smoke testing and release hash checks.</li>
+      <li>Licensing clarified: only exact-copy reconstruction is gated to a future paid tier; everything
+        else, including Tier-3 semantic recovery, is free during beta.</li>
+    </ul>
+
+    <h2>0.2.0 — proof-carrying engines &amp; mobile</h2>
+    <ul class="checks">
+      <li>Proof-carrying infrastructure: the verified-recovery benchmark, self-contained certificates,
+        a standalone re-verifier that shares no solver code, and a formally-checked emission invariant.</li>
+      <li>7-Zip &amp; RAR: first-class detection, byte-exact 7z signature and start-header repair,
+        verified inventory and intact-folder / STORED extraction. Solid-LZMA and proprietary RAR codec
+        payloads recorded as a measured NO-GO.</li>
+      <li>VERAQIS Archiver (mobile): safety-scan-before-open, safe listing and SAF-scoped extraction, built
+        on an Android-free safety facade and routed through a single audited seam.</li>
+      <li>Localization: 7 interface languages including right-to-left Arabic.</li>
+    </ul>
+
+    <h2>Earlier milestones</h2>
+    <ul class="checks">
+      <li>Tier-3 semantic recovery for SQLite, OPC/OOXML and PDF — verified rows, parts and objects,
+        gated at zero false results.</li>
+      <li>Partial-decompression salvage (bzip2 / xz) and intra-file redundancy mining (ISO 9660 / ZIP).</li>
+      <li>Format-aware structural repair for ZIP, TAR, GZIP and ISO, plus the GZIP/TAR/DEFLATE resync
+        track.</li>
+      <li>VERAQIS Shield: structure-weighted Reed-Solomon parity protection with a signed sidecar.</li>
+      <li>The free, read-only auditor and the evidence engine that underpins everything: rule-keyed
+        findings, health and recoverability scoring, and the sandboxed trust boundary.</li>
+    </ul>
+
+    <div class="callout info">
+      Detailed, per-track results and gate outcomes live in <code>BENCHMARKS.md</code> in the source
+      repository.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="desktop.html">VERAQIS Recovery</a>
+        <a href="download.html">VERAQIS Recovery CLI</a>
+        <a href="mobile.html">VERAQIS Archiver</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="testing.html">Test Record</a>
+        <a href="security.html">Security</a>
+        <a href="reports.html">Reports &amp; Verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="about.html">About VERAQIS</a>
+        <a href="contact.html">Contact / Support</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+</body>
+</html>

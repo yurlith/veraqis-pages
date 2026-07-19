@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VERAQIS Recovery | VERAQIS</title>
+<meta name="description" content="VERAQIS Recovery public beta: proof-gated analysis, structural recovery and semantic reconstruction are currently free. Offline, no telemetry." />
+<link rel="canonical" href="https://veraqis.tech/desktop.html" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="VERAQIS Recovery | VERAQIS" />
+<meta property="og:description" content="Analyze, diagnose and recover damaged archives where it can be proven. Format-aware repair + Tier-3 semantic recovery. Beta." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/desktop.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="VERAQIS Recovery | VERAQIS" />
+<meta name="twitter:description" content="Analyze, diagnose and recover damaged archives where it can be proven. Beta." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/desktop.html#webpage",
+      "url": "https://veraqis.tech/desktop.html",
+      "name": "VERAQIS Recovery",
+      "description": "VERAQIS Recovery: analyze and diagnose damaged archives and data files, recover what can be proven with format-aware structural repair and Tier-3 semantic reconstruction, and save verifiable reports. Offline, no telemetry. In beta.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      },
+      "dateModified": "2026-07-19",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/desktop.html#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "VERAQIS Recovery",
+          "item": "https://veraqis.tech/desktop.html"
+        }
+      ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://veraqis.tech/desktop.html#software",
+      "name": "VERAQIS Recovery",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Windows, Linux, macOS",
+      "softwareVersion": "0.2.1 beta",
+      "isAccessibleForFree": true,
+      "description": "Every current VERAQIS Recovery capability is free during public beta; no account or license file is required.",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "89",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/InStock",
+        "url": "https://veraqis.tech/pricing.html"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/desktop.html#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which files does VERAQIS Recovery analyze?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The beta detects and reports on archives and data formats including ZIP/OPC, TAR, GZIP/DEFLATE, ISO 9660, SQLite, PDF, bzip2, xz, 7-Zip and RAR."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does VERAQIS Recovery recover?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "During public beta it recovers structural bytes, decompressed blocks, rows, parts or objects only where the format provides enough surviving proof. No license is required; unsupported or unprovable regions are reported as unknown."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is exact-copy reconstruction stable?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Exact-copy reconstruction is experimental, same-owner only, and not promoted as a stable public recovery claim in this beta."
+          }
+        }
+      ],
+      "mainEntityOfPage": {
+        "@id": "https://veraqis.tech/desktop.html#webpage"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="desktop.html" class="active">Desktop</a>
+        <a href="reports.html">Reports</a>
+        <a href="testing.html">Tests</a>
+        <a href="security.html">Security</a>
+        <a href="download.html">Download</a>
+        <a href="docs.html">Docs</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">VERAQIS</a> / Products / Desktop</div>
+    <h1>VERAQIS Recovery</h1>
+    <p class="lead">Analyze and diagnose damaged archives and data files, then recover what the
+      surviving bytes can prove — with a verifiable report of exactly what was and wasn't recovered.</p>
+    <p class="note" style="margin-top:14px"><strong>Everything is free during public beta.</strong>
+      Analysis, recovery planning, structural and semantic recovery, Shield and verification are
+      enabled without an account or license file.</p>
+    <p class="note" style="margin-top:14px">Windows Desktop · cross-platform engine/CLI · offline · no telemetry · beta</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>What it does today</h2>
+    <p class="sub">Implemented and tested in the current build. The desktop app drives the VERAQIS engine
+      through a single, one-directional bridge — the UI renders backend results and computes none of
+      them.</p>
+    <div class="grid g3">
+      <div class="card"><div class="ic">SCAN</div><h3>Analyze</h3><p>Read-only audit: rule-keyed evidence
+        (offsets, confidence, byte ranges), health and recoverability scoring.</p></div>
+      <div class="card"><div class="ic">FIND</div><h3>Diagnose</h3><p>Per-format defect detection that
+        tells you what is — and isn't — recoverable before you act.</p></div>
+      <div class="card"><div class="ic">FIX</div><h3>Recover · public beta</h3><p>Format-aware structural repair
+        and Tier-3 semantic reconstruction are free during public beta and technically gated to emit
+        only verified bytes.</p></div>
+      <div class="card"><div class="ic">REP</div><h3>Reports</h3><p>Save a structured report of a run;
+        every recovered region carries its evidence. See <a href="reports.html">Reports &amp; Verification</a>.</p></div>
+      <div class="card"><div class="ic">LOG</div><h3>History</h3><p>A local history summary of past runs,
+        with a one-click clear. Stored on your machine only.</p></div>
+      <div class="card"><div class="ic">KEY</div><h3>Future licensing</h3><p>Offline signed-license support is
+        under development for a later commercial release. No license is required during public beta.</p></div>
+    </div>
+    <div class="callout ok" style="margin-top:22px">
+      <strong>Honest empty state.</strong> On first run, with no history, the dashboard shows an honest
+      zero-state rather than invented numbers. The interface never fabricates results.
+    </div>
+    <div class="callout warn">
+      <strong>Beta note.</strong> The desktop GUI builds and the engine bridge is verified by
+      automated checks. A full manual GUI smoke pass on each platform is recommended before wide
+      public release — treat the desktop build as beta until then.
+    </div>
+    <figure class="evidence-shot">
+      <img src="assets/desktop-protect-2026-07.png" alt="Current VERAQIS Recovery Protect page showing folder shield, integrity check, repair and signing controls" />
+      <figcaption>Current v0.2.1 Protect surface captured from the real UI build. During an active folder job the same page shows correlated file progress and a cooperative Cancel safely control; cancellation is committed only at file boundaries, and staged output is swept.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Formats &amp; what's recoverable</h2>
+    <p class="sub">Honest scope. Where a format carries redundancy, veraqis recovers it byte-exact. Where it
+      doesn't, VERAQIS says so — a measured NO-GO is a valid outcome, never a fake recovery.</p>
+    <div class="card table-scroll" style="padding:6px 6px 2px">
+    <table>
+      <thead><tr><th>Format</th><th>Detect</th><th>Recovery capability</th><th>Tier</th></tr></thead>
+      <tbody>
+        <tr><td class="f">ZIP / OPC<br><span class="mut" style="font-size:12px">jar·apk·docx·xlsx·epub</span></td><td>✓</td><td>EOCD/central-dir rebuild, local-header scan, CRC reconcile, exact part extraction</td><td><span class="tag t-exact">Exact</span> <span class="tag t-tier3">Tier-3</span></td></tr>
+        <tr><td class="f">SQLite</td><td>✓</td><td>Schema + verified rows, WAL overlay, overflow chains, orphan-page relink</td><td><span class="tag t-tier3">Tier-3</span></td></tr>
+        <tr><td class="f">PDF</td><td>✓</td><td>Object-graph rebuild, Root recovery, verified-stream salvage (graph-proven only)</td><td><span class="tag t-tier3">Tier-3</span></td></tr>
+        <tr><td class="f">TAR · GZIP · DEFLATE</td><td>✓</td><td>Resync salvage, multi-member &amp; continuation recovery, exact structural repair</td><td><span class="tag t-exact">Exact</span></td></tr>
+        <tr><td class="f">ISO 9660</td><td>✓</td><td>PVD⟂SVD reconcile, dual L/M path-table reconstruction (byte-exact twin)</td><td><span class="tag t-exact">Exact</span></td></tr>
+        <tr><td class="f">bzip2 · xz</td><td>✓</td><td>Block-independent salvage — each block re-verified by an independent CRC</td><td><span class="tag t-exact">Exact</span></td></tr>
+        <tr><td class="f">7-Zip</td><td>✓</td><td>Signature &amp; start-header repair, verified inventory, intact-folder &amp; non-solid salvage</td><td><span class="tag t-exact">Exact</span> <span class="tag t-tier3">Tier-3</span></td></tr>
+        <tr><td class="f">RAR5</td><td>✓</td><td>Inventory + CRC localization, exact STORED extraction, recovery-record certificate</td><td><span class="tag t-exact">Exact</span> <span class="tag t-tier3">Tier-3</span></td></tr>
+        <tr><td class="f">Exact-copy reconstruction</td><td>✓</td><td>Restore exact bytes from a same-owner duplicate; placement confirmed independently of the search</td><td><span class="tag t-beta">experimental</span></td></tr>
+        <tr><td class="f">Solid LZMA / RAR codec</td><td>✓</td><td>Mid-stream payload — measured NO-GO (LZ-coupled / proprietary); detect + localize instead</td><td><span class="tag t-nogo">measured NO-GO</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="note" style="margin-top:14px">Encryption is always detected and <strong>abstained</strong> —
+      VERAQIS never decrypts, recovers passwords, or bypasses restrictions.</p>
+    <div class="callout warn" style="margin-top:14px">
+      <strong>Exact-copy reconstruction is experimental.</strong> It restores exact bytes from a
+      same-owner duplicate only, and is still being validated on real backup data. It is not part of
+      general, guaranteed recovery and is not sold as a stable feature.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Desktop recovery questions</h2>
+    <p class="sub">A compact scope summary for evaluators comparing recovery tools.</p>
+    <div class="faq">
+      <div class="qa">
+        <h3>Which files does VERAQIS Recovery analyze?</h3>
+        <p>The beta detects and reports on archives and data formats including ZIP/OPC, TAR, GZIP/DEFLATE, ISO 9660, SQLite, PDF, bzip2, xz, 7-Zip and RAR.</p>
+      </div>
+      <div class="qa">
+        <h3>What does VERAQIS Recovery recover?</h3>
+        <p>During public beta it recovers structural bytes, decompressed blocks, rows, parts or objects
+          only where the format provides enough surviving proof. No license is required; unsupported
+          or unprovable regions are reported as unknown.</p>
+      </div>
+      <div class="qa">
+        <h3>Is exact-copy reconstruction stable?</h3>
+        <p>No. Exact-copy reconstruction is experimental, same-owner only, and not promoted as a stable public recovery claim in this beta.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Use the reviewed beta</h2>
+    <p class="sub">Download the reviewed Windows artifacts, verify their published checksums, and begin with a read-only audit.</p>
+    <div class="grid g2">
+      <div>
+        <h3 style="font-size:17px">Install</h3>
+        <p class="note">The previous Windows beta was withdrawn after release verification failed.
+          A clean CLI and installer rebuild is in progress; no Windows download is currently offered.</p>
+      </div>
+      <div>
+        <h3 style="font-size:17px">Use it</h3>
+        <div class="terminal">
+          <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+<pre><span class="c"># 1 · audit — free, read-only</span>
+<span class="p">veraqis</span> analyze backup.zip <span class="a">--format</span> json
+
+<span class="c"># 2 · recover — provenance-backed only</span>
+<span class="p">veraqis</span> recover archive.7z <span class="a">--output</span> out/
+
+<span class="c"># 3 · semantic — Tier-3 rows / objects</span>
+<span class="p">veraqis</span> recover db.sqlite <span class="a">--semantic</span> sqlite <span class="a">--output</span> out/
+
+<span class="c"># 4 · protect — byte-exact parity sidecar</span>
+<span class="p">veraqis</span> protect shield data.tar <span class="a">--budget</span> 3
+
+<span class="c"># 5 · next build: whole folders + rot check</span>
+<span class="p">veraqis</span> protect shield photos/ <span class="a">--recursive</span>
+<span class="p">veraqis</span> protect check photos/
+</pre>
+        </div>
+      </div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="download.html">Get beta access →</a>
+      <a class="btn ghost" href="docs.html">Read the docs</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="desktop.html">VERAQIS Recovery</a>
+        <a href="download.html">VERAQIS Recovery CLI</a>
+        <a href="mobile.html">VERAQIS Archiver</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="testing.html">Test Record</a>
+        <a href="security.html">Security</a>
+        <a href="reports.html">Reports &amp; Verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="about.html">About VERAQIS</a>
+        <a href="contact.html">Contact / Support</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+</body>
+</html>
