@@ -62,7 +62,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-19",
+      "dateModified": "2026-07-20",
       "inLanguage": "en"
     },
     {
@@ -134,6 +134,7 @@
         <a href="index.html">Home</a>
         <a href="mobile.html">Mobile</a>
         <a href="desktop.html">Desktop</a>
+        <a href="coldpass.html">ColdPass by VERAQIS</a>
         <a href="reports.html">Reports</a>
         <a href="testing.html">Tests</a>
         <a href="security.html" class="active">Security</a>
@@ -196,12 +197,14 @@
     <p class="sub">The site should create trust by stating the release state plainly, not by hiding
       awkward details.</p>
     <div class="grid g3">
-      <div class="card"><h3>Checksums are published</h3><p>The Windows CLI, Linux CLI and Desktop beta
-        installer are listed with SHA-256 hashes on the download page and in the checksum file.</p></div>
-      <div class="card"><h3>Windows packages withdrawn</h3><p>No Windows artifact is currently
-        offered. Fresh Recovery and ColdPass builds must pass content review and signing checks before publication.</p></div>
-      <div class="card"><h3>Pages before binaries</h3><p>Public pages are open for indexing; executable
-        download paths are kept out of crawler targets so people see context and warnings first.</p></div>
+      <div class="card"><h3>Published artifact + checksum</h3><p>The currently published Android APK is
+        paired with a SHA-256 checksum on the download page and in the checksum file. Windows Recovery,
+        Linux Recovery and ColdPass artifacts are not currently distributed.</p></div>
+      <div class="card"><h3>Signing vs checksum</h3><p>The Android APK is release-key signed. A SHA-256
+        proves file integrity but is not a publisher signature; Windows Authenticode signing is not yet
+        in place for a desktop release.</p></div>
+      <div class="card"><h3>Pages before binaries</h3><p>Public pages are open for indexing; the binary
+        download path is kept out of crawler targets so people see context and warnings first.</p></div>
     </div>
     <div class="cta">
       <a class="btn primary" href="testing.html">See test record</a>

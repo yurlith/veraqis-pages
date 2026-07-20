@@ -62,7 +62,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-19",
+      "dateModified": "2026-07-20",
       "inLanguage": "en"
     },
     {
@@ -88,19 +88,12 @@
       "@id": "https://veraqis.tech/desktop.html#software",
       "name": "VERAQIS Recovery",
       "applicationCategory": "UtilitiesApplication",
-      "operatingSystem": "Windows, Linux, macOS",
-      "softwareVersion": "0.2.1 beta",
+      "operatingSystem": "Windows, Linux",
+      "softwareVersion": "0.2.1 development build",
       "isAccessibleForFree": true,
-      "description": "Every current VERAQIS Recovery capability is free during public beta; no account or license file is required.",
+      "description": "VERAQIS Recovery analyzes damaged files and recovers only verifiable data. The public Windows and Linux packages are temporarily unavailable pending clean rebuilds; every capability is free during public beta.",
       "publisher": {
         "@id": "https://veraqis.tech/#organization"
-      },
-      "offers": {
-        "@type": "Offer",
-        "price": "89",
-        "priceCurrency": "EUR",
-        "availability": "https://schema.org/InStock",
-        "url": "https://veraqis.tech/pricing.html"
       }
     },
     {
@@ -154,6 +147,7 @@
         <a href="index.html">Home</a>
         <a href="mobile.html">Mobile</a>
         <a href="desktop.html" class="active">Desktop</a>
+        <a href="coldpass.html">ColdPass by VERAQIS</a>
         <a href="reports.html">Reports</a>
         <a href="testing.html">Tests</a>
         <a href="security.html">Security</a>
@@ -170,19 +164,24 @@
     <h1>VERAQIS Recovery</h1>
     <p class="lead">Analyze and diagnose damaged archives and data files, then recover what the
       surviving bytes can prove — with a verifiable report of exactly what was and wasn't recovered.</p>
-    <p class="note" style="margin-top:14px"><strong>Everything is free during public beta.</strong>
-      Analysis, recovery planning, structural and semantic recovery, Shield and verification are
-      enabled without an account or license file.</p>
-    <p class="note" style="margin-top:14px">Windows Desktop · cross-platform engine/CLI · offline · no telemetry · beta</p>
+    <div class="status-line">
+      <span class="status status--withdrawn">Public Windows package temporarily unavailable</span>
+      <p class="note">Clean rebuild pending — no desktop or CLI package is offered for download today.</p>
+    </div>
+    <p class="note" style="margin-top:14px"><strong>Free during public beta.</strong> Analysis,
+      recovery planning, structural and semantic recovery, Shield and verification are enabled without
+      an account or license file. The capabilities below are implemented in the current development
+      build; they are not a package you can download yet.</p>
   </div>
 </div>
 
 <section>
   <div class="wrap">
-    <h2>What it does today</h2>
-    <p class="sub">Implemented and tested in the current build. The desktop app drives the VERAQIS engine
-      through a single, one-directional bridge — the UI renders backend results and computes none of
-      them.</p>
+    <h2>Current Recovery capabilities</h2>
+    <p class="sub">Implemented in the current development build. The desktop app drives the VERAQIS
+      engine through a single, one-directional bridge — the UI renders backend results and computes
+      none of them. These capabilities are implemented and automatically tested; a public package is
+      not yet released.</p>
     <div class="grid g3">
       <div class="card"><div class="ic">SCAN</div><h3>Analyze</h3><p>Read-only audit: rule-keyed evidence
         (offsets, confidence, byte ranges), health and recoverability scoring.</p></div>
@@ -271,13 +270,15 @@
 
 <section>
   <div class="wrap">
-    <h2>Use the reviewed beta</h2>
-    <p class="sub">Download the reviewed Windows artifacts, verify their published checksums, and begin with a read-only audit.</p>
+    <h2>How Recovery works</h2>
+    <p class="sub">The workflow always begins with a read-only audit. The command reference below
+      documents the development-build CLI surface; no public Windows or Linux package is offered today.</p>
     <div class="grid g2">
       <div>
-        <h3 style="font-size:17px">Install</h3>
+        <h3 style="font-size:17px">Install status</h3>
         <p class="note">The previous Windows beta was withdrawn after release verification failed.
-          A clean CLI and installer rebuild is in progress; no Windows download is currently offered.</p>
+          A clean CLI and installer rebuild is in progress; no Windows or Linux download is currently
+          offered. See the <a href="download.html">release status</a>.</p>
       </div>
       <div>
         <h3 style="font-size:17px">Use it</h3>
@@ -303,7 +304,7 @@
       </div>
     </div>
     <div class="cta">
-      <a class="btn primary" href="download.html">Get beta access →</a>
+      <a class="btn ghost" href="download.html">View release status</a>
       <a class="btn ghost" href="docs.html">Read the docs</a>
     </div>
   </div>

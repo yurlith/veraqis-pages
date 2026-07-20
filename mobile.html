@@ -62,7 +62,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-19",
+      "dateModified": "2026-07-20",
       "inLanguage": "en"
     },
     {
@@ -106,7 +106,7 @@
           "name": "What does VERAQIS Archiver do?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "It scans archives before opening, lists entries safely, and extracts safe entries into a folder selected through Android's Storage Access Framework."
+            "text": "It scans archives before opening, lists entries safely, and extracts safe entries into a folder you choose."
           }
         },
         {
@@ -123,6 +123,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "No. Passwords, when supplied, are handled as transient character data and are not stored in models or logs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is an iOS version available?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No iOS build is available or scheduled for this beta. The current client is Android-specific; an iOS version would require a separate implementation and review."
           }
         }
       ],
@@ -169,6 +177,11 @@
       <a class="btn primary" href="downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk" download>Download signed APK</a>
       <a class="btn ghost" href="downloads/SHA256SUMS.txt" download>Verify SHA-256</a>
     </div>
+    <p class="note" style="margin-top:14px">Free during beta and after release; no account,
+      payment or license file is required.</p>
+    <p class="note" style="margin-top:8px">Distributed as a directly verifiable signed APK during
+      beta for sideload testing. A Google Play listing is planned after internal testing, Play App
+      Signing and permissions review.</p>
   </div>
 </div>
 
@@ -182,6 +195,11 @@
         <div class="ic">SCAN</div><h3>Safety scan before open</h3>
         <p>A read-only scan classifies the archive — Safe, Suspicious, Blocked, Encrypted or
         Unsupported — before any content is opened. You decide with the facts in front of you.</p>
+        <figure class="evidence-shot" style="max-width:320px;margin:18px auto 0">
+          <img src="assets/mobile-safety-scan.png" width="320" height="640"
+            alt="VERAQIS Archiver showing a suspicious archive verdict and the risk found" loading="lazy" />
+          <figcaption>Current Android beta: the scan reports the verdict and the reason behind it.</figcaption>
+        </figure>
       </div>
       <div class="card">
         <div class="ic">LIST</div><h3>Safe listing</h3>
@@ -194,9 +212,14 @@
         a safety or integrity check are not written.</p>
       </div>
       <div class="card">
-        <div class="ic">SAF</div><h3>Writes only where you choose (SAF)</h3>
-        <p>Output is written through Android's Storage Access Framework into the target folder you
-        select. VERAQIS Archiver doesn't roam your storage.</p>
+        <div class="ic">OUT</div><h3>Writes only where you choose</h3>
+        <p>Output is written into the target folder you select through Android's system picker.
+        VERAQIS Archiver doesn't roam your storage.</p>
+        <figure class="evidence-shot" style="max-width:320px;margin:18px auto 0">
+          <img src="assets/mobile-folder-picker.png" width="320" height="640"
+            alt="Android system folder picker opened by VERAQIS Archiver" loading="lazy" />
+          <figcaption>The operating system asks you to choose and approve the destination.</figcaption>
+        </figure>
       </div>
     </div>
   </div>
@@ -251,7 +274,7 @@
     <div class="faq">
       <div class="qa">
         <h3>What does VERAQIS Archiver do?</h3>
-        <p>It scans archives before opening, lists entries safely, and extracts safe entries into a folder selected through Android's Storage Access Framework.</p>
+        <p>It scans archives before opening, lists entries safely, and extracts safe entries into a folder you choose.</p>
       </div>
       <div class="qa">
         <h3>Does the mobile app perform deep recovery?</h3>
@@ -260,6 +283,10 @@
       <div class="qa">
         <h3>Does VERAQIS Archiver store passwords?</h3>
         <p>No. Passwords, when supplied, are handled as transient character data and are not stored in models or logs.</p>
+      </div>
+      <div class="qa">
+        <h3>Is an iOS version available?</h3>
+        <p>No iOS build is available or scheduled for this beta. The current client is Android-specific; an iOS version would require a separate implementation and review.</p>
       </div>
     </div>
   </div>
@@ -315,7 +342,7 @@
       </div>
     </div>
     <hr style="margin:28px 0 18px">
-    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+    <p class="note">© 2026 VERAQIS · <span class="mono">Site v0.2.1 · App v1.7.0-rc1</span></p>
   </div>
 </footer>
 

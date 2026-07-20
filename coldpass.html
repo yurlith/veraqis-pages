@@ -33,7 +33,7 @@
 <body>
 <header><div class="wrap"><nav>
   <a class="brand" href="index.html">VERAQIS</a><span class="pill beta">free</span>
-  <div class="links"><a href="index.html">Home</a><a href="mobile.html">Mobile</a><a href="desktop.html">Desktop</a><a href="coldpass.html" class="active">ColdPass by VERAQIS</a><a href="testing.html">Tests</a><a href="download.html">Download</a></div>
+  <div class="links"><a href="index.html">Home</a><a href="mobile.html">Mobile</a><a href="desktop.html">Desktop</a><a href="coldpass.html" class="active">ColdPass by VERAQIS</a><a href="reports.html">Reports</a><a href="testing.html">Tests</a><a href="security.html">Security</a><a href="download.html">Download</a><a href="docs.html">Docs</a></div>
 </nav></div></header>
 
 <div class="hero">
@@ -43,10 +43,13 @@
       <h1>ColdPass by VERAQIS keeps passwords in a local encrypted vault.</h1>
       <p class="lead">A focused password manager with no account, cloud service, subscription,
         telemetry or network dependency. The master password is never stored.</p>
-      <div class="cta">
-        <span class="btn ghost" aria-disabled="true">Clean Windows rebuild pending</span>
+      <div class="status-line">
+        <span class="status status--withdrawn">Clean Windows rebuild pending</span>
+        <p class="note">ColdPass is free, but no package is offered for download right now.</p>
       </div>
-      <p class="note" style="margin-top:18px">Windows x64 portable ZIP · 62.6 MiB · free download</p>
+      <div class="cta" style="margin-top:16px">
+        <a class="btn ghost" href="contact.html">Contact support</a>
+      </div>
     </div>
     <figure class="hero-visual">
       <img src="assets/veraqis-card.png" alt="VERAQIS product family identity" />
@@ -56,36 +59,42 @@
 </div>
 
 <section><div class="wrap">
-  <div class="callout warn" style="margin-top:0"><strong>Unsigned Windows release.</strong>
-    The portable executable has no paid Authenticode certificate, so Windows SmartScreen may warn.
-    Verify the published SHA-256 before running it. The release's offline Trust Pack was verified successfully.</div>
+  <div class="callout warn" style="margin-top:0"><strong>The previous v1.0.0 package is no longer
+    distributed.</strong> Do not install or redistribute previously downloaded copies as a current
+    VERAQIS release. A clean package will be published only after a fresh build, vault-data inspection,
+    release-artifact review and Windows signing checks.</div>
   <div class="grid g3" style="margin-top:28px">
     <div class="card"><div class="ic">LOC</div><h3>Local by design</h3><p>The encrypted vault stays on your computer. ColdPass has no cloud account, telemetry or call-home.</p></div>
-    <div class="card"><div class="ic">AES</div><h3>Encrypted vault</h3><p>AES-GCM-256 protects vault contents. The current implementation derives keys with PBKDF2-SHA-256.</p></div>
+    <div class="card"><div class="ic">AES</div><h3>Encrypted vault</h3><p>AES-GCM-256 protects vault contents. The previous implementation derived keys with PBKDF2-SHA-256.</p></div>
     <div class="card"><div class="ic">SAFE</div><h3>Safer storage workflow</h3><p>Atomic saves and local backups reduce the chance that an interrupted write destroys the current vault.</p></div>
   </div>
 </div></section>
 
 <section class="band"><div class="wrap">
-  <h2>What is in the verified v1.0.0 download</h2>
+  <h2>About the previous v1.0.0 release</h2>
+  <p class="sub">These are the features of the earlier, now-withdrawn ColdPass v1.0.0 Windows package —
+    described here for reference, not offered as a current download.</p>
   <ul class="checks" style="max-width:850px">
     <li>Native Windows GUI, self-contained for x64.</li>
     <li>Create, unlock, search and edit a local encrypted password vault.</li>
     <li>English and Russian interface, light/dark presentation and accessibility support.</li>
-    <li>Import paths documented for Google/Chrome CSV and JSON in this release.</li>
+    <li>Import paths documented for Google/Chrome CSV and JSON in that release.</li>
     <li>Offline release manifest and ECDSA P-256 Trust Pack verification.</li>
+    <li class="no">That executable was not Authenticode-signed. A SHA-256 and an offline Trust Pack are
+      integrity evidence — they do not replace Windows publisher reputation.</li>
   </ul>
   <p class="note">Newer development work is not advertised here until it becomes a clean, verified release.</p>
 </div></section>
 
 <section><div class="wrap">
-  <h2>Download temporarily withdrawn</h2>
-  <p>The previous Windows package was retired. A clean package will be published only after a fresh
-    build, vault-data inspection, release-artifact review and Windows signing checks.</p>
+  <h2>ColdPass status</h2>
+  <p>The previous Windows package was retired. ColdPass remains a free product; its download will
+    return only as a fresh, reviewed release.</p>
   <div class="faq">
-    <div class="qa"><h3>Is ColdPass free?</h3><p>Yes. ColdPass remains free, but its Windows download is temporarily withdrawn while a clean release is rebuilt.</p></div>
+    <div class="qa"><h3>Is ColdPass free?</h3><p>Yes. ColdPass is free, but its Windows download is temporarily withdrawn while a clean release is rebuilt.</p></div>
+    <div class="qa"><h3>Can I download it now?</h3><p>No. No ColdPass package is offered for download today. Please check back, or <a href="contact.html">contact support</a> to be notified.</p></div>
     <div class="qa"><h3>Does it send my vault to VERAQIS?</h3><p>No. The application is offline and does not include telemetry or a network-backed account.</p></div>
-    <div class="qa"><h3>Why can Windows display a warning?</h3><p>The v1.0.0 executable is not Authenticode-signed. The SHA-256 and offline Trust Pack provide integrity evidence, but they do not replace Windows publisher reputation.</p></div>
+    <div class="qa"><h3>Why was Windows able to warn about the old build?</h3><p>The v1.0.0 executable was not Authenticode-signed. The SHA-256 and offline Trust Pack provided integrity evidence, but they do not replace Windows publisher reputation.</p></div>
   </div>
 </div></section>
 

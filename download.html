@@ -62,7 +62,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-19",
+      "dateModified": "2026-07-20",
       "inLanguage": "en"
     },
     {
@@ -86,7 +86,7 @@
     {
       "@type": "ItemList",
       "@id": "https://veraqis.tech/download.html#downloads",
-      "name": "VERAQIS beta downloads",
+      "name": "VERAQIS public downloads",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -99,20 +99,7 @@
             "softwareVersion": "1.7.0 release candidate 1",
             "isAccessibleForFree": true,
             "downloadUrl": "https://veraqis.tech/downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk",
-            "description": "Offline Android public-beta APK signed with the permanent VERAQIS Archiver release key."
-          }
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "item": {
-            "@type": "SoftwareApplication",
-            "name": "VERAQIS Recovery CLI for Linux",
-            "applicationCategory": "UtilitiesApplication",
-            "operatingSystem": "Linux x86_64",
-            "softwareVersion": "0.2.1 beta",
-            "isAccessibleForFree": true,
-            "description": "The matching Linux x86_64 MUSL public-beta CLI is being rebuilt. The previous artifact is withheld because it contains the retired entitlement policy."
+            "description": "Offline Android public-beta APK signed with the permanent VERAQIS Archiver release key. This is the only publicly downloadable VERAQIS artifact."
           }
         }
       ]
@@ -190,97 +177,113 @@
 <div class="page-head">
   <div class="wrap">
     <div class="crumb"><a href="index.html">VERAQIS</a> / Download</div>
-    <h1>Controlled beta downloads</h1>
-    <p class="lead">The signed Android Archiver APK is available below with a SHA-256 checksum.
-      Windows Recovery, Linux Recovery and ColdPass packages are withdrawn pending clean rebuilds.</p>
+    <h1>Downloads &amp; release status</h1>
+    <p class="lead">The single source of truth for what you can install today. Only the signed Android
+      Archiver APK is publicly downloadable. Windows Recovery, the Linux CLI and ColdPass are free but
+      their public packages are being rebuilt.</p>
   </div>
 </div>
 
+<!-- 1 · AVAILABLE NOW -->
 <section>
   <div class="wrap">
-    <div class="callout warn" style="margin-top:0">
-      <strong>Windows downloads withdrawn.</strong> The previous Recovery and ColdPass files are no longer
-      distributed. Fresh Windows packages will return only after clean builds, functional tests,
-      release-content inspection and signing review.
-    </div>
-    <div class="callout info">
-      <strong>Public beta: everything is free.</strong> Analysis, structural and semantic recovery,
-      salvage, reconcile, streaming, Shield and experimental exact-copy recovery are available
-      without a license. Offline licensing is being developed for a later release.
-    </div>
-
-    <h2 style="margin-top:30px">Download VERAQIS Archiver</h2>
-    <div class="grid g2" style="margin:18px 0 18px">
-      <div class="card">
-        <span class="tag t-soon">withdrawn</span>
-        <h3 style="margin-top:12px">Windows Recovery</h3>
-        <p>The previous CLI and Desktop installer were retired after release verification failed.</p>
-        <span class="btn ghost" aria-disabled="true">Windows rebuild pending</span>
-      </div>
-      <div class="card">
-        <span class="tag t-soon">beta-free rebuild pending</span>
-        <h3 style="margin-top:12px">Linux CLI</h3>
-        <p><span class="mono">veraqis-linux-x86_64-musl.tar.gz</span><br><span class="mut">Linux x86_64 MUSL · matching build in progress</span></p>
-        <span class="btn ghost" aria-disabled="true">Linux beta-free rebuild pending</span>
+    <h2 style="margin-top:0">Available now</h2>
+    <p class="sub">One publicly downloadable artifact: the signed VERAQIS Archiver for Android.</p>
+    <div class="card">
+      <p style="margin:0 0 10px"><span class="status status--available">Available — release-key signed</span></p>
+      <h3 style="margin:0 0 6px">VERAQIS Archiver <span class="mut" style="font-weight:400">· Android APK</span></h3>
+      <p>Scan an archive before opening it, then list and extract safely into a folder you choose.
+        Android 8.0+ · version <span class="mono">1.7.0-rc1</span> · free · offline · no telemetry.</p>
+      <div class="cta" style="justify-content:flex-start;margin:16px 0 4px">
+        <a class="btn primary" href="downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk" download>Download signed Android APK (.apk)</a>
+        <a class="btn ghost" href="downloads/SHA256SUMS.txt" download>Checksums (SHA-256)</a>
       </div>
     </div>
-    <div class="cta" style="justify-content:flex-start;margin:18px 0 18px">
-      <a class="btn primary" href="downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk" download>Download Android Archiver (.apk)</a>
-      <a class="btn ghost" href="downloads/SHA256SUMS.txt" download>Checksums</a>
-    </div>
-
-    <div class="card" style="padding:6px 6px 2px">
-      <div class="table-scroll">
-        <table>
-          <thead><tr><th>Artifact</th><th>Platform</th><th>Version</th><th>SHA-256</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr>
-              <td class="f">VERAQIS Archiver<br><span class="mut" style="font-size:12px">Android APK</span></td>
-              <td>Android 8.0+</td>
-              <td>1.7.0-rc1</td>
-              <td><span class="mono">46845f28223bf22f...</span></td>
-              <td><span class="tag t-ok">free · release-key signed</span></td>
-            </tr>
-            <tr>
-              <td class="f">VERAQIS Recovery CLI / engine<br><span class="mut" style="font-size:12px">veraqis-linux-x86_64-musl.tar.gz</span></td>
-              <td>Linux x86_64 MUSL</td>
-              <td>0.2.1</td>
-              <td><span class="mono">bfd46ddb6f5efaf6...</span></td>
-              <td><span class="tag t-soon">withheld · rebuild pending</span></td>
-            </tr>
-            <tr>
-              <td class="f">macOS CLI</td>
-              <td>macOS</td>
-              <td>0.2.1</td>
-              <td>-</td>
-              <td><span class="tag t-soon">CI build target</span></td>
-            </tr>
-            <tr>
-              <td class="f">Production signed releases</td>
-              <td>Windows / macOS / Linux</td>
-              <td>-</td>
-              <td>-</td>
-              <td><span class="tag t-soon">coming later</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <h3 style="margin-top:22px;font-size:17px">Verify downloads</h3>
-    <pre><span class="p">sha256sum</span> -c SHA256SUMS.txt
-<span class="p">CertUtil</span> -hashfile VERAQIS-Archiver-Android-1.7.0-rc1.apk SHA256
-</pre>
-
-    <p class="note">Android may ask you to allow installation from your browser or file manager. The APK package name is <code>tech.veraqis.archiver</code>.</p>
+    <p class="note" style="margin-top:12px">Android may ask you to allow installation from your browser
+      or file manager. The APK package name is <code>tech.veraqis.archiver</code>.</p>
   </div>
 </section>
 
+<!-- 2 · TEMPORARILY WITHDRAWN -->
 <section class="band">
   <div class="wrap">
-    <h2>Windows rebuild in progress</h2>
-    <p class="sub">Recovery and ColdPass will return only as fresh, reviewed artifacts. No previous
-      Windows binary should be installed or redistributed.</p>
+    <h2>Temporarily withdrawn / rebuild pending</h2>
+    <p class="sub">These products are free, but no public package is offered right now. Previous
+      Windows and Linux artifacts were withdrawn; clean rebuilds and release review are pending. Do not
+      install or redistribute previously downloaded copies as a current VERAQIS release.</p>
+    <div class="grid g3">
+      <div class="card">
+        <p style="margin:0 0 10px"><span class="status status--withdrawn">Withdrawn</span></p>
+        <h3 style="margin:0 0 6px">VERAQIS Recovery — Windows</h3>
+        <p>The previous CLI and Desktop installer were retired after release verification failed.</p>
+        <p class="note">Previous filenames — not distributed.</p>
+        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="desktop.html">View release status</a></div>
+      </div>
+      <div class="card">
+        <p style="margin:0 0 10px"><span class="status status--pending">Rebuild pending</span></p>
+        <h3 style="margin:0 0 6px">VERAQIS Recovery CLI — Linux</h3>
+        <p>The matching Linux x86_64 MUSL build is being rebuilt from the exact tagged commit.</p>
+        <p class="note">Previous filename — not distributed.</p>
+        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="docs.html">Read CLI documentation</a></div>
+      </div>
+      <div class="card">
+        <p style="margin:0 0 10px"><span class="status status--withdrawn">Withdrawn</span></p>
+        <h3 style="margin:0 0 6px">ColdPass by VERAQIS — Windows</h3>
+        <p>Free password manager. The previous v1.0.0 portable package was withdrawn pending a clean rebuild.</p>
+        <p class="note">Previous package — not distributed.</p>
+        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="coldpass.html">View ColdPass status</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · PLANNED PLATFORMS -->
+<section>
+  <div class="wrap">
+    <h2>Planned platforms</h2>
+    <div class="card table-scroll" style="padding:6px 6px 2px">
+      <table>
+        <thead><tr><th>Target</th><th>Platform</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="f">VERAQIS Recovery CLI</td>
+            <td>macOS</td>
+            <td><span class="status status--unavailable">CI build target — not a release</span></td>
+          </tr>
+          <tr>
+            <td class="f">Production-signed desktop releases</td>
+            <td>Windows / macOS / Linux</td>
+            <td><span class="status status--pending">Planned after signing review</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:12px">A CI build target is not a release. Public packages are
+      published only after clean builds, functional tests, release-content inspection and signing review.</p>
+  </div>
+</section>
+
+<!-- 4 · VERIFY THE ANDROID DOWNLOAD -->
+<section class="band">
+  <div class="wrap">
+    <h2>Verify the Android download</h2>
+    <p class="sub">Check the APK against its published SHA-256 before you install it.</p>
+    <pre><span class="p">sha256sum</span> -c SHA256SUMS.txt
+<span class="p">CertUtil</span> -hashfile VERAQIS-Archiver-Android-1.7.0-rc1.apk SHA256
+</pre>
+    <p class="note">The signed APK is paired with a SHA-256 checksum in
+      <a href="downloads/SHA256SUMS.txt">SHA256SUMS.txt</a>. A checksum proves file integrity; it is not
+      a publisher signature. The Android APK is additionally signed with the permanent VERAQIS Archiver
+      release key.</p>
+  </div>
+</section>
+
+<!-- 5 · WHY PACKAGES MAY BE WITHDRAWN -->
+<section>
+  <div class="wrap">
+    <h2>Why packages may be withdrawn</h2>
+    <p class="sub">Recovery and ColdPass will return only as fresh, reviewed artifacts. Withdrawing a
+      package is a safety step, not a claim that a previous file was harmful.</p>
     <p class="note">Product source and development repositories are not distributed through this website.</p>
   </div>
 </section>

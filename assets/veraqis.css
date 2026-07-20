@@ -117,6 +117,27 @@ tbody tr:hover{background:#f1f6f3}
 .t-beta{color:var(--amber2);border-color:#ebd2ad;background:#fff7e9}
 .t-free{color:var(--good);border-color:#bcd8ca;background:#eef8f2}
 .t-soon{color:var(--dim);border-color:#d8dedc;background:#f4f6f5}
+.t-ok{color:var(--good);border-color:#bcd8ca;background:#eef8f2}
+
+/* release-status badges — every state carries text + a leading glyph, so the
+   meaning never depends on colour alone (accessibility + print + colour-blind). */
+.status{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;
+  font-weight:600;padding:3px 10px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.status::before{font-size:12px;line-height:1}
+.status--available{color:var(--good);border-color:#bcd8ca;background:#eef8f2}
+.status--available::before{content:"\2713"}            /* ✓ */
+.status--pending{color:#8a5a12;border-color:#ebd2ad;background:#fff7e9}
+.status--pending::before{content:"\21BB"}              /* ↻ */
+.status--withdrawn{color:var(--bad);border-color:#e6c3c1;background:#fbeeed}
+.status--withdrawn::before{content:"\26A0"}            /* ⚠ */
+.status--unavailable{color:var(--dim);border-color:#d8dedc;background:#f4f6f5}
+.status--unavailable::before{content:"\2014"}          /* — */
+.status--experimental{color:var(--cyan);border-color:#b8d5d8;background:#eef8f7}
+.status--experimental::before{content:"\2699"}         /* ⚙ */
+
+/* small helper row for hero / page-head status lines */
+.status-line{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.status-line .note{margin:0}
 
 /* code block */
 pre{background:#12201d;color:#eaf4f0;border:1px solid #213a34;border-radius:8px;padding:18px 20px;overflow:auto;font-size:14px;line-height:1.7;max-width:100%}

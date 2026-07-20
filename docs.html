@@ -62,7 +62,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-19",
+      "dateModified": "2026-07-20",
       "inLanguage": "en"
     },
     {
@@ -108,7 +108,7 @@
           "name": "Can the certificate verifier be run separately?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. phx-verify-cert is built from the source workspace as a separate executable. It is not included in the current Windows beta download set."
+            "text": "Yes. phx-verify-cert is built from the source workspace as a separate executable. It is not part of the current public download."
           }
         }
       ],
@@ -134,6 +134,7 @@
         <a href="index.html">Home</a>
         <a href="mobile.html">Mobile</a>
         <a href="desktop.html">Desktop</a>
+        <a href="coldpass.html">ColdPass by VERAQIS</a>
         <a href="reports.html">Reports</a>
         <a href="testing.html">Tests</a>
         <a href="security.html">Security</a>
@@ -155,16 +156,20 @@
 
 <section>
   <div class="wrap">
-    <h2>Get started</h2>
-    <p class="sub">Download the reviewed Windows beta and verify its checksum. Always analyze before recovery.</p>
+    <div class="callout warn" style="margin-top:0">
+      <strong>Public Windows and Linux Recovery packages are currently unavailable.</strong> The commands
+      below document the current <span class="mono">v0.2.1</span> command surface and are intended for
+      reviewed development builds until clean public packages return. The signed
+      <a href="mobile.html">Android Archiver</a> is the only public download today; it focuses on safe
+      inspection and extraction, not the desktop CLI recovery commands.
+    </div>
+    <h2 style="margin-top:26px">Recovery command reference</h2>
+    <p class="sub">Always analyze before recovery. These commands describe the development-build CLI
+      surface; they are not an install path for a package you can download today.</p>
     <div class="terminal">
       <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
-<pre><span class="c"># downloaded Windows beta</span>
-<span class="p">veraqis.exe</span> --version
-<span class="p">veraqis.exe</span> analyze damaged.zip <span class="a">--format</span> json
-
-<span class="c"># audit first — read-only, never changes the source</span>
-<span class="p">veraqis</span> analyze damaged.zip
+<pre><span class="c"># audit first — read-only, never changes the source</span>
+<span class="p">veraqis</span> analyze damaged.zip <span class="a">--format</span> json
 
 <span class="c"># preview the rule-keyed repair plan without writing output</span>
 <span class="p">veraqis</span> recover damaged.zip <span class="a">--plan</span>
@@ -196,7 +201,7 @@
         <tr><td class="f">veraqis protect check &lt;path&gt;</td><td>Read-only check of a protected file or folder manifest.</td></tr>
         <tr><td class="f">veraqis protect repair &lt;path&gt;</td><td>Reconstruct protected content into a separate output path.</td></tr>
         <tr><td class="f">veraqis license info|verify</td><td>Offline license inspection (no network).</td></tr>
-        <tr><td class="f">phx-verify-cert &lt;cert&gt; --against &lt;file&gt;</td><td>Standalone source-built certificate re-verifier; not in the current Windows download set.</td></tr>
+        <tr><td class="f">phx-verify-cert &lt;cert&gt; --against &lt;file&gt;</td><td>Standalone source-built certificate re-verifier; not part of the current public download.</td></tr>
       </tbody>
     </table></div>
     </div>
@@ -309,16 +314,19 @@
 
 <section>
   <div class="wrap">
-    <h2>Verify the release</h2>
-    <p class="sub">Product source and development repositories are private. Verify the public beta artifact before running it.</p>
+    <h2>Installation status</h2>
+    <p class="sub">Product source and development repositories are private. The only public download is
+      the signed Android Archiver; verify it before installing.</p>
     <div class="terminal">
       <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
-<pre><span class="c"># verify downloaded artifacts before running them</span>
-<span class="p">CertUtil</span> -hashfile veraqis.exe SHA256</pre>
+<pre><span class="c"># verify the published Android APK before installing</span>
+<span class="p">CertUtil</span> -hashfile VERAQIS-Archiver-Android-1.7.0-rc1.apk SHA256</pre>
     </div>
-    <div class="callout info" style="margin-top:18px"><strong>Public beta access:</strong> every current
-      Recovery capability is temporarily free. The offline entitlement implementation remains in the
-      source for later development, but no license file is required by the current public-beta build.</div>
+    <div class="callout info" style="margin-top:18px"><strong>Future public installation:</strong> clean
+      Windows and Linux Recovery packages will return only after fresh builds, functional tests,
+      release-content inspection and signing review. Every current Recovery capability is free during
+      public beta; the offline entitlement implementation remains in the source for later development,
+      and no license file is required.</div>
   </div>
 </section>
 
@@ -339,7 +347,7 @@
       <div class="qa">
         <h3>Can the certificate verifier be run separately?</h3>
         <p>Yes. Build <code>phx-verify-cert</code> from the source workspace as a separate executable.
-          It is not included in the current Windows beta download set.</p>
+          It is not part of the current public download.</p>
       </div>
     </div>
   </div>

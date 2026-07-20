@@ -1,10 +1,8 @@
 # VERAQIS static beta site.
 # Canonical origin: https://veraqis.tech.
-# Public pages may be indexed. Download binaries are excluded because their contents are not pages.
+# Public pages may be indexed. The binary download is excluded because its contents are not a page.
 User-agent: *
 Allow: /
-Disallow: /downloads/veraqis.exe
-Disallow: /downloads/veraqis-linux-x86_64-musl.tar.gz
-Disallow: /downloads/veraqis-desktop_0.2.1_x64-setup.exe
+Disallow: /downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk
 
 Sitemap: https://veraqis.tech/sitemap.xml

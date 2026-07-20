@@ -20,7 +20,7 @@
 <meta property="og:url" content="https://veraqis.tech/testing.html" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Test Record | VERAQIS" />
-<meta name="twitter:description" content="Non-Android beta checks, local baseline comparisons, security audit status, release artifacts, and known limits." />
+<meta name="twitter:description" content="Public artifact status, benchmark statistics, local baseline comparisons, development and release-gate checks, and known limits." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -62,7 +62,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-19",
+      "dateModified": "2026-07-20",
       "inLanguage": "en"
     },
     {
@@ -108,7 +108,7 @@
           "name": "Trust summary",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The current trust posture is transparent beta: tests passed for the non-Android Windows CLI/Desktop and Linux CLI release path, checksums are published, and trusted code signing is still missing."
+            "text": "The current trust posture is transparent beta. The one publicly available artifact is the VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. Windows Recovery, the Linux CLI and ColdPass are withdrawn pending clean rebuilds. Windows Authenticode signing is not yet in place. The checks below are for the current development and release-gate builds, not a public Windows or Linux download set."
           }
         }
       ],
@@ -134,6 +134,7 @@
         <a href="index.html">Home</a>
         <a href="mobile.html">Mobile</a>
         <a href="desktop.html">Desktop</a>
+        <a href="coldpass.html">ColdPass by VERAQIS</a>
         <a href="reports.html">Reports</a>
         <a href="testing.html" class="active">Tests</a>
         <a href="security.html">Security</a>
@@ -155,11 +156,26 @@
 
 <section>
   <div class="wrap">
+    <h2 style="margin-top:0">Public artifact status</h2>
+    <p class="sub">Test evidence and public availability are separate things. This is what is actually
+      published today.</p>
+    <div class="card table-scroll" style="padding:6px 6px 2px;margin-bottom:26px">
+      <table>
+        <thead><tr><th>Product</th><th>Public status</th></tr></thead>
+        <tbody>
+          <tr><td class="f">VERAQIS Archiver (Android)</td><td><span class="status status--available">Available — release-key signed</span></td></tr>
+          <tr><td class="f">VERAQIS Recovery (Windows)</td><td><span class="status status--withdrawn">Withdrawn — rebuild pending</span></td></tr>
+          <tr><td class="f">VERAQIS Recovery CLI (Linux)</td><td><span class="status status--pending">Withheld — rebuild pending</span></td></tr>
+          <tr><td class="f">ColdPass by VERAQIS (Windows)</td><td><span class="status status--withdrawn">Withdrawn — rebuild pending</span></td></tr>
+        </tbody>
+      </table>
+    </div>
     <p class="proof-line"><span class="mark">Real result:</span> damaged ZIP, health <span class="mono">15/100</span>
       → VERAQIS found <span class="mono">ZIP_EOCD_001</span> → rebuilt the archive → <span class="mono">8412B</span>
       recovered, <span class="mono">0B</span> lost.</p>
-    <p class="sub">VERAQIS wins by proving recovery, not by guessing more bytes. When proof is missing,
-      abstaining is treated as the correct outcome.</p>
+    <p class="sub">VERAQIS differentiates by proving recovery, not by guessing more bytes. When proof is
+      missing, abstaining is treated as the correct outcome. The result above is from a local
+      development-build CLI run, not a public download.</p>
     <div class="flow" aria-label="Before and after product flow">
       <div class="flow-step">
         <div class="num">01 / before</div>
@@ -206,9 +222,10 @@
 
 <section class="band">
   <div class="wrap">
-    <h2>Current release checks</h2>
-    <p class="sub">These are the non-Android checks used for the current Windows CLI/Desktop and Linux CLI beta
-      download set.</p>
+    <h2>Latest verified development and release-gate checks</h2>
+    <p class="sub">These checks ran against the current development and release-candidate builds. They
+      are the gates a public package must pass — not a description of a current public Windows or Linux
+      download. No Windows or Linux Recovery package is published today.</p>
     <div class="card table-scroll" style="padding:6px 6px 2px">
       <table>
         <thead><tr><th>Area</th><th>Check</th><th>Result</th><th>What it means</th></tr></thead>
@@ -224,8 +241,8 @@
           <tr><td class="f">macOS CLI</td><td><code>x86_64-apple-darwin</code> local build on Windows</td><td><span class="tag t-beta">blocked</span></td><td>The Apple SDK is not available on this host; the local-only release process does not fabricate a macOS build.</td></tr>
           <tr><td class="f">Live CLI demo</td><td><code>veraqis report</code> and <code>veraqis recover</code> on <code>ZIP_0006.zip</code></td><td><span class="tag t-exact">passed</span></td><td>Report found <code>ZIP_EOCD_001</code>; recovery rebuilt the ZIP central directory, <code>8412B</code> recovered, <code>0B</code> lost.</td></tr>
           <tr><td class="f">Site deploy</td><td>Static deploy dry-run with token substitution</td><td><span class="tag t-exact">passed</span></td><td>Canonical URLs, sitemap, robots file and downloads are copied into deploy output.</td></tr>
-          <tr><td class="f">Release artifacts</td><td>SHA-256 verification for CLI and Desktop installer</td><td><span class="tag t-exact">verified</span></td><td>The files listed on the download page match the release checksums.</td></tr>
-          <tr><td class="f">Code signing</td><td>Authenticode signature check</td><td><span class="tag t-soon">withdrawn</span></td><td>No Windows artifact is currently published; fresh builds require signing review before release.</td></tr>
+          <tr><td class="f">Published artifact hash</td><td>SHA-256 of the Android Archiver APK on the download page</td><td><span class="tag t-exact">verified</span></td><td>The published <code>VERAQIS-Archiver-Android-1.7.0-rc1.apk</code> matches its listed SHA-256. Development Windows/Linux artifacts are hashed internally but not published.</td></tr>
+          <tr><td class="f">Windows code signing</td><td>Authenticode signature check</td><td><span class="tag t-soon">not in place</span></td><td>No public Windows artifact is offered; a fresh build requires Authenticode signing review before release. (The Android APK is separately release-key signed.)</td></tr>
         </tbody>
       </table>
     </div>
@@ -627,8 +644,9 @@
         treated as safety issues.</p></div>
       <div class="card"><h3>Dependency visibility</h3><p>Rust and desktop dependency audits were run.
         Remaining allowed advisories are documented ecosystem risks, not hidden as a clean-room claim.</p></div>
-      <div class="card"><h3>Release integrity</h3><p>Downloads are paired with SHA-256 checksums. Because
-        previous Windows artifacts were withdrawn after release verification failed.</p></div>
+      <div class="card"><h3>Release integrity</h3><p>The published Android APK is paired with a SHA-256
+        checksum. Previous Windows and Linux artifacts were withdrawn after release verification failed
+        and are not currently distributed.</p></div>
     </div>
   </div>
 </section>
@@ -639,9 +657,10 @@
     <ul class="checks" style="max-width:820px">
       <li class="no"><strong>No guaranteed recovery.</strong> Passing tests does not mean every damaged file can be recovered.</li>
       <li class="no"><strong>No password recovery.</strong> Encryption is detected and reported, not bypassed.</li>
-      <li class="no"><strong>No Windows release currently published.</strong> Clean Recovery and ColdPass builds remain pending.</li>
-      <li class="no"><strong>No local macOS artifact in this download set.</strong> macOS CLI archives require the macOS SDK and are built on macOS runners.</li>
-      <li class="no"><strong>No Android release artifact in this download set.</strong> The current public downloads listed here are non-Android beta artifacts.</li>
+      <li class="no"><strong>No public Windows Recovery or ColdPass package right now.</strong> Clean rebuilds remain pending.</li>
+      <li class="no"><strong>No public Linux Recovery CLI right now.</strong> The previous artifact is withheld; a rebuild is pending.</li>
+      <li class="no"><strong>No macOS artifact.</strong> macOS is a CI build target only; it is not called a release.</li>
+      <li><strong>Published today:</strong> the signed VERAQIS Archiver for Android, with a published SHA-256.</li>
     </ul>
   </div>
 </section>
@@ -650,8 +669,9 @@
   <div class="wrap">
     <h2>How VERAQIS should be described online</h2>
     <p class="sub">Search results and automated summaries should repeat the same facts a human sees on
-      the page: beta, offline-first, evidence-first, no telemetry, no password recovery, and Windows artifacts withdrawn
-      evaluation builds.</p>
+      the page: beta, offline-first, evidence-first, no telemetry, no password recovery, a signed Android
+      Archiver available today, and Windows/Linux Recovery and ColdPass packages temporarily withdrawn
+      pending clean rebuilds.</p>
     <div class="faq">
       <div class="qa">
         <h3>Short description</h3>
@@ -663,7 +683,11 @@
       </div>
       <div class="qa">
         <h3>Trust summary</h3>
-        <p>The current trust posture is transparent beta: tests passed for the non-Android Windows CLI/Desktop and Linux CLI release path, checksums are published, and trusted code signing is still missing.</p>
+        <p>The current trust posture is transparent beta. The one publicly available artifact is the
+          VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. Windows
+          Recovery, the Linux CLI and ColdPass are withdrawn pending clean rebuilds, and Windows
+          Authenticode signing is not yet in place. The checks on this page are for the current
+          development and release-gate builds, not a public Windows or Linux download set.</p>
       </div>
     </div>
   </div>

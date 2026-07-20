@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>VERAQIS - Honest archive safety and recovery</title>
-<meta name="description" content="VERAQIS is an offline-first beta toolkit for archive safety, damaged-file analysis, proof-gated recovery, verifiable reports, and transparent test records. No telemetry. No password recovery. No invented data." />
+<title>VERAQIS — Analyze damaged archives, recover only what is proven</title>
+<meta name="description" content="VERAQIS analyzes damaged archives and data files (ZIP, DOCX, XLSX, PDF and more), recovers only what can be verified, and clearly marks everything else as unknown. Offline, no uploads, no telemetry. Signed Android beta available now." />
 <link rel="canonical" href="https://veraqis.tech/" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
@@ -62,7 +62,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-19",
+      "dateModified": "2026-07-20",
       "inLanguage": "en"
     },
     {
@@ -151,69 +151,97 @@
 <div class="hero">
   <div class="wrap">
     <div>
-      <div class="kicker">Archive safety and recovery, honestly</div>
-      <h1>Files fail. VERAQIS tells you what is safe, what can be recovered, and what cannot.</h1>
-      <p class="lead">VERAQIS is a beta toolkit for damaged archives and data files. It checks first,
-        recovers only what the surviving bytes can prove, and leaves uncertain regions marked as
-        unknown instead of pretending.</p>
+      <div class="kicker">Offline file safety and recovery</div>
+      <h1>Know what can be trusted before you recover.</h1>
+      <p class="lead">VERAQIS analyzes damaged archives and data files, recovers only what can be
+        verified, and clearly marks everything else as unknown. Your files stay on your device.</p>
       <div class="cta">
-        <a class="btn primary" href="download.html">Download beta</a>
-        <a class="btn ghost" href="testing.html">See the test record</a>
+        <a class="btn primary" href="mobile.html">Download Android beta</a>
+        <a class="btn ghost" href="desktop.html">View Recovery status</a>
       </div>
-      <p class="note" style="margin-top:22px">Signed Android Archiver APK available | Windows Recovery and ColdPass clean rebuilds pending | SHA-256 published</p>
+      <p class="note" style="margin-top:16px"><a href="testing.html">See the test record →</a></p>
+      <div class="status-line">
+        <span class="status status--available">Android APK</span>
+        <p class="note">Available now: signed Android Archiver APK. Windows Recovery, Linux CLI and
+          ColdPass rebuilds are pending.</p>
+      </div>
     </div>
     <figure class="hero-visual">
-      <img src="assets/desktop-protect-2026-07.png" alt="Current VERAQIS Recovery Protect screen with folder protection, checking, repair and signing controls" />
-      <figcaption>Current v0.2.1 Desktop UI. Long folder-protection jobs expose correlated progress and a cooperative cancel action at safe file boundaries.</figcaption>
+      <img src="assets/desktop-protect-2026-07.png" alt="VERAQIS Recovery development build: the Protect screen with folder protection, checking, repair and signing controls" />
+      <figcaption>Development build shown (VERAQIS Recovery v0.2.1). No public Windows package is
+        currently available.</figcaption>
     </figure>
   </div>
 </div>
 
-<!-- BETA BANNER -->
-<section style="padding:26px 0">
+<!-- USE WHEN -->
+<section id="use-when">
   <div class="wrap">
-    <div class="callout info" style="margin:0">
-      <strong>VERAQIS is in public beta.</strong> Evaluation downloads carry checksums, but the Windows
-      artifacts are not yet production-signed. The local release gate blocks publication on an exact-ref Linux
-      gate and an installed Windows capability self-test. Recovery is always best-effort and never
-      guaranteed; the product is designed to abstain when proof is missing.
+    <h2>Use VERAQIS when</h2>
+    <p class="sub">Everyday situations where checking first — and recovering only what is provable —
+      is the safe move.</p>
+    <div class="grid g3">
+      <div class="card"><p>An archive no longer opens.</p></div>
+      <div class="card"><p>A ZIP, DOCX, XLSX, PPTX or another supported container appears damaged.</p></div>
+      <div class="card"><p>You need to inspect an archive safely before extracting it.</p></div>
+      <div class="card"><p>You want to verify a backup before it becomes critical.</p></div>
+      <div class="card"><p>A confidential file must stay offline.</p></div>
+      <div class="card"><p>You need to distinguish verified recovery from uncertain output.</p></div>
     </div>
+    <p class="note" style="margin-top:14px">A listed format is not a promise that every damaged file
+      can be recovered — recovery depends on what surviving bytes can prove.</p>
   </div>
 </section>
 
-<!-- PRODUCTS -->
-<section id="products">
+<!-- PRODUCT FAMILY -->
+<section id="products" class="band">
   <div class="wrap">
-    <h2>What you can use today</h2>
-    <p class="sub">A small product family built around one rule: the report must explain why a result
-      should be trusted.</p>
+    <h2>VERAQIS product family</h2>
+    <p class="sub">One rule across every product: a result is shown as verified only after it is
+      checked. Products are what you install; capabilities and evidence live inside them.</p>
     <div class="grid g4">
-      <a class="card link-card" href="desktop.html">
+      <div class="card">
+        <div class="ic">APK</div><h3>VERAQIS Archiver</h3>
+        <p>Safely inspect and extract archives on Android.</p>
+        <p style="margin:12px 0"><span class="status status--available">Available — signed Android beta</span></p>
+        <div class="cta" style="margin-top:8px"><a class="btn primary" href="mobile.html">Download Android beta</a></div>
+      </div>
+      <div class="card">
         <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
-        <p>Analyze damaged files and use proof-gated recovery for free during public beta, then save a report that separates recovered,
-        unknown and unsupported regions.</p>
-      </a>
-      <a class="card link-card" href="download.html">
+        <p>Analyze damaged files and recover only verifiable data.</p>
+        <p style="margin:12px 0"><span class="status status--withdrawn">Windows rebuild pending</span></p>
+        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="desktop.html">View Recovery status</a></div>
+      </div>
+      <div class="card">
         <div class="ic">CLI</div><h3>VERAQIS Recovery CLI</h3>
-        <p>Run the read-only auditor and recovery workflows from the terminal. Release artifacts are
-        rebuilt from the exact tagged commit and published with SHA-256 checksums.</p>
-      </a>
-      <a class="card link-card" href="reports.html">
-        <div class="ic">REP</div><h3>Reports</h3>
-        <p>Every accepted recovery result carries evidence: byte ranges, rule IDs, verifier type and
-        enough context to review the decision.</p>
-      </a>
-      <a class="card link-card" href="testing.html">
-        <div class="ic">QA</div><h3>Test Record</h3>
-        <p>See exact-ref Linux checks, installed-runtime evidence, mobile device gates, artifact hashes
-        and the remaining release limitation: no trusted Windows code signing yet.</p>
-      </a>
-      <a class="card link-card" href="coldpass.html">
-        <div class="ic">KEY</div><h3>ColdPass by VERAQIS — free</h3>
-        <p>Keep passwords in a local encrypted Windows vault. No account, cloud, telemetry,
-        subscription or purchase path; the verified v1.0.0 portable release is available now.</p>
-      </a>
+        <p>Automate analysis, recovery and reporting.</p>
+        <p style="margin:12px 0"><span class="status status--pending">Linux &amp; Windows not published</span></p>
+        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="docs.html">Read CLI documentation</a></div>
+      </div>
+      <div class="card">
+        <div class="ic">KEY</div><h3>ColdPass by VERAQIS</h3>
+        <p>Keep passwords in a local encrypted Windows vault.</p>
+        <p style="margin:12px 0"><span class="status status--withdrawn">Clean rebuild pending</span></p>
+        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="coldpass.html">View ColdPass status</a></div>
+      </div>
     </div>
+    <p class="note" style="margin-top:16px">Reports, Shield, reconcile, streaming and exact-copy
+      recovery are <strong>capabilities</strong> of VERAQIS Recovery, not separate products. See
+      <a href="reports.html">Reports &amp; Verification</a> and the <a href="testing.html">Test
+      Record</a> for the evidence behind every claim.</p>
+  </div>
+</section>
+
+<!-- HOW VERIFICATION WORKS (PLAIN) -->
+<section id="verification-plain">
+  <div class="wrap">
+    <h2>Verified, or clearly unknown</h2>
+    <p class="sub">The simple version, before any of the technical terms.</p>
+    <p class="quote">Each recovered part is checked before it is marked as verified. Anything that
+      cannot be proven remains clearly labelled as unknown.</p>
+    <p class="note" style="margin-top:16px">Want the detail? See how verification works in
+      <a href="reports.html">Reports &amp; Verification</a>, the measured results in the
+      <a href="testing.html">Test Record</a>, and the commands in the <a href="docs.html">docs</a>.</p>
   </div>
 </section>
 
@@ -344,11 +372,13 @@
 <!-- PRICING TEASER -->
 <section>
   <div class="wrap">
-    <h2>Everything is free during public beta.</h2>
-    <p class="sub">VERAQIS Archiver, ColdPass and every current Recovery capability are available
-      without an account, payment or license file while we collect feedback and measured results.</p>
+    <h2>Free during public beta.</h2>
+    <p class="sub">There is no account, payment or license file. Price and availability are separate:
+      the Android Archiver is free and downloadable today; Windows Recovery, the Linux CLI and ColdPass
+      are free but their public packages are being rebuilt. See <a href="pricing.html">pricing</a> for
+      the full breakdown.</p>
     <div class="cta">
-      <a class="btn primary" href="download.html">Download the free CLI</a>
+      <a class="btn primary" href="mobile.html">Download Android beta</a>
       <a class="btn ghost" href="contact.html">Send feedback</a>
     </div>
   </div>
