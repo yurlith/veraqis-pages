@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Why a ZIP file won't open (and how to fix it) | VERAQIS</title>
+<meta name="description" content="A ZIP that won't open usually has one of five causes. Diagnose which — incomplete download, wrong app, not really a ZIP, encrypted, or truly corrupted — and fix each. Offline." />
+<link rel="canonical" href="https://veraqis.tech/zip-file-wont-open.html" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Why a ZIP file won't open — diagnose the cause first" />
+<meta property="og:description" content="Five common reasons a ZIP won't open, how to tell them apart, and what to do for each. Offline, no uploads." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://veraqis.tech/zip-file-wont-open.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Why a ZIP file won't open — diagnose the cause first" />
+<meta name="twitter:description" content="Five common reasons a ZIP won't open and how to fix each. Offline, no uploads." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/zip-file-wont-open.html#webpage",
+      "url": "https://veraqis.tech/zip-file-wont-open.html",
+      "name": "Why a ZIP file won't open",
+      "description": "How to diagnose the five common reasons a ZIP file won't open, and what to do for each. Offline, no uploads, no telemetry.",
+      "isPartOf": { "@id": "https://veraqis.tech/#website" },
+      "about": { "@id": "https://veraqis.tech/#organization" },
+      "dateModified": "2026-07-22",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/zip-file-wont-open.html#breadcrumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "VERAQIS", "item": "https://veraqis.tech/" },
+        { "@type": "ListItem", "position": 2, "name": "ZIP file won't open", "item": "https://veraqis.tech/zip-file-wont-open.html" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/zip-file-wont-open.html#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I know if my ZIP is actually corrupted or just failed to download?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Compare the file size to the source if you can, or re-download and see if the new copy opens. A truncated download is the most common cause and a fresh, complete copy opens normally. If a known-complete copy still fails, the archive itself is likely damaged."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Windows says the ZIP is invalid but the file is clearly there. Why?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ZIP tools read an index at the end of the file (the central directory). If that index is missing or damaged, the whole archive is reported invalid even though the compressed entries earlier in the file are intact and recoverable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I open a password-protected ZIP without the password?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. An encrypted ZIP cannot be opened or repaired without its password. VERAQIS detects encryption and reports it, but it never bypasses passwords or decrypts content."
+          }
+        }
+      ],
+      "mainEntityOfPage": { "@id": "https://veraqis.tech/zip-file-wont-open.html#webpage" }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="desktop.html">Desktop</a>
+        <a href="reports.html">Reports</a>
+        <a href="testing.html">Tests</a>
+        <a href="security.html">Security</a>
+        <a href="download.html">Download</a>
+        <a href="docs.html">Docs</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">VERAQIS</a> / ZIP file won't open</div>
+    <h1>Why a ZIP file won't open — find the cause before you "repair" anything.</h1>
+    <p class="lead">A ZIP that won't open almost always has one of five specific causes. Most of them
+      aren't corruption at all — and the fix is different for each. Work through them top to bottom;
+      only the last one needs recovery.</p>
+    <div class="cta">
+      <a class="btn primary" href="repair-corrupted-zip.html">It's actually corrupted — what now?</a>
+      <a class="btn ghost" href="mobile.html">Inspect it on Android</a>
+    </div>
+    <p class="note" style="margin-top:14px">Everything below happens on your own device. VERAQIS never
+      uploads your file and has no telemetry.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 style="margin-top:0">The five causes, most common first</h2>
+    <div class="grid g2">
+      <div class="card"><h3>1. The download or copy was incomplete</h3><p>By far the most common cause. The
+        transfer stopped early, so the end of the archive (including its index) never arrived. <strong>Fix:</strong>
+        re-download or re-copy from the original source. A complete copy opens normally.</p></div>
+      <div class="card"><h3>2. Wrong or outdated app</h3><p>Some "ZIP" files use newer features (ZIP64, or
+        BZIP2/LZMA compression) that old built-in extractors don't support. <strong>Fix:</strong> try a
+        current archive tool before assuming the file is broken.</p></div>
+      <div class="card"><h3>3. It isn't really a ZIP</h3><p>A file renamed to <span class="mono">.zip</span>
+        (or a <span class="mono">.docx</span>/<span class="mono">.jar</span>/<span class="mono">.apk</span>,
+        which are ZIPs) may be a different format entirely. <strong>Fix:</strong> check the first bytes — a
+        real ZIP starts with <span class="mono">PK</span>.</p></div>
+      <div class="card"><h3>4. It's encrypted</h3><p>A password-protected ZIP won't open without its
+        password, and no tool can honestly change that. <strong>Fix:</strong> find the password. VERAQIS
+        detects encryption and says so — it never bypasses it.</p></div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>5. The archive is genuinely corrupted</h3><p>If a
+      known-complete, unencrypted, real ZIP still won't open, the bytes themselves are damaged — a missing
+      central directory, a truncated tail, or a failing CRC on one entry. This is the only case where
+      <em>recovery</em> is the right tool, and where a per-file verdict matters.
+      <a href="repair-corrupted-zip.html">See what a corrupted ZIP recovery actually looks like →</a></p></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>How to tell corruption from the other four</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Re-download test</h3><p>If a fresh, complete copy opens, the original was just
+        truncated — not corrupted. Always the first thing to try.</p></div>
+      <div class="card"><h3>Size check</h3><p>If the local file is smaller than the source says, it's
+        incomplete. A blunt "repair" can't invent the missing bytes.</p></div>
+      <div class="card"><h3>Signature check</h3><p>No <span class="mono">PK</span> at the start means it
+        isn't a ZIP — a recovery tool for ZIPs won't help.</p></div>
+    </div>
+    <div class="zero mono">rule | <span class="good">only real, complete, unencrypted ZIPs that still fail need recovery</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>If it really is corrupted: what VERAQIS proves</h2>
+    <div class="compare">
+      <div class="side veraqis">
+        <h3>What it can do</h3>
+        <ul>
+          <li>Rebuild a missing or broken central directory from surviving local headers.</li>
+          <li>Recover complete entries from a truncated archive, up to the cut.</li>
+          <li>Verify each recovered entry against its own CRC-32.</li>
+          <li>Label every entry <strong>Verified</strong>, <strong>Damaged</strong> or <strong>Unknown</strong>.</li>
+        </ul>
+      </div>
+      <div class="side">
+        <h3>What it won't claim</h3>
+        <ul>
+          <li>No guaranteed full recovery — it depends on which bytes survived.</li>
+          <li>No guessing the contents of a damaged entry.</li>
+          <li>No decrypting or password bypass.</li>
+          <li>No "malware-free" claim — it checks structure, not contents.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px">Analysis is free: you see the per-file verdict before deciding
+      anything. VERAQIS Recovery for Windows is a signed store release that's still pending — the
+      <a href="mobile.html">Android Archiver</a> can already inspect ZIPs on-device, and you can
+      <a href="testing.html">review the test record</a>.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Common questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>How do I know if my ZIP is corrupted or just failed to download?</h3><p>Compare
+        the size to the source, or re-download and try the fresh copy. A truncated download is the most
+        common cause and a complete copy opens fine. If a known-complete copy still fails, the archive
+        itself is likely damaged.</p></div>
+      <div class="qa"><h3>Windows says the ZIP is invalid but the file is clearly there. Why?</h3><p>ZIP
+        tools read an index at the end of the file. If that index is missing or damaged, the whole archive
+        is reported invalid even though the entries earlier in the file are intact and recoverable.</p></div>
+      <div class="qa"><h3>Can I open a password-protected ZIP without the password?</h3><p>No. An encrypted
+        ZIP can't be opened or repaired without its password. VERAQIS detects and reports encryption but
+        never bypasses it.</p></div>
+      <div class="qa"><h3>Does any of this upload my file?</h3><p>No. VERAQIS works locally, opens the
+        original read-only, and makes no network calls.</p></div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="repair-corrupted-zip.html">Recover a corrupted ZIP</a>
+      <a class="btn ghost" href="download.html">View release status</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="desktop.html">VERAQIS Recovery</a>
+        <a href="mobile.html">VERAQIS Archiver</a>
+        <a href="coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="testing.html">Test Record</a>
+        <a href="security.html">Security</a>
+        <a href="reports.html">Reports &amp; Verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="about.html">About VERAQIS</a>
+        <a href="contact.html">Contact / Support</a>
+        <a href="pricing.html">Pricing</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+</body>
+</html>

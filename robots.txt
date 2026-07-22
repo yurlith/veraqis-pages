@@ -1,8 +1,74 @@
-# VERAQIS static beta site.
-# Canonical origin: https://veraqis.tech.
-# Public pages may be indexed. The binary download is excluded because its contents are not a page.
+# VERAQIS static site — https://veraqis.tech
+# Public pages may be indexed and cited by search + AI answer engines.
+# Policy rationale: docs/AI_CRAWLER_POLICY.md
+#
+# Default: everything is crawlable except the raw binary (its bytes are not a page).
+# Search/retrieval bots (Google, Bing, OpenAI/Anthropic/Perplexity search) fall under
+# this group and are allowed. AI *training* crawlers are disallowed by default — a
+# separate, owner-gated decision that does NOT affect search/answer-engine visibility.
 User-agent: *
 Allow: /
 Disallow: /downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk
+
+# --- Explicit welcome for search + AI answer-engine (retrieval) crawlers ---
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# --- AI training crawlers: disallowed by default (owner-gated; see AI_CRAWLER_POLICY.md) ---
+# This blocks model-training corpora collection only. It is intentionally separate from,
+# and does not reduce, the search/answer-engine visibility granted above.
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
 
 Sitemap: https://veraqis.tech/sitemap.xml

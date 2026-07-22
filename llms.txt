@@ -1,0 +1,31 @@
+# VERAQIS
+
+> VERAQIS builds offline tools for inspecting damaged archives and recovering only
+> data that can be verified. Processing is local — files are not uploaded. Uncertain
+> or unsupported data is marked clearly and never presented as recovered.
+
+This file is an auxiliary navigation aid for AI answer engines. It is not an indexing
+standard and does not replace robots.txt, sitemap.xml, JSON-LD, or the HTML pages.
+
+## Products
+
+- [VERAQIS Archiver for Android](https://veraqis.tech/mobile.html): free, signed public beta. Scan an archive before extracting; list and extract safe entries into a folder you choose. No telemetry. This is the only publicly downloadable build today.
+- [VERAQIS Recovery for Windows](https://veraqis.tech/desktop.html): damaged-ZIP analysis and verified recovery. Status: store release pending — there is no public Windows binary and no Microsoft Store URL yet. No unsigned .exe is published.
+- [ColdPass](https://veraqis.tech/coldpass.html): archived experimental project. No active development and no download.
+
+## Download and verification
+
+- [Download](https://veraqis.tech/download.html): the signed Android APK plus its SHA-256 checksum.
+- [Test record](https://veraqis.tech/testing.html): how a recovery is proven — published corpus, checksums, structural validity and methodology.
+- [Reports](https://veraqis.tech/reports.html): example recovery reports.
+- [Security architecture](https://veraqis.tech/security.html): threat model, read-only input, sandboxing.
+- [Documentation](https://veraqis.tech/docs.html)
+- [Pricing](https://veraqis.tech/pricing.html): Free Analyzer, and price hypotheses for Personal and Technician (not yet purchasable).
+
+## Important limitations
+
+- VERAQIS does not bypass passwords or decrypt encrypted content.
+- Recovery depends on surviving, verifiable evidence; a supported format does not guarantee recoverability.
+- Unknown or unsupported data stays unknown — it is never labelled "recovered".
+- "Structurally safe to extract" means the archive layout is safe; file contents are not scanned for malware.
+- The products are in beta; availability and prices are stated honestly and may change.

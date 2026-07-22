@@ -1,0 +1,36 @@
+{
+  "name": "VERAQIS",
+  "url": "https://veraqis.tech/",
+  "description": "VERAQIS builds offline tools for inspecting damaged archives and recovering only data that can be verified. Processing is local; uncertain data is never presented as recovered.",
+  "category": ["file recovery", "archive safety", "offline security"],
+  "products": [
+    {
+      "name": "VERAQIS Archiver for Android",
+      "url": "https://veraqis.tech/mobile.html",
+      "platform": "Android",
+      "status": "available",
+      "publiclyDownloadable": true,
+      "download": "https://veraqis.tech/download.html"
+    },
+    {
+      "name": "VERAQIS Recovery for Windows",
+      "url": "https://veraqis.tech/desktop.html",
+      "platform": "Windows",
+      "status": "store_release_pending",
+      "publiclyDownloadable": false,
+      "download": null
+    },
+    {
+      "name": "ColdPass",
+      "url": "https://veraqis.tech/coldpass.html",
+      "status": "archived",
+      "publiclyDownloadable": false,
+      "download": null
+    }
+  ],
+  "support": "mailto:support@veraqis.tech",
+  "security": "https://veraqis.tech/.well-known/security.txt",
+  "documentation": "https://veraqis.tech/docs.html",
+  "sameAs": [],
+  "note": "Auxiliary machine-readable brand descriptor. Not a search standard. Authoritative sources: the HTML pages, JSON-LD, sitemap.xml and robots.txt. sameAs is intentionally empty until official public profiles exist."
+}
