@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>VERAQIS — Analyze damaged archives, recover only what is proven</title>
-<meta name="description" content="VERAQIS analyzes damaged archives and data files (ZIP, DOCX, XLSX, PDF and more), recovers only what can be verified, and clearly marks everything else as unknown. Offline, no uploads, no telemetry. Signed Android beta available now." />
+<meta name="description" content="VERAQIS analyzes damaged ZIP archives and recovers only what can be verified, marking everything else as unknown. Free analysis and preview; pay only to save. Offline, no uploads, no telemetry. Signed Android beta available now." />
 <link rel="canonical" href="https://veraqis.tech/" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
@@ -136,7 +136,6 @@
         <a href="index.html" class="active">Home</a>
         <a href="mobile.html">Mobile</a>
         <a href="desktop.html">Desktop</a>
-        <a href="coldpass.html">ColdPass by VERAQIS</a>
         <a href="reports.html">Reports</a>
         <a href="testing.html">Tests</a>
         <a href="security.html">Security</a>
@@ -162,8 +161,9 @@
       <p class="note" style="margin-top:16px"><a href="testing.html">See the test record →</a></p>
       <div class="status-line">
         <span class="status status--available">Android APK</span>
-        <p class="note">Available now: signed Android Archiver APK. Windows Recovery, Linux CLI and
-          ColdPass rebuilds are pending.</p>
+        <p class="note">Available now: the signed Android Archiver APK — the only public download. VERAQIS
+          Recovery for Windows is not yet publicly downloadable; a signed release (Microsoft Store) is
+          pending. No unsigned Windows build is published.</p>
       </div>
     </div>
     <figure class="hero-visual">
@@ -196,39 +196,35 @@
 <!-- PRODUCT FAMILY -->
 <section id="products" class="band">
   <div class="wrap">
-    <h2>VERAQIS product family</h2>
-    <p class="sub">One rule across every product: a result is shown as verified only after it is
-      checked. Products are what you install; capabilities and evidence live inside them.</p>
-    <div class="grid g4">
+    <h2>Two active products</h2>
+    <p class="sub">One brand, two products. VERAQIS Recovery is the commercial product; VERAQIS Archiver
+      for Android is a free archive-safety tool. One rule across both: a result is shown as verified only
+      after it is checked.</p>
+    <div class="grid g2">
       <div class="card">
-        <div class="ic">APK</div><h3>VERAQIS Archiver</h3>
-        <p>Safely inspect and extract archives on Android.</p>
+        <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
+        <p>Analyze damaged ZIP archives and recover only what can be verified. Free analysis and preview;
+          you pay only to save the recovered result.</p>
+        <p style="margin:12px 0"><span class="status status--experimental">Windows — store release pending</span></p>
+        <div class="cta" style="margin-top:8px">
+          <a class="btn ghost" href="desktop.html">View Recovery status</a>
+          <a class="btn ghost" href="contact.html">Join beta</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ic">APK</div><h3>VERAQIS Archiver for Android</h3>
+        <p>Inspect archives safely before extracting. Read-only scan, damage and path-traversal detection,
+          bomb limits, and transactional extraction — fully offline, no telemetry.</p>
         <p style="margin:12px 0"><span class="status status--available">Available — signed Android beta</span></p>
         <div class="cta" style="margin-top:8px"><a class="btn primary" href="mobile.html">Download Android beta</a></div>
       </div>
-      <div class="card">
-        <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
-        <p>Analyze damaged files and recover only verifiable data.</p>
-        <p style="margin:12px 0"><span class="status status--withdrawn">Windows rebuild pending</span></p>
-        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="desktop.html">View Recovery status</a></div>
-      </div>
-      <div class="card">
-        <div class="ic">CLI</div><h3>VERAQIS Recovery CLI</h3>
-        <p>Automate analysis, recovery and reporting.</p>
-        <p style="margin:12px 0"><span class="status status--pending">Linux &amp; Windows not published</span></p>
-        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="docs.html">Read CLI documentation</a></div>
-      </div>
-      <div class="card">
-        <div class="ic">KEY</div><h3>ColdPass by VERAQIS</h3>
-        <p>Keep passwords in a local encrypted Windows vault.</p>
-        <p style="margin:12px 0"><span class="status status--withdrawn">Clean rebuild pending</span></p>
-        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="coldpass.html">View ColdPass status</a></div>
-      </div>
     </div>
-    <p class="note" style="margin-top:16px">Reports, Shield, reconcile, streaming and exact-copy
-      recovery are <strong>capabilities</strong> of VERAQIS Recovery, not separate products. See
-      <a href="reports.html">Reports &amp; Verification</a> and the <a href="testing.html">Test
-      Record</a> for the evidence behind every claim.</p>
+    <p class="note" style="margin-top:16px">The command-line interface is a Technician capability of
+      VERAQIS Recovery, not a separate product; Reports, Shield, reconcile and exact-copy recovery are
+      likewise <strong>capabilities</strong>. Advanced formats (PDF, SQLite, TAR/GZIP, 7z, RAR and others)
+      are experimental capabilities, not stable commercial promises. See <a href="reports.html">Reports &amp;
+      Verification</a> and the <a href="testing.html">Test Record</a> for the evidence behind every claim.
+      ColdPass is an <a href="coldpass.html">archived experimental project</a>.</p>
   </div>
 </section>
 
@@ -372,11 +368,11 @@
 <!-- PRICING TEASER -->
 <section>
   <div class="wrap">
-    <h2>Free during public beta.</h2>
-    <p class="sub">There is no account, payment or license file. Price and availability are separate:
-      the Android Archiver is free and downloadable today; Windows Recovery, the Linux CLI and ColdPass
-      are free but their public packages are being rebuilt. See <a href="pricing.html">pricing</a> for
-      the full breakdown.</p>
+    <h2>Analysis is free. You pay only to save.</h2>
+    <p class="sub">The VERAQIS Recovery model: free full analysis and an evidence-backed preview, then a
+      paid save of the recovered result. The Android Archiver is free and downloadable today; VERAQIS
+      Recovery for Windows is being prepared for a signed store release. Price and availability are
+      separate — see <a href="pricing.html">pricing</a> for the full breakdown.</p>
     <div class="cta">
       <a class="btn primary" href="mobile.html">Download Android beta</a>
       <a class="btn ghost" href="contact.html">Send feedback</a>
@@ -397,7 +393,7 @@
         <a href="desktop.html">VERAQIS Recovery</a>
         <a href="download.html">VERAQIS Recovery CLI</a>
         <a href="mobile.html">VERAQIS Archiver</a>
-        <a href="coldpass.html">ColdPass by VERAQIS — free password manager</a>
+        <a href="coldpass.html">ColdPass (archived project)</a>
       </div>
       <div>
         <div class="colhead">Trust</div>

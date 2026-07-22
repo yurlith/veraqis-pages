@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Repair a corrupted ZIP file — see what's recoverable first | VERAQIS</title>
+<meta name="description" content="A corrupted ZIP won't open? VERAQIS analyzes the damage locally and shows which files are verified, damaged or unknown before you do anything. Learn when re-downloading is better, when recovery helps, and what VERAQIS can and cannot prove. Offline, no uploads." />
+<link rel="canonical" href="https://veraqis.tech/repair-corrupted-zip.html" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Repair a corrupted ZIP file — see what's recoverable first" />
+<meta property="og:description" content="Analyze a damaged ZIP locally and see which files are verified, damaged or unknown before you act. Offline, no uploads, no telemetry." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://veraqis.tech/repair-corrupted-zip.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Repair a corrupted ZIP file — see what's recoverable first" />
+<meta name="twitter:description" content="Analyze a damaged ZIP locally and see which files are verified, damaged or unknown before you act." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/repair-corrupted-zip.html#webpage",
+      "url": "https://veraqis.tech/repair-corrupted-zip.html",
+      "name": "Repair a corrupted ZIP file",
+      "description": "How VERAQIS analyzes a corrupted ZIP archive and recovers only what can be verified. Offline, no uploads, no telemetry.",
+      "isPartOf": { "@id": "https://veraqis.tech/#website" },
+      "about": { "@id": "https://veraqis.tech/#organization" },
+      "dateModified": "2026-07-21",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/repair-corrupted-zip.html#breadcrumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "VERAQIS", "item": "https://veraqis.tech/" },
+        { "@type": "ListItem", "position": 2, "name": "Repair a corrupted ZIP", "item": "https://veraqis.tech/repair-corrupted-zip.html" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/repair-corrupted-zip.html#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a corrupted ZIP always be repaired?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Whether a ZIP can be repaired depends entirely on which bytes survived. VERAQIS recovers files that surviving bytes can prove (via each entry's CRC and the archive structure) and clearly marks the rest as damaged or unknown. It never guarantees full recovery."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does repairing a ZIP upload my file anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. VERAQIS works locally. The original is opened read-only and never uploaded; there is no telemetry."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is analysis free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Analyzing a damaged ZIP and seeing which files are verified, damaged or unknown is free. Saving the recovered result is the paid step."
+          }
+        }
+      ],
+      "mainEntityOfPage": { "@id": "https://veraqis.tech/repair-corrupted-zip.html#webpage" }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="desktop.html">Desktop</a>
+        <a href="reports.html">Reports</a>
+        <a href="testing.html">Tests</a>
+        <a href="security.html">Security</a>
+        <a href="download.html">Download</a>
+        <a href="docs.html">Docs</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">VERAQIS</a> / Repair a corrupted ZIP</div>
+    <h1>Repair a corrupted ZIP — see what's recoverable first.</h1>
+    <p class="lead">When a ZIP won't open, the honest question isn't "can you repair it?" — it's
+      "which files can actually be proven?" VERAQIS analyzes the damage locally and shows you exactly
+      which entries are verified, damaged or unknown, before you decide to do anything.</p>
+    <div class="cta">
+      <!--VERAQIS_CTA_RECOVERY-->
+      <a class="btn primary" href="desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="contact.html">Join beta</a>
+      <!--/VERAQIS_CTA_RECOVERY-->
+      <a class="btn ghost" href="testing.html">See the test record</a>
+    </div>
+    <p class="note" style="margin-top:14px">Analysis is free and your file never leaves your device.
+      VERAQIS Recovery for Windows is a signed store release that's still pending — <a href="contact.html">join
+      the beta</a>. The <a href="mobile.html">Android Archiver</a> can inspect ZIPs on-device today.</p>
+  </div>
+</div>
+
+<!-- 1 & 2: the error + plain explanation -->
+<section>
+  <div class="wrap">
+    <h2 style="margin-top:0">What "corrupted ZIP" usually means</h2>
+    <p class="sub">A ZIP is a set of compressed <em>entries</em> plus an index (the "central directory")
+      at the very end that lists them. "Corrupted" almost always means one of a few concrete failures —
+      not that the whole file is gone.</p>
+    <div class="grid g2">
+      <div class="card"><h3>Missing / broken central directory</h3><p>The end index is damaged or missing,
+        so tools say the archive is "not a valid ZIP" even though the compressed entries are still there
+        earlier in the file.</p></div>
+      <div class="card"><h3>Truncated / unexpected end of archive</h3><p>The download or copy stopped
+        early. The final entries and the index never arrived, but the complete earlier entries are intact.</p></div>
+      <div class="card"><h3>CRC error on extract</h3><p>An entry's stored CRC-32 doesn't match its bytes.
+        That single entry is damaged; the others may be perfectly fine.</p></div>
+      <div class="card"><h3>Partially readable</h3><p>Some entries open, others fail. A blunt "repair"
+        can hide which is which — the useful answer is a per-file verdict.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 & 4: re-download vs recovery -->
+<section class="band">
+  <div class="wrap">
+    <h2>When to re-download, and when recovery helps</h2>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Re-download is the better fix when…</h3>
+        <ul>
+          <li>the file came from a source you still have access to;</li>
+          <li>it was truncated mid-download (a fresh copy is byte-perfect);</li>
+          <li>you're not sure the local copy is the only one.</li>
+        </ul>
+        <p class="note">A clean original always beats any recovery. VERAQIS will tell you honestly when
+          re-downloading is the smarter move.</p>
+      </div>
+      <div class="card">
+        <h3>Recovery makes sense when…</h3>
+        <ul>
+          <li>the original source is gone (deleted export, old backup, one-time link);</li>
+          <li>a Google Takeout or backup ZIP is damaged and can't be regenerated;</li>
+          <li>you only need the files that can be <em>proven</em> intact, not a guess at the rest.</li>
+        </ul>
+        <p class="note">Recovery is worth it precisely when the file is irreplaceable and you need a
+          truthful account of what survived.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 & 6: what VERAQIS can verify / does not guarantee -->
+<section>
+  <div class="wrap">
+    <h2>What VERAQIS can verify — and what it won't claim</h2>
+    <div class="compare">
+      <div class="side veraqis">
+        <h3>What it can prove</h3>
+        <ul>
+          <li>Rebuild a missing/broken central directory by scanning surviving local headers.</li>
+          <li>Recover complete entries from a truncated archive, up to the truncation point.</li>
+          <li>Verify each recovered entry against its own CRC-32 (independent of the repair).</li>
+          <li>Give every entry a clear verdict: <strong>Verified</strong>, <strong>Damaged</strong> or
+            <strong>Unknown</strong>.</li>
+          <li>Write a signed recovery manifest recording exactly what was and wasn't recovered.</li>
+        </ul>
+      </div>
+      <div class="side">
+        <h3>What it will not do</h3>
+        <ul>
+          <li>It does not guarantee full recovery — that depends on which bytes survived.</li>
+          <li>It does not invent or "guess" the contents of a damaged entry.</li>
+          <li>It does not mark an Unknown entry as recovered.</li>
+          <li>It does not decrypt, recover passwords, or bypass an encrypted archive.</li>
+          <li>It never claims a file is malware-free — it checks structure, not contents.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="zero mono">ship rule | <span class="good">verified means proven — never guessed</span></div>
+  </div>
+</section>
+
+<!-- real result -->
+<section class="band">
+  <div class="wrap">
+    <div class="kicker">Real beta result</div>
+    <p class="proof-line">Damaged ZIP, health <span class="mono">15/100</span> → VERAQIS found
+      <span class="mono">ZIP_EOCD_001</span> → rebuilt the archive → <span class="mono">8412B</span>
+      recovered, <span class="mono">0B</span> lost.</p>
+    <p class="sub">Instead of a blind "repaired!", you get the rule that fired, the bytes recovered, the
+      bytes lost, and a manifest you can check. See the full run in the
+      <a href="testing.html#live-product-run">Test Record</a>.</p>
+  </div>
+</section>
+
+<!-- 9: privacy / offline -->
+<section>
+  <div class="wrap">
+    <h2>Local, read-only, no uploads</h2>
+    <div class="grid g3">
+      <div class="card"><h3>Your file stays put</h3><p>The original is opened read-only and never
+        uploaded. Recovery output goes to a separate location you choose.</p></div>
+      <div class="card"><h3>No telemetry</h3><p>VERAQIS makes no network calls to analyze or recover.
+        Nothing about your archive is sent anywhere.</p></div>
+      <div class="card"><h3>Honest even when it abstains</h3><p>If nothing can be proven, VERAQIS says so
+        and tells you why — that's still a useful, truthful answer.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="band">
+  <div class="wrap">
+    <h2>Corrupted-ZIP questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can a corrupted ZIP always be repaired?</h3><p>No. It depends entirely on which
+        bytes survived. VERAQIS recovers what surviving bytes can prove and clearly marks the rest as
+        damaged or unknown. It never guarantees full recovery.</p></div>
+      <div class="qa"><h3>Does repairing a ZIP upload my file anywhere?</h3><p>No. VERAQIS works locally,
+        opens the original read-only, and has no telemetry.</p></div>
+      <div class="qa"><h3>Is analysis free?</h3><p>Yes. Analyzing a damaged ZIP and seeing which files are
+        verified, damaged or unknown is free. Saving the recovered result is the paid step.</p></div>
+      <div class="qa"><h3>What about a password-protected ZIP?</h3><p>VERAQIS detects encryption and
+        reports it, but it does not decrypt, recover passwords, or bypass protection.</p></div>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="download.html">View release status</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="desktop.html">VERAQIS Recovery</a>
+        <a href="mobile.html">VERAQIS Archiver</a>
+        <a href="coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="testing.html">Test Record</a>
+        <a href="security.html">Security</a>
+        <a href="reports.html">Reports &amp; Verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="about.html">About VERAQIS</a>
+        <a href="contact.html">Contact / Support</a>
+        <a href="pricing.html">Pricing</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+</body>
+</html>

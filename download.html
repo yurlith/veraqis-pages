@@ -113,7 +113,7 @@
           "name": "What can be downloaded today?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The current public-beta download set contains only the release-key-signed VERAQIS Archiver APK. Windows Recovery, Linux Recovery and ColdPass packages are withdrawn pending clean rebuilds."
+            "text": "The current public-beta download set contains only the release-key-signed VERAQIS Archiver APK. VERAQIS Recovery for Windows is not publicly downloadable yet (signed store release pending; no unsigned build is published). The Linux CLI is in private beta and ColdPass is an archived project."
           }
         },
         {
@@ -163,7 +163,6 @@
         <a href="index.html">Home</a>
         <a href="mobile.html">Mobile</a>
         <a href="desktop.html">Desktop</a>
-        <a href="coldpass.html">ColdPass by VERAQIS</a>
         <a href="reports.html">Reports</a>
         <a href="testing.html">Tests</a>
         <a href="security.html">Security</a>
@@ -178,9 +177,10 @@
   <div class="wrap">
     <div class="crumb"><a href="index.html">VERAQIS</a> / Download</div>
     <h1>Downloads &amp; release status</h1>
-    <p class="lead">The single source of truth for what you can install today. Only the signed Android
-      Archiver APK is publicly downloadable. Windows Recovery, the Linux CLI and ColdPass are free but
-      their public packages are being rebuilt.</p>
+    <p class="lead">The single source of truth for what you can install today. The only public download is
+      the signed Android Archiver APK. VERAQIS Recovery for Windows is not publicly downloadable yet — a
+      signed release (Microsoft Store) is pending, and no unsigned Windows build is published. The Linux
+      CLI is in private beta and ColdPass is archived.</p>
   </div>
 </div>
 
@@ -188,7 +188,8 @@
 <section>
   <div class="wrap">
     <h2 style="margin-top:0">Available now</h2>
-    <p class="sub">One publicly downloadable artifact: the signed VERAQIS Archiver for Android.</p>
+    <p class="sub">One public download: the signed VERAQIS Archiver for Android. No Windows binary is
+      offered — VERAQIS deliberately does not publish an unsigned Windows build.</p>
     <div class="card">
       <p style="margin:0 0 10px"><span class="status status--available">Available — release-key signed</span></p>
       <h3 style="margin:0 0 6px">VERAQIS Archiver <span class="mut" style="font-weight:400">· Android APK</span></h3>
@@ -207,31 +208,38 @@
 <!-- 2 · TEMPORARILY WITHDRAWN -->
 <section class="band">
   <div class="wrap">
-    <h2>Temporarily withdrawn / rebuild pending</h2>
-    <p class="sub">These products are free, but no public package is offered right now. Previous
-      Windows and Linux artifacts were withdrawn; clean rebuilds and release review are pending. Do not
-      install or redistribute previously downloaded copies as a current VERAQIS release.</p>
+    <h2>Not publicly downloadable yet</h2>
+    <p class="sub">These are not offered as public downloads right now. VERAQIS Recovery for Windows will
+      return only as a properly signed release; the Linux CLI is in private beta; ColdPass is an archived
+      project. Do not install or redistribute previously downloaded copies as a current VERAQIS release.</p>
     <div class="grid g3">
       <div class="card">
-        <p style="margin:0 0 10px"><span class="status status--withdrawn">Withdrawn</span></p>
-        <h3 style="margin:0 0 6px">VERAQIS Recovery — Windows</h3>
-        <p>The previous CLI and Desktop installer were retired after release verification failed.</p>
-        <p class="note">Previous filenames — not distributed.</p>
-        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="desktop.html">View release status</a></div>
+        <p style="margin:0 0 10px"><span class="status status--experimental">Store release pending</span></p>
+        <h3 style="margin:0 0 6px">VERAQIS Recovery — Windows (Desktop + CLI)</h3>
+        <p>The commercial recovery product. It will be published only as a signed package (Microsoft
+          Store or an approved signing workflow) — never as an unsigned download. Analysis will be free;
+          you pay only to save the recovered result.</p>
+        <p class="note">No public Windows binary is distributed today.</p>
+        <div class="cta" style="margin-top:8px">
+          <a class="btn ghost" href="desktop.html">View release status</a>
+          <a class="btn ghost" href="contact.html">Join beta</a>
+        </div>
       </div>
       <div class="card">
-        <p style="margin:0 0 10px"><span class="status status--pending">Rebuild pending</span></p>
+        <p style="margin:0 0 10px"><span class="status status--pending">Private beta</span></p>
         <h3 style="margin:0 0 6px">VERAQIS Recovery CLI — Linux</h3>
-        <p>The matching Linux x86_64 MUSL build is being rebuilt from the exact tagged commit.</p>
-        <p class="note">Previous filename — not distributed.</p>
+        <p>The Linux x86_64 build is a Technician-tier capability, rebuilt from the exact tagged commit
+          and kept in private beta until a signed release process is ready.</p>
+        <p class="note">Not publicly distributed.</p>
         <div class="cta" style="margin-top:8px"><a class="btn ghost" href="docs.html">Read CLI documentation</a></div>
       </div>
       <div class="card">
-        <p style="margin:0 0 10px"><span class="status status--withdrawn">Withdrawn</span></p>
-        <h3 style="margin:0 0 6px">ColdPass by VERAQIS — Windows</h3>
-        <p>Free password manager. The previous v1.0.0 portable package was withdrawn pending a clean rebuild.</p>
-        <p class="note">Previous package — not distributed.</p>
-        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="coldpass.html">View ColdPass status</a></div>
+        <p style="margin:0 0 10px"><span class="status status--withdrawn">Archived</span></p>
+        <h3 style="margin:0 0 6px">ColdPass</h3>
+        <p>Archived experimental project. No active public release or development; source and history are
+          preserved.</p>
+        <p class="note">No download.</p>
+        <div class="cta" style="margin-top:8px"><a class="btn ghost" href="coldpass.html">View archived project</a></div>
       </div>
     </div>
   </div>
@@ -281,9 +289,10 @@
 <!-- 5 · WHY PACKAGES MAY BE WITHDRAWN -->
 <section>
   <div class="wrap">
-    <h2>Why packages may be withdrawn</h2>
-    <p class="sub">Recovery and ColdPass will return only as fresh, reviewed artifacts. Withdrawing a
-      package is a safety step, not a claim that a previous file was harmful.</p>
+    <h2>Why packages may be withheld</h2>
+    <p class="sub">VERAQIS Recovery will return only as a fresh, signed, reviewed artifact; ColdPass is
+      archived and will not return as a new binary. Withholding a package is a safety step, not a claim
+      that a previous file was harmful.</p>
     <p class="note">Product source and development repositories are not distributed through this website.</p>
   </div>
 </section>
@@ -296,7 +305,9 @@
       <div class="qa">
         <h3>What can be downloaded today?</h3>
         <p>The current public-beta download set contains only the release-key-signed VERAQIS Archiver
-          APK. Windows Recovery, Linux Recovery and ColdPass packages are withdrawn pending clean rebuilds.</p>
+          APK. VERAQIS Recovery for Windows is not publicly downloadable yet (a signed store release is
+          pending; no unsigned build is published). The Linux CLI is in private beta and ColdPass is an
+          archived project.</p>
       </div>
       <div class="qa">
         <h3>Are these production-signed releases?</h3>
@@ -338,7 +349,7 @@
         <a href="desktop.html">VERAQIS Recovery</a>
         <a href="download.html">VERAQIS Recovery CLI</a>
         <a href="mobile.html">VERAQIS Archiver</a>
-        <a href="coldpass.html">ColdPass by VERAQIS — free password manager</a>
+        <a href="coldpass.html">ColdPass (archived project)</a>
       </div>
       <div>
         <div class="colhead">Trust</div>

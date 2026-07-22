@@ -91,7 +91,7 @@
       "operatingSystem": "Windows, Linux",
       "softwareVersion": "0.2.1 development build",
       "isAccessibleForFree": true,
-      "description": "VERAQIS Recovery analyzes damaged files and recovers only verifiable data. The public Windows and Linux packages are temporarily unavailable pending clean rebuilds; every capability is free during public beta.",
+      "description": "VERAQIS Recovery analyzes damaged ZIP archives and recovers only verifiable data. Full analysis and preview are free; saving the recovered result is the paid step. Not publicly downloadable yet — a signed Windows (Microsoft Store) release is pending; no unsigned build is published.",
       "publisher": {
         "@id": "https://veraqis.tech/#organization"
       }
@@ -147,7 +147,6 @@
         <a href="index.html">Home</a>
         <a href="mobile.html">Mobile</a>
         <a href="desktop.html" class="active">Desktop</a>
-        <a href="coldpass.html">ColdPass by VERAQIS</a>
         <a href="reports.html">Reports</a>
         <a href="testing.html">Tests</a>
         <a href="security.html">Security</a>
@@ -161,17 +160,26 @@
 <div class="page-head">
   <div class="wrap">
     <div class="crumb"><a href="index.html">VERAQIS</a> / Products / Desktop</div>
-    <h1>VERAQIS Recovery</h1>
-    <p class="lead">Analyze and diagnose damaged archives and data files, then recover what the
-      surviving bytes can prove — with a verifiable report of exactly what was and wasn't recovered.</p>
+    <h1>See what can actually be recovered before you pay.</h1>
+    <p class="lead">VERAQIS Recovery analyzes damaged ZIP archives locally, shows which files are
+      verified, damaged or unknown, and lets you unlock saving only after you see the result. Your files
+      stay on your device — nothing is uploaded.</p>
     <div class="status-line">
-      <span class="status status--withdrawn">Public Windows package temporarily unavailable</span>
-      <p class="note">Clean rebuild pending — no desktop or CLI package is offered for download today.</p>
+      <span class="status status--experimental">Windows — signed store release pending</span>
+      <p class="note">Not publicly downloadable yet. VERAQIS Recovery for Windows will ship only as a
+        properly signed package (Microsoft Store) — never as an unsigned download.</p>
     </div>
-    <p class="note" style="margin-top:14px"><strong>Free during public beta.</strong> Analysis,
-      recovery planning, structural and semantic recovery, Shield and verification are enabled without
-      an account or license file. The capabilities below are implemented in the current development
-      build; they are not a package you can download yet.</p>
+    <div class="cta" style="margin-top:14px">
+      <a class="btn ghost" href="download.html">View release status</a>
+      <a class="btn ghost" href="testing.html">See the test record</a>
+      <a class="btn ghost" href="contact.html">Join beta</a>
+    </div>
+    <p class="note" style="margin-top:14px"><strong>First commercial scenario:</strong> analyze damaged
+      ZIP archives — missing/corrupt central directory, truncation, unexpected end of archive, CRC errors,
+      damaged backups and Google Takeout exports — and recover only what can be verified. Full analysis
+      and preview are free; you pay only to save the recovered result. Advanced formats below (Office is
+      beta; PDF, SQLite, TAR/GZIP, 7z, RAR and others are experimental) are engine capabilities, not the
+      ZIP-first commercial promise.</p>
   </div>
 </div>
 
