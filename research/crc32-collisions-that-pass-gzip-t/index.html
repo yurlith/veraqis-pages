@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CRC-32 collisions that pass gzip -t and unzip -t | VERAQIS</title>
+<meta name="description" content="We built files with different contents and identical CRC-32 that pass gzip -t and unzip -t. What a passing checksum proves, what it cannot, and what closes the gap." />
+<link rel="canonical" href="https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="CRC-32 collisions that pass gzip -t and unzip -t" />
+<meta property="og:description" content="Different bytes, identical CRC-32, and the native tools report the archive as fine. Measured across five formats — and what evidence actually closes the gap." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/" />
+<meta property="article:published_time" content="2026-07-05" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CRC-32 collisions that pass gzip -t and unzip -t" />
+<meta name="twitter:description" content="Different bytes, identical CRC-32, and the native tools report the archive as fine. Measured across five formats — and what evidence actually closes the gap." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/#article",
+      "url": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/",
+      "headline": "A passing CRC-32 does not mean the file is right",
+      "name": "CRC-32 collisions that pass gzip -t and unzip -t | VERAQIS",
+      "description": "We built files with different contents and identical CRC-32 that pass gzip -t and unzip -t. What a passing checksum proves, what it cannot, and what closes the gap.",
+      "datePublished": "2026-07-05",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "CRC-32"
+        },
+        {
+          "@type": "Thing",
+          "name": "file integrity"
+        },
+        {
+          "@type": "Thing",
+          "name": "checksum collision"
+        },
+        {
+          "@type": "Thing",
+          "name": "digital forensics"
+        },
+        {
+          "@type": "Thing",
+          "name": "tamper evidence"
+        }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/#dataset",
+      "name": "CRC-class forgery matrix (EXP-ADV-PCC)",
+      "description": "Per-format results for chosen-CRC forgeries across ZIP, GZIP, BZIP2, XZ and PNG, including native-tool verdicts, dual-verifier outcomes at accidental and forensic grade, and seven certificate-side forgery cases.",
+      "url": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "isAccessibleForFree": true,
+      "datePublished": "2026-07-05",
+      "variableMeasured": [
+        "accidental_verdict",
+        "forensic_verdict",
+        "native_check_passes",
+        "crc32"
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/data.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is CRC-32 enough to verify a file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For accidental damage, yes — a matching CRC-32 gives roughly 32 bits of evidence that the bytes are unchanged, and a random corruption has about a 1-in-4-billion chance of passing. Against anyone who can choose the bytes, no: CRC-32 is linear, so hitting any target value is a direct construction. We built such collisions for five formats and they pass gzip -t and unzip -t."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can two different files have the same CRC-32?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, and not just by accident. Because CRC-32 is linear over GF(2), four bytes of freedom anywhere in a message are enough to force any chosen value. In this experiment each forged file differs from the original yet reports the identical stored CRC-32."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should be used instead of CRC-32?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nothing needs to replace it for its actual job — detecting accidental corruption cheaply. What is needed in addition, when the question is authenticity rather than corruption, is a cryptographic witness created before the damage: a SHA-256 manifest, a signed parity sidecar, an acquisition hash, or a same-owner source copy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this mean recovery results cannot be trusted?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It means the grade of the claim has to match the grade of the evidence. A CRC-verified recovery is trustworthy as an answer to \"was this damaged by accident and did we restore it\" and not as an answer to \"could someone have substituted this\". VERAQIS labels which question a result answers, and defaults to the weaker reading when nothing says otherwise."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why publish an attack on your own verification?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the limit exists whether or not we describe it, and a recovery tool that will not state the boundary of its own evidence is not one worth trusting. The experiment also drove a real fix: a verifier soundness rule requiring a recovered region to be covered by the checks that claim it."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Research",
+          "item": "https://veraqis.tech/research/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "CRC-32 collisions",
+          "item": "https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/" class="active">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/research/">Research</a></p>
+    <p class="kicker">Experiment EXP-ADV-PCC</p>
+    <h1>A passing CRC-32 does not mean the file is right</h1>
+    <p class="lead">Every archive format leans on CRC-32, and almost every recovery tool treats a passing CRC as "the file is correct". We built the counterexample: real archives whose contents differ from the original, whose CRC-32 matches anyway, and which <code>gzip -t</code> and <code>unzip -t</code> declare healthy.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-05">5 July 2026</time></span> · <span class="mono">Updated <time datetime="2026-07-28">28 July 2026</time></span> · <span class="mono">EXP-ADV-PCC</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="why">Why this matters for recovery</h2>
+      <p>When a recovery tool repairs a damaged archive and the CRC-32 of the result matches the value stored in the header, the tool declares success. That inference is correct for <strong>accidental</strong> damage — a random bit flip has roughly a 1-in-4-billion chance of landing on a matching CRC, so a match is strong evidence that the bytes are the original ones.</p>
+      <p>The inference collapses the moment anyone <em>chose</em> the bytes. CRC-32 is a linear function over GF(2). Given any target value, four bytes of freedom anywhere in the message are enough to hit it exactly. Not "with effort" — by direct construction, instantly.</p>
+      <p>We are not the first to say CRC-32 is not a cryptographic hash. What we could not find anywhere was the demonstration that matters in practice: a <strong>real archive</strong>, forged, that the <strong>real tools</strong> pronounce healthy. So we built it, for five formats.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="native">Result 1 — the native tools accept the forgery</h2>
+      <p>For each container we produced a file <code>F</code> whose content differs from the true content <code>G</code>, with <code>CRC-32(F) == CRC-32(G)</code>, and ran the format's own integrity check.</p>
+      <div class="table-scroll"><table><thead><tr><th>format</th><th>container</th><th>native check</th><th>passes?</th><th>forged ≠ truth</th><th>CRC field</th></tr></thead><tbody><tr><td>GZIP</td><td>real gzip, stored block</td><td><code>gzip -t</code></td><td><strong>YES</strong></td><td>True</td><td>trailer CRC-32 = <code>0x2a4d3027</code></td></tr><tr><td>ZIP</td><td>real zip, stored member</td><td><code>unzip -t</code></td><td><strong>YES</strong></td><td>True</td><td>member CRC-32 = <code>0x3165c0e5</code></td></tr><tr><td>PNG</td><td>PNG tEXt chunk</td><td>chunk CRC (CRC over type‖data)</td><td><strong>YES</strong></td><td>True</td><td>chunk CRC-32 = <code>0x651d89af</code></td></tr><tr><td>BZIP2</td><td>—</td><td>not built</td><td>—</td><td>—</td><td>LZ-coupled: the block CRC covers decompressed data behind the LZ stream</td></tr><tr><td>XZ</td><td>—</td><td>not built</td><td>—</td><td>—</td><td>LZ-coupled: same reason</td></tr></tbody></table></div><p class="note">BZIP2 and XZ container-level forgeries were <strong>not</strong> built, and we say so rather than implying coverage we do not have: their block CRC sits behind an LZ-coupled stream, so a decodable container-level forge is out of reach. The region-level test below covers exactly the CRC check our per-block salvage relies on, and it does discriminate.</p>
+      <div class="claim" id="claim-native-accept"><p class="claim-text">We constructed archives whose content differs from the original but whose CRC-32 matches, and <code>gzip -t</code> and <code>unzip -t</code> both report them as intact. A passing native integrity check is therefore evidence about accidental damage only — it is not evidence that the bytes are the ones that were originally stored.</p><p class="claim-src">EXP-ADV-PCC, Attack Family 1 (container-level) · seed 20260705 · gzip trailer CRC <code>0x2a4d3027</code>, zip member CRC <code>0x3165c0e5</code>, PNG chunk CRC <code>0x651d89af</code> · VERAQIS 0.2.1</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="threat-models">Result 2 — the same evidence, judged under two threat models</h2>
+      <p>The interesting part is not that CRC-32 is forgeable. It is that the <em>same certificate</em> must be accepted for one purpose and rejected for another — and that a verifier can be built to make that distinction explicit instead of leaving it to the reader.</p>
+      <p>We ran every forged and honest candidate through <strong>two independent verifiers</strong>: the shipped Rust re-verifier, and a clean-room Python implementation that shares no code with it. Each was run at accidental grade and at forensic grade.</p>
+      <div class="table-scroll"><table><thead><tr><th>format</th><th>case</th><th>accidental grade</th><th>forensic grade</th><th>independent witness</th></tr></thead><tbody><tr><td>ZIP</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>ZIP</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>GZIP</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>GZIP</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>BZIP2</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>BZIP2</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>XZ</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>XZ</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>PNG</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>PNG</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr></tbody></table></div><p class="note">Both verifiers agreed on every row. Ten cases, five formats. The forged CRC values were, in order: <code>0xbdb7c46c</code> (zip), <code>0x14cc3e21</code> (gzip), <code>0x1f9d7361</code> (bzip2), <code>0x1977ed13</code> (xz), <code>0xfbb4d1c7</code> (png) — each identical to the stored expected CRC of the true content.</p>
+      <div class="claim" id="claim-two-grades"><p class="claim-text">Every forged chosen-CRC candidate was accepted at accidental grade and rejected at forensic grade, in all five formats and by both independent verifiers. The discriminator is not a better checksum — it is whether an independent cryptographic witness, created before the repair, confirms the result.</p><p class="claim-src">EXP-ADV-PCC, Attack Family 1 · shipped Rust <code>phx-verify-cert</code> + clean-room Python verifier (no shared code) · seed 20260705 · VERAQIS 0.2.1</p></div>
+      <p>This is why VERAQIS carries an explicit threat model on any claim whose meaning changes between the two, and why an unlabelled result defaults to the weaker reading. A result that does not say which question it answers must not be read as answering the harder one.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cert-forgery">Result 3 — forging the proof itself</h2>
+      <p>If a recovery result ships with a certificate, the certificate becomes the next thing worth attacking. We wrote seven forgeries against our own certificate format and required <strong>both</strong> verifiers to reject <strong>all</strong> of them.</p>
+      <div class="table-scroll"><table><thead><tr><th>forgery</th><th>what it tries</th><th>Rust</th><th>Python</th></tr></thead><tbody><tr><td>region_overlay_check_divergence</td><td>a passing check that covers a different region than the one claimed</td><td>REJECT</td><td>REJECT</td></tr><tr><td>region_extension</td><td>stretch the claimed region past what the check covers</td><td>REJECT</td><td>REJECT</td></tr><tr><td>overlapping_region</td><td>double-count one check across overlapping claims</td><td>REJECT</td><td>REJECT</td></tr><tr><td>tautology_smuggling</td><td>present the checksum that was solved against as independent evidence</td><td>REJECT</td><td>REJECT</td></tr><tr><td>wrong_artifact</td><td>attach a valid certificate to a different file</td><td>REJECT</td><td>REJECT</td></tr><tr><td>recovered_substitution</td><td>swap the recovered bytes after the certificate was issued</td><td>REJECT</td><td>REJECT</td></tr><tr><td>forged_negative_false_loss</td><td>certify as permanently lost a region that was recoverable</td><td>REJECT</td><td>REJECT</td></tr></tbody></table></div><p class="note">7 / 7 rejected by both verifiers. Each case has a fixed certificate hash so the result is re-checkable, e.g. <code>tautology_smuggling</code> → <code>4bc59d448fac0377</code>.</p>
+      <p>The last row is the one people rarely think about. Over-claiming recovery is the obvious dishonesty; <strong>over-claiming loss</strong> is the other one, and it has real consequences when an insurer or a court is reading the report. Our reference emitter cross-checks every surviving surface before it certifies anything as lost — a naive single-surface emitter would have manufactured a false loss for a region the ground truth knows was recoverable.</p>
+      <div class="claim" id="claim-false-loss"><p class="claim-text">Adversarial false-loss bytes measured 0. A negative certificate from VERAQIS states that a region is not uniquely recoverable from the surviving redundancy as found — a scoped claim about the evidence, never an absolute claim that the data is intrinsically gone.</p><p class="claim-src">EXP-ADV-PCC, Attack Family 3 (MOAT_AUDIT A4) · required 0, measured 0 · seed 20260705</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="takeaway">What to take from this</h2>
+      <div class="grid g3"><div class="card"><h3>CRC-32 is genuinely useful</h3><p>For accidental damage it is strong, cheap evidence — about 32 bits of it. Our own recovery gates depend on it and that dependency is sound.</p></div><div class="card"><h3>It is not identity</h3><p>A passing CRC-32 never establishes that bytes are the original ones against anyone who could choose them. Neither does a parser opening the file, nor metadata regenerated from the repaired file itself.</p></div><div class="card"><h3>The fix is a prior witness</h3><p>A SHA-256 manifest, a signed parity sidecar, an acquisition hash, or a same-owner source copy — anything cryptographic that existed before the repair.</p></div></div>
+      <div class="callout warn"><strong>If you evaluate recovery software:</strong> ask what it verified against. "It opens now", "the CRC matches", "the tool reported success" and "the metadata is consistent" are all satisfiable by a wrong file. The only answers that survive an adversary are ones referring to evidence created <em>before</em> the damage.</div>
+      <h2 id="limits">Limits of this experiment</h2>
+      <ul><li>BZIP2 and XZ container-level forgeries were <strong>not</strong> built (LZ-coupled stream). The region-level CRC test that our per-block salvage actually relies on was tested, and discriminates.</li><li>This is a statement about CRC-class evidence, not about our accidental-damage benchmark. That benchmark is a non-adversarial ground-truth measurement by pre-registration; the two threat models are kept separate precisely so neither is read into the other.</li><li>The rejection result is scoped to the patched reference verifiers actually measured here. An older verifier build lacking the positive-coverage rule can accept the overlay/check-divergence forgery — which is why the fix and its provenance are recorded rather than glossed over.</li></ul>
+      <h2 id="reproduce">Reproduce it</h2>
+      <div class="terminal"><pre># re-check any VERAQIS certificate without trusting VERAQIS:
+phx-verify-cert result.pcc.json --against damaged.zip --recovered recovered.bin
+
+# the standalone verifier shares no code with the solver — a CI fitness
+# test enforces that it has zero dependency on the recovery crate.</pre></div>
+      <ul class="source-list"><li><a href="/research/crc32-collisions-that-pass-gzip-t/data.json">data.json</a> — the full forgery matrix</li><li><a href="/reference/evidence-model/">The evidence model</a> — how evidence is counted, in bits</li><li><a href="/reports.html">Reports &amp; verification</a> — what a certificate contains</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about checksums and integrity</h2>
+    <div class="faq">
+      <div class="qa"><h3>Is CRC-32 enough to verify a file?</h3><p>For accidental damage, yes — a matching CRC-32 gives roughly 32 bits of evidence that the bytes are unchanged, and a random corruption has about a 1-in-4-billion chance of passing. Against anyone who can choose the bytes, no: CRC-32 is linear, so hitting any target value is a direct construction. We built such collisions for five formats and they pass gzip -t and unzip -t.</p></div>
+      <div class="qa"><h3>Can two different files have the same CRC-32?</h3><p>Yes, and not just by accident. Because CRC-32 is linear over GF(2), four bytes of freedom anywhere in a message are enough to force any chosen value. In this experiment each forged file differs from the original yet reports the identical stored CRC-32.</p></div>
+      <div class="qa"><h3>What should be used instead of CRC-32?</h3><p>Nothing needs to replace it for its actual job — detecting accidental corruption cheaply. What is needed in addition, when the question is authenticity rather than corruption, is a cryptographic witness created before the damage: a SHA-256 manifest, a signed parity sidecar, an acquisition hash, or a same-owner source copy.</p></div>
+      <div class="qa"><h3>Does this mean recovery results cannot be trusted?</h3><p>It means the grade of the claim has to match the grade of the evidence. A CRC-verified recovery is trustworthy as an answer to "was this damaged by accident and did we restore it" and not as an answer to "could someone have substituted this". VERAQIS labels which question a result answers, and defaults to the weaker reading when nothing says otherwise.</p></div>
+      <div class="qa"><h3>Why publish an attack on your own verification?</h3><p>Because the limit exists whether or not we describe it, and a recovery tool that will not state the boundary of its own evidence is not one worth trusting. The experiment also drove a real fix: a verifier soundness rule requiring a recovered region to be covered by the checks that claim it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). A passing CRC-32 does not mean the file is right.
+VERAQIS Research. https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/
+Engine: VERAQIS 0.2.1 · Measured: 5 July 2026 · Experiment: EXP-ADV-PCC</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/reference/evidence-model/"><h3>The evidence model</h3><p>Two axes, counted in bits, with a rule against counting a checksum you solved against.</p></a>
+      <a class="card link-card" href="/research/7z-solid-archive-bit-flip/"><h3>Bit flip in a solid 7z archive</h3><p>A recovery that leans on exactly this CRC evidence — and what that buys.</p></a>
+      <a class="card link-card" href="/research/joint-verifier-surface-is-empty/"><h3>Why we cancelled a recovery engine</h3><p>What happens when formats carry only one independent checksum per region.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>See what your file can actually prove</h2>
+    <p class="sub">VERAQIS reports each entry as verified, damaged or unknown, with the rule ID and the evidence behind the verdict — locally, read-only, with nothing uploaded.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

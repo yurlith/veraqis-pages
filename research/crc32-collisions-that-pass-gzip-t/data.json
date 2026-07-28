@@ -1,0 +1,48 @@
+{
+  "experiment": "EXP-ADV-PCC",
+  "engine_version": "VERAQIS 0.2.1",
+  "seed": 20260705,
+  "measured": "2026-07-05",
+  "source_document": "PCC_ADVERSARIAL_BENCHMARKS.md",
+  "license": "CC-BY-4.0",
+  "verifiers": [
+    { "name": "phx-verify-cert", "language": "Rust", "note": "shipped standalone re-verifier; shares no code with the solver" },
+    { "name": "clean-room verifier", "language": "Python", "note": "independent implementation" }
+  ],
+  "family_1_region_level": [
+    { "format": "zip",   "case": "forged_chosen_crc", "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "REJECT", "witness": "contradicts/absent", "crc32": "0xbdb7c46c" },
+    { "format": "zip",   "case": "honest_witnessed",  "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "ACCEPT", "witness": "confirms",           "crc32": "0xbdb7c46c" },
+    { "format": "gzip",  "case": "forged_chosen_crc", "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "REJECT", "witness": "contradicts/absent", "crc32": "0x14cc3e21" },
+    { "format": "gzip",  "case": "honest_witnessed",  "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "ACCEPT", "witness": "confirms",           "crc32": "0x14cc3e21" },
+    { "format": "bzip2", "case": "forged_chosen_crc", "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "REJECT", "witness": "contradicts/absent", "crc32": "0x1f9d7361" },
+    { "format": "bzip2", "case": "honest_witnessed",  "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "ACCEPT", "witness": "confirms",           "crc32": "0x1f9d7361" },
+    { "format": "xz",    "case": "forged_chosen_crc", "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "REJECT", "witness": "contradicts/absent", "crc32": "0x1977ed13" },
+    { "format": "xz",    "case": "honest_witnessed",  "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "ACCEPT", "witness": "confirms",           "crc32": "0x1977ed13" },
+    { "format": "png",   "case": "forged_chosen_crc", "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "REJECT", "witness": "contradicts/absent", "crc32": "0xfbb4d1c7" },
+    { "format": "png",   "case": "honest_witnessed",  "accidental": "ACCEPT", "rust": "ACCEPT", "python": "ACCEPT", "forensic": "ACCEPT", "witness": "confirms",           "crc32": "0xfbb4d1c7" }
+  ],
+  "family_1_container_level": [
+    { "format": "gzip", "container": "real gzip, stored block", "native_check": "gzip -t",  "passes": true, "forged_differs_from_truth": true, "crc_field": "trailer CRC-32 = 0x2a4d3027" },
+    { "format": "zip",  "container": "real zip, stored member", "native_check": "unzip -t", "passes": true, "forged_differs_from_truth": true, "crc_field": "member CRC-32 = 0x3165c0e5" },
+    { "format": "png",  "container": "PNG tEXt chunk",          "native_check": "chunk CRC over type and data", "passes": true, "forged_differs_from_truth": true, "crc_field": "chunk CRC-32 = 0x651d89af" },
+    { "format": "bzip2", "container": null, "native_check": null, "passes": null, "note": "NOT built - LZ-coupled; a decodable container-level forge is out of reach" },
+    { "format": "xz",    "container": null, "native_check": null, "passes": null, "note": "NOT built - LZ-coupled; a decodable container-level forge is out of reach" }
+  ],
+  "family_2_certificate_forgeries": [
+    { "case": "region_overlay_check_divergence", "rust": "REJECT", "python": "REJECT", "cert_sha256_16": "ec3aa5d9950d2dae" },
+    { "case": "region_extension",                "rust": "REJECT", "python": "REJECT", "cert_sha256_16": "fd6f3ce9232f99c0" },
+    { "case": "overlapping_region",              "rust": "REJECT", "python": "REJECT", "cert_sha256_16": "ca5101506fadf7db" },
+    { "case": "tautology_smuggling",             "rust": "REJECT", "python": "REJECT", "cert_sha256_16": "4bc59d448fac0377" },
+    { "case": "wrong_artifact",                  "rust": "REJECT", "python": "REJECT", "cert_sha256_16": "1f558b8fe3741ebe" },
+    { "case": "recovered_substitution",          "rust": "REJECT", "python": "REJECT", "cert_sha256_16": "1f558b8fe3741ebe" },
+    { "case": "forged_negative_false_loss",      "rust": "REJECT", "python": "REJECT", "cert_sha256_16": "b9a95b6220079e44" }
+  ],
+  "family_3_adversarial_false_loss": { "metric": "adversarial_false_loss_bytes", "required": 0, "observed": 0 },
+  "gate": {
+    "forged_crc_only_rejected_in_forensic_mode": true,
+    "adversarial_false_loss_bytes_zero": true,
+    "no_tamper_proof_claim_from_crc_only": true,
+    "both_verifiers_reject_every_forged_certificate": true
+  },
+  "scope_note": "Rejection results are scoped to the patched reference verifier versions measured here. This is a statement about CRC-class evidence under an adversarial threat model, deliberately separate from the non-adversarial accidental-damage benchmark."
+}

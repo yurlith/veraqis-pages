@@ -1,0 +1,43 @@
+{
+  "experiment": "EXP-PDS",
+  "engine_version": "VERAQIS 0.2.1",
+  "source_document": "PDS_SALVAGE_RECOVERY.md",
+  "license": "CC-BY-4.0",
+  "method": {
+    "driver": "cargo run -p phx_recovery --example phx-pds-bench --release",
+    "note": "drives the shipped phx_recovery::salvage library against real bzip2/xz CLI fixtures; it validates the library rather than re-implementing it",
+    "damage_positions_per_cell": 24,
+    "yield_definition": "recovered-useful / recoverable-given-damage",
+    "confidence": "95% Wilson interval; the gate is on the lower bound"
+  },
+  "gate": { "metric": "false_recovered_bytes", "required": 0, "observed": 0 },
+  "cells": [
+    { "cell": "bzip2 truncation", "yield": 1.000, "wilson_lower_bound": 1.000, "false_recovered_bytes": 0, "limit": "none", "note": "reaches the safe optimum" },
+    { "cell": "bzip2 mid-stream", "yield": 1.000, "wilson_lower_bound": 1.000, "false_recovered_bytes": 0, "limit": "none", "note": "full resync" },
+    { "cell": "xz mid-stream (CRC32 and CRC64)", "yield": 1.000, "wilson_lower_bound": 1.000, "false_recovered_bytes": 0, "limit": "none", "note": "the Index survives, so resync is exact" },
+    { "cell": "xz truncation (CRC32/CRC64, -T0 seekable)", "yield": 1.000, "wilson_lower_bound": 1.000, "false_recovered_bytes": 0, "limit": "none", "note": "Index-free forward block-header walk" },
+    { "cell": "zstd truncation and xz -T1 truncation", "yield": null, "wilson_lower_bound": null, "false_recovered_bytes": 0, "limit": "decoder", "note": "block sizes absent; cannot be bounded without decoding, so we abstain" },
+    { "cell": "lz4 and zstd mid-stream", "yield": null, "wilson_lower_bound": null, "false_recovered_bytes": 0, "limit": "fundamental", "note": "LZ-coupled, no independent per-block verifier exists" }
+  ],
+  "headline": {
+    "scenario": "real xz stream of 10 blocks, mid-stream corruption",
+    "stock_tool": {
+      "command": "xz -d",
+      "outcome": "fails the whole stream: Compressed data is corrupt",
+      "blocks_before_stopping_approx": 3
+    },
+    "veraqis": {
+      "command": "phx recover --salvage",
+      "blocks_recovered": 9,
+      "blocks_total": 10,
+      "evidence_bits_per_block": 64,
+      "verifier": "CRC-64, independent of the decode",
+      "false_recovered_bytes": 0
+    }
+  },
+  "output_policy": {
+    "per_block": "block_NNNN.bin, emitted only after its own check value verifies",
+    "joined_payload": "payload.bin is written ONLY when recovered blocks tile the output with known offsets and no gap",
+    "offsets": "emitted only when known exactly; after a bzip2 gap the absolute offset is reported as unknown rather than invented"
+  }
+}

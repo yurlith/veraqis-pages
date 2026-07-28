@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The VERAQIS evidence model — what counts as proof | VERAQIS</title>
+<meta name="description" content="Two orthogonal axes, evidence counted in bits, and a rule that a checksum you solved against is worth nothing. The model behind every recovery verdict." />
+<link rel="canonical" href="https://veraqis.tech/reference/evidence-model/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="The VERAQIS evidence model — what counts as proof" />
+<meta property="og:description" content="Probabilistic evidence in bits, structural evidence that gets no bits, and the tautology rule that stops a solver from grading its own work." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/reference/evidence-model/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The VERAQIS evidence model — what counts as proof" />
+<meta name="twitter:description" content="Probabilistic evidence in bits, structural evidence that gets no bits, and the tautology rule that stops a solver from grading its own work." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/reference/evidence-model/#article",
+      "url": "https://veraqis.tech/reference/evidence-model/",
+      "headline": "The evidence model",
+      "name": "The VERAQIS evidence model — what counts as proof | VERAQIS",
+      "description": "Two orthogonal axes, evidence counted in bits, and a rule that a checksum you solved against is worth nothing. The model behind every recovery verdict.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "evidence"
+        },
+        {
+          "@type": "Thing",
+          "name": "verification"
+        },
+        {
+          "@type": "Thing",
+          "name": "checksums"
+        }
+      ]
+    },
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://veraqis.tech/reference/evidence-model/#termset",
+      "name": "The VERAQIS evidence model — what counts as proof | VERAQIS",
+      "url": "https://veraqis.tech/reference/evidence-model/",
+      "hasDefinedTerm": [
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/evidence-model/#axis-p",
+          "name": "Axis P (probabilistic evidence)",
+          "description": "Evidence quantified in bits, defined as the negative log base 2 of an upper bound on the probability of a false accept. A verified CRC-32 contributes 32 bits; a second, independent CRC-32 contributes another 32; a cryptographic hash over the exact emitted region contributes 256. Only verifiers that are mutually independent, and independent of whatever produced the candidate, may be counted.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/evidence-model/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/evidence-model/#axis-l",
+          "name": "Axis L (logical or structural evidence)",
+          "description": "Evidence that a candidate is unique under the stated structural constraints — for example a database page consistent with exactly one schema, or a document object reachable from the document root. Its failure mode is model incompleteness rather than collision, so it is never given a bit value; it is validated empirically by requiring zero false results on a differential corpus.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/evidence-model/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/evidence-model/#axis-s",
+          "name": "Axis S (suggestion)",
+          "description": "Synthesised content offered to make a file open again. It is never labelled verified, never raises a health score, and is always marked as a suggestion.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/evidence-model/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/evidence-model/#evidence-bits",
+          "name": "evidence_bits",
+          "description": "The sum of the widths, in bits, of every independent verifier that checked an emitted region. A result with zero evidence bits and no exact-erasure basis may not be emitted at all.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/evidence-model/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/evidence-model/#tautology-rule",
+          "name": "Tautology rule",
+          "description": "A checksum that a solver targeted contributes zero evidence bits, because a full-rank solve satisfies it by construction. Only a verifier from outside the solved-against set can confirm a result.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/evidence-model/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/evidence-model/#exact-erasure",
+          "name": "Exact erasure",
+          "description": "The deterministic case: the damaged bytes are known to be missing rather than merely suspect, and a trusted checksum covers them with full rank. The solution is then the unique original, not a candidate.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/evidence-model/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/evidence-model/#false-recovered-bytes",
+          "name": "false_recovered_bytes",
+          "description": "The count of emitted bytes that differ from the original. It is a hard gate fixed at zero across every recovery layer: a method that returns more data at the cost of a single wrong byte does not ship.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/evidence-model/#termset"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/reference/evidence-model/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What are evidence bits?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A count of how much independent checking a recovered region received, expressed as the negative log base 2 of an upper bound on the chance of accepting something wrong. A verified CRC-32 is 32 bits; a cryptographic hash over exactly the emitted region is 256. Only verifiers independent of the process that produced the candidate may be counted."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the tautology rule?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If a solver constructed a candidate specifically so that a checksum would match, that checksum matching afterwards proves nothing — the solve satisfies it by construction. Such a checksum contributes zero evidence bits, and a result must be confirmed by a verifier from outside the set it was solved against."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between recovered and verified data?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Recovered means bytes were produced. Verified means an independent check confirmed them. VERAQIS keeps these separate in every report: verified entries carry their evidence, recovered-but-unverified entries are labelled as such, and unknown regions stay unknown."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does structural evidence get no bit value?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because it does not fail by collision. A structurally unique candidate is wrong only if our model of the format missed a possibility, and there is no principled number for that. Instead it is held to an empirical standard: zero false results on a corpus where the right answer is known."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/reference/evidence-model/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Reference",
+          "item": "https://veraqis.tech/reference/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Evidence model",
+          "item": "https://veraqis.tech/reference/evidence-model/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/" class="active">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/reference/">Reference</a></p>
+    <p class="kicker">Reference · governing rules</p>
+    <h1>The evidence model</h1>
+    <p class="lead">Recovery tools usually have one dial: a confidence number. That collapses two different kinds of certainty into one scale where they cannot be compared. VERAQIS keeps them apart, counts one of them in bits, and refuses to count evidence the solver produced for itself.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="why-two-axes">Why one confidence number is not enough</h2>
+      <p>Consider two recovered items. The first is a file whose CRC-32 matched after repair. The second is a database row that fits exactly one recovered schema and no other. Both feel like "high confidence" — but they can fail in completely different ways.</p>
+      <p>The first can fail by collision, and the chance of that is calculable: about one in four billion for a random error. The second cannot fail by collision at all; it fails if our model of the format is incomplete — if some structure exists that we did not consider. There is no honest number for that, only an empirical record of how often it has been wrong on a corpus with known answers.</p>
+      <p>Averaging those into one score destroys the information a careful reader needs. So they stay separate, permanently.</p>
+      <div class="grid g3"><div class="card"><h3>Axis P — counted in bits</h3><p>Independent checksums and hashes. Fails by collision, at a rate you can bound. CRC-32 = 32 bits; a cryptographic hash over the emitted region = 256.</p></div><div class="card"><h3>Axis L — no bits, ever</h3><p>Structural uniqueness. Fails by model incompleteness, not collision, so any bit value would be fiction. Validated by a zero-false record on a differential corpus.</p></div><div class="card"><h3>Axis S — a suggestion</h3><p>Synthesised content that makes a file open. Never verified, never raises health, always labelled.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="tautology">The tautology rule</h2>
+      <p>This is the rule that does the most work, and the one most often missing elsewhere.</p>
+      <div class="claim" id="claim-tautology"><p class="claim-text">A checksum that the solver targeted contributes zero evidence bits. If a repair was constructed to make a CRC match, that CRC matching afterwards tells you nothing — a full-rank solve satisfies it by construction. Only a verifier from outside the solved-against set can confirm the result.</p><p class="claim-src">VERAQIS evidence model, governing rule. Enforced by a machine-checked emission invariant and by the certificate verifier, which rejects tautology smuggling.</p></div>
+      <p>It is easy to violate this accidentally and it looks like success while you do. A tool reconstructs a damaged region by solving for the bytes that make the stored checksum match, then reports "checksum verified". The check is real; the inference is empty. The tool has verified its own arithmetic.</p>
+      <p>Which is why every VERAQIS result records two separate lists: <code>independent_verifiers</code> — what was actually <em>checked</em> — and <code>solved_against</code> — what was targeted and therefore counts for nothing. A certificate that tries to move an entry from the second list to the first is rejected by the standalone verifier; that specific forgery is one of the seven we <a href="/research/crc32-collisions-that-pass-gzip-t/">test against ourselves</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="health-rule">When a health score is allowed to improve</h2>
+      <p>A recovery tool that raises its own health score on the strength of guessed bytes is grading its own homework. The rule is narrow on purpose. Health may increase only from:</p>
+      <ul><li>an <strong>exact erasure</strong> resolved against a trusted, corroborated checksum; or</li><li>Axis-P evidence of <strong>at least 32 bits</strong> with at least one independent verifier; or</li><li>Axis-L <strong>structural uniqueness</strong> that passed its uniqueness gate with a clean differential record.</li></ul>
+      <p>It may never increase from zero evidence bits, from a merely-best structural guess, or from a suggestion. Inferred bytes never move the score. Neither do bytes justified only by a checksum that was solved against.</p>
+      <h2 id="threat-models">Two threat models, kept apart</h2>
+      <p>The same evidence means different things depending on who you are defending against, so a claim whose meaning changes between the two must say which one it answers.</p>
+      <div class="table-scroll"><table><thead><tr><th></th><th>Accidental damage</th><th>Adversarial tampering</th></tr></thead><tbody><tr><td>The question</td><td>Did a bit flip, a truncated download or a bad sector change these bytes?</td><td>Could someone have deliberately substituted these bytes?</td></tr><tr><td>CRC-class evidence</td><td>Sufficient — about 32 bits</td><td><strong>Never sufficient</strong> — CRC-32 is forgeable by direct construction</td></tr><tr><td>What is required</td><td>An independent checksum the solver did not target</td><td>A cryptographic witness that existed <strong>before</strong> the repair</td></tr><tr><td>Qualifying witnesses</td><td>CRC-32, CRC-64, Adler-32</td><td>A prior SHA-256 manifest, a signed parity sidecar, an acquisition hash, an exact-copy source hash</td></tr></tbody></table></div>
+      <div class="callout warn"><strong>Anti-self-witness.</strong> Evidence regenerated from the repaired file cannot witness that file's own correctness. A checksum recomputed after the repair, a parser that now opens the file, or metadata rebuilt from the candidate all prove that the repair is self-consistent — never that it is right.</div>
+      <p>An unlabelled result defaults to the weaker, accidental reading. Silence never upgrades a claim.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="definitions">Definitions</h2>
+      <div class="term" id="axis-p"><h3>Axis P — probabilistic evidence</h3>
+<p>Evidence quantified in bits: <code>evidence_bits = −log₂(upper bound on P(false accept))</code>, summed over verifiers that are mutually independent <em>and</em> independent of whatever produced the candidate.</p>
+<p class="note">CRC-32 = 32 bits · a second independent CRC-32 = +32 · Adler-32 ≈ 32 · a cryptographic hash over the exact emitted region = 256.</p></div>
+
+<div class="term" id="axis-l"><h3>Axis L — logical / structural evidence</h3>
+<p>“Unique under the stated structural constraints.” Two sub-classes: <code>structural_unique</code> (provably one candidate) and <code>structural_heuristic</code> (the best candidate, not a unique one). The second never raises health.</p>
+<p class="note">Gets no bit value, because its failure mode is model incompleteness rather than collision. Validated empirically by a zero-false record on a differential corpus.</p></div>
+
+<div class="term" id="axis-s"><h3>Axis S — suggestion</h3>
+<p>Synthesised content offered so a file will open. Never <em>verified</em>, never raises health, always labelled as a suggestion.</p></div>
+
+<div class="term" id="evidence-bits"><h3>evidence_bits</h3>
+<p>The summed width of every independent verifier that checked an emitted region. Zero bits with no exact-erasure basis forbids emission entirely.</p></div>
+
+<div class="term" id="tautology-rule"><h3>Tautology rule</h3>
+<p>A checksum the solver targeted contributes <strong>0 bits</strong>. The confirming verifier must come from outside the solved-against set.</p></div>
+
+<div class="term" id="exact-erasure"><h3>Exact erasure</h3>
+<p>The damage is known to be an erasure — we know <em>which</em> bytes are gone, not merely that something is wrong — and a trusted checksum covers the gap with full rank. The solution is then the unique original, deterministically.</p></div>
+
+<div class="term" id="false-recovered-bytes"><h3>false_recovered_bytes</h3>
+<p>Emitted bytes that differ from the original. A hard gate fixed at zero on every recovery layer. A method that returns more data at the cost of one wrong byte does not ship.</p></div>
+
+<div class="term" id="abstention"><h3>Abstention</h3>
+<p>Returning <em>unknown</em> is a legal, and often correct, output. Abstention is not failure; an unlabelled guess is.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about the evidence model</h2>
+    <div class="faq">
+      <div class="qa"><h3>What are evidence bits?</h3><p>A count of how much independent checking a recovered region received, expressed as the negative log base 2 of an upper bound on the chance of accepting something wrong. A verified CRC-32 is 32 bits; a cryptographic hash over exactly the emitted region is 256. Only verifiers independent of the process that produced the candidate may be counted.</p></div>
+      <div class="qa"><h3>What is the tautology rule?</h3><p>If a solver constructed a candidate specifically so that a checksum would match, that checksum matching afterwards proves nothing — the solve satisfies it by construction. Such a checksum contributes zero evidence bits, and a result must be confirmed by a verifier from outside the set it was solved against.</p></div>
+      <div class="qa"><h3>What is the difference between recovered and verified data?</h3><p>Recovered means bytes were produced. Verified means an independent check confirmed them. VERAQIS keeps these separate in every report: verified entries carry their evidence, recovered-but-unverified entries are labelled as such, and unknown regions stay unknown.</p></div>
+      <div class="qa"><h3>Why does structural evidence get no bit value?</h3><p>Because it does not fail by collision. A structurally unique candidate is wrong only if our model of the format missed a possibility, and there is no principled number for that. Instead it is held to an empirical standard: zero false results on a corpus where the right answer is known.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/reference/rule-ids/"><h3>Rule ID reference</h3><p>All 87 findings, with the field and evidence type behind each.</p></a>
+      <a class="card link-card" href="/research/crc32-collisions-that-pass-gzip-t/"><h3>CRC-32 collisions that pass gzip -t</h3><p>The threat-model boundary, demonstrated rather than asserted.</p></a>
+      <a class="card link-card" href="/reports.html"><h3>Reports &amp; verification</h3><p>What the model looks like in an actual report.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

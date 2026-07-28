@@ -216,3 +216,53 @@ footer .colhead{font-family:var(--mono);font-size:12px;letter-spacing:.5px;color
 hr{border:0;border-top:1px solid var(--line);margin:0}
 [dir="rtl"]{direction:rtl}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ── knowledge layer: research / reference / formats / guides ───────────── */
+main{display:block}
+main>article{display:block}
+.prose h2{margin:38px 0 12px;scroll-margin-top:20px}
+.prose h3{margin:24px 0 8px;scroll-margin-top:20px}
+.prose p,.prose ul,.prose ol{max-width:76ch}
+.prose ul,.prose ol{padding-left:22px}
+.prose li{margin:5px 0}
+.prose li::marker{color:var(--dim)}
+
+/* an anchored, self-contained factual claim — the unit a reader or an answer
+   engine can quote without losing its method or its date */
+.claim{border:1px solid var(--line);border-left:3px solid var(--brand-primary);
+  border-radius:8px;background:var(--panel);padding:16px 18px;margin:20px 0;scroll-margin-top:20px}
+.claim-text{margin:0;font-size:16.5px;line-height:1.5;font-weight:600;color:var(--ink)}
+.claim-src{margin:8px 0 0;font-family:var(--mono);font-size:12px;color:var(--dim);line-height:1.55}
+.claim-src code{font-size:12px}
+
+/* inline SVG charts — no JS, no external requests, indexable and accessible */
+.chart{margin:22px 0;padding:0}
+.chart svg{display:block;max-width:100%;height:auto;overflow:visible}
+.chart figcaption{margin-top:10px;font-size:13px;color:var(--dim);line-height:1.55;max-width:76ch}
+
+.table-scroll{overflow-x:auto;margin:18px 0}
+.table-scroll table{min-width:520px}
+
+/* generated rule registry */
+.rule{border:1px solid var(--line);border-radius:8px;background:var(--panel);
+  padding:14px 16px;margin:10px 0;scroll-margin-top:20px}
+.rule h3{margin:0 0 6px;font-family:var(--mono);font-size:15px;letter-spacing:-.2px}
+.rule p{margin:0 0 6px;font-size:14.5px}
+.rule dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0 0;
+  font-family:var(--mono);font-size:12px;color:var(--dim)}
+.rule dt{color:var(--dim)}
+.rule dd{margin:0;color:var(--mut)}
+.sev-Catastrophic{color:var(--bad)}
+.sev-Major{color:#a4600f}
+.sev-Minor,.sev-Benign{color:var(--mut)}
+.rule-filter{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.rule-filter a{font-family:var(--mono);font-size:12px;border:1px solid var(--line);
+  border-radius:999px;padding:4px 11px;color:var(--mut);background:var(--panel)}
+.rule-filter a:hover{border-color:var(--brand-primary);color:var(--amber2);text-decoration:none}
+
+/* definition entries */
+.term{border-top:1px solid var(--line);padding:16px 0;scroll-margin-top:20px}
+.term:first-of-type{border-top:0}
+.term h3{margin:0 0 6px;font-size:17px}
+.term p{margin:0 0 6px;max-width:76ch}
+.term .note{margin:0}

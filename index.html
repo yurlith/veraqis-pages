@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>VERAQIS — Analyze damaged archives, recover only what is proven</title>
+<title>VERAQIS — analyze damaged archives, recover what is proven</title>
 <meta name="description" content="VERAQIS analyzes damaged ZIP archives locally and recovers only what can be verified, marking the rest as unknown. Offline, no uploads. Signed Android beta." />
 <link rel="canonical" href="https://veraqis.tech/" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
@@ -133,18 +133,20 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="index.html" class="active">Home</a>
-        <a href="mobile.html">Mobile</a>
-        <a href="desktop.html">Desktop</a>
-        <a href="reports.html">Reports</a>
-        <a href="testing.html">Tests</a>
-        <a href="security.html">Security</a>
-        <a href="download.html">Download</a>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
         <a href="docs.html">Docs</a>
+        <a href="desktop.html">Desktop</a>
+        <a href="mobile.html">Mobile</a>
+        <a href="download.html">Download</a>
       </div>
     </nav>
   </div>
 </header>
+
+<main id="content">
 
 <!-- HERO -->
 <div class="hero">
@@ -167,7 +169,7 @@
       </div>
     </div>
     <figure class="hero-visual">
-      <img src="assets/desktop-protect-2026-07.png" alt="VERAQIS Recovery development build: the Protect screen with folder protection, checking, repair and signing controls" />
+      <img src="assets/desktop-protect-2026-07.png" alt="VERAQIS Recovery development build: the Protect screen with folder protection, checking, repair and signing controls" width="1600" height="1000" decoding="async" fetchpriority="high" />
       <figcaption>Development build shown (VERAQIS Recovery v0.2.1). No public Windows package is
         currently available.</figcaption>
     </figure>
@@ -181,8 +183,8 @@
     <p class="sub">Everyday situations where checking first — and recovering only what is provable —
       is the safe move.</p>
     <div class="grid g3">
-      <div class="card"><p><a href="zip-file-wont-open.html">A ZIP file won't open</a> and you need to find out why.</p></div>
-      <div class="card"><p>A ZIP, DOCX, XLSX, PPTX or another supported container <a href="repair-corrupted-zip.html">appears damaged</a>.</p></div>
+      <div class="card"><p><a href="/guides/zip-file-wont-open/">A ZIP file won't open</a> and you need to find out why.</p></div>
+      <div class="card"><p>A ZIP, DOCX, XLSX, PPTX or another supported container <a href="/guides/repair-corrupted-zip/">appears damaged</a>.</p></div>
       <div class="card"><p>You need to inspect an archive safely before extracting it.</p></div>
       <div class="card"><p>You want to verify a backup before it becomes critical.</p></div>
       <div class="card"><p>A confidential file must stay offline.</p></div>
@@ -236,7 +238,8 @@
     <p class="quote">Each recovered part is checked before it is marked as verified. Anything that
       cannot be proven remains clearly labelled as unknown.</p>
     <p class="note" style="margin-top:16px">Want the detail? See how verification works in
-      <a href="reports.html">Reports &amp; Verification</a>, the measured results in the
+      <a href="reports.html">Reports &amp; Verification</a>
+        <a href="changelog.html">Changelog</a>, the measured results in the
       <a href="testing.html">Test Record</a>, and the commands in the <a href="docs.html">docs</a>.</p>
   </div>
 </section>
@@ -342,6 +345,45 @@
   </div>
 </section>
 
+<!-- KNOWLEDGE LAYER -->
+<section id="knowledge">
+  <div class="wrap">
+    <h2>What we have measured</h2>
+    <p class="sub">Every figure below comes from running our own engine against a corpus with
+      known answers, and every report links the data it was derived from. Negative results are
+      published next to the positive ones.</p>
+    <div class="grid g2">
+      <a class="card link-card" href="/research/7z-solid-archive-bit-flip/">
+        <h3>One bit flip in a solid 7z archive</h3>
+        <p>A solid archive is not all-or-nothing. In a real 541-file archive a flip at 95% of the
+          payload still left <strong>501 files</strong> recoverable byte-exact — and <span class="mono">false_files = 0</span>
+          in every cell.</p>
+      </a>
+      <a class="card link-card" href="/research/crc32-collisions-that-pass-gzip-t/">
+        <h3>CRC-32 collisions that pass <span class="mono">gzip -t</span></h3>
+        <p>We built archives whose contents differ from the original but whose CRC-32 matches, and
+          the native tools call them healthy. Five formats, two independent verifiers.</p>
+      </a>
+      <a class="card link-card" href="/research/recovering-past-corruption-xz-bzip2/">
+        <h3>Recovering past a corrupted block</h3>
+        <p>Stock <span class="mono">xz -d</span> abandons a whole stream on one bad block. Block-independent
+          salvage recovered <strong>9 of 10</strong>, each re-verified by its own CRC-64.</p>
+      </a>
+      <a class="card link-card" href="/research/joint-verifier-surface-is-empty/">
+        <h3>We measured 12 formats, then cancelled the engine</h3>
+        <p>Can independent checksums be combined to solve for lost bytes? Measured first: the
+          joint-sufficient share is <strong>0.00</strong> everywhere, so the solver was never built.</p>
+      </a>
+    </div>
+    <div class="cta">
+      <a class="btn ghost" href="/research/">All research</a>
+      <a class="btn ghost" href="/reference/rule-ids/">Rule ID reference (87 findings)</a>
+      <a class="btn ghost" href="/formats/zip/">ZIP format reference</a>
+      <a class="btn ghost" href="/guides/">Guides</a>
+    </div>
+  </div>
+</section>
+
 <!-- TESTS -->
 <section id="proof" class="band">
   <div class="wrap">
@@ -381,12 +423,22 @@
 </section>
 
 <!-- FOOTER -->
+</main>
+
 <footer>
   <div class="wrap">
     <div class="cols">
       <div>
         <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
         <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+            <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
       </div>
       <div>
         <div class="colhead">Products</div>

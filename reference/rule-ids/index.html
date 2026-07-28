@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>VERAQIS rule ID reference — all 87 damage findings | VERAQIS</title>
+<meta name="description" content="Every damage finding VERAQIS can report, by ID: the format field it is keyed to, its category, severity and evidence type. Generated from the engine registry." />
+<link rel="canonical" href="https://veraqis.tech/reference/rule-ids/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="VERAQIS rule ID reference — every damage finding, defined" />
+<meta property="og:description" content="All 87 classifier rules across 11 formats, with the field, category, severity and evidence type behind each one." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/reference/rule-ids/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="VERAQIS rule ID reference — every damage finding, defined" />
+<meta name="twitter:description" content="All 87 classifier rules across 11 formats, with the field, category, severity and evidence type behind each one." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/reference/rule-ids/#article",
+      "url": "https://veraqis.tech/reference/rule-ids/",
+      "headline": "Rule ID reference",
+      "name": "VERAQIS rule ID reference — all 87 damage findings | VERAQIS",
+      "description": "Every damage finding VERAQIS can report, by ID: the format field it is keyed to, its category, severity and evidence type. Generated from the engine registry.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "archive diagnostics"
+        },
+        {
+          "@type": "Thing",
+          "name": "error codes"
+        }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://veraqis.tech/reference/rule-ids/#dataset",
+      "name": "VERAQIS classifier rule registry",
+      "description": "All 87 damage-classification rules across 11 file formats, each with its format field, corruption category, severity and evidence type. Generated from the shipped engine registry.",
+      "url": "https://veraqis.tech/reference/rule-ids/",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "isAccessibleForFree": true,
+      "datePublished": "2026-07-28",
+      "variableMeasured": [
+        "rule_id",
+        "format",
+        "field",
+        "category",
+        "severity",
+        "evidence_type"
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://veraqis.tech/assets/rule-registry.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/reference/rule-ids/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does ZIP_EOCD_001 mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The end-of-central-directory signature is missing or zeroed. The EOCD is the record at the very end of a ZIP that tells every tool where the archive index starts, so losing it makes the whole archive read as invalid — even though the compressed entries earlier in the file are usually untouched and recoverable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do these IDs stay the same between versions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Rule IDs are stable identifiers shared by the damage corpus, the classifier, the health penalties and the recovery ground truth. A report produced by an older build is still readable against this reference."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a Catastrophic severity mean the file is lost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Severity describes how badly the structure is broken, not how much data survives. ZIP_EOCD_001 is Catastrophic and is among the most recoverable findings, because the index can be rebuilt from the entries it was describing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where do SEC_ rules come from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They are raised by the sandbox rather than by a format parser — compression-bomb ratios, overlapping entries, path traversal, symlink and recursion limits. A security finding drives recoverability to none rather than producing a repair plan."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/reference/rule-ids/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Reference",
+          "item": "https://veraqis.tech/reference/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Rule IDs",
+          "item": "https://veraqis.tech/reference/rule-ids/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/" class="active">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/reference/">Reference</a></p>
+    <p class="kicker">Reference · generated from the engine</p>
+    <h1>Rule ID reference</h1>
+    <p class="lead">Every finding in a VERAQIS analysis report carries a rule ID such as <code>ZIP_EOCD_001</code>. The ID is not a log code — it is the key that ties a corpus fixture, a classifier rule, a health penalty and a recovery ground truth together. This page lists all 87 of them.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="how-to-read">How to read a rule ID</h2>
+      <p>The shape is <code>FORMAT_FIELD_NNN</code>. <code>ZIP_EOCD_001</code> is a ZIP finding about the end-of-central-directory record, sequence 001. Sequence numbers are stable: <code>ZIP_EOCD_001</code> means the same thing in every version, so a report from a year ago is still readable.</p>
+      <p>Four attributes travel with every rule, and together they explain why a report says what it says:</p>
+      <div class="grid g2"><div class="card"><h3>field</h3><p>The exact structure and field the finding is about — <code>EOCD.cd_offset</code>, <code>LocalFileHeader.crc32</code>. This is what makes a finding checkable rather than an opinion.</p></div><div class="card"><h3>category</h3><p>Structural corruption, missing data, checksum mismatch, and so on. Categories decide which repair strategies are even candidates.</p></div><div class="card"><h3>severity</h3><p>Catastrophic, Major, Minor, Benign. Severity drives the health penalty; it does not by itself decide recoverability.</p></div><div class="card"><h3>evidence type</h3><p>How the finding was established — signature mismatch, offset out of bounds, length overflow, truncation marker, checksum mismatch. This fixes the finding's confidence deterministically instead of by a tuned constant.</p></div></div>
+      <div class="callout info"><strong>Severity is not recoverability.</strong> <code>ZIP_EOCD_001</code> is Catastrophic — every tool will call the archive invalid — and it is also one of the most recoverable findings there is, because the entries themselves are untouched. A catastrophic <em>structural</em> verdict often coexists with intact data.</div>
+      <h2 id="coverage">Coverage</h2>
+      <figure class="chart">
+<svg viewBox="0 0 720 390" width="100%" height="auto" role="img" aria-labelledby="ct-k1cboi" preserveAspectRatio="xMinYMin meet"><title id="ct-k1cboi">Classifier rules per format</title><desc>Rule count by format, from the generated registry. 87 rules across 11 formats.</desc><text x="0" y="28" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">ZIP</text><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--brand-primary)" opacity="1"/><text x="634" y="28" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">24</text><text x="0" y="62" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">TAR</text><rect x="150" y="49" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="49" width="296" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="62" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">15</text><text x="0" y="96" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">PDF</text><rect x="150" y="83" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="83" width="277" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="96" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">14</text><text x="0" y="130" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">ISO</text><rect x="150" y="117" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="117" width="237" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="130" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">12</text><text x="0" y="164" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">GZIP</text><rect x="150" y="151" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="151" width="178" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="164" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">9</text><text x="0" y="198" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">7Z</text><rect x="150" y="185" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="185" width="59" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="198" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">3</text><text x="0" y="232" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">BZIP2</text><rect x="150" y="219" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="219" width="40" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="232" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">2</text><text x="0" y="266" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">RAR</text><rect x="150" y="253" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="253" width="40" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="266" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">2</text><text x="0" y="300" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">XZ</text><rect x="150" y="287" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="287" width="40" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="300" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">2</text><text x="0" y="334" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">ZSTD</text><rect x="150" y="321" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="321" width="40" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="334" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">2</text><text x="0" y="368" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">LZ4</text><rect x="150" y="355" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="355" width="40" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="368" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">2</text></svg>
+<figcaption>Rule count by format, from the generated registry. 87 rules across 11 formats.</figcaption>
+</figure>
+      <p class="note">SQLite has its own rule family (<code>SQ_<em></code>) alongside the container formats listed here, and security findings (<code>SEC_</em></code>) are raised by the sandbox rather than the format classifiers. The counts above cover the container-format registry that <code>phx analyze</code> fires directly.</p>
+      <p>Rule counts are not a quality ranking. ZIP has 24 because ZIP has more independently-checkable structures — two headers per entry plus a central index plus an end record. LZ4 has 2 because there is very little in an LZ4 frame that can be independently verified at all, which is <a href="/research/recovering-past-corruption-xz-bzip2/">exactly why we abstain on it</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="">
+      <h2 id="registry">The registry</h2>
+      <p>Generated from <code>crates/phx_analyze_engine/src/corruption/rules.rs</code>. Machine-readable copy: <a href="/assets/rule-registry.json">rule-registry.json</a>.</p>
+      <div class="rule-filter"><a href="#fmt-zip">ZIP (24)</a><a href="#fmt-tar">TAR (15)</a><a href="#fmt-iso">ISO (12)</a><a href="#fmt-gzip">GZIP (9)</a><a href="#fmt-pdf">PDF (14)</a><a href="#fmt-rar">RAR (2)</a><a href="#fmt-7z">7Z (3)</a><a href="#fmt-bzip2">BZIP2 (2)</a><a href="#fmt-xz">XZ (2)</a><a href="#fmt-zstd">ZSTD (2)</a><a href="#fmt-lz4">LZ4 (2)</a></div><h3 id="fmt-zip">ZIP — 24 rules</h3><div class="rule" id="zip_eocd_001"><h3>ZIP_EOCD_001</h3><p>EOCD signature missing or zeroed.</p><dl><dt>field</dt><dd>EOCD.signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="zip_eocd_002"><h3>ZIP_EOCD_002</h3><p>EOCD.cd_offset points outside file.</p><dl><dt>field</dt><dd>EOCD.cd_offset</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="zip_eocd_003"><h3>ZIP_EOCD_003</h3><p>EOCD.cd_size larger than file.</p><dl><dt>field</dt><dd>EOCD.cd_size</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Overflow</dd></dl></div><div class="rule" id="zip_cd_001"><h3>ZIP_CD_001</h3><p>Central directory entirely missing.</p><dl><dt>field</dt><dd>CentralDirectory</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="zip_cd_002"><h3>ZIP_CD_002</h3><p>Central directory signature invalid.</p><dl><dt>field</dt><dd>CentralDirHeader.signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="zip_cd_003"><h3>ZIP_CD_003</h3><p>Central directory truncated mid-entry.</p><dl><dt>field</dt><dd>CentralDirectory</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="zip_lfh_001"><h3>ZIP_LFH_001</h3><p>Local file header signature invalid.</p><dl><dt>field</dt><dd>LocalFileHeader.signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="zip_lfh_002"><h3>ZIP_LFH_002</h3><p>Local file header missing.</p><dl><dt>field</dt><dd>LocalFileHeader</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="zip_crc_001"><h3>ZIP_CRC_001</h3><p>CRC-32 mismatch, single entry.</p><dl><dt>field</dt><dd>LocalFileHeader.crc32</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="zip_crc_002"><h3>ZIP_CRC_002</h3><p>CRC-32 mismatch, multiple entries.</p><dl><dt>field</dt><dd>LocalFileHeader.crc32</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="zip_size_001"><h3>ZIP_SIZE_001</h3><p>Compressed size field wrong (too large).</p><dl><dt>field</dt><dd>CentralDirHeader.compressed_size</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Overflow</dd></dl></div><div class="rule" id="zip_size_002"><h3>ZIP_SIZE_002</h3><p>File shorter than declared compressed size.</p><dl><dt>field</dt><dd>stream</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="zip_trunc_001"><h3>ZIP_TRUNC_001</h3><p>Truncated last 1%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="zip_trunc_002"><h3>ZIP_TRUNC_002</h3><p>Truncated last 5%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="zip_trunc_003"><h3>ZIP_TRUNC_003</h3><p>Truncated last 20%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="zip_trunc_004"><h3>ZIP_TRUNC_004</h3><p>Truncated first 5% (header destroyed).</p><dl><dt>field</dt><dd>stream.header</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="zip_flip_001"><h3>ZIP_FLIP_001</h3><p>Single bit flip in payload.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="zip_flip_002"><h3>ZIP_FLIP_002</h3><p>Multiple bit flips in payload.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="zip_flip_003"><h3>ZIP_FLIP_003</h3><p>Bit flip in header area.</p><dl><dt>field</dt><dd>header.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="zip_extra_001"><h3>ZIP_EXTRA_001</h3><p>Extra field length overflow.</p><dl><dt>field</dt><dd>CentralDirHeader.extra_len</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Length Overflow</dd></dl></div><div class="rule" id="zip_z64_001"><h3>ZIP_Z64_001</h3><p>ZIP64 EOCD locator corrupted.</p><dl><dt>field</dt><dd>ZIP64_EOCD_Locator.signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="zip_comp_001"><h3>ZIP_COMP_001</h3><p>Compound: missing EOCD + CRC mismatch.</p><dl><dt>field</dt><dd>EOCD.signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="zip_comp_002"><h3>ZIP_COMP_002</h3><p>Compound: truncated + bitflip.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="sec_bomb_overlap_001"><h3>SEC_BOMB_OVERLAP_001</h3><p>Two local file headers reference overlapping data (Fifield signature).</p><dl><dt>field</dt><dd>LocalFileHeader.compressed_data</dd><dt>category</dt><dd>Security Threat</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Overlapping Entries</dd></dl></div>
+<h3 id="fmt-tar">TAR — 15 rules</h3><div class="rule" id="tar_ust_001"><h3>TAR_UST_001</h3><p>UStar checksum invalid.</p><dl><dt>field</dt><dd>UStarHeader.checksum</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="tar_ust_002"><h3>TAR_UST_002</h3><p>UStar magic missing.</p><dl><dt>field</dt><dd>UStarHeader.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="tar_term_001"><h3>TAR_TERM_001</h3><p>Missing zero-block terminator.</p><dl><dt>field</dt><dd>Archive.terminator</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="tar_term_002"><h3>TAR_TERM_002</h3><p>Extra garbage after terminator.</p><dl><dt>field</dt><dd>Archive.terminator</dd><dt>category</dt><dd>Padding Mismatch</dd><dt>severity</dt><dd class="sev-Benign">Benign</dd><dt>evidence</dt><dd>Padding Violation</dd></dl></div><div class="rule" id="tar_size_001"><h3>TAR_SIZE_001</h3><p>Size field larger than remaining data.</p><dl><dt>field</dt><dd>UStarHeader.size</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Overflow</dd></dl></div><div class="rule" id="tar_size_002"><h3>TAR_SIZE_002</h3><p>File data shorter than declared size.</p><dl><dt>field</dt><dd>UStarHeader.size</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_block_001"><h3>TAR_BLOCK_001</h3><p>Two data blocks swapped.</p><dl><dt>field</dt><dd>block.order</dd><dt>category</dt><dd>Block Reorder</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Block Reorder</dd></dl></div><div class="rule" id="tar_trunc_001"><h3>TAR_TRUNC_001</h3><p>Truncated last 1%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_trunc_002"><h3>TAR_TRUNC_002</h3><p>Truncated last 10%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_trunc_003"><h3>TAR_TRUNC_003</h3><p>Truncated first block.</p><dl><dt>field</dt><dd>stream.header</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_flip_001"><h3>TAR_FLIP_001</h3><p>Single bit flip in file content.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="tar_flip_002"><h3>TAR_FLIP_002</h3><p>Multiple bit flips in header area.</p><dl><dt>field</dt><dd>header.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="tar_gnu_001"><h3>TAR_GNU_001</h3><p>GNU LongName block corrupted.</p><dl><dt>field</dt><dd>GnuLongName.block</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="tar_sparse_001"><h3>TAR_SPARSE_001</h3><p>Sparse file map invalid.</p><dl><dt>field</dt><dd>SparseMap</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="tar_comp_001"><h3>TAR_COMP_001</h3><p>Compound: checksum + truncated.</p><dl><dt>field</dt><dd>UStarHeader.checksum</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+<h3 id="fmt-iso">ISO — 12 rules</h3><div class="rule" id="iso_pvd_001"><h3>ISO_PVD_001</h3><p>Primary volume descriptor magic missing.</p><dl><dt>field</dt><dd>PrimaryVolumeDescriptor.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="iso_pvd_002"><h3>ISO_PVD_002</h3><p>PVD volume space size wrong.</p><dl><dt>field</dt><dd>PrimaryVolumeDescriptor.volume_space</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="iso_svd_001"><h3>ISO_SVD_001</h3><p>Supplementary VD (Joliet) corrupt.</p><dl><dt>field</dt><dd>SupplementaryVolumeDescriptor.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="iso_pt_001"><h3>ISO_PT_001</h3><p>Path table offset beyond EOF.</p><dl><dt>field</dt><dd>PrimaryVolumeDescriptor.path_table_location</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="iso_pt_002"><h3>ISO_PT_002</h3><p>Path table entry length invalid.</p><dl><dt>field</dt><dd>PathTable.entry_length</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Underflow</dd></dl></div><div class="rule" id="iso_dir_001"><h3>ISO_DIR_001</h3><p>Directory record length field zero.</p><dl><dt>field</dt><dd>DirectoryRecord.length</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Underflow</dd></dl></div><div class="rule" id="iso_dir_002"><h3>ISO_DIR_002</h3><p>Directory record points to missing extent.</p><dl><dt>field</dt><dd>DirectoryRecord.extent</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="iso_sector_001"><h3>ISO_SECTOR_001</h3><p>Single sector data bitflip.</p><dl><dt>field</dt><dd>sector.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="iso_sector_002"><h3>ISO_SECTOR_002</h3><p>Multiple consecutive sectors zeroed.</p><dl><dt>field</dt><dd>sector.data</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="iso_trunc_001"><h3>ISO_TRUNC_001</h3><p>Truncated 5%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="iso_trunc_002"><h3>ISO_TRUNC_002</h3><p>Truncated 20%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="iso_trunc_003"><h3>ISO_TRUNC_003</h3><p>Truncated at PVD (sector 16).</p><dl><dt>field</dt><dd>stream.header</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div>
+<h3 id="fmt-gzip">GZIP — 9 rules</h3><div class="rule" id="gz_magic_001"><h3>GZ_MAGIC_001</h3><p>Magic bytes replaced.</p><dl><dt>field</dt><dd>gzip.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="gz_cm_001"><h3>GZ_CM_001</h3><p>Compression method invalid (not 8).</p><dl><dt>field</dt><dd>gzip.cm</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="gz_hcrc_001"><h3>GZ_HCRC_001</h3><p>Header CRC16 mismatch.</p><dl><dt>field</dt><dd>gzip.hcrc</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="gz_icrc_001"><h3>GZ_ICRC_001</h3><p>Content CRC32 mismatch.</p><dl><dt>field</dt><dd>gzip.crc32</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="gz_isize_001"><h3>GZ_ISIZE_001</h3><p>ISIZE wrong.</p><dl><dt>field</dt><dd>gzip.isize</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="gz_trunc_001"><h3>GZ_TRUNC_001</h3><p>Truncated in compressed data.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="gz_trunc_002"><h3>GZ_TRUNC_002</h3><p>Truncated before header end.</p><dl><dt>field</dt><dd>stream.header</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="gz_flip_001"><h3>GZ_FLIP_001</h3><p>Bit flip in compressed data.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="gz_extra_001"><h3>GZ_EXTRA_001</h3><p>Extra field length overflow.</p><dl><dt>field</dt><dd>gzip.extra_len</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Length Overflow</dd></dl></div>
+<h3 id="fmt-pdf">PDF — 14 rules</h3><div class="rule" id="pdf_hdr_001"><h3>PDF_HDR_001</h3><p>%PDF- header missing.</p><dl><dt>field</dt><dd>pdf.header</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="pdf_hdr_002"><h3>PDF_HDR_002</h3><p>Version marker malformed.</p><dl><dt>field</dt><dd>pdf.version</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="pdf_eof_001"><h3>PDF_EOF_001</h3><p>%%EOF marker missing.</p><dl><dt>field</dt><dd>pdf.eof</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_xref_001"><h3>PDF_XREF_001</h3><p>startxref offset wrong.</p><dl><dt>field</dt><dd>pdf.startxref</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="pdf_xref_002"><h3>PDF_XREF_002</h3><p>xref table missing entirely.</p><dl><dt>field</dt><dd>pdf.xref</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_xref_003"><h3>PDF_XREF_003</h3><p>xref entry format invalid.</p><dl><dt>field</dt><dd>pdf.xref.entry</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="pdf_obj_001"><h3>PDF_OBJ_001</h3><p>Object stream header corrupt.</p><dl><dt>field</dt><dd>pdf.objstm</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_obj_002"><h3>PDF_OBJ_002</h3><p>Indirect object missing.</p><dl><dt>field</dt><dd>pdf.object</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_trunc_001"><h3>PDF_TRUNC_001</h3><p>Truncated last 1%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="pdf_trunc_002"><h3>PDF_TRUNC_002</h3><p>Truncated last 15%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="pdf_trunc_003"><h3>PDF_TRUNC_003</h3><p>Truncated at 50%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="pdf_flip_001"><h3>PDF_FLIP_001</h3><p>Bit flip in page content stream.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="pdf_flip_002"><h3>PDF_FLIP_002</h3><p>Bit flip in cross-reference stream.</p><dl><dt>field</dt><dd>pdf.xref.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="pdf_comp_001"><h3>PDF_COMP_001</h3><p>Missing xref + object missing.</p><dl><dt>field</dt><dd>pdf.xref</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div>
+<h3 id="fmt-rar">RAR — 2 rules</h3><div class="rule" id="rar_magic_001"><h3>RAR_MAGIC_001</h3><p>RAR signature corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="rar_crc_001"><h3>RAR_CRC_001</h3><p>RAR file CRC mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+<h3 id="fmt-7z">7Z — 3 rules</h3><div class="rule" id="7z_magic_001"><h3>7Z_MAGIC_001</h3><p>7z signature header corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="7z_crc_001"><h3>7Z_CRC_001</h3><p>7z CRC mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="7z_trunc_001"><h3>7Z_TRUNC_001</h3><p>7z end header beyond EOF (truncated).</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div>
+<h3 id="fmt-bzip2">BZIP2 — 2 rules</h3><div class="rule" id="bz2_magic_001"><h3>BZ2_MAGIC_001</h3><p>BZh stream magic corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="bz2_crc_001"><h3>BZ2_CRC_001</h3><p>BZIP2 block CRC mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+<h3 id="fmt-xz">XZ — 2 rules</h3><div class="rule" id="xz_magic_001"><h3>XZ_MAGIC_001</h3><p>XZ stream header magic corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="xz_crc_001"><h3>XZ_CRC_001</h3><p>XZ check mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+<h3 id="fmt-zstd">ZSTD — 2 rules</h3><div class="rule" id="zst_magic_001"><h3>ZST_MAGIC_001</h3><p>ZSTD frame magic corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="zst_crc_001"><h3>ZST_CRC_001</h3><p>ZSTD content checksum mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+<h3 id="fmt-lz4">LZ4 — 2 rules</h3><div class="rule" id="lz4_magic_001"><h3>LZ4_MAGIC_001</h3><p>LZ4 frame magic corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="lz4_crc_001"><h3>LZ4_CRC_001</h3><p>LZ4 content checksum mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about rule IDs</h2>
+    <div class="faq">
+      <div class="qa"><h3>What does ZIP_EOCD_001 mean?</h3><p>The end-of-central-directory signature is missing or zeroed. The EOCD is the record at the very end of a ZIP that tells every tool where the archive index starts, so losing it makes the whole archive read as invalid — even though the compressed entries earlier in the file are usually untouched and recoverable.</p></div>
+      <div class="qa"><h3>Do these IDs stay the same between versions?</h3><p>Yes. Rule IDs are stable identifiers shared by the damage corpus, the classifier, the health penalties and the recovery ground truth. A report produced by an older build is still readable against this reference.</p></div>
+      <div class="qa"><h3>Does a Catastrophic severity mean the file is lost?</h3><p>No. Severity describes how badly the structure is broken, not how much data survives. ZIP_EOCD_001 is Catastrophic and is among the most recoverable findings, because the index can be rebuilt from the entries it was describing.</p></div>
+      <div class="qa"><h3>Where do SEC_ rules come from?</h3><p>They are raised by the sandbox rather than by a format parser — compression-bomb ratios, overlapping entries, path traversal, symlink and recursion limits. A security finding drives recoverability to none rather than producing a repair plan.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/reference/evidence-model/"><h3>The evidence model</h3><p>How a finding becomes evidence, and what evidence is allowed to prove.</p></a>
+      <a class="card link-card" href="/formats/zip/"><h3>ZIP format reference</h3><p>The 24 ZIP rules, placed in the structure they describe.</p></a>
+      <a class="card link-card" href="/reference/glossary/"><h3>Glossary</h3><p>EOCD, central directory, local file header and the rest, defined.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

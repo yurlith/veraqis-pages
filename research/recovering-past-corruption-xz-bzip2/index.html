@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recovering past corruption in xz and bzip2 | VERAQIS</title>
+<meta name="description" content="Stock xz -d abandons a whole stream on one bad block. We measured block-independent salvage: 9 of 10 blocks recovered, each CRC-verified, zero false bytes." />
+<link rel="canonical" href="https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Recovering past corruption in xz and bzip2 — measured" />
+<meta property="og:description" content="One corrupt block makes xz -d give up on the entire stream. Block-independent salvage recovers 9 of 10 blocks with independent CRC proof on each." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/" />
+<meta property="article:published_time" content="2026-07-18" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Recovering past corruption in xz and bzip2 — measured" />
+<meta name="twitter:description" content="One corrupt block makes xz -d give up on the entire stream. Block-independent salvage recovers 9 of 10 blocks with independent CRC proof on each." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/#article",
+      "url": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/",
+      "headline": "Recovering past a corrupted block in xz and bzip2",
+      "name": "Recovering past corruption in xz and bzip2 | VERAQIS",
+      "description": "Stock xz -d abandons a whole stream on one bad block. We measured block-independent salvage: 9 of 10 blocks recovered, each CRC-verified, zero false bytes.",
+      "datePublished": "2026-07-18",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "xz"
+        },
+        {
+          "@type": "Thing",
+          "name": "bzip2"
+        },
+        {
+          "@type": "Thing",
+          "name": "zstd"
+        },
+        {
+          "@type": "Thing",
+          "name": "lz4"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "compression"
+        }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/#dataset",
+      "name": "Partial-decompression salvage yields (EXP-PDS)",
+      "description": "Per-cell recovery yield with 95% Wilson confidence lower bounds and false-recovered-byte counts, for bzip2 and xz under truncation and mid-stream corruption, plus abstention cells for lz4 and zstd.",
+      "url": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "isAccessibleForFree": true,
+      "datePublished": "2026-07-18",
+      "variableMeasured": [
+        "yield",
+        "wilson_lower_bound",
+        "false_recovered_bytes",
+        "limit_class"
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/data.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can data be recovered from a corrupted xz file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually yes, apart from the damaged block itself. xz compresses in independent blocks, each with its own CRC, so a tool that resynchronises past the corrupt block can decode and verify the rest. In our measurement a 10-block stream with mid-stream corruption yielded 9 of 10 blocks, while stock xz -d abandoned the whole stream."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does xz -d refuse to output anything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A decompressor guarantees exact output. Once it hits a corrupt block it cannot keep that guarantee, so it stops rather than emit bytes it cannot stand behind. Salvage is a different job with a different contract: recover the blocks that verify independently, and be explicit about the rest."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a truncated xz file be recovered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If it was compressed with threaded xz (-T0), yes: the block headers carry their own sizes, so every complete block before the cut can be located and verified without the Index that truncation removed. Single-block streams and xz -T1 omit those sizes, and there VERAQIS abstains rather than guess."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about zstd and lz4?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They are detected and then abstained. Neither carries an independent per-block verifier, so recovered bytes could not be checked against anything other than the recovery process itself. Emitting them would mean claiming a correctness we cannot demonstrate."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is bzip2 more recoverable than xz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Both reach the safe optimum in our measurements for truncation and mid-stream corruption. bzip2 has the simpler story because its per-block CRC and block structure are self-contained; xz needs the threaded layout for the truncation case, but offers CRC-64 evidence where bzip2 offers CRC-32."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Research",
+          "item": "https://veraqis.tech/research/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Salvage past corruption",
+          "item": "https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/" class="active">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/research/">Research</a></p>
+    <p class="kicker">Experiment EXP-PDS</p>
+    <h1>Recovering past a corrupted block in xz and bzip2</h1>
+    <p class="lead">Compressed formats fail loudly and completely: one bad block and <code>xz -d</code> reports "Compressed data is corrupt" and hands you nothing. But xz and bzip2 compress in independent blocks, each with its own checksum. That structure is recoverable — and unlike most recovery, every recovered byte comes with proof that is not the decoder's own opinion.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-18">18 July 2026</time></span> · <span class="mono">Updated <time datetime="2026-07-28">28 July 2026</time></span> · <span class="mono">EXP-PDS</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="why">Why stock tools give up</h2>
+      <p>A decompressor has one job and a strict contract: produce the original bytes or fail. When it meets a corrupt block it cannot honour that contract, so it stops. That is correct behaviour for a decompressor and terrible behaviour for someone holding their only copy of a backup.</p>
+      <p>The opportunity is that <code>xz</code> and <code>bzip2</code> are <strong>block-independent</strong>. Each block is compressed on its own and carries its own check value — CRC-32 or CRC-64 in xz, CRC-32/BZIP2 in bzip2. Corruption inside one block says nothing about the others. A tool willing to resynchronise past the damaged block can decode the rest, and can prove each one it emits.</p>
+      <p>That last part is what separates this from "recover as much as possible". The check value covering each block was <strong>not</strong> used to construct the block — it was used to check it after decoding. That independence is the whole difference between evidence and a tautology.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="headline">The headline case</h2>
+      <p>A real 10-block xz stream with mid-stream corruption, run through both the stock tool and ours:</p>
+      <div class="grid g2"><div class="card"><h3>xz -d (stock)</h3><p>Fails the whole stream with <em>"Compressed data is corrupt"</em>. Roughly 3 blocks of output before it stops, and it is output the tool does not stand behind.</p></div><div class="card"><h3>phx recover --salvage</h3><p>Recovers <strong>9 of 10 blocks</strong>, resynchronising past the corrupted one. Each block carries 64 bits of independent CRC-64 evidence. <code>false_recovered_bytes = 0</code>.</p></div></div>
+      <div class="claim" id="claim-xz-headline"><p class="claim-text">On a real 10-block xz stream corrupted mid-stream, stock xz -d abandons the entire stream, while block-independent salvage recovers 9 of the 10 blocks — each re-verified by its own CRC-64, 64 bits of evidence independent of the decode, with zero false recovered bytes.</p><p class="claim-src">EXP-PDS · real <code>xz</code> CLI fixtures driven through the shipped <code>phx_recovery::salvage</code> library · VERAQIS 0.2.1</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="measurement">Full measurement</h2>
+      <p>Yield here means <em>recovered-useful ÷ recoverable-given-the-damage</em> — not a share of the original file. A truncated stream cannot yield bytes that were never written; the question is whether we get everything that survived. Each cell is 24 damage positions, and we gate on the <strong>lower</strong> bound of the 95% Wilson interval rather than the point estimate.</p>
+      <div class="table-scroll"><table><thead><tr><th>cell</th><th>yield (95% Wilson LB)</th><th>false bytes</th><th>limiting factor</th></tr></thead><tbody><tr><td>bzip2, truncation</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — reaches the safe optimum</td></tr><tr><td>bzip2, mid-stream corruption</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — full resync</td></tr><tr><td>xz, mid-stream (CRC-32 and CRC-64)</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — the Index survives, so resync is exact</td></tr><tr><td>xz, truncation (<code>-T0</code> / seekable)</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — Index-free forward block-header walk</td></tr><tr><td>zstd, truncation · <code>xz -T1</code>, truncation</td><td>—</td><td><strong>0</strong></td><td>decoder — block sizes are absent, so bounds cannot be established without decoding</td></tr><tr><td>lz4 · zstd, mid-stream</td><td>—</td><td><strong>0</strong></td><td>fundamental — LZ-coupled, no independent per-block verifier exists</td></tr></tbody></table></div><p class="note">N = 24 damage positions per cell. <code>false_recovered_bytes</code> is a hard gate at 0, and it holds by construction: a block is emitted only after its own check value verifies.</p>
+      <figure class="chart">
+<svg viewBox="0 0 720 220" width="100%" height="auto" role="img" aria-labelledby="ct-ehln4s" preserveAspectRatio="xMinYMin meet"><title id="ct-ehln4s">Salvage yield by format and damage class</title><desc>Yield with the 95% Wilson lower bound, per cell. The four block-verified cells reach the safe optimum; the abstention cells are shown at zero because emitting anything there would be unproven.</desc><text x="0" y="28" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">bzip2 trunc</text><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="28" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="62" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">bzip2 mid</text><rect x="150" y="49" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="49" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="62" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="96" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">xz mid</text><rect x="150" y="83" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="83" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="96" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="130" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">xz trunc (-T0)</text><rect x="150" y="117" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="117" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="130" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="164" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">zstd trunc</text><rect x="150" y="151" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="151" width="2" height="16" rx="3" fill="var(--brand-primary)" opacity="1"/><text x="634" y="164" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">abstain</text><text x="0" y="198" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">lz4 / zstd mid</text><rect x="150" y="185" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="185" width="2" height="16" rx="3" fill="var(--brand-primary)" opacity="1"/><text x="634" y="198" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">abstain</text></svg>
+<figcaption>Yield with the 95% Wilson lower bound, per cell. The four block-verified cells reach the safe optimum; the abstention cells are shown at zero because emitting anything there would be unproven.</figcaption>
+</figure>
+      <h3 id="xz-truncation">The hard case: xz truncation</h3>
+      <p>xz keeps its Index — the table giving every block's position and size — at the <strong>end</strong> of the stream. Truncate the file and the Index is the first thing you lose, which is exactly when you need it.</p>
+      <p>For threaded xz (<code>-T0</code>, the common default for large files) the block headers themselves carry compressed and uncompressed sizes. That makes an Index-free forward walk possible: start at the stream header, read each block header, verify the block-header CRC-32, jump by the declared size, decode, and verify the block check. Every complete block before the cut is relocated and emitted with proof.</p>
+      <div class="callout warn"><strong>Single-block streams and <code>xz -T1</code> truncation abstain.</strong> Those headers omit the sizes, so the block cannot be bounded without decoding it — and a decode-until-error prefix is not verifiable. We report the limit instead of emitting bytes we cannot stand behind. That is a decoder limit, not a false byte.</div>
+      <h3 id="abstain">Where we deliberately refuse</h3>
+      <p>lz4 and zstd are recognised, and then abstained. Both are LZ-coupled: the compressed stream carries no independent per-block verifier, so there is no way to check a recovered region against anything the recovery did not itself produce. We could emit plausible bytes. We would have no way to tell you which of them are right, and <code>false_recovered_bytes &gt; 0</code> is not a trade we make.</p>
+      <div class="claim" id="claim-abstain"><p class="claim-text">For lz4 and mid-stream zstd, VERAQIS detects the format and then abstains. No independent per-block verifier exists in those streams, so emitted bytes could not be checked against anything other than the process that produced them.</p><p class="claim-src">EXP-PDS abstention cells · <code>false_recovered_bytes = 0</code> maintained by refusing to emit, not by filtering afterwards</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="output">What you get back</h2>
+      <div class="terminal"><pre>phx recover damaged.xz --salvage --output out/
+
+out/salvage.phxr.json          # codec, per-block offset/length/SHA-256, evidence per block
+out/salvage/block_0000.bin     # recovered block bytes, each CRC-verified
+out/payload.bin                # written ONLY when recovered blocks tile the whole
+                               # output with known offsets and no gap</pre></div>
+      <p>The last line is a deliberate restriction. A single joined payload is produced only when the recovered blocks form a complete, gap-free cover with known offsets — otherwise you get the blocks separately. Concatenating blocks across a gap would silently shift every byte after it, producing a file that looks whole and is wrong.</p>
+      <p>The same care applies to offsets. xz's Index gives every block's uncompressed offset even across a gap, so placement is known exactly. After a bzip2 gap the offset is reported as unknown — the bytes are correct, but where they belong in the original is not something we will invent.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="limits">Limits</h2>
+      <ul><li>The corrupted block itself is <strong>not</strong> recovered. Salvage recovers around damage, never through it.</li><li>gzip, DEFLATE and tar are handled by a different mechanism (member and continuation resync) because they are not block-independent in this sense.</li><li>Every decode is output-capped as a decompression-bomb guard, so a hostile stream cannot turn recovery into a denial-of-service.</li><li>Yield is measured against what survived the damage, not against the original file. A file truncated to half its size cannot yield more than half.</li><li>The CRC evidence here is accidental-grade. It establishes that these are the bytes that were compressed, not that nobody chose them — see <a href="/research/crc32-collisions-that-pass-gzip-t/">the CRC-32 forgery measurement</a>.</li></ul>
+      <h2 id="takeaway">Practical takeaway</h2>
+      <p>If you compress large archival data and might one day need to recover part of it, the block structure of your format decides what is possible. <code>xz -T0</code> and <code>bzip2</code> leave a recovery surface with independent proof on every block. <code>zstd</code> and <code>lz4</code> are faster and compress well, but a damaged stream leaves nothing that can be independently verified.</p>
+      <p>That is a real trade-off worth making deliberately rather than discovering afterwards.</p>
+      <h2 id="reproduce">Reproduce it</h2>
+      <div class="terminal"><pre>cargo run -p phx_recovery --example phx-pds-bench --release
+# drives the shipped salvage library against real bzip2/xz CLI fixtures;
+# reports per-cell yield, Wilson CI, false bytes and the negative control</pre></div>
+      <ul class="source-list"><li><a href="/research/recovering-past-corruption-xz-bzip2/data.json">data.json</a> — per-cell yields and bounds</li><li><a href="/formats/zip/">ZIP format reference</a> — the same reasoning, applied to ZIP</li><li><a href="/reference/rule-ids/">Rule reference</a> — the finding IDs these damage classes raise</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about compressed-stream recovery</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can data be recovered from a corrupted xz file?</h3><p>Usually yes, apart from the damaged block itself. xz compresses in independent blocks, each with its own CRC, so a tool that resynchronises past the corrupt block can decode and verify the rest. In our measurement a 10-block stream with mid-stream corruption yielded 9 of 10 blocks, while stock xz -d abandoned the whole stream.</p></div>
+      <div class="qa"><h3>Why does xz -d refuse to output anything?</h3><p>A decompressor guarantees exact output. Once it hits a corrupt block it cannot keep that guarantee, so it stops rather than emit bytes it cannot stand behind. Salvage is a different job with a different contract: recover the blocks that verify independently, and be explicit about the rest.</p></div>
+      <div class="qa"><h3>Can a truncated xz file be recovered?</h3><p>If it was compressed with threaded xz (-T0), yes: the block headers carry their own sizes, so every complete block before the cut can be located and verified without the Index that truncation removed. Single-block streams and xz -T1 omit those sizes, and there VERAQIS abstains rather than guess.</p></div>
+      <div class="qa"><h3>What about zstd and lz4?</h3><p>They are detected and then abstained. Neither carries an independent per-block verifier, so recovered bytes could not be checked against anything other than the recovery process itself. Emitting them would mean claiming a correctness we cannot demonstrate.</p></div>
+      <div class="qa"><h3>Is bzip2 more recoverable than xz?</h3><p>Both reach the safe optimum in our measurements for truncation and mid-stream corruption. bzip2 has the simpler story because its per-block CRC and block structure are self-contained; xz needs the threaded layout for the truncation case, but offers CRC-64 evidence where bzip2 offers CRC-32.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). Recovering past a corrupted block in xz and bzip2.
+VERAQIS Research. https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/
+Engine: VERAQIS 0.2.1 · Measured: 18 July 2026 · Experiment: EXP-PDS</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/research/joint-verifier-surface-is-empty/"><h3>The joint-verifier surface is empty</h3><p>Why one checksum per region is all any of these formats gives you.</p></a>
+      <a class="card link-card" href="/research/7z-solid-archive-bit-flip/"><h3>Bit flip in a solid 7z archive</h3><p>The opposite structure — no block independence at all — and what survives anyway.</p></a>
+      <a class="card link-card" href="/research/crc32-collisions-that-pass-gzip-t/"><h3>CRC-32 collisions that pass gzip -t</h3><p>The grade of evidence a block CRC actually provides.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

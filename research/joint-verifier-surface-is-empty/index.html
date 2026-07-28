@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The joint-verifier surface is empty — 12 formats | VERAQIS</title>
+<meta name="description" content="Can independent checksums be combined to solve for lost bytes? We measured 12 file formats: the joint-sufficient share is 0.00 in every one, so the solver was cancelled." />
+<link rel="canonical" href="https://veraqis.tech/research/joint-verifier-surface-is-empty/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="The joint-verifier surface is empty — 12 formats measured" />
+<meta property="og:description" content="A pre-registered measurement of whether independent checksums can be combined to solve for lost bytes. The answer, in every supported format, is no." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/research/joint-verifier-surface-is-empty/" />
+<meta property="article:published_time" content="2026-07-20" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The joint-verifier surface is empty — 12 formats measured" />
+<meta name="twitter:description" content="A pre-registered measurement of whether independent checksums can be combined to solve for lost bytes. The answer, in every supported format, is no." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/research/joint-verifier-surface-is-empty/#article",
+      "url": "https://veraqis.tech/research/joint-verifier-surface-is-empty/",
+      "headline": "We measured 12 file formats for a recovery engine, then cancelled it",
+      "name": "The joint-verifier surface is empty — 12 formats | VERAQIS",
+      "description": "Can independent checksums be combined to solve for lost bytes? We measured 12 file formats: the joint-sufficient share is 0.00 in every one, so the solver was cancelled.",
+      "datePublished": "2026-07-20",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "file format redundancy"
+        },
+        {
+          "@type": "Thing",
+          "name": "checksums"
+        },
+        {
+          "@type": "Thing",
+          "name": "erasure recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "research methodology"
+        }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://veraqis.tech/research/joint-verifier-surface-is-empty/#dataset",
+      "name": "Joint-sufficient verifier surface across 12 formats (EXP-0-JMV)",
+      "description": "Per-format counts of independent payload verifiers, maximum single-verifier evidence in bits, and the share of erasure cases solvable by a single verifier, by a joint set, or by neither, under strict and generous independence models.",
+      "url": "https://veraqis.tech/research/joint-verifier-surface-is-empty/",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "isAccessibleForFree": true,
+      "datePublished": "2026-07-20",
+      "variableMeasured": [
+        "single_share",
+        "joint_share_strict",
+        "joint_share_generous",
+        "insufficient_share",
+        "max_single_bits"
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://veraqis.tech/research/joint-verifier-surface-is-empty/data.json"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/research/joint-verifier-surface-is-empty/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can lost bytes be reconstructed from a file format's own checksums?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only within the width of a single checksum — about four bytes for a CRC-32, eight for a CRC-64 — and only when you know exactly which bytes are missing. Combining several checksums to solve a wider gap does not work in practice: across twelve formats we measured, every one carries at most one independent checksum over any given payload region."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which formats carry no payload checksum at all?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Of the twelve measured, ISO, SQLite, PDF, TAR, ZSTD and LZ4 have no independent payload verifier. Recovery in those formats has to be structural — object graphs, schemas, page and directory structure — rather than arithmetic on bytes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does a checksum only pin four bytes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A 32-bit CRC provides 32 bits of constraint. Four missing bytes are also 32 bits of unknown, so the system has exactly one solution. Five missing bytes are 40 bits of unknown against 32 bits of constraint — 256 candidates, no way to choose, and no honest tool will pick one."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why publish an experiment that failed?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It did not fail — it returned a clear answer, which is that the opportunity is not there. Publishing it documents the real limits of format-internal redundancy, and it demonstrates that our decision gates cancel projects rather than rationalising them."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/research/joint-verifier-surface-is-empty/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Research",
+          "item": "https://veraqis.tech/research/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Joint-verifier surface",
+          "item": "https://veraqis.tech/research/joint-verifier-surface-is-empty/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/" class="active">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/research/">Research</a></p>
+    <p class="kicker">Experiment EXP-0-JMV · negative result</p>
+    <h1>We measured 12 file formats for a recovery engine, then cancelled it</h1>
+    <p class="lead">This is a report about work we did not do. Before building a solver that combines several independent checksums to reconstruct lost bytes, we measured whether the opportunity exists at all. Across twelve formats it does not, so the solver was never written — and that is the result worth publishing.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-20">20 July 2026</time></span> · <span class="mono">Updated <time datetime="2026-07-28">28 July 2026</time></span> · <span class="mono">EXP-0-JMV</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="idea">The idea worth testing</h2>
+      <p>If some bytes of a file are gone but you know <em>which</em> ones are gone, recovery becomes algebra. Each surviving checksum that covers the missing region is a constraint. Enough independent constraints, and the missing bytes have exactly one solution — no guessing, no model, no probability.</p>
+      <p>One 32-bit CRC gives 32 bits of constraint, which pins down four missing bytes and no more. But formats often carry several checksums. If two or three of them independently covered the same region, you could <strong>combine</strong> them and solve for much larger gaps. That is a genuinely attractive engine, and it is the kind of thing a recovery vendor would happily announce before checking.</p>
+      <div class="callout"><strong>The rule we work under:</strong> no recovery solver is built before the size of its addressable surface has been measured. A guessed percentage is never a justification. If the measurement comes back empty, the correct output is a cancelled project and a published number.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="method">Method</h2>
+      <p>For each format we inventoried every checksum that attests payload data, then modelled a known erasure of <code>E</code> bytes. An erasure of <code>E</code> bytes has <code>E × 8</code> degrees of freedom, so a verifier is <em>sufficient</em> if its width in bits reaches that number.</p>
+      <ul><li><strong>single</strong> — one independent verifier is wide enough on its own.</li><li><strong>joint</strong> — no single verifier suffices, but the combined set does, with one verifier held back as an independent confirmer <em>outside</em> the set being solved against.</li><li><strong>insufficient</strong> — neither.</li></ul>
+      <p>Holding one verifier back is not a formality. A solver that fits a candidate to a checksum will always satisfy that checksum afterwards — the check proves nothing about the answer. Evidence only counts when it comes from a verifier the solver did not target. Without that reservation this experiment would have "succeeded" trivially and dishonestly.</p>
+      <p>We ran two independence models: a <strong>strict</strong> one (the honest payload-region model, which is the gate) and a deliberately <strong>generous</strong> one that counts every data-covering checksum with no region or copy filter. A NO-GO that holds under the generous over-count is robust. Gate: a format is GO only if the joint share reaches τ = 0.10 <strong>and</strong> the controls come back empty.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="result">Result</h2>
+      <div class="table-scroll"><table><thead><tr><th>format</th><th>independent payload verifiers</th><th>max single (bits)</th><th>single %</th><th>joint % (strict)</th><th>insufficient %</th><th>joint % (generous)</th><th>verdict</th></tr></thead><tbody><tr><td>ZIP</td><td>1 × 32 bits</td><td>32</td><td>0.27</td><td><strong>0.00</strong></td><td>0.73</td><td>0.00</td><td>NO-GO</td></tr><tr><td>7Z</td><td>1 × 32 bits</td><td>32</td><td>0.27</td><td><strong>0.00</strong></td><td>0.73</td><td>0.20</td><td>NO-GO</td></tr><tr><td>BZIP2</td><td>1 × 32 bits</td><td>32</td><td>0.27</td><td><strong>0.00</strong></td><td>0.73</td><td>0.00</td><td>NO-GO</td></tr><tr><td>XZ</td><td>1 × 64 bits</td><td>64</td><td>0.47</td><td><strong>0.00</strong></td><td>0.53</td><td>0.00</td><td>NO-GO</td></tr><tr><td>GZIP</td><td>1 × 32 bits</td><td>32</td><td>0.27</td><td><strong>0.00</strong></td><td>0.73</td><td>0.00</td><td>NO-GO</td></tr><tr><td>RAR</td><td>1 × 32 bits</td><td>32</td><td>0.27</td><td><strong>0.00</strong></td><td>0.73</td><td>0.00</td><td>NO-GO</td></tr><tr><td>ISO</td><td>0</td><td>0</td><td>0.00</td><td><strong>0.00</strong></td><td>1.00</td><td>0.00</td><td>NO-GO</td></tr><tr><td>SQLite</td><td>0</td><td>0</td><td>0.00</td><td><strong>0.00</strong></td><td>1.00</td><td>0.00</td><td>NO-GO</td></tr><tr><td>PDF</td><td>0</td><td>0</td><td>0.00</td><td><strong>0.00</strong></td><td>1.00</td><td>0.00</td><td>NO-GO</td></tr><tr><td>TAR</td><td>0</td><td>0</td><td>0.00</td><td><strong>0.00</strong></td><td>1.00</td><td>0.00</td><td>NO-GO</td></tr><tr><td>ZSTD</td><td>0</td><td>0</td><td>0.00</td><td><strong>0.00</strong></td><td>1.00</td><td>0.00</td><td>NO-GO</td></tr><tr><td>LZ4</td><td>0</td><td>0</td><td>0.00</td><td><strong>0.00</strong></td><td>1.00</td><td>0.00</td><td>NO-GO</td></tr></tbody></table></div><p class="note">Table JMV-0, generated by <code>phx-exp0-jmv</code>. τ = 0.10. The single non-zero generous figure — 7Z at 0.20 — is an artefact of the deliberate over-count: 7z's header-region CRCs do not intersect a payload erasure at all, so counting them was never legitimate.</p>
+      <figure class="chart">
+<svg viewBox="0 0 720 288" width="100%" height="auto" role="img" aria-labelledby="ct-wiz172" preserveAspectRatio="xMinYMin meet"><title id="ct-wiz172">Share of erasure cases solvable by combining independent verifiers</title><desc>The joint-sufficient share under the strict model, per format. Every bar is zero. The gate threshold τ = 0.10 was never approached in any format.</desc><text x="0" y="28" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">ZIP</text><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="15" width="2" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="28" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.00</text><text x="0" y="62" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">7Z</text><rect x="150" y="49" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="49" width="2" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="62" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.00</text><text x="0" y="96" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">XZ</text><rect x="150" y="83" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="83" width="2" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="96" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.00</text><text x="0" y="130" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">GZIP</text><rect x="150" y="117" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="117" width="2" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="130" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.00</text><text x="0" y="164" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">BZIP2 / RAR</text><rect x="150" y="151" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="151" width="2" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="164" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.00</text><text x="0" y="198" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">ISO / SQLite / PDF</text><rect x="150" y="185" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="185" width="2" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="198" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.00</text><text x="0" y="232" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">TAR / ZSTD / LZ4</text><rect x="150" y="219" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="219" width="2" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="232" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.00</text><text x="0" y="266" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">gate threshold τ</text><rect x="150" y="253" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="253" width="474" height="16" rx="3" fill="var(--brand-primary)" opacity="1"/><text x="634" y="266" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0.10</text></svg>
+<figcaption>The joint-sufficient share under the strict model, per format. Every bar is zero. The gate threshold τ = 0.10 was never approached in any format.</figcaption>
+</figure>
+      <div class="claim" id="claim-empty-surface"><p class="claim-text">Across all twelve supported formats the joint-sufficient share is 0.00. Every one of them carries at most one independent linear checksum over any single payload region, so no erasure ever needs — or can use — a combination of independent verifiers.</p><p class="claim-src">EXP-0-JMV, Table JMV-0, generated by <code>phx-exp0-jmv</code> · strict and generous independence models · τ = 0.10 · controls empty · VERAQIS 0.2.1</p></div>
+      <h3 id="controls">Controls</h3>
+      <div class="table-scroll"><table><thead><tr><th>control</th><th>verifiers found</th><th>joint %</th><th>empty as required?</th></tr></thead><tbody><tr><td>encrypted content</td><td>0</td><td>0.00</td><td>yes</td></tr><tr><td>maximum-entropy content</td><td>0</td><td>0.00</td><td>yes</td></tr><tr><td>tautology (one verifier, gap wider than its bits)</td><td>1</td><td>0.00</td><td>yes</td></tr></tbody></table></div><p class="note">The controls exist to catch a harness that finds structure where none exists. All three came back empty, so the zeros above are a property of the formats and not of the measurement.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="why">Why formats are built this way</h2>
+      <p>The zeros are not an accident of our sample. Checksums in archive formats are designed for <strong>error detection</strong>, and one checksum per region is exactly enough for that job. Adding a second independent checksum over the same bytes costs space and buys nothing a format designer wanted. Error <em>correction</em> is deliberately left to a separate layer — parity files, RAID, filesystem checksums, recovery records.</p>
+      <p>The two columns of zeros on the right of the table say something sharper. ISO, SQLite, PDF, TAR, ZSTD and LZ4 carry <strong>no</strong> independent payload verifier at all. For those formats, byte-level recovery of an erased region cannot be <em>proven</em> by any internal evidence — which is why our work on them is structural and object-level instead: reachability, schema, page and object graphs, rather than arithmetic on bytes.</p>
+      <p>The single-verifier column is worth reading too. Even where a checksum exists, it only ever pins about four bytes (32 bits) or eight (XZ's CRC-64). That is why the <em>single</em> share tops out at 0.47 for XZ and 0.27 elsewhere: most real erasures are simply wider than any one checksum can determine.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="instead">What we did instead</h2>
+      <p>The budget that would have gone into a joint solver went into methods whose surface we had measured and found non-empty:</p>
+      <div class="grid g3"><div class="card"><h3>Prefix salvage</h3><p>A damaged solid archive is recoverable up to the damage — measured at 87 to 501 of 541 files, zero false files.</p><p class="note">Read the measurement →  /research/7z-solid-archive-bit-flip/</p></div><div class="card"><h3>Block-independent salvage</h3><p>Where a format does have per-block checksums, whole blocks can be recovered past a corrupted one and re-verified independently.</p><p class="note">Read the measurement →  /research/recovering-past-corruption-xz-bzip2/</p></div><div class="card"><h3>Exact-copy reconstruction</h3><p>Bytes restored from the owner's own earlier version or duplicate file — exact, never inferred.</p></div></div>
+      <h2 id="why-publish">Why publish a negative result</h2>
+      <p>Three reasons, in order of how much they matter to someone evaluating recovery software.</p>
+      <ol><li><strong>It is the honest state of the art.</strong> If you are wondering whether some tool can algebraically reconstruct erased bytes from an archive's own checksums, the answer is that the formats do not carry the redundancy for it. That is useful whether or not you ever use our product.</li><li><strong>It is a check on us.</strong> A vendor that only publishes successes is publishing marketing. The measurement that cancels a project is the one that shows the gates are real.</li><li><strong>It saves someone else the work.</strong> The measurement harness and its pre-registration are in the repository. If a format ever ships two independent payload checksums, the number moves and the solver becomes worth building.</li></ol>
+      <div class="callout info">The rule stands even though the surface is empty: if any future case does combine verifiers, the confirming one must come from outside the set that was solved against. An empty result does not retire the principle.</div>
+      <h2 id="reproduce">Reproduce it</h2>
+      <div class="terminal"><pre>cargo run -p phx_recovery --bin phx-exp0-jmv --release
+# regenerates Table JMV-0 in BENCHMARKS.md, including the controls</pre></div>
+      <ul class="source-list"><li><a href="/research/joint-verifier-surface-is-empty/data.json">data.json</a> — Table JMV-0, machine-readable</li><li><a href="/reference/evidence-model/">The evidence model</a> — independence, tautology and the bit budget</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about format redundancy</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can lost bytes be reconstructed from a file format's own checksums?</h3><p>Only within the width of a single checksum — about four bytes for a CRC-32, eight for a CRC-64 — and only when you know exactly which bytes are missing. Combining several checksums to solve a wider gap does not work in practice: across twelve formats we measured, every one carries at most one independent checksum over any given payload region.</p></div>
+      <div class="qa"><h3>Which formats carry no payload checksum at all?</h3><p>Of the twelve measured, ISO, SQLite, PDF, TAR, ZSTD and LZ4 have no independent payload verifier. Recovery in those formats has to be structural — object graphs, schemas, page and directory structure — rather than arithmetic on bytes.</p></div>
+      <div class="qa"><h3>Why does a checksum only pin four bytes?</h3><p>A 32-bit CRC provides 32 bits of constraint. Four missing bytes are also 32 bits of unknown, so the system has exactly one solution. Five missing bytes are 40 bits of unknown against 32 bits of constraint — 256 candidates, no way to choose, and no honest tool will pick one.</p></div>
+      <div class="qa"><h3>Why publish an experiment that failed?</h3><p>It did not fail — it returned a clear answer, which is that the opportunity is not there. Publishing it documents the real limits of format-internal redundancy, and it demonstrates that our decision gates cancel projects rather than rationalising them.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). We measured 12 file formats for a recovery engine, then cancelled it.
+VERAQIS Research. https://veraqis.tech/research/joint-verifier-surface-is-empty/
+Engine: VERAQIS 0.2.1 · Measured: 20 July 2026 · Experiment: EXP-0-JMV</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/research/recovering-past-corruption-xz-bzip2/"><h3>Recovering past corruption in xz and bzip2</h3><p>Where per-block checksums do exist, whole blocks survive — measured against stock tools.</p></a>
+      <a class="card link-card" href="/research/crc32-collisions-that-pass-gzip-t/"><h3>CRC-32 collisions that pass gzip -t</h3><p>What the one checksum per region is actually worth as evidence.</p></a>
+      <a class="card link-card" href="/reference/evidence-model/"><h3>The evidence model</h3><p>Why a checksum you solved against contributes exactly zero bits.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Measure your own file instead of guessing</h2>
+    <p class="sub">VERAQIS reports what the surviving bytes can prove and marks the rest unknown. Analysis is free, runs locally, and abstains out loud when the evidence is not there.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

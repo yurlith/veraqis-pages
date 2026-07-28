@@ -1,0 +1,56 @@
+{
+  "experiment": "EXP-7Z-PREFIX-SALVAGE",
+  "companion_experiments": ["EXP-0-LZMA2-RESET-SURFACE", "EXP-0-LZMA2-PREFIX"],
+  "engine_version": "VERAQIS 0.2.1",
+  "seed": 20260725,
+  "measured": "2026-07-25",
+  "source_document": "LZMA2_MIDSTREAM_BENCHMARKS.md",
+  "license": "CC-BY-4.0",
+  "gate": { "metric": "false_files", "required": 0, "observed": 0, "verdict": "PASS" },
+  "corpus_a": {
+    "description": "Real solid LZMA2 7z archive built with py7zr (liblzma, single coder)",
+    "files": 541,
+    "unpacked_bytes_approx": 10485760,
+    "driver": "shipped CLI: phx recover --semantic 7z",
+    "result_hash": "cb36b11a",
+    "cells": [
+      { "flip_position": null,  "label": "clean control", "recovered_files": 541, "share": 1.000, "false_files": 0 },
+      { "flip_position": 0.20,  "label": "flip @ 20%",    "recovered_files": 87,  "share": 0.161, "false_files": 0 },
+      { "flip_position": 0.40,  "label": "flip @ 40%",    "recovered_files": 190, "share": 0.351, "false_files": 0 },
+      { "flip_position": 0.60,  "label": "flip @ 60%",    "recovered_files": 316, "share": 0.584, "false_files": 0 },
+      { "flip_position": 0.80,  "label": "flip @ 80%",    "recovered_files": 441, "share": 0.815, "false_files": 0 },
+      { "flip_position": 0.95,  "label": "flip @ 95%",    "recovered_files": 501, "share": 0.926, "false_files": 0 }
+    ]
+  },
+  "corpus_b": {
+    "description": "Second independent solid folder, finer resolution",
+    "files": 226,
+    "unpacked_bytes": 4210000,
+    "compressed_bytes": 804000,
+    "result_hash": "c65cc72f",
+    "cells": [
+      { "flip_position": 0.25, "recovered_files": 61,  "share": 0.270, "false_recovered_files": 0 },
+      { "flip_position": 0.50, "recovered_files": 116, "share": 0.513, "false_recovered_files": 0 },
+      { "flip_position": 0.70, "recovered_files": 156, "share": 0.690, "false_recovered_files": 0 },
+      { "flip_position": 0.85, "recovered_files": 181, "share": 0.801, "false_recovered_files": 0 },
+      { "flip_position": 0.95, "recovered_files": 211, "share": 0.934, "false_recovered_files": 0 },
+      { "flip_position": 0.99, "recovered_files": 223, "share": 0.987, "false_recovered_files": 0 }
+    ]
+  },
+  "reset_surface": {
+    "experiment": "EXP-0-LZMA2-RESET-SURFACE",
+    "encoder": "liblzma",
+    "result_hash": "a8d262bd",
+    "cells": 15,
+    "presets": [1, 6, 9],
+    "dictionary_sizes": "64 KiB to 16 MiB",
+    "level_0_internal_chunks": "all",
+    "level_1_internal": 0,
+    "level_2_internal": 0,
+    "level_3_internal": 0,
+    "internal_resync_points": 0,
+    "verdict": "NO-GO: no recovery of data after a mid-stream flip"
+  },
+  "regression": { "command": "cargo test -p phx_recovery -p phx", "passed": 61, "failed": 0 },
+  "out_of_scope": ["RAR compressed payload (proprietary codec)", "encrypted 7z headers or content"]
+}

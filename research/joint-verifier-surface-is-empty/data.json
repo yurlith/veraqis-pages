@@ -1,0 +1,42 @@
+{
+  "experiment": "EXP-0-JMV",
+  "generator": "phx-exp0-jmv",
+  "engine_version": "VERAQIS 0.2.1",
+  "source_document": "BENCHMARKS.md, Table JMV-0",
+  "license": "CC-BY-4.0",
+  "model": {
+    "degrees_of_freedom": "erasure of E bytes gives E*8 bits of unknown over the erasure region",
+    "single": "one independent verifier at least as wide as the degrees of freedom",
+    "joint": "no single verifier suffices, but the solve-set does, with one verifier reserved as an independent confirmer outside solved_against",
+    "insufficient": "neither",
+    "strict": "independent checksums attesting the payload data",
+    "generous": "every data-coverage checksum, no region or copy filter (deliberate over-count)"
+  },
+  "gate": {
+    "tau": 0.10,
+    "rule": "GO iff joint_share_strict >= tau AND controls empty",
+    "verdict": "NO-GO for all formats",
+    "solver_built": false
+  },
+  "formats": [
+    { "format": "ZIP",    "strict_payload_verifiers": 1, "max_single_bits": 32, "single_share": 0.27, "joint_share_strict": 0.00, "insufficient_share": 0.73, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "7Z",     "strict_payload_verifiers": 1, "max_single_bits": 32, "single_share": 0.27, "joint_share_strict": 0.00, "insufficient_share": 0.73, "joint_share_generous": 0.20, "verdict": "NO-GO" },
+    { "format": "BZIP2",  "strict_payload_verifiers": 1, "max_single_bits": 32, "single_share": 0.27, "joint_share_strict": 0.00, "insufficient_share": 0.73, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "XZ",     "strict_payload_verifiers": 1, "max_single_bits": 64, "single_share": 0.47, "joint_share_strict": 0.00, "insufficient_share": 0.53, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "GZIP",   "strict_payload_verifiers": 1, "max_single_bits": 32, "single_share": 0.27, "joint_share_strict": 0.00, "insufficient_share": 0.73, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "RAR",    "strict_payload_verifiers": 1, "max_single_bits": 32, "single_share": 0.27, "joint_share_strict": 0.00, "insufficient_share": 0.73, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "ISO",    "strict_payload_verifiers": 0, "max_single_bits": 0,  "single_share": 0.00, "joint_share_strict": 0.00, "insufficient_share": 1.00, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "SQLite", "strict_payload_verifiers": 0, "max_single_bits": 0,  "single_share": 0.00, "joint_share_strict": 0.00, "insufficient_share": 1.00, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "PDF",    "strict_payload_verifiers": 0, "max_single_bits": 0,  "single_share": 0.00, "joint_share_strict": 0.00, "insufficient_share": 1.00, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "TAR",    "strict_payload_verifiers": 0, "max_single_bits": 0,  "single_share": 0.00, "joint_share_strict": 0.00, "insufficient_share": 1.00, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "ZSTD",   "strict_payload_verifiers": 0, "max_single_bits": 0,  "single_share": 0.00, "joint_share_strict": 0.00, "insufficient_share": 1.00, "joint_share_generous": 0.00, "verdict": "NO-GO" },
+    { "format": "LZ4",    "strict_payload_verifiers": 0, "max_single_bits": 0,  "single_share": 0.00, "joint_share_strict": 0.00, "insufficient_share": 1.00, "joint_share_generous": 0.00, "verdict": "NO-GO" }
+  ],
+  "controls": [
+    { "control": "encrypted", "verifiers": 0, "joint_share": 0.00, "empty": true },
+    { "control": "max-entropy", "verifiers": 0, "joint_share": 0.00, "empty": true },
+    { "control": "tautology (1 verifier, DoF wider than its bits)", "verifiers": 1, "joint_share": 0.00, "empty": true }
+  ],
+  "finding": "Every supported format carries at most one independent linear checksum over any single payload region, so no single-region erasure needs or can use a combination of independent verifiers.",
+  "generous_note": "The single non-zero generous figure (7Z at 0.20) is an artefact of the deliberate over-count: 7z header-region CRCs do not intersect a payload erasure."
+}

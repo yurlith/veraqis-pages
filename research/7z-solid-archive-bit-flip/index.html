@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bit flip in a solid 7z archive: what survives | VERAQIS</title>
+<meta name="description" content="We flipped one bit at six depths in a real 541-file solid 7z archive and counted what still decodes byte-exact: 87 to 501 files recovered, zero false files." />
+<link rel="canonical" href="https://veraqis.tech/research/7z-solid-archive-bit-flip/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="One bit flip in a solid 7z archive — a 541-file measurement" />
+<meta property="og:description" content="A solid archive is not all-or-nothing. We measured exactly how much survives a single bit flip, at six damage depths, with zero false files." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/research/7z-solid-archive-bit-flip/" />
+<meta property="article:published_time" content="2026-07-25" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="One bit flip in a solid 7z archive — a 541-file measurement" />
+<meta name="twitter:description" content="A solid archive is not all-or-nothing. We measured exactly how much survives a single bit flip, at six damage depths, with zero false files." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/research/7z-solid-archive-bit-flip/#article",
+      "url": "https://veraqis.tech/research/7z-solid-archive-bit-flip/",
+      "headline": "One bit flip in a solid 7z archive: measuring what actually survives",
+      "name": "Bit flip in a solid 7z archive: what survives | VERAQIS",
+      "description": "We flipped one bit at six depths in a real 541-file solid 7z archive and counted what still decodes byte-exact: 87 to 501 files recovered, zero false files.",
+      "datePublished": "2026-07-25",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "7z"
+        },
+        {
+          "@type": "Thing",
+          "name": "LZMA2"
+        },
+        {
+          "@type": "Thing",
+          "name": "solid compression"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://veraqis.tech/research/7z-solid-archive-bit-flip/#dataset",
+      "name": "Solid 7z prefix-salvage measurement (EXP-7Z-PREFIX-SALVAGE)",
+      "description": "Recovered-file counts and false-file counts for a single bit flip at six depths in two real solid LZMA2 7z archives (541 files and 226 files), plus the LZMA2 reset-point histogram.",
+      "url": "https://veraqis.tech/research/7z-solid-archive-bit-flip/",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "isAccessibleForFree": true,
+      "datePublished": "2026-07-25",
+      "variableMeasured": [
+        "recovered_files",
+        "false_files",
+        "flip_position",
+        "internal_resync_points"
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://veraqis.tech/research/7z-solid-archive-bit-flip/data.json"
+        },
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "text/csv",
+          "contentUrl": "https://veraqis.tech/research/7z-solid-archive-bit-flip/data.csv"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/research/7z-solid-archive-bit-flip/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is a damaged solid 7z archive a total loss?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Every file that finishes decoding before the damaged byte is recoverable byte-exact and can be verified against its stored CRC-32. In our 541-file measurement, a bit flip at 95% of the payload still left 501 files (92.6%) recoverable, and a flip at 20% still left 87. Data after the damage is not recoverable — LZMA2 has no internal resync point."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why can data after the flip not be recovered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because LZMA2 carries dictionary and range-coder state continuously across the folder. We histogrammed every chunk reset level across 15 encoder configurations and found zero internal resync points, so the decoder never regains synchronisation after a mid-stream corruption."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do you know the recovered files are correct and not just plausible?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each recovered file is checked against the CRC-32 stored in the 7z header, and that CRC was not used to construct the candidate — it was used to check it. Files that fail are abstained, never emitted. Across all cells of both measurements, false_files was 0."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this work for RAR archives too?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. RAR compressed payloads use a proprietary codec that VERAQIS does not decode, so RAR payload recovery remains a measured NO-GO for us. VERAQIS can still read RAR5 inventory and extract stored (-m0) files exactly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I stop using solid compression?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not necessarily — it compresses better. But understand the trade: in a solid archive your loss depends on where damage lands, not just how much there is. For irreplaceable data, either disable solid mode or add a parity sidecar so position stops mattering."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/research/7z-solid-archive-bit-flip/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Research",
+          "item": "https://veraqis.tech/research/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Solid 7z bit flip",
+          "item": "https://veraqis.tech/research/7z-solid-archive-bit-flip/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/" class="active">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/research/">Research</a></p>
+    <p class="kicker">Experiment EXP-7Z-PREFIX-SALVAGE</p>
+    <h1>One bit flip in a solid 7z archive: measuring what actually survives</h1>
+    <p class="lead">Conventional wisdom says a solid 7z archive is all-or-nothing: damage anywhere ruins everything. We measured it on a real 541-file archive. The first half of that claim is right and the second half is wrong — and the difference is worth hundreds of files.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-25">25 July 2026</time></span> · <span class="mono">Updated <time datetime="2026-07-28">28 July 2026</time></span> · <span class="mono">EXP-7Z-PREFIX-SALVAGE</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="question">The question</h2>
+      <p>A <strong>solid</strong> archive compresses all its files as one continuous stream, which is why it compresses better than a per-file archive. The cost is coupling: the decompressor carries state — dictionary <em>and</em> range-coder state — from one file into the next. Flip one bit in the middle and everything downstream desynchronises.</p>
+      <p>That much is documented. What is <em>not</em> documented anywhere we could find is the quantity: given a single bit flip at a known depth, <strong>how many files still come out byte-exact?</strong> Every answer we found online was qualitative — "the archive is ruined", "try a recovery record". We wanted the number, so we measured it.</p>
+      <p>Two separate questions fall out of that, and they have opposite answers. We ran both, because a recovery engine must not build a solver for a surface it has not measured first.</p>
+      <div class="grid g2"><div class="card"><h3>Angle A — can the stream heal itself?</h3><p>Does LZMA2 contain internal restart points a decoder could resynchronise on, recovering data <em>after</em> the flip?</p><p class="note">Result: NO-GO. Measured, not assumed.</p></div><div class="card"><h3>Angle B — what survives before the flip?</h3><p>A solid folder decodes sequentially. Are the files entirely <em>before</em> the damage exact, and can we prove each one?</p><p class="note">Result: GO. 87 to 501 of 541 files.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="angle-a">Angle A — the stream cannot heal itself</h2>
+      <p>LZMA2 is a chunk stream, and each chunk header declares a reset level: level 0 resets nothing, level 3 resets the dictionary, state and properties. If internal chunks carried a high reset level, a decoder could restart there and recover the tail of a damaged folder.</p>
+      <p>An earlier measurement counted only dictionary resets. That leaves a gap — a <em>state</em> reset would also be a resync point. So we histogrammed <strong>every</strong> reset level of <strong>every</strong> chunk, across three presets (1, 6, 9) and five dictionary sizes (64 KiB to 16 MiB): 15 cells, encoder liblzma (the encoder behind <code>xz</code>, Python <code>lzma</code> and py7zr).</p>
+      <div class="table-scroll"><table><thead><tr><th>preset</th><th>dict sizes</th><th>L0 (no reset)</th><th>L1</th><th>L2</th><th>L3 (full reset)</th><th>internal resync points</th></tr></thead><tbody><tr><td>1 / 6 / 9</td><td>64 KiB – 16 MiB</td><td>all internal chunks</td><td>0</td><td>0</td><td>0 internal</td><td><strong>0</strong></td></tr></tbody></table></div><p class="note">All 15 cells behave identically. liblzma emits exactly <strong>one</strong> level-3 chunk — the first — and every chunk after it is level 0. The range-coder state is carried unbroken across the whole folder.</p>
+      <div class="claim" id="claim-no-resync"><p class="claim-text">Across 15 encoder configurations, liblzma emitted zero internal LZMA2 resync points of any reset level. A single bit flip therefore desynchronises the decoder for the entire remainder of the solid folder — there is no restart point to recover on.</p><p class="claim-src">EXP-0-LZMA2-RESET-SURFACE · encoder liblzma (presets 1/6/9 × dict 64 KiB–16 MiB, 15 cells) · seed 20260725 · result hash <code>a8d262bd…</code> · VERAQIS 0.2.1</p></div>
+      <p>This is a negative result and we are publishing it as one. Recovering data <strong>after</strong> a mid-stream flip in a solid LZMA2 folder is not a hard engineering problem we have yet to solve — it is closed by the format. Any tool that claims otherwise for compressed (non-stored) solid content should be asked which bytes it verified, and against what.</p>
+      <p class="note">Scope: this covers liblzma. 7-Zip's own encoder was measured separately in an earlier run with the same outcome. RAR's codec is proprietary and stays outside our clean-room boundary — we make no claim about it.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="angle-b">Angle B — everything before the flip is recoverable</h2>
+      <p>"All-or-nothing" quietly assumes the damage kills the <em>prefix</em> too. It does not. A solid folder decodes strictly front-to-back, so every file that finishes decoding <strong>before</strong> the damaged byte is produced from undamaged input — and each one carries its own CRC-32 in the 7z header, which we can check independently of the decoder that produced it.</p>
+      <p>So the correct framing is not "solid archives are unrecoverable". It is: <strong>a solid archive is recoverable up to the damage, and provably so.</strong></p>
+      <h3 id="method">Method</h3>
+      <ol><li>Build a real solid LZMA2 7z archive with py7zr (liblzma, single coder): <strong>541 real files, ~10 MiB unpacked</strong>.</li><li>Flip a single bit at a fixed fraction of the compressed payload: 20%, 40%, 60%, 80%, 95% — plus an undamaged control.</li><li>Run the damaged archive through the shipped CLI (<code>phx recover --semantic 7z</code>), not through a bespoke harness.</li><li>Verify <strong>every</strong> emitted file against its stored CRC-32. A file is emitted only if its CRC verifies; otherwise it is abstained.</li><li>Count <code>false_files</code> — emitted files whose bytes differ from the original. The gate requires 0.</li></ol>
+      <p>The verification step matters more than the recovery step. The CRC-32 used to confirm each file was <strong>not</strong> targeted by the solver — the solver reconstructs a prefix, then the CRC checks it. That independence is what makes the result evidence rather than a tautology (<a href="/reference/evidence-model/">why that distinction is binding</a>).</p>
+      <h3 id="results">Results</h3>
+      <figure class="chart">
+<svg viewBox="0 0 720 220" width="100%" height="auto" role="img" aria-labelledby="ct-yyo8mi" preserveAspectRatio="xMinYMin meet"><title id="ct-yyo8mi">Files recovered from a 541-file solid 7z archive after one bit flip</title><desc>Recovered files out of 541, by the position of the bit flip in the compressed payload. `false_files = 0` in every cell, including the clean control.</desc><text x="0" y="28" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">clean</text><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--brand-primary)" opacity="1"/><text x="634" y="28" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">541 / 541</text><text x="0" y="62" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">flip @ 20%</text><rect x="150" y="49" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="49" width="76" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="62" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">87</text><text x="0" y="96" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">flip @ 40%</text><rect x="150" y="83" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="83" width="166" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="96" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">190</text><text x="0" y="130" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">flip @ 60%</text><rect x="150" y="117" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="117" width="277" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="130" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">316</text><text x="0" y="164" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">flip @ 80%</text><rect x="150" y="151" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="151" width="386" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="164" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">441</text><text x="0" y="198" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">flip @ 95%</text><rect x="150" y="185" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="185" width="439" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="198" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">501</text></svg>
+<figcaption>Recovered files out of 541, by the position of the bit flip in the compressed payload. <code>false_files = 0</code> in every cell, including the clean control.</figcaption>
+</figure>
+      <div class="table-scroll"><table><thead><tr><th>flip position (of payload)</th><th>recovered / 541</th><th>share</th><th>false_files</th></tr></thead><tbody><tr><td>clean control</td><td>541</td><td>1.000</td><td><strong>0</strong></td></tr><tr><td>0.20</td><td>87</td><td>0.161</td><td><strong>0</strong></td></tr><tr><td>0.40</td><td>190</td><td>0.351</td><td><strong>0</strong></td></tr><tr><td>0.60</td><td>316</td><td>0.584</td><td><strong>0</strong></td></tr><tr><td>0.80</td><td>441</td><td>0.815</td><td><strong>0</strong></td></tr><tr><td>0.95</td><td><strong>501</strong></td><td><strong>0.926</strong></td><td><strong>0</strong></td></tr></tbody></table></div><p class="note">Real solid LZMA2 7z (py7zr / liblzma, single coder), 541 files, ~10 MiB unpacked, driven through the shipped CLI. Deterministic: result hash <code>cb36b11a…</code>.</p>
+      <div class="claim" id="claim-prefix-salvage"><p class="claim-text">In a 541-file solid 7z archive, a single bit flip at 95% of the compressed payload still leaves 501 files (92.6%) recoverable byte-exact and CRC-verified. Even a flip at 20% leaves 87 files. In all six cells, including the clean control, false_files = 0.</p><p class="claim-src">EXP-7Z-PREFIX-SALVAGE gate (PASS) · py7zr/liblzma solid archive, 541 files ~10 MiB · shipped <code>phx recover --semantic 7z</code> · seed 20260725 · result hash <code>cb36b11a…</code> · VERAQIS 0.2.1</p></div>
+      <p>A second, independent archive — <strong>226 files, 4.21 MB unpacked, 804 KB compressed</strong> — reproduces the shape at finer resolution, including a flip at 99% of the payload:</p>
+      <div class="table-scroll"><table><thead><tr><th>flip position</th><th>recovered / 226</th><th>share</th><th>false_recovered_files</th></tr></thead><tbody><tr><td>0.25</td><td>61</td><td>0.270</td><td><strong>0</strong></td></tr><tr><td>0.50</td><td>116</td><td>0.513</td><td><strong>0</strong></td></tr><tr><td>0.70</td><td>156</td><td>0.690</td><td><strong>0</strong></td></tr><tr><td>0.85</td><td>181</td><td>0.801</td><td><strong>0</strong></td></tr><tr><td>0.95</td><td>211</td><td>0.934</td><td><strong>0</strong></td></tr><tr><td>0.99</td><td>223</td><td><strong>0.987</strong></td><td><strong>0</strong></td></tr></tbody></table></div><p class="note">EXP-0-LZMA2-PREFIX · result hash <code>c65cc72f…</code>. Recovered share tracks the damage position almost linearly.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="implementation">The implementation detail that made it work</h2>
+      <p>The obvious approach — decode until the decoder errors and keep what came out — does not work with the decoder we ship. <code>lzma-rs</code>, the pure-Rust LZMA2 decoder in VERAQIS, is <strong>all-or-nothing</strong>: on a mid-stream error it retains no output at all. We measured that directly rather than assuming it, and it rules out the incremental-flush trick that works with liblzma.</p>
+      <p>What works with a one-shot API is to make the damaged stream into a shorter <em>valid</em> one. LZMA2 is a chunk stream terminated by a <code>0x00</code> byte. Truncate at a chunk boundary before the damage, append <code>0x00</code>, and you have a well-formed shorter stream that decodes cleanly to the correct prefix. The solver binary-searches for the longest such re-terminated prefix, then CRC-verifies each file inside it.</p>
+      <div class="terminal"><pre># recover the provable prefix of a damaged solid 7z folder
+phx recover damaged.7z --semantic 7z --output out/
+
+# each emitted file is CRC-verified against the archive header;
+# files after the damage are reported, not guessed.</pre></div>
+      <p class="note">Granularity is one LZMA2 chunk — roughly 2 MiB unpacked. A file straddling the last usable boundary is abstained, not truncated and shipped. Regression on the change: <code>cargo test -p phx_recovery -p phx</code>, 61 passed / 0 failed; the full-decode and non-solid paths were unchanged.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="limits">What this does not claim</h2>
+      <ul><li><strong>It does not recover data after the flip.</strong> That is closed by the format (Angle A) and no amount of engineering changes it.</li><li><strong>It is not a general 7z repair.</strong> Encrypted headers (<code>-mhe=on</code>) and encrypted content are detected and abstained — VERAQIS never guesses, derives or brute-forces a password.</li><li><strong>The numbers are archive-specific.</strong> How many files land before a flip at 60% depends on your file sizes and order. The <em>shape</em> — recovery scales with damage position — is general; the exact counts are not.</li><li><strong>It says nothing about RAR.</strong> RAR's compressed payload uses a proprietary codec we do not decode. That remains a measured NO-GO for us.</li><li><strong>A passing CRC-32 proves accidental integrity, not authorship.</strong> For what CRC-class evidence can and cannot support, see <a href="/research/crc32-collisions-that-pass-gzip-t/">our CRC-32 forgery measurement</a>.</li></ul>
+      <h2 id="consequence">Practical consequence</h2>
+      <p>If you archive with solid compression, damage position is not a detail — it decides your loss. Damage near the end of a solid folder costs almost nothing; damage near the start costs almost everything. If the archive matters, either turn solid mode off for the parts you cannot lose, or add parity so position stops mattering.</p>
+      <p>And if you are holding a damaged solid 7z right now: it is very likely <strong>not</strong> a total loss. The correct first step is to find out how much of it is provable, which costs nothing.</p>
+      <h2 id="reproduce">Reproduce it</h2>
+      <div class="terminal"><pre>$env:PATH = "$env:LOCALAPPDATA\Microsoft\WindowsApps;" + $env:PATH
+cargo build --release -p phx
+python -m pip install py7zr
+python scripts/exp_7z_prefix_salvage_gate.py     # the gate table above
+python scripts/exp_lzma2_reset_surface.py        # the reset histogram
+python scripts/exp_lzma2_prefix_salvage.py       # the 226-file table</pre></div>
+      <ul class="source-list"><li><a href="/research/7z-solid-archive-bit-flip/data.json">data.json</a> — both tables, machine-readable</li><li><a href="/research/7z-solid-archive-bit-flip/data.csv">data.csv</a> — the 541-file gate cells</li><li><a href="/testing.html">Test record</a> — how a VERAQIS result is proven in general</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about solid archives</h2>
+    <div class="faq">
+      <div class="qa"><h3>Is a damaged solid 7z archive a total loss?</h3><p>No. Every file that finishes decoding before the damaged byte is recoverable byte-exact and can be verified against its stored CRC-32. In our 541-file measurement, a bit flip at 95% of the payload still left 501 files (92.6%) recoverable, and a flip at 20% still left 87. Data after the damage is not recoverable — LZMA2 has no internal resync point.</p></div>
+      <div class="qa"><h3>Why can data after the flip not be recovered?</h3><p>Because LZMA2 carries dictionary and range-coder state continuously across the folder. We histogrammed every chunk reset level across 15 encoder configurations and found zero internal resync points, so the decoder never regains synchronisation after a mid-stream corruption.</p></div>
+      <div class="qa"><h3>How do you know the recovered files are correct and not just plausible?</h3><p>Each recovered file is checked against the CRC-32 stored in the 7z header, and that CRC was not used to construct the candidate — it was used to check it. Files that fail are abstained, never emitted. Across all cells of both measurements, false_files was 0.</p></div>
+      <div class="qa"><h3>Does this work for RAR archives too?</h3><p>No. RAR compressed payloads use a proprietary codec that VERAQIS does not decode, so RAR payload recovery remains a measured NO-GO for us. VERAQIS can still read RAR5 inventory and extract stored (-m0) files exactly.</p></div>
+      <div class="qa"><h3>Should I stop using solid compression?</h3><p>Not necessarily — it compresses better. But understand the trade: in a solid archive your loss depends on where damage lands, not just how much there is. For irreplaceable data, either disable solid mode or add a parity sidecar so position stops mattering.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). One bit flip in a solid 7z archive: measuring what actually survives.
+VERAQIS Research. https://veraqis.tech/research/7z-solid-archive-bit-flip/
+Engine: VERAQIS 0.2.1 · Measured: 25 July 2026 · Experiment: EXP-7Z-PREFIX-SALVAGE</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/research/crc32-collisions-that-pass-gzip-t/"><h3>CRC-32 collisions that pass gzip -t</h3><p>The verification used above is accidental-grade. Here is exactly where that limit lies.</p></a>
+      <a class="card link-card" href="/research/joint-verifier-surface-is-empty/"><h3>Why we cancelled a recovery engine</h3><p>The same measure-before-solver rule, applied to a solver we chose not to build.</p></a>
+      <a class="card link-card" href="/reference/evidence-model/"><h3>The evidence model</h3><p>What counts as proof, and why a checksum you solved against counts for nothing.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Find out how much of your archive is provable</h2>
+    <p class="sub">Analysis is free and runs locally: VERAQIS opens the file read-only and reports which entries are verified, which are damaged, and which are unknown. Nothing is uploaded, and there is no telemetry.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

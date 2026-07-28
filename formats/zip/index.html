@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The ZIP format, and exactly where it breaks | VERAQIS</title>
+<meta name="description" content="How a ZIP is laid out, the seven ways it fails, which rule ID each raises, and what is provably recoverable from each — including what is not." />
+<link rel="canonical" href="https://veraqis.tech/formats/zip/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="The ZIP format, and exactly where it breaks" />
+<meta property="og:description" content="Structure, the seven real failure modes, the rule ID each raises, and an honest recoverability column." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/zip/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The ZIP format, and exactly where it breaks" />
+<meta name="twitter:description" content="Structure, the seven real failure modes, the rule ID each raises, and an honest recoverability column." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/zip/#article",
+      "url": "https://veraqis.tech/formats/zip/",
+      "headline": "ZIP format reference — structure, failure modes, and what is recoverable",
+      "name": "The ZIP format, and exactly where it breaks | VERAQIS",
+      "description": "How a ZIP is laid out, the seven ways it fails, which rule ID each raises, and what is provably recoverable from each — including what is not.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Intermediate",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "ZIP"
+        },
+        {
+          "@type": "Thing",
+          "name": "archive format"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/formats/zip/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does Windows say a ZIP is invalid when the files are clearly inside it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the ZIP index stored at the end of the file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ZIP was designed to be written as a stream, before the writer knows how well each file will compress. Writing entries first and the index last makes that possible, and it makes appending cheap. The cost is that damage to the last few hundred bytes makes the entire archive unreadable to normal tools."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can every corrupted ZIP be repaired?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, and the answer depends on which bytes survived. Losing the index usually costs no data. Losing an entry's compressed bytes destroys that entry. Encrypted archives are not opened without the password at all. VERAQIS reports what surviving bytes can prove and marks the rest unknown."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is a DOCX file really a ZIP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. DOCX, XLSX, PPTX, JAR, APK and EPUB are all ZIP containers with a required internal layout. They can therefore fail in two independent ways: as a damaged ZIP, or as a valid ZIP whose internal package graph no longer resolves."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does CRC failed mean when extracting a ZIP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each entry stores a CRC-32 of its uncompressed contents. If the value computed at extraction differs, that entry's bytes changed after the archive was written. It is a per-entry verdict: the other entries in the same archive may be perfectly intact and verifiable."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/zip/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "ZIP",
+          "item": "https://veraqis.tech/formats/zip/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>ZIP format reference — structure, failure modes, and what is recoverable</h1>
+    <p class="lead">Almost every "corrupted ZIP" is one of seven specific failures, and they are not equally bad. Some destroy nothing but the index. This page maps the format to its failure modes, and each failure mode to what can actually be proven afterwards.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="layout">Layout</h2>
+      <p>A ZIP is a sequence of entries followed by an index. Each entry appears twice in the file: once as a <strong>local file header</strong> immediately before its compressed data, and once as an entry in the <strong>central directory</strong> at the end. The <strong>end of central directory</strong> record closes the file and says where that index starts.</p>
+      <div class="terminal"><pre>┌─────────────────────────────────────────────────────────────┐
+│ PK\x03\x04  local file header  #1   name, method, CRC-32,   │
+│             compressed data    #1   sizes                   │
+│ PK\x03\x04  local file header  #2                            │
+│             compressed data    #2                           │
+│                    …                                        │
+├─────────────────────────────────────────────────────────────┤
+│ PK\x01\x02  central directory entry #1  → offset of LFH #1   │
+│ PK\x01\x02  central directory entry #2  → offset of LFH #2   │
+│                    …                                        │
+├─────────────────────────────────────────────────────────────┤
+│ PK\x05\x06  end of central directory (EOCD)                  │
+│             → where the central directory starts, how many  │
+└─────────────────────────────────────────────────────────────┘</pre></div>
+      <h3 id="index-at-end">Why the index is at the end</h3>
+      <p>ZIP was designed for floppy disks and streaming writers. A writer that does not know in advance how well the data will compress cannot write a correct index first — so ZIP writes entries as it goes and appends the index last. That decision is why you can append to a ZIP cheaply, and also why almost every ZIP disaster looks the same.</p>
+      <div class="callout info"><strong>The single most important consequence:</strong> tools locate the index by scanning backwards from the end of the file. Damage the last few hundred bytes and every tool declares the archive invalid — while the compressed entries, sitting untouched earlier in the file, are perfectly intact. A "totally corrupted" ZIP is very often a ZIP that lost its table of contents.</div>
+      <p>It also means the deliberate redundancy in the format is useful: name, CRC-32 and sizes exist in <strong>both</strong> the local header and the central directory. When those two copies disagree, the disagreement itself is evidence — and the actual bytes are the tiebreaker, since a value the data contradicts is never emitted.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="">
+      <h2 id="failure-modes">The seven failure modes</h2>
+      <div class="table-scroll"><table><thead><tr><th>what happened</th><th>what tools say</th><th>rule ID</th><th>what is provably recoverable</th></tr></thead><tbody><tr><td><strong>EOCD lost or zeroed</strong> — the final record is gone</td><td>"not a valid archive", "invalid or corrupted"</td><td><a href="/reference/rule-ids/#zip_eocd_001"><code>ZIP_EOCD_001</code></a></td><td>Usually everything. The index is rebuilt by scanning for local headers; each entry is then confirmed by its own CRC-32.</td></tr><tr><td><strong>EOCD points outside the file</strong> — offset or size wrong</td><td>"cannot find central directory"</td><td><a href="/reference/rule-ids/#zip_eocd_002"><code>ZIP_EOCD_002</code></a>, <a href="/reference/rule-ids/#zip_eocd_003"><code>ZIP_EOCD_003</code></a></td><td>Usually everything. The real index location is found directly rather than trusted from a damaged pointer.</td></tr><tr><td><strong>Central directory missing or damaged</strong></td><td>"unexpected end of archive", "bad signature"</td><td><a href="/reference/rule-ids/#zip_cd_001"><code>ZIP_CD_001</code></a> – <a href="/reference/rule-ids/#zip_cd_003"><code>ZIP_CD_003</code></a></td><td>Entries whose local headers survive, each CRC-verified. Entry order and names come from the local headers.</td></tr><tr><td><strong>Truncated file</strong> — download or copy stopped early</td><td>"unexpected end of archive"</td><td><a href="/reference/rule-ids/#zip_trunc_001"><code>ZIP_TRUNC_001</code></a> – <code>ZIP_TRUNC_004</code></td><td>Every entry that finished before the cut. The entry straddling the cut is abstained, not truncated and shipped.</td></tr><tr><td><strong>CRC mismatch on one or more entries</strong></td><td>"CRC failed", "the file is corrupt"</td><td><a href="/reference/rule-ids/#zip_crc_001"><code>ZIP_CRC_001</code></a>, <a href="/reference/rule-ids/#zip_crc_002"><code>ZIP_CRC_002</code></a></td><td>Every <em>other</em> entry, verified. The failing entry is reported as damaged — its bytes are not silently emitted as if they were fine.</td></tr><tr><td><strong>Local file header damaged</strong></td><td>"local header signature invalid"</td><td><a href="/reference/rule-ids/#zip_lfh_001"><code>ZIP_LFH_001</code></a>, <a href="/reference/rule-ids/#zip_lfh_002"><code>ZIP_LFH_002</code></a></td><td>The entry can often be relocated from the central directory copy, then confirmed by CRC. Cross-checking the two copies is what makes this safe.</td></tr><tr><td><strong>Encrypted</strong> — password-protected content</td><td>"wrong password", "data error in encrypted file"</td><td>detected and reported</td><td><strong>Nothing, by policy.</strong> Encryption is detected and the archive is abstained. VERAQIS never guesses, derives or brute-forces a password.</td></tr></tbody></table></div><p class="note">All 24 ZIP rules are listed in the <a href="/reference/rule-ids/#fmt-zip">rule reference</a>. The recoverability column describes shipped behaviour, not a roadmap.</p>
+      <div class="claim" id="claim-eocd-recoverable"><p class="claim-text">The most common catastrophic ZIP failure — a lost end-of-central-directory record — usually destroys no file data at all. The index it removes can be rebuilt by scanning the archive for local file headers, and each recovered entry is then confirmed against its own stored CRC-32.</p><p class="claim-src">VERAQIS classifier rule <code>ZIP_EOCD_001</code> (severity: Catastrophic) with the EOCD-reconstruct and central-directory-rebuild recovery strategies · VERAQIS 0.2.1</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="limits">What ZIP cannot prove</h2>
+      <p>An honest format page has to include this section, because the limits decide what any tool can legitimately claim.</p>
+      <ul><li><strong>One CRC-32 per entry, and no more.</strong> ZIP carries exactly one independent checksum over any given payload region. Combining several to solve for a wider gap does not work — we <a href="/research/joint-verifier-surface-is-empty/">measured that across twelve formats</a> and the answer was zero everywhere.</li><li><strong>A CRC-32 pins at most four bytes.</strong> With a known erasure, 32 bits of checksum determine 32 bits of unknown. Five missing bytes leave 256 candidates and no way to choose between them.</li><li><strong>Damaged compressed data is usually gone.</strong> DEFLATE is LZ-coupled: corruption inside a compressed stream desynchronises everything after it in that entry. What survives is the <em>other</em> entries, not the damaged one.</li><li><strong>A passing CRC-32 is accidental-grade evidence.</strong> It shows the bytes were not altered by chance. It cannot show they were not altered on purpose — <a href="/research/crc32-collisions-that-pass-gzip-t/">we built the collisions that demonstrate this</a>.</li><li><strong>Encrypted content stays closed.</strong> Detected, reported, abstained. Repairing the unencrypted envelope around an encrypted payload is permitted and never touches the payload.</li></ul>
+      <h2 id="zip-containers">ZIP is also DOCX, XLSX, APK and EPUB</h2>
+      <p>A <code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>, <code>.jar</code>, <code>.apk</code> or <code>.epub</code> is a ZIP with a required internal layout. Everything above applies to them — plus a second layer: the package has to be internally consistent, with a content-types declaration and a relationship graph that resolve.</p>
+      <p>That is why an Office file can be a perfectly valid ZIP and still refuse to open: the container is fine and the package graph is broken. Recovery there means extracting the CRC-verified parts and reporting which relationships are missing — not synthesising the missing parts and calling the document repaired.</p>
+      <h2 id="guides">Guides for specific ZIP problems</h2>
+      <ul class="source-list"><li><a href="/guides/zip-file-wont-open/">Why a ZIP file won't open</a> — diagnose the cause before trying to repair anything</li><li><a href="/guides/repair-corrupted-zip/">Repair a corrupted ZIP file</a> — what is recoverable, and when re-downloading is the better answer</li><li><a href="/reference/rule-ids/#fmt-zip">All 24 ZIP rule IDs</a> — field, category, severity and evidence type for each</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about the ZIP format</h2>
+    <div class="faq">
+      <div class="qa"><h3>Why does Windows say a ZIP is invalid when the files are clearly inside it?</h3><p>ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries.</p></div>
+      <div class="qa"><h3>Why is the ZIP index stored at the end of the file?</h3><p>ZIP was designed to be written as a stream, before the writer knows how well each file will compress. Writing entries first and the index last makes that possible, and it makes appending cheap. The cost is that damage to the last few hundred bytes makes the entire archive unreadable to normal tools.</p></div>
+      <div class="qa"><h3>Can every corrupted ZIP be repaired?</h3><p>No, and the answer depends on which bytes survived. Losing the index usually costs no data. Losing an entry's compressed bytes destroys that entry. Encrypted archives are not opened without the password at all. VERAQIS reports what surviving bytes can prove and marks the rest unknown.</p></div>
+      <div class="qa"><h3>Is a DOCX file really a ZIP?</h3><p>Yes. DOCX, XLSX, PPTX, JAR, APK and EPUB are all ZIP containers with a required internal layout. They can therefore fail in two independent ways: as a damaged ZIP, or as a valid ZIP whose internal package graph no longer resolves.</p></div>
+      <div class="qa"><h3>What does CRC failed mean when extracting a ZIP?</h3><p>Each entry stores a CRC-32 of its uncompressed contents. If the value computed at extraction differs, that entry's bytes changed after the archive was written. It is a per-entry verdict: the other entries in the same archive may be perfectly intact and verifiable.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/reference/rule-ids/"><h3>Rule ID reference</h3><p>All 87 findings across 11 formats, generated from the engine.</p></a>
+      <a class="card link-card" href="/research/joint-verifier-surface-is-empty/"><h3>One checksum per region</h3><p>The measurement behind the "what ZIP cannot prove" section.</p></a>
+      <a class="card link-card" href="/reference/evidence-model/"><h3>The evidence model</h3><p>What a verified entry means, and what it does not.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

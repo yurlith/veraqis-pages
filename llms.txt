@@ -1,31 +1,101 @@
 # VERAQIS
 
-> VERAQIS builds offline tools for inspecting damaged archives and recovering only
-> data that can be verified. Processing is local — files are not uploaded. Uncertain
-> or unsupported data is marked clearly and never presented as recovered.
+> VERAQIS builds offline tools that inspect damaged archives and recover only data that can
+> be verified. Processing is local — files are not uploaded. Uncertain or unsupported data is
+> marked clearly and never presented as recovered.
 
-This file is an auxiliary navigation aid for AI answer engines. It is not an indexing
-standard and does not replace robots.txt, sitemap.xml, JSON-LD, or the HTML pages.
+This file is an auxiliary navigation aid for AI answer engines. It is not an indexing standard
+and does not replace robots.txt, sitemap.xml, JSON-LD or the HTML pages.
+
+Everything below is measured or defined by us. Where a page states a number, that number comes
+from an experiment in our own repository and the page names the experiment and links its data.
+
+## Research — original measurements
+
+- [One bit flip in a solid 7z archive](https://veraqis.tech/research/7z-solid-archive-bit-flip/):
+  a solid archive is not all-or-nothing. In a real 541-file solid LZMA2 archive, a single bit
+  flip at 95% of the compressed payload still left 501 files (92.6%) recoverable byte-exact and
+  CRC-verified; a flip at 20% left 87. `false_files = 0` in every cell. Data *after* the flip is
+  unrecoverable: across 15 encoder configurations liblzma emitted zero internal LZMA2 resync
+  points, so the decoder never regains synchronisation. Experiment EXP-7Z-PREFIX-SALVAGE.
+- [CRC-32 collisions that pass gzip -t and unzip -t](https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/):
+  we constructed archives whose contents differ from the original but whose CRC-32 matches, and
+  the native integrity checks accept them. Measured for ZIP, GZIP, BZIP2, XZ and PNG. A passing
+  CRC-32 is accidental-damage evidence only; an adversarial claim needs a cryptographic witness
+  created before the repair. Experiment EXP-ADV-PCC.
+- [Recovering past a corrupted block in xz and bzip2](https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/):
+  stock `xz -d` abandons a whole stream on one bad block; block-independent salvage recovered
+  9 of 10 blocks, each re-verified by its own CRC-64. bzip2 and xz reach yield 1.000 for both
+  truncation and mid-stream damage. lz4 and zstd are detected and abstained — no independent
+  per-block verifier exists in those streams. Experiment EXP-PDS.
+- [The joint-verifier surface is empty](https://veraqis.tech/research/joint-verifier-surface-is-empty/):
+  a published negative result. Across 12 formats, the share of erasures solvable by combining
+  independent checksums is 0.00 — every supported format carries at most one independent linear
+  checksum per payload region. The solver was measured for and then not built. Experiment EXP-0-JMV.
+
+## Reference — definitions
+
+- [Rule ID reference](https://veraqis.tech/reference/rule-ids/): all 87 damage-classification
+  rules across 11 formats (ZIP 24, TAR 15, PDF 14, ISO 12, GZIP 9, 7Z 3, others 2 each), each
+  with the format field, category, severity and evidence type. Generated from the engine registry.
+- [The evidence model](https://veraqis.tech/reference/evidence-model/): two orthogonal axes.
+  Axis P is probabilistic evidence counted in bits (CRC-32 = 32 bits, cryptographic hash = 256).
+  Axis L is structural uniqueness and gets no bit value because it fails by model incompleteness
+  rather than collision. The tautology rule: a checksum the solver targeted contributes 0 bits.
+- [Glossary](https://veraqis.tech/reference/glossary/): EOCD, central directory, local file
+  header, ZIP64, solid archive, erasure, resynchronisation, LZ-coupled stream, WAL, xref,
+  freelist, parity, bit rot, abstention and more.
+
+## Formats
+
+- [File formats index](https://veraqis.tech/formats/): which formats carry an independent payload
+  verifier and which do not, and what that means for recoverability.
+- [ZIP](https://veraqis.tech/formats/zip/): layout, why the index sits at the end of the file,
+  the seven failure modes with the rule ID each raises, and what is provably recoverable from
+  each. Also covers DOCX, XLSX, PPTX, JAR, APK and EPUB, which are ZIP containers.
+
+## Guides — for someone with a damaged file
+
+- [Why a ZIP file won't open](https://veraqis.tech/guides/zip-file-wont-open/): five causes,
+  most common first. Only one of the five is actual corruption.
+- [Repair a corrupted ZIP file](https://veraqis.tech/guides/repair-corrupted-zip/): what
+  "corrupted" means in practice, when re-downloading is the better fix, what can be verified.
 
 ## Products
 
-- [VERAQIS Archiver for Android](https://veraqis.tech/mobile.html): free, signed public beta. Scan an archive before extracting; list and extract safe entries into a folder you choose. No telemetry. This is the only publicly downloadable build today.
-- [VERAQIS Recovery for Windows](https://veraqis.tech/desktop.html): damaged-ZIP analysis and verified recovery. Status: store release pending — there is no public Windows binary and no Microsoft Store URL yet. No unsigned .exe is published.
-- [ColdPass](https://veraqis.tech/coldpass.html): archived experimental project. No active development and no download.
+- [VERAQIS Archiver for Android](https://veraqis.tech/mobile.html): free, signed public beta.
+  Scan an archive before extracting; list and extract safe entries into a folder you choose.
+  No telemetry. This is the only publicly downloadable build today.
+- [VERAQIS Recovery for Windows](https://veraqis.tech/desktop.html): damaged-ZIP analysis and
+  verified recovery. Status: store release pending — there is no public Windows binary and no
+  Microsoft Store URL yet. No unsigned .exe is published.
+- [ColdPass](https://veraqis.tech/coldpass.html): archived experimental project. No active
+  development and no download.
 
-## Download and verification
+## Verification and process
 
-- [Download](https://veraqis.tech/download.html): the signed Android APK plus its SHA-256 checksum.
-- [Test record](https://veraqis.tech/testing.html): how a recovery is proven — published corpus, checksums, structural validity and methodology.
-- [Reports](https://veraqis.tech/reports.html): example recovery reports.
-- [Security architecture](https://veraqis.tech/security.html): threat model, read-only input, sandboxing.
-- [Documentation](https://veraqis.tech/docs.html)
-- [Pricing](https://veraqis.tech/pricing.html): Free Analyzer, and price hypotheses for Personal and Technician (not yet purchasable).
+- [Test record](https://veraqis.tech/testing.html): how a recovery is proven — published corpus,
+  checksums, structural validity, methodology, and comparisons against baseline tools.
+- [Reports and verification](https://veraqis.tech/reports.html): what a recovery result contains
+  and how a third party re-checks it without trusting VERAQIS.
+- [Security architecture](https://veraqis.tech/security.html): threat model, read-only input,
+  sandboxing.
+- [Documentation](https://veraqis.tech/docs.html) · [Download](https://veraqis.tech/download.html)
+  (signed Android APK plus its SHA-256) · [Pricing](https://veraqis.tech/pricing.html)
 
 ## Important limitations
 
 - VERAQIS does not bypass passwords or decrypt encrypted content.
-- Recovery depends on surviving, verifiable evidence; a supported format does not guarantee recoverability.
+- Recovery depends on surviving, verifiable evidence; a supported format does not guarantee
+  recoverability.
 - Unknown or unsupported data stays unknown — it is never labelled "recovered".
-- "Structurally safe to extract" means the archive layout is safe; file contents are not scanned for malware.
+- A passing CRC-32 establishes accidental integrity, not authorship or tamper-evidence.
+- "Structurally safe to extract" means the archive layout is safe; file contents are not scanned
+  for malware.
 - The products are in beta; availability and prices are stated honestly and may change.
+
+## Citing this site
+
+Research pages carry a stable URL, a publication date, the engine version and the experiment ID.
+Quote the number together with its method — every figure is conditional on the corpus and damage
+class it was measured on, and the pages say so.

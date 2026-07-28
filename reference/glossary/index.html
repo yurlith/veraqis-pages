@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Glossary of file damage and recovery terms | VERAQIS</title>
+<meta name="description" content="EOCD, central directory, solid archive, erasure, LZ-coupled, WAL, xref, parity and more — the terms a damaged-file report uses, defined precisely." />
+<link rel="canonical" href="https://veraqis.tech/reference/glossary/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Glossary of file damage and recovery terms" />
+<meta property="og:description" content="The vocabulary a damaged-file report actually uses, defined without hand-waving." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/reference/glossary/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Glossary of file damage and recovery terms" />
+<meta name="twitter:description" content="The vocabulary a damaged-file report actually uses, defined without hand-waving." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/reference/glossary/#article",
+      "url": "https://veraqis.tech/reference/glossary/",
+      "headline": "Glossary — file damage and recovery",
+      "name": "Glossary of file damage and recovery terms | VERAQIS",
+      "description": "EOCD, central directory, solid archive, erasure, LZ-coupled, WAL, xref, parity and more — the terms a damaged-file report uses, defined precisely.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Beginner",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "file formats"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "terminology"
+        }
+      ]
+    },
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://veraqis.tech/reference/glossary/#termset",
+      "name": "Glossary of file damage and recovery terms | VERAQIS",
+      "url": "https://veraqis.tech/reference/glossary/",
+      "hasDefinedTerm": [
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#eocd",
+          "name": "End of central directory (EOCD)",
+          "description": "The final record of a ZIP archive. It tells tools where the central directory starts and how many entries it holds. Tools find it by scanning backwards from the end of the file, so damage to the last few hundred bytes makes the whole archive read as invalid even when every compressed entry is intact.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#central-directory",
+          "name": "Central directory",
+          "description": "The index at the end of a ZIP listing every entry — name, compression method, CRC-32, sizes, and the offset of the entry's local header. It duplicates information already present next to each entry, which is what makes cross-checking possible.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#local-file-header",
+          "name": "Local file header (LFH)",
+          "description": "The header immediately before each entry's compressed data, carrying the same name, CRC-32 and sizes as the central directory entry. If the index is gone, scanning for local headers reconstructs the archive contents.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#data-descriptor",
+          "name": "Data descriptor",
+          "description": "An optional record placed after an entry's compressed data holding the CRC-32 and sizes, used when a writer streams output and does not know them in advance. Its presence is flagged in the entry's general-purpose bit flag.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#zip64",
+          "name": "ZIP64",
+          "description": "The extension that lifts ZIP's original 4 GiB and 65,535-entry limits. It is signalled by sentinel values in the classic fields plus an extra field, and by a separate ZIP64 end-of-central-directory record and locator.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#solid-archive",
+          "name": "Solid archive",
+          "description": "An archive that compresses all its files as one continuous stream instead of file by file. It compresses better and couples the files together: damage at one point desynchronises everything after it. Files entirely before the damage remain recoverable.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#crc32",
+          "name": "CRC-32",
+          "description": "A 32-bit cyclic redundancy check used by ZIP, GZIP, PNG and others to detect accidental corruption. Strong for that purpose — roughly a 1-in-4-billion chance of a random error passing — and forgeable by direct construction, so it is not evidence of authenticity.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#checksum-vs-hash",
+          "name": "Checksum vs cryptographic hash",
+          "description": "A checksum such as CRC-32 detects accidental change cheaply and can be forced to any value on purpose. A cryptographic hash such as SHA-256 is designed to make that infeasible. Both answer \"did these bytes change\"; only the second answers it against someone who wants a particular answer.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#truncation",
+          "name": "Truncation",
+          "description": "The file ends before it should — an interrupted download, a full disk, a copy that stopped. Distinctive because everything present is usually undamaged: the loss is at the tail, not scattered through the file.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#bit-rot",
+          "name": "Bit rot",
+          "description": "Gradual, silent corruption of stored data over time from media decay, controller faults or unnoticed transfer errors. The defining property is that nothing announces it: the file still opens, or it stops opening years after it was written.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#erasure",
+          "name": "Erasure",
+          "description": "Damage where the missing bytes are known — which ones are gone, not merely that something is wrong. Erasures are far more recoverable than unknown corruption because a checksum covering the gap can determine the answer instead of merely detecting a problem.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#resync",
+          "name": "Resynchronisation",
+          "description": "Finding a point in a damaged stream where decoding can safely restart. Possible where a format has independent blocks or restart markers, impossible where the decoder carries state continuously — which is why xz and bzip2 salvage past damage and LZMA2 solid folders cannot.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#parity",
+          "name": "Parity / erasure coding",
+          "description": "Redundant data computed in advance so that lost pieces can be reconstructed exactly later. PAR2 files and RAID both work this way. Parity is the only method that makes damage position irrelevant, and it has to exist before the damage.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#lz-coupled",
+          "name": "LZ-coupled stream",
+          "description": "A compressed stream where each part depends on earlier decoded output through a sliding window or shared coder state. Corruption anywhere desynchronises everything downstream, and there is no independent way to verify a partial result. zstd, lz4 and LZMA2 solid folders behave this way.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#wal",
+          "name": "Write-ahead log (WAL)",
+          "description": "A SQLite side file holding committed changes not yet folded into the main database. Recovering a SQLite database without reading its WAL loses the most recent committed data, so the WAL is part of the file, not an accessory to it.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#xref",
+          "name": "Cross-reference table (xref)",
+          "description": "A PDF's index of where each object lives in the file. If it is damaged, the objects themselves are usually still present and can be found by scanning, and a working index rebuilt from what is found.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#freelist",
+          "name": "Freelist",
+          "description": "Pages a database has marked as reusable after deletion. Their contents may still be readable. VERAQIS excludes freelist pages by default: resurrecting deleted rows is a separate, explicit, risk-marked choice, not something recovery should do quietly.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#magic-number",
+          "name": "Magic number / file signature",
+          "description": "The first few bytes identifying a format — `PK\\x03\\x04` for ZIP, `%PDF-` for PDF, `\\x1f\\x8b` for GZIP. Checking it answers the surprisingly common question of whether the file is the type its extension claims.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#false-positive-recovery",
+          "name": "False recovered bytes",
+          "description": "Bytes a tool returns as recovered that differ from the original. The metric that matters most and is reported least: a tool returning more data with a few wrong bytes looks better on every other measure while being less useful and more dangerous.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "@id": "https://veraqis.tech/reference/glossary/#abstention",
+          "name": "Abstention",
+          "description": "Declining to answer. Returning \"unknown\" for a region that cannot be proven is a correct outcome for a recovery tool, and a far better one than an unlabelled guess.",
+          "inDefinedTermSet": {
+            "@id": "https://veraqis.tech/reference/glossary/#termset"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/reference/glossary/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the central directory in a ZIP file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The index at the end of a ZIP listing every entry with its name, CRC-32, sizes and the offset of its local header. Tools read it to know what is in the archive, which is why damage to it makes an archive with perfectly intact contents read as invalid."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a solid archive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "An archive that compresses all its files as one continuous stream rather than separately. It compresses better but couples the files: damage at one point desynchronises everything after it. Files that finish decoding before the damage are still recoverable byte-exact."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between a checksum and a hash?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A checksum like CRC-32 detects accidental change cheaply, and can be forced to any chosen value on purpose. A cryptographic hash like SHA-256 is built so that forcing a value is infeasible. Use the first to catch corruption, the second to establish identity."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/reference/glossary/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Reference",
+          "item": "https://veraqis.tech/reference/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Glossary",
+          "item": "https://veraqis.tech/reference/glossary/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/" class="active">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/reference/">Reference</a></p>
+    <p class="kicker">Reference</p>
+    <h1>Glossary — file damage and recovery</h1>
+    <p class="lead">Twenty terms that appear in analysis reports, format specifications and recovery discussions. Each definition says what the thing is and why it matters when a file is damaged — not just what the acronym expands to.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="">
+      <div class="term" id="eocd"><h3>End of central directory (EOCD)</h3><p>The final record of a ZIP archive. It tells tools where the central directory starts and how many entries it holds. Tools find it by scanning backwards from the end of the file, so damage to the last few hundred bytes makes the whole archive read as invalid even when every compressed entry is intact.</p></div>
+<div class="term" id="central-directory"><h3>Central directory</h3><p>The index at the end of a ZIP listing every entry — name, compression method, CRC-32, sizes, and the offset of the entry's local header. It duplicates information already present next to each entry, which is what makes cross-checking possible.</p></div>
+<div class="term" id="local-file-header"><h3>Local file header (LFH)</h3><p>The header immediately before each entry's compressed data, carrying the same name, CRC-32 and sizes as the central directory entry. If the index is gone, scanning for local headers reconstructs the archive contents.</p></div>
+<div class="term" id="data-descriptor"><h3>Data descriptor</h3><p>An optional record placed after an entry's compressed data holding the CRC-32 and sizes, used when a writer streams output and does not know them in advance. Its presence is flagged in the entry's general-purpose bit flag.</p></div>
+<div class="term" id="zip64"><h3>ZIP64</h3><p>The extension that lifts ZIP's original 4 GiB and 65,535-entry limits. It is signalled by sentinel values in the classic fields plus an extra field, and by a separate ZIP64 end-of-central-directory record and locator.</p></div>
+<div class="term" id="solid-archive"><h3>Solid archive</h3><p>An archive that compresses all its files as one continuous stream instead of file by file. It compresses better and couples the files together: damage at one point desynchronises everything after it. Files entirely before the damage remain recoverable.</p></div>
+<div class="term" id="crc32"><h3>CRC-32</h3><p>A 32-bit cyclic redundancy check used by ZIP, GZIP, PNG and others to detect accidental corruption. Strong for that purpose — roughly a 1-in-4-billion chance of a random error passing — and forgeable by direct construction, so it is not evidence of authenticity.</p></div>
+<div class="term" id="checksum-vs-hash"><h3>Checksum vs cryptographic hash</h3><p>A checksum such as CRC-32 detects accidental change cheaply and can be forced to any value on purpose. A cryptographic hash such as SHA-256 is designed to make that infeasible. Both answer "did these bytes change"; only the second answers it against someone who wants a particular answer.</p></div>
+<div class="term" id="truncation"><h3>Truncation</h3><p>The file ends before it should — an interrupted download, a full disk, a copy that stopped. Distinctive because everything present is usually undamaged: the loss is at the tail, not scattered through the file.</p></div>
+<div class="term" id="bit-rot"><h3>Bit rot</h3><p>Gradual, silent corruption of stored data over time from media decay, controller faults or unnoticed transfer errors. The defining property is that nothing announces it: the file still opens, or it stops opening years after it was written.</p></div>
+<div class="term" id="erasure"><h3>Erasure</h3><p>Damage where the missing bytes are known — which ones are gone, not merely that something is wrong. Erasures are far more recoverable than unknown corruption because a checksum covering the gap can determine the answer instead of merely detecting a problem.</p></div>
+<div class="term" id="resync"><h3>Resynchronisation</h3><p>Finding a point in a damaged stream where decoding can safely restart. Possible where a format has independent blocks or restart markers, impossible where the decoder carries state continuously — which is why xz and bzip2 salvage past damage and LZMA2 solid folders cannot.</p></div>
+<div class="term" id="parity"><h3>Parity / erasure coding</h3><p>Redundant data computed in advance so that lost pieces can be reconstructed exactly later. PAR2 files and RAID both work this way. Parity is the only method that makes damage position irrelevant, and it has to exist before the damage.</p></div>
+<div class="term" id="lz-coupled"><h3>LZ-coupled stream</h3><p>A compressed stream where each part depends on earlier decoded output through a sliding window or shared coder state. Corruption anywhere desynchronises everything downstream, and there is no independent way to verify a partial result. zstd, lz4 and LZMA2 solid folders behave this way.</p></div>
+<div class="term" id="wal"><h3>Write-ahead log (WAL)</h3><p>A SQLite side file holding committed changes not yet folded into the main database. Recovering a SQLite database without reading its WAL loses the most recent committed data, so the WAL is part of the file, not an accessory to it.</p></div>
+<div class="term" id="xref"><h3>Cross-reference table (xref)</h3><p>A PDF's index of where each object lives in the file. If it is damaged, the objects themselves are usually still present and can be found by scanning, and a working index rebuilt from what is found.</p></div>
+<div class="term" id="freelist"><h3>Freelist</h3><p>Pages a database has marked as reusable after deletion. Their contents may still be readable. VERAQIS excludes freelist pages by default: resurrecting deleted rows is a separate, explicit, risk-marked choice, not something recovery should do quietly.</p></div>
+<div class="term" id="magic-number"><h3>Magic number / file signature</h3><p>The first few bytes identifying a format — <code>PK\x03\x04</code> for ZIP, <code>%PDF-</code> for PDF, <code>\x1f\x8b</code> for GZIP. Checking it answers the surprisingly common question of whether the file is the type its extension claims.</p></div>
+<div class="term" id="false-positive-recovery"><h3>False recovered bytes</h3><p>Bytes a tool returns as recovered that differ from the original. The metric that matters most and is reported least: a tool returning more data with a few wrong bytes looks better on every other measure while being less useful and more dangerous.</p></div>
+<div class="term" id="abstention"><h3>Abstention</h3><p>Declining to answer. Returning "unknown" for a region that cannot be proven is a correct outcome for a recovery tool, and a far better one than an unlabelled guess.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="where">Where these terms show up</h2>
+      <ul class="source-list"><li><a href="/reference/rule-ids/">Rule ID reference</a> — the 87 findings that name these structures directly</li><li><a href="/formats/zip/">ZIP format reference</a> — EOCD, central directory and local headers in place</li><li><a href="/reference/evidence-model/">The evidence model</a> — erasure, abstention and false recovered bytes as governing rules</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Common definitions</h2>
+    <div class="faq">
+      <div class="qa"><h3>What is the central directory in a ZIP file?</h3><p>The index at the end of a ZIP listing every entry with its name, CRC-32, sizes and the offset of its local header. Tools read it to know what is in the archive, which is why damage to it makes an archive with perfectly intact contents read as invalid.</p></div>
+      <div class="qa"><h3>What is a solid archive?</h3><p>An archive that compresses all its files as one continuous stream rather than separately. It compresses better but couples the files: damage at one point desynchronises everything after it. Files that finish decoding before the damage are still recoverable byte-exact.</p></div>
+      <div class="qa"><h3>What is the difference between a checksum and a hash?</h3><p>A checksum like CRC-32 detects accidental change cheaply, and can be forced to any chosen value on purpose. A cryptographic hash like SHA-256 is built so that forcing a value is infeasible. Use the first to catch corruption, the second to establish identity.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

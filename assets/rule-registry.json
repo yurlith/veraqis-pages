@@ -1,0 +1,878 @@
+{
+  "generated_from": "crates/phx_analyze_engine/src/corruption/rules.rs",
+  "note": "Compile-time classifier registry of VERAQIS Recovery. Every rule ID that can appear in an analysis report is listed here with the format field it is keyed to. Generated, not hand-written.",
+  "rule_count": 87,
+  "format_count": 11,
+  "rules": [
+    {
+      "id": "ZIP_EOCD_001",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "EOCD signature missing or zeroed",
+      "field": "EOCD.signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_EOCD_002",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "EOCD.cd_offset points outside file",
+      "field": "EOCD.cd_offset",
+      "evidence_type": "Offset Out Of Bounds",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_EOCD_003",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "EOCD.cd_size larger than file",
+      "field": "EOCD.cd_size",
+      "evidence_type": "Length Overflow",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_CD_001",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Central directory entirely missing",
+      "field": "CentralDirectory",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_CD_002",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Central directory signature invalid",
+      "field": "CentralDirHeader.signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_CD_003",
+      "format": "ZIP",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Central directory truncated mid-entry",
+      "field": "CentralDirectory",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_LFH_001",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Local file header signature invalid",
+      "field": "LocalFileHeader.signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_LFH_002",
+      "format": "ZIP",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Local file header missing",
+      "field": "LocalFileHeader",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_CRC_001",
+      "format": "ZIP",
+      "category": "Checksum Mismatch",
+      "severity": "Minor",
+      "description": "CRC-32 mismatch, single entry",
+      "field": "LocalFileHeader.crc32",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_CRC_002",
+      "format": "ZIP",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "CRC-32 mismatch, multiple entries",
+      "field": "LocalFileHeader.crc32",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_SIZE_001",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Compressed size field wrong (too large)",
+      "field": "CentralDirHeader.compressed_size",
+      "evidence_type": "Length Overflow",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_SIZE_002",
+      "format": "ZIP",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "File shorter than declared compressed size",
+      "field": "stream",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_TRUNC_001",
+      "format": "ZIP",
+      "category": "Truncation",
+      "severity": "Minor",
+      "description": "Truncated last 1%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_TRUNC_002",
+      "format": "ZIP",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "Truncated last 5%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_TRUNC_003",
+      "format": "ZIP",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated last 20%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_TRUNC_004",
+      "format": "ZIP",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated first 5% (header destroyed)",
+      "field": "stream.header",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_FLIP_001",
+      "format": "ZIP",
+      "category": "Bit Flip",
+      "severity": "Minor",
+      "description": "Single bit flip in payload",
+      "field": "payload.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_FLIP_002",
+      "format": "ZIP",
+      "category": "Bit Flip",
+      "severity": "Major",
+      "description": "Multiple bit flips in payload",
+      "field": "payload.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_FLIP_003",
+      "format": "ZIP",
+      "category": "Bit Flip",
+      "severity": "Major",
+      "description": "Bit flip in header area",
+      "field": "header.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_EXTRA_001",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "Extra field length overflow",
+      "field": "CentralDirHeader.extra_len",
+      "evidence_type": "Length Overflow",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZIP_Z64_001",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "ZIP64 EOCD locator corrupted",
+      "field": "ZIP64_EOCD_Locator.signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_COMP_001",
+      "format": "ZIP",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Compound: missing EOCD + CRC mismatch",
+      "field": "EOCD.signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZIP_COMP_002",
+      "format": "ZIP",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Compound: truncated + bitflip",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_UST_001",
+      "format": "TAR",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "UStar checksum invalid",
+      "field": "UStarHeader.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "TAR_UST_002",
+      "format": "TAR",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "UStar magic missing",
+      "field": "UStarHeader.magic",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "TAR_TERM_001",
+      "format": "TAR",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "Missing zero-block terminator",
+      "field": "Archive.terminator",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_TERM_002",
+      "format": "TAR",
+      "category": "Padding Mismatch",
+      "severity": "Benign",
+      "description": "Extra garbage after terminator",
+      "field": "Archive.terminator",
+      "evidence_type": "Padding Violation",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_SIZE_001",
+      "format": "TAR",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Size field larger than remaining data",
+      "field": "UStarHeader.size",
+      "evidence_type": "Length Overflow",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_SIZE_002",
+      "format": "TAR",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "File data shorter than declared size",
+      "field": "UStarHeader.size",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_BLOCK_001",
+      "format": "TAR",
+      "category": "Block Reorder",
+      "severity": "Major",
+      "description": "Two data blocks swapped",
+      "field": "block.order",
+      "evidence_type": "Block Reorder",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_TRUNC_001",
+      "format": "TAR",
+      "category": "Truncation",
+      "severity": "Minor",
+      "description": "Truncated last 1%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_TRUNC_002",
+      "format": "TAR",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "Truncated last 10%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_TRUNC_003",
+      "format": "TAR",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated first block",
+      "field": "stream.header",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_FLIP_001",
+      "format": "TAR",
+      "category": "Bit Flip",
+      "severity": "Minor",
+      "description": "Single bit flip in file content",
+      "field": "payload.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_FLIP_002",
+      "format": "TAR",
+      "category": "Bit Flip",
+      "severity": "Major",
+      "description": "Multiple bit flips in header area",
+      "field": "header.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_GNU_001",
+      "format": "TAR",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "GNU LongName block corrupted",
+      "field": "GnuLongName.block",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_SPARSE_001",
+      "format": "TAR",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Sparse file map invalid",
+      "field": "SparseMap",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "TAR_COMP_001",
+      "format": "TAR",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Compound: checksum + truncated",
+      "field": "UStarHeader.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ISO_PVD_001",
+      "format": "ISO",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Primary volume descriptor magic missing",
+      "field": "PrimaryVolumeDescriptor.magic",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ISO_PVD_002",
+      "format": "ISO",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "PVD volume space size wrong",
+      "field": "PrimaryVolumeDescriptor.volume_space",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_SVD_001",
+      "format": "ISO",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Supplementary VD (Joliet) corrupt",
+      "field": "SupplementaryVolumeDescriptor.magic",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ISO_PT_001",
+      "format": "ISO",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Path table offset beyond EOF",
+      "field": "PrimaryVolumeDescriptor.path_table_location",
+      "evidence_type": "Offset Out Of Bounds",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_PT_002",
+      "format": "ISO",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Path table entry length invalid",
+      "field": "PathTable.entry_length",
+      "evidence_type": "Length Underflow",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_DIR_001",
+      "format": "ISO",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Directory record length field zero",
+      "field": "DirectoryRecord.length",
+      "evidence_type": "Length Underflow",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_DIR_002",
+      "format": "ISO",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Directory record points to missing extent",
+      "field": "DirectoryRecord.extent",
+      "evidence_type": "Offset Out Of Bounds",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_SECTOR_001",
+      "format": "ISO",
+      "category": "Bit Flip",
+      "severity": "Minor",
+      "description": "Single sector data bitflip",
+      "field": "sector.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_SECTOR_002",
+      "format": "ISO",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Multiple consecutive sectors zeroed",
+      "field": "sector.data",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_TRUNC_001",
+      "format": "ISO",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "Truncated 5%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_TRUNC_002",
+      "format": "ISO",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated 20%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ISO_TRUNC_003",
+      "format": "ISO",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated at PVD (sector 16)",
+      "field": "stream.header",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GZ_MAGIC_001",
+      "format": "GZIP",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Magic bytes replaced",
+      "field": "gzip.magic",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "GZ_CM_001",
+      "format": "GZIP",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Compression method invalid (not 8)",
+      "field": "gzip.cm",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GZ_HCRC_001",
+      "format": "GZIP",
+      "category": "Checksum Mismatch",
+      "severity": "Minor",
+      "description": "Header CRC16 mismatch",
+      "field": "gzip.hcrc",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GZ_ICRC_001",
+      "format": "GZIP",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "Content CRC32 mismatch",
+      "field": "gzip.crc32",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "GZ_ISIZE_001",
+      "format": "GZIP",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "ISIZE wrong",
+      "field": "gzip.isize",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GZ_TRUNC_001",
+      "format": "GZIP",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "Truncated in compressed data",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GZ_TRUNC_002",
+      "format": "GZIP",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated before header end",
+      "field": "stream.header",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GZ_FLIP_001",
+      "format": "GZIP",
+      "category": "Bit Flip",
+      "severity": "Major",
+      "description": "Bit flip in compressed data",
+      "field": "payload.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GZ_EXTRA_001",
+      "format": "GZIP",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "Extra field length overflow",
+      "field": "gzip.extra_len",
+      "evidence_type": "Length Overflow",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_HDR_001",
+      "format": "PDF",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "%PDF- header missing",
+      "field": "pdf.header",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "PDF_HDR_002",
+      "format": "PDF",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "Version marker malformed",
+      "field": "pdf.version",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_EOF_001",
+      "format": "PDF",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "%%EOF marker missing",
+      "field": "pdf.eof",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_XREF_001",
+      "format": "PDF",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "startxref offset wrong",
+      "field": "pdf.startxref",
+      "evidence_type": "Offset Out Of Bounds",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_XREF_002",
+      "format": "PDF",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "xref table missing entirely",
+      "field": "pdf.xref",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_XREF_003",
+      "format": "PDF",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "xref entry format invalid",
+      "field": "pdf.xref.entry",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_OBJ_001",
+      "format": "PDF",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Object stream header corrupt",
+      "field": "pdf.objstm",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_OBJ_002",
+      "format": "PDF",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Indirect object missing",
+      "field": "pdf.object",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_TRUNC_001",
+      "format": "PDF",
+      "category": "Truncation",
+      "severity": "Minor",
+      "description": "Truncated last 1%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_TRUNC_002",
+      "format": "PDF",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "Truncated last 15%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_TRUNC_003",
+      "format": "PDF",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated at 50%",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_FLIP_001",
+      "format": "PDF",
+      "category": "Bit Flip",
+      "severity": "Minor",
+      "description": "Bit flip in page content stream",
+      "field": "payload.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_FLIP_002",
+      "format": "PDF",
+      "category": "Bit Flip",
+      "severity": "Major",
+      "description": "Bit flip in cross-reference stream",
+      "field": "pdf.xref.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "PDF_COMP_001",
+      "format": "PDF",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Missing xref + object missing",
+      "field": "pdf.xref",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "RAR_MAGIC_001",
+      "format": "RAR",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "RAR signature corrupted",
+      "field": "signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "RAR_CRC_001",
+      "format": "RAR",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "RAR file CRC mismatch",
+      "field": "trailer.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "7Z_MAGIC_001",
+      "format": "7Z",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "7z signature header corrupted",
+      "field": "signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "7Z_CRC_001",
+      "format": "7Z",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "7z CRC mismatch",
+      "field": "trailer.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "7Z_TRUNC_001",
+      "format": "7Z",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "7z end header beyond EOF (truncated)",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "BZ2_MAGIC_001",
+      "format": "BZIP2",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "BZh stream magic corrupted",
+      "field": "signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "BZ2_CRC_001",
+      "format": "BZIP2",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "BZIP2 block CRC mismatch",
+      "field": "trailer.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "XZ_MAGIC_001",
+      "format": "XZ",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "XZ stream header magic corrupted",
+      "field": "signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "XZ_CRC_001",
+      "format": "XZ",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "XZ check mismatch",
+      "field": "trailer.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "ZST_MAGIC_001",
+      "format": "ZSTD",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "ZSTD frame magic corrupted",
+      "field": "signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "ZST_CRC_001",
+      "format": "ZSTD",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "ZSTD content checksum mismatch",
+      "field": "trailer.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "LZ4_MAGIC_001",
+      "format": "LZ4",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "LZ4 frame magic corrupted",
+      "field": "signature",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "LZ4_CRC_001",
+      "format": "LZ4",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "LZ4 content checksum mismatch",
+      "field": "trailer.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SEC_BOMB_OVERLAP_001",
+      "format": "ZIP",
+      "category": "Security Threat",
+      "severity": "Catastrophic",
+      "description": "Two local file headers reference overlapping data (Fifield signature)",
+      "field": "LocalFileHeader.compressed_data",
+      "evidence_type": "Overlapping Entries",
+      "recoverable_hint": false
+    }
+  ]
+}
