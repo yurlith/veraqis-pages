@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>Recovering past corruption in xz and bzip2 | VERAQIS</title>
 <meta name="description" content="Stock xz -d abandons a whole stream on one bad block. We measured block-independent salvage: 9 of 10 blocks recovered, each CRC-verified, zero false bytes." />
 <link rel="canonical" href="https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/" />

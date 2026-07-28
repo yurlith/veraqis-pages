@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>Is online file repair safe? Two questions to ask | VERAQIS</title>
+<meta name="description" content="Uploading a damaged archive sends everything inside it to a stranger. The second question is harder: how would you know the returned file is right? Measured answers." />
+<link rel="canonical" href="https://veraqis.tech/guides/is-online-file-repair-safe/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Is online file repair safe? Two questions worth asking" />
+<meta property="og:description" content="One question is about privacy and has an obvious answer. The other is about correctness, and almost nobody asks it." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/guides/is-online-file-repair-safe/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Is online file repair safe? Two questions worth asking" />
+<meta name="twitter:description" content="One question is about privacy and has an obvious answer. The other is about correctness, and almost nobody asks it." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/guides/is-online-file-repair-safe/#article",
+      "url": "https://veraqis.tech/guides/is-online-file-repair-safe/",
+      "headline": "Is it safe to repair a file online?",
+      "name": "Is online file repair safe? Two questions to ask | VERAQIS",
+      "description": "Uploading a damaged archive sends everything inside it to a stranger. The second question is harder: how would you know the returned file is right? Measured answers.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Beginner",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "file repair"
+        },
+        {
+          "@type": "Thing",
+          "name": "privacy"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "verification"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/guides/is-online-file-repair-safe/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is it safe to upload a corrupted file to an online repair service?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Uploading sends the full contents of the archive to a third party, where it is subject to their retention, jurisdiction, staff access and security. Deleting it afterwards does not undo that. Since diagnosing a damaged archive is a purely local operation on local bytes, the upload is usually unnecessary."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I tell if a repair tool is lying about what it recovered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ask what it verified against, and give it something unrecoverable. A tool that reports success on random bytes or an encrypted archive without the password has told you how much its other results are worth. In our benchmark the stock baseline emitted 2,799 bytes that differ from the original while reporting success."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does \"verified\" mean if a file opens correctly?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Opening is not verification. A parser accepting a file, a plausible size, and a recomputed checksum can all be satisfied by wrong bytes. Verification means an independent check the repair did not itself produce — typically a checksum stored before the damage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do local repair tools have the same correctness problem?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Running locally solves privacy, not correctness. The correctness question is the same one either way: what did the tool check the result against, and can anyone else re-check it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is free file repair software trustworthy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Price says nothing about it. What matters is whether the tool distinguishes verified data from produced data, states what it could not recover, and leaves your original untouched. A paid tool that reports success on everything is worse than a free one that abstains honestly."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/guides/is-online-file-repair-safe/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://veraqis.tech/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Is online repair safe?",
+          "item": "https://veraqis.tech/guides/is-online-file-repair-safe/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/" class="active">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/guides/">Guides</a></p>
+    <p class="kicker">Guide</p>
+    <h1>Is it safe to repair a file online?</h1>
+    <p class="lead">There are two questions here and they get very different amounts of attention. The first — what happens to my data — is obvious once stated. The second — how would I know the file I get back is right — is the one that actually decides whether a repair was worth anything.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="privacy">Question one: what you are handing over</h2>
+      <p>Uploading a damaged archive uploads <strong>everything inside it</strong>. Not a description, not a fingerprint — the contents. And the archives people try hardest to repair are exactly the ones that hold the most: a backup, a photo export, a work handover, an accounts folder, a database dump.</p>
+      <p>What follows from that is worth stating plainly rather than darkly. The file is on someone else's disk. It is subject to their retention policy, their jurisdiction, their staff access, their backups, and their next security incident. Deleting it from the interface afterwards does not undo any of that. If the archive contains other people's personal data, uploading it may itself be the reportable event, independently of anything the service does wrong.</p>
+      <div class="callout warn">None of this requires the service to be dishonest. A completely well-run service still means your data has left your control, and the archives worth repairing are the ones where that matters most.</div>
+      <p>It is also unnecessary. Diagnosing a damaged archive is a local operation on local bytes — reading headers, checking structure, verifying checksums. There is no step in it that needs a server. A tool that requires an upload to tell you what is wrong with your file has made a product decision, not a technical one.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="correctness">Question two: how would you know it worked?</h2>
+      <p>This is the harder one, and it applies to local tools just as much as online ones. A repair tool hands you a file. The file exists, has a plausible size and may well open. None of that means the bytes are the bytes you lost.</p>
+      <p>We built a benchmark that scores this directly, because it is not visible from the output. Every tool runs against damaged files with known correct answers, and each emitted byte is classified: correct <strong>and</strong> independently verified, correct by luck but unproven, or simply wrong.</p>
+      <div class="table-scroll"><table><thead><tr><th>damage class</th><th>baseline: bytes wrong</th><th>baseline: proof</th><th>VERAQIS: bytes wrong</th><th>VERAQIS: proof</th></tr></thead><tbody><tr><td>bit flip (XZ), N = 48</td><td><strong>48</strong></td><td>0%</td><td>0</td><td>100%</td></tr><tr><td>erasure (ISO), N = 48</td><td><strong>1,383</strong></td><td>0%</td><td>0</td><td>100%</td></tr><tr><td>mid-stream corruption (BZIP2), N = 48</td><td><strong>1,368</strong></td><td>0%</td><td>0</td><td>100%</td></tr><tr><td>field corruption (ZIP), N = 24</td><td>0</td><td>0%</td><td>0</td><td>100%</td></tr><tr><td>truncation (GZIP), N = 48</td><td>0 — returned nothing, missed 862 recoverable bytes</td><td>0%</td><td>0</td><td>100%</td></tr><tr><td>header magic (7Z), N = 24</td><td>0 — returned nothing, missed 96 recoverable bytes</td><td>0%</td><td>0</td><td>100%</td></tr></tbody></table></div><p class="note">PCRB scorecard. "Proof" is the fraction of emitted bytes an independent third-party verifier can re-check without trusting the tool that produced them. The baseline is a modelled stock recovery posture so the comparison does not depend on which tools happen to be installed.</p>
+      <div class="claim" id="claim-baseline-false"><p class="claim-text">Across three damage classes the modelled stock baseline emitted 2,799 bytes that differ from the original while reporting success, and 0% of everything it emitted could be independently re-checked. The ZIP row is the sharpest: it returned 3,243 bytes that were all correct, and could prove none of them.</p><p class="claim-src">PCRB scorecard (Proof-Carrying Recovery Benchmark) · falseB by class: XZ 48, ISO 1,383, BZIP2 1,368 · proof% = fraction re-checkable by the standalone independent verifier · VERAQIS 0.2.1</p></div>
+      <p>The ZIP row deserves the attention. The baseline got every byte right — and could not demonstrate it. "Correct by luck" and "correct with evidence" look identical in the output folder and are completely different when the archive matters.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="what-good-looks-like">What a trustworthy tool looks like</h2>
+      <p>Five things to check, in rough order of how much they tell you:</p>
+      <ol><li><strong>It tells you what it could not do.</strong> A tool that reports success on every input is not measuring anything. Ours abstained outright on one benchmark case — a damaged xz stream with no safe block surface — and recovered nothing rather than emit unverifiable bytes.</li><li><strong>It separates verified from produced.</strong> Two different words for two different things. If the report has one bucket, it is hiding the distinction.</li><li><strong>It says what it verified against.</strong> "It opens now", "the checksum matches", "the parser accepted it" are all satisfiable by a wrong file. The answers that hold up refer to evidence the repair did not itself generate.</li><li><strong>It does not write to your original.</strong> Read-only source, output somewhere else. A failed in-place repair can destroy what was recoverable.</li><li><strong>It works without a network.</strong> If diagnosis needs an upload, ask which part of reading a local file required a server.</li></ol>
+      <div class="callout info"><strong>A useful test you can run on any tool:</strong> feed it a file that is genuinely beyond recovery — an encrypted archive without the password, or a few kilobytes of random bytes with a <code>.zip</code> extension. A tool that reports a successful repair has told you everything you need to know about its other results.</div>
+      <h2 id="when-ok">When online repair is fine</h2>
+      <p>To be fair about it: if the archive contains nothing you would mind a stranger reading — a public dataset, a game mod, something already published — the privacy question largely evaporates. The correctness question does not, but it becomes a question about wasted time rather than exposure.</p>
+      <p>The rule of thumb: <strong>if you would not email the archive to someone you have never met, do not upload it to be repaired.</strong></p>
+      <h2 id="alternative">The local alternative</h2>
+      <p>Analysis is free and runs on your own machine. The original is opened read-only, nothing is written to it, nothing is transmitted, and there is no telemetry. What you get back is a per-entry verdict: verified, damaged, or unknown — with the rule ID and evidence behind each.</p>
+      <div class="terminal"><pre>phx analyze archive.zip            # read-only, nothing leaves the machine
+phx recover archive.zip --output recovered/</pre></div>
+      <p>That verdict is usually the whole answer. Knowing that 38 of 40 entries are provably intact tells you what to do next, and it did not cost you the archive's contents to find out.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about repair services</h2>
+    <div class="faq">
+      <div class="qa"><h3>Is it safe to upload a corrupted file to an online repair service?</h3><p>Uploading sends the full contents of the archive to a third party, where it is subject to their retention, jurisdiction, staff access and security. Deleting it afterwards does not undo that. Since diagnosing a damaged archive is a purely local operation on local bytes, the upload is usually unnecessary.</p></div>
+      <div class="qa"><h3>How can I tell if a repair tool is lying about what it recovered?</h3><p>Ask what it verified against, and give it something unrecoverable. A tool that reports success on random bytes or an encrypted archive without the password has told you how much its other results are worth. In our benchmark the stock baseline emitted 2,799 bytes that differ from the original while reporting success.</p></div>
+      <div class="qa"><h3>What does "verified" mean if a file opens correctly?</h3><p>Opening is not verification. A parser accepting a file, a plausible size, and a recomputed checksum can all be satisfied by wrong bytes. Verification means an independent check the repair did not itself produce — typically a checksum stored before the damage.</p></div>
+      <div class="qa"><h3>Do local repair tools have the same correctness problem?</h3><p>Yes. Running locally solves privacy, not correctness. The correctness question is the same one either way: what did the tool check the result against, and can anyone else re-check it.</p></div>
+      <div class="qa"><h3>Is free file repair software trustworthy?</h3><p>Price says nothing about it. What matters is whether the tool distinguishes verified data from produced data, states what it could not recover, and leaves your original untouched. A paid tool that reports success on everything is worse than a free one that abstains honestly.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/research/crc32-collisions-that-pass-gzip-t/"><h3>When a checksum is not proof</h3><p>Files that pass gzip -t and unzip -t and are still wrong.</p></a>
+      <a class="card link-card" href="/reference/evidence-model/"><h3>What counts as proof</h3><p>Evidence in bits, and the rule against a tool grading its own work.</p></a>
+      <a class="card link-card" href="/guides/"><h3>Diagnose it yourself first</h3><p>Most "corrupted" files are not damaged in the way people assume.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

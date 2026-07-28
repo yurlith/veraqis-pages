@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>End of central directory signature not found — fix | VERAQIS</title>
+<meta name="description" content="This error means the ZIP index is gone, not the files. In a measured case 336,414 bytes were recovered from 6 members while three standard tools extracted nothing." />
+<link rel="canonical" href="https://veraqis.tech/guides/central-directory-not-found/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="End of central directory not found — the files are usually still there" />
+<meta property="og:description" content="The most alarming ZIP error is usually the least destructive: the index is gone, the entries are not. Measured against Python, PowerShell and libarchive." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/guides/central-directory-not-found/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="End of central directory not found — the files are usually still there" />
+<meta name="twitter:description" content="The most alarming ZIP error is usually the least destructive: the index is gone, the entries are not. Measured against Python, PowerShell and libarchive." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/guides/central-directory-not-found/#article",
+      "url": "https://veraqis.tech/guides/central-directory-not-found/",
+      "headline": "\"End of central directory signature not found\"",
+      "name": "End of central directory signature not found — fix | VERAQIS",
+      "description": "This error means the ZIP index is gone, not the files. In a measured case 336,414 bytes were recovered from 6 members while three standard tools extracted nothing.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Beginner",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "ZIP"
+        },
+        {
+          "@type": "Thing",
+          "name": "central directory"
+        },
+        {
+          "@type": "Thing",
+          "name": "EOCD"
+        },
+        {
+          "@type": "Thing",
+          "name": "file recovery"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/guides/central-directory-not-found/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does \"End of central directory signature not found\" mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It means the small record at the end of the ZIP that points to the archive index is missing or unreadable. Tools scan backwards from the end of the file to find it, and refuse to continue without it. It says nothing about the compressed files themselves, which sit earlier in the file and are usually intact."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a ZIP be opened without its central directory?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Every entry also carries a local file header immediately before its data, so the archive can be read by scanning forward and the index rebuilt from what is found. In a measured case this recovered 336,414 bytes across 6 members with nothing lost, where Python and PowerShell each extracted 0 files."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does Windows say the compressed folder is invalid when the files are clearly inside?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because Windows, like every other ZIP tool, reads the index at the end of the file before showing you anything. A damaged index makes the whole archive read as invalid even though the compressed entries earlier in the file are untouched and recoverable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is recovering the index safe, or does it risk corrupting the file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Reading is safe as long as the tool does not write to the original. VERAQIS opens the source read-only and writes recovered output to a separate location. Tools that repair in place carry a real risk: a failed in-place repair can destroy what was recoverable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I know the recovered files are correct?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each ZIP entry stores a CRC-32 of its own uncompressed contents, written when the archive was created. Rebuilding the index does not touch that value, so it works as an independent check on the result: entries that verify are reported verified, entries that do not are reported damaged."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/guides/central-directory-not-found/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://veraqis.tech/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Central directory not found",
+          "item": "https://veraqis.tech/guides/central-directory-not-found/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/" class="active">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/guides/">Guides</a></p>
+    <p class="kicker">Guide · ZIP_EOCD_001 / ZIP_CD_001</p>
+    <h1>"End of central directory signature not found"</h1>
+    <p class="lead">Of all the ways a ZIP can fail, this is the one that looks worst and costs least. Every tool reports the archive as invalid, and in the case we measured every byte of file data was still present and recoverable.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="what">What the error actually says</h2>
+      <p>You will see one of these, depending on what you used:</p>
+      <div class="terminal"><pre>unzip:      End-of-central-directory signature not found
+Python:     zipfile.BadZipFile: File is not a zip file
+PowerShell: End of Central Directory record could not be found
+7-Zip:      Cannot open file as archive
+Windows:    The compressed (zipped) folder is invalid</pre></div>
+      <p>All five mean the same thing. A ZIP keeps its index — the <strong>central directory</strong> — at the end of the file, and finds it through a small record in the last few hundred bytes called the <strong>end of central directory</strong>, or EOCD. Tools scan backwards from the end of the file looking for that record. If they cannot find it, they stop, because without it they do not know what is in the archive or where.</p>
+      <div class="callout info">They do <strong>not</strong> mean your files are gone. Each entry in a ZIP also carries its own header — the local file header — immediately before its compressed data, repeating the name, the sizes and the CRC-32. The index is a convenience. The archive can be read without it.</div>
+      <h2 id="causes">How the index gets lost</h2>
+      <ul><li><strong>The download or copy stopped early.</strong> By far the most common. The index is the last thing written, so it is the first thing an interrupted transfer loses.</li><li><strong>The file was truncated by a full disk</strong> or a device removed mid-write.</li><li><strong>Something was appended.</strong> Mail scanners, upload wrappers and some "download managers" tack bytes onto the end, which pushes the EOCD out of the window tools scan.</li><li><strong>Real corruption in the last sectors</strong> of the storage the file lives on.</li><li><strong>It was never a ZIP.</strong> A renamed file, or an HTML error page saved with a <code>.zip</code> name. Check that first — see <a href="/guides/zip-file-wont-open/">diagnosing before repairing</a>.</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="measured">What we measured</h2>
+      <p>We took a real archive with its EOCD truncated away and ran it through the tools most people actually have, plus VERAQIS. This is a single archive, not a corpus — treat the <em>pattern</em> as the finding and the exact byte count as belonging to this file.</p>
+      <div class="table-scroll"><table><thead><tr><th>tool</th><th>result</th><th>what came out</th></tr></thead><tbody><tr><td>Python 3.12.13 <code>zipfile</code></td><td>failed</td><td><code>BadZipFile: File is not a zip file</code> — 0 files</td></tr><tr><td>PowerShell <code>Expand-Archive</code></td><td>failed</td><td>"End of Central Directory record could not be found" — <strong>0 files extracted</strong></td></tr><tr><td>Windows <code>tar</code> / libarchive 3.8.4</td><td>listed only</td><td>exit 0, <strong>listed 6 members</strong> — it could see them, but this is a listing, not an extraction</td></tr><tr><td>VERAQIS 0.2.1</td><td>recovered</td><td><strong>336,414 bytes, 0 lost</strong> — central directory rebuilt for 6 members from their local headers, manifest emitted</td></tr></tbody></table></div><p class="note">Measured 2026-07-04, damage class "ZIP central directory / EOCD loss". Tool versions as shown; the full artifact is published as <a href="/assets/competitive-baseline-results.json">competitive-baseline-results.json</a>.</p>
+      <div class="claim" id="claim-eocd-case"><p class="claim-text">In a real ZIP with its end-of-central-directory record truncated away, VERAQIS rebuilt the index from the surviving local file headers and recovered 336,414 bytes across 6 members with 0 bytes lost. Python zipfile and PowerShell Expand-Archive each extracted 0 files from the same input; libarchive could list the 6 members but not extract them.</p><p class="claim-src">Local demonstrator benchmark, 2026-07-04 · Python 3.12.13, bsdtar 3.8.4 / libarchive 3.8.4, PowerShell Expand-Archive · VERAQIS 0.2.1 · <a href="/assets/competitive-baseline-results.json">raw artifact</a></p></div>
+      <p>The libarchive row is the interesting one. It shows the entries were never in doubt — a tool willing to walk forward through the file could see all six. What was missing was the map, and a map can be redrawn from the territory.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="proof">What "recovered" is allowed to mean here</h2>
+      <p>Rebuilding an index is guessing about structure. What stops it from being guessing about <em>data</em> is that every ZIP entry carries a CRC-32 of its own uncompressed contents, and that checksum was not used to build the index — it is used to check the result afterwards.</p>
+      <p>So the sequence is: find the local headers, decompress each entry, then verify each one against the CRC it has been carrying since the day it was written. Entries that verify are reported as verified. Entries that do not are reported as damaged. Nothing in between is invented.</p>
+      <p>On the benchmark cell for ZIP field damage, that discipline scores 3,243 verified bytes out of 3,243 emitted across 24 cases — precision 1.000 with a 95% confidence interval of 0.999–1.000, and zero false bytes. A modelled stock tool emitted the same 3,243 bytes and got them right, but could prove <strong>none</strong> of them: correct by luck is not the same result as correct with evidence.</p>
+      <p class="note">That distinction sounds academic until the archive matters. "These six files are byte-identical to what was archived, and here is the check" is a different statement from "here are six files".</p>
+      <h2 id="what-to-do">What to do</h2>
+      <ol><li><strong>Work on a copy.</strong> Any tool that rewrites the file in place can turn a recoverable archive into an unrecoverable one.</li><li><strong>Try re-downloading first</strong> if the source still exists. A complete original always beats any reconstruction, and this failure is usually caused by an incomplete transfer.</li><li><strong>Compare the size</strong> against the source if you can. A file noticeably smaller than expected is truncated, and that tells you the tail is missing rather than scrambled.</li><li><strong>Check it is really a ZIP</strong> — the first bytes should be <code>PK\x03\x04</code>. A renamed file produces the same error and no amount of repair will help.</li><li><strong>Then analyse before repairing.</strong> Find out how many entries are present and how many verify. That answer decides whether recovery is worth doing at all, and it costs nothing.</li></ol>
+      <div class="terminal"><pre># see what is actually there, without writing anything
+phx analyze broken.zip
+
+# rebuild the index and extract only what verifies
+phx recover broken.zip --output recovered/</pre></div>
+      <h2 id="limits">When it will not work</h2>
+      <ul><li><strong>If the entries themselves are damaged</strong>, rebuilding the index does not help them. You get back the entries that verify, and an honest report on the ones that do not.</li><li><strong>If the archive is encrypted</strong>, it is not opened without the password. Detected, reported, and left alone — no guessing, no brute force.</li><li><strong>If the file was truncated deeply enough</strong> to take entries with it, those entries are gone. See <a href="/guides/unexpected-end-of-zip/">unexpected end of archive</a>.</li><li><strong>If it is not a ZIP at all</strong>, no ZIP tool will ever open it.</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about a missing central directory</h2>
+    <div class="faq">
+      <div class="qa"><h3>What does "End of central directory signature not found" mean?</h3><p>It means the small record at the end of the ZIP that points to the archive index is missing or unreadable. Tools scan backwards from the end of the file to find it, and refuse to continue without it. It says nothing about the compressed files themselves, which sit earlier in the file and are usually intact.</p></div>
+      <div class="qa"><h3>Can a ZIP be opened without its central directory?</h3><p>Yes. Every entry also carries a local file header immediately before its data, so the archive can be read by scanning forward and the index rebuilt from what is found. In a measured case this recovered 336,414 bytes across 6 members with nothing lost, where Python and PowerShell each extracted 0 files.</p></div>
+      <div class="qa"><h3>Why does Windows say the compressed folder is invalid when the files are clearly inside?</h3><p>Because Windows, like every other ZIP tool, reads the index at the end of the file before showing you anything. A damaged index makes the whole archive read as invalid even though the compressed entries earlier in the file are untouched and recoverable.</p></div>
+      <div class="qa"><h3>Is recovering the index safe, or does it risk corrupting the file?</h3><p>Reading is safe as long as the tool does not write to the original. VERAQIS opens the source read-only and writes recovered output to a separate location. Tools that repair in place carry a real risk: a failed in-place repair can destroy what was recoverable.</p></div>
+      <div class="qa"><h3>How do I know the recovered files are correct?</h3><p>Each ZIP entry stores a CRC-32 of its own uncompressed contents, written when the archive was created. Rebuilding the index does not touch that value, so it works as an independent check on the result: entries that verify are reported verified, entries that do not are reported damaged.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/guides/zip-file-wont-open/"><h3>Diagnose it first</h3><p>Five reasons a ZIP will not open. Only one of them is corruption.</p></a>
+      <a class="card link-card" href="/formats/zip/"><h3>Why the index is at the end</h3><p>The layout decision behind this error, and the other six failure modes.</p></a>
+      <a class="card link-card" href="/reference/rule-ids/#zip_eocd_001"><h3>ZIP_EOCD_001</h3><p>The finding this raises, with its field, severity and evidence type.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

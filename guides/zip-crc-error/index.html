@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>CRC failed, the file is corrupt — what it costs | VERAQIS</title>
+<meta name="description" content="A CRC error is a per-entry verdict, not an archive-wide one. The other entries can still be proven intact. What a failing checksum does and does not tell you." />
+<link rel="canonical" href="https://veraqis.tech/guides/zip-crc-error/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="CRC failed in a ZIP — what it actually costs you" />
+<meta property="og:description" content="The checksum failed on one entry. The others in the same archive can still be proven byte-exact. What that error means and what to do." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/guides/zip-crc-error/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="CRC failed in a ZIP — what it actually costs you" />
+<meta name="twitter:description" content="The checksum failed on one entry. The others in the same archive can still be proven byte-exact. What that error means and what to do." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/guides/zip-crc-error/#article",
+      "url": "https://veraqis.tech/guides/zip-crc-error/",
+      "headline": "\"CRC failed\" — one entry's verdict, not the archive's",
+      "name": "CRC failed, the file is corrupt — what it costs | VERAQIS",
+      "description": "A CRC error is a per-entry verdict, not an archive-wide one. The other entries can still be proven intact. What a failing checksum does and does not tell you.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Beginner",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "ZIP"
+        },
+        {
+          "@type": "Thing",
+          "name": "CRC-32"
+        },
+        {
+          "@type": "Thing",
+          "name": "checksum error"
+        },
+        {
+          "@type": "Thing",
+          "name": "file recovery"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/guides/zip-crc-error/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does \"CRC failed\" mean when extracting a ZIP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each entry stores a CRC-32 of its uncompressed contents, written when the archive was created. If the value recomputed at extraction differs, that entry's bytes changed after the archive was written. It is a verdict on that one entry — the others in the same archive may be perfectly intact."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a file with a CRC error be repaired?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not into a verified file. The checksum tells you the bytes are wrong but not what they should have been, and a CRC-32 constrains at most four bytes. What can be done is recover every other entry with proof, and report the failing one honestly rather than shipping unverifiable output."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are the other files in the archive still good?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Very likely, and it is checkable rather than a matter of hope: each entry carries its own CRC-32, so each can be verified independently. A failure on one entry says nothing about the entry next to it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do several entries fail at once?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "That usually points at the storage or the transfer rather than the archive — a failing drive, a bad cable, a truncated or resumed download. Copy the archive to healthy storage before doing anything else, and prefer re-downloading if the source still exists."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "If the CRC passes, is the file definitely correct?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Correct against accidental corruption, yes — a random error has about a one-in-four-billion chance of passing. Against someone who chose the bytes, no: CRC-32 is linear and any target value can be forced by construction. We built collisions that pass gzip -t and unzip -t to demonstrate exactly that."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/guides/zip-crc-error/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://veraqis.tech/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "CRC error",
+          "item": "https://veraqis.tech/guides/zip-crc-error/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/" class="active">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/guides/">Guides</a></p>
+    <p class="kicker">Guide · ZIP_CRC_001 / ZIP_CRC_002</p>
+    <h1>"CRC failed" — one entry's verdict, not the archive's</h1>
+    <p class="lead">A CRC error is the one archive failure that tells you something precise: this entry's bytes are not the bytes that were archived. It says nothing about the entry next to it — and blunt "repair" tools are exactly the wrong response, because they hide which is which.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="what">What the checksum is doing there</h2>
+      <div class="terminal"><pre>7-Zip:      CRC failed in &lt;name&gt;. The file is corrupt
+unzip:      bad CRC 1a2b3c4d  (should be 5e6f7a8b)
+Python:     BadZipFile: Bad CRC-32 for file '&lt;name&gt;'
+Windows:    The compressed (zipped) folder is invalid</pre></div>
+      <p>When an archive is created, each entry gets a CRC-32 of its <strong>uncompressed</strong> contents stored alongside it. When you extract, the tool decompresses the entry and recomputes that value. A mismatch means the bytes changed between then and now.</p>
+      <p>That is a genuinely strong statement. A random corruption has roughly a one-in-four-billion chance of landing on a value that still matches, so a CRC error is close to certain evidence that something really did change. It is also <strong>scoped</strong>: the check covers one entry, so it convicts one entry.</p>
+      <div class="grid g2"><div class="card"><h3>ZIP_CRC_001</h3><p>Checksum mismatch on a <strong>single</strong> entry. Severity Minor — the archive is structurally fine and one file is damaged.</p></div><div class="card"><h3>ZIP_CRC_002</h3><p>Mismatch on <strong>multiple</strong> entries. Severity Major — usually points at storage or transfer damage across a range rather than one bad file.</p></div></div>
+      <p>Which of the two you have changes the diagnosis. One failing entry among forty suggests a localised problem. Fifteen failing entries suggests the medium the file lives on, and the right next step is to get the archive off that medium before doing anything else.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="others">What the other entries are worth</h2>
+      <p>This is the part people give up on unnecessarily. A CRC failure on one entry is not contagious. Every other entry has its own checksum and can be checked independently — and either verified or reported damaged, individually.</p>
+      <p>The closest measurement we have on this exact shape is a <strong>gzip</strong> stream — labelled as gzip, because carrying a number across formats would be dishonest — with a corrupted member in the middle of a multi-member file:</p>
+      <div class="table-scroll"><table><thead><tr><th>tool</th><th>result</th></tr></thead><tbody><tr><td>Python 3.12.13 <code>gzip</code></td><td>failed outright: <code>invalid code -- missing end-of-block</code>, nothing returned</td></tr><tr><td>VERAQIS 0.2.1</td><td><strong>2 CRC-verified members salvaged, 1,465 bytes, 0 lost</strong> — the corrupt member dropped and reported, not patched</td></tr></tbody></table></div><p class="note">Local demonstrator benchmark, 2026-07-04, damage class "GZIP member-level corruption". A single stream, so read the behaviour rather than the byte count.</p>
+      <p>The same logic applies to a ZIP: the damaged entry is dropped and named; the rest are extracted and each one carries its own passing checksum as evidence. On the corpus cell for ZIP field damage — 24 cases with ground truth — that produces 3,243 verified bytes out of 3,243 emitted, precision 1.000 with a 95% confidence interval of 0.999–1.000, and <strong>zero false bytes</strong>.</p>
+      <div class="claim" id="claim-crc-scope"><p class="claim-text">A CRC error convicts one entry, not the archive. In a multi-member gzip stream with one corrupted member, the standard tool returned nothing at all while 2 members were salvaged CRC-verified with 0 bytes lost; on the ZIP field-corruption corpus (N = 24) every emitted byte was independently verified, precision 1.000 (95% CI 0.999–1.000), zero false bytes.</p><p class="claim-src">Local demonstrator benchmark 2026-07-04 (gzip member salvage) + PCRB scorecard, field_corruption (ZIP), N = 24 · VERAQIS 0.2.1</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="antipattern">What a repair tool must not do here</h2>
+      <p>There is an obvious and tempting move: decompress the failing entry anyway, write out whatever comes back, and report success. The file exists, it has plausible size, it may even open.</p>
+      <p>It is also unverifiable, and the CRC that was supposed to catch this has just been ignored. Worse, there is a subtler version: reconstruct the entry so that the stored CRC <em>does</em> match, then report "checksum verified". That check proves nothing — a solve that targets a checksum satisfies it by construction. Evidence only counts from a verifier the repair did not aim at.</p>
+      <div class="callout warn">If a tool reports a CRC-failing entry as recovered, ask what it verified against. "It decompressed", "it opens", and "the checksum matches now" are all satisfiable by a wrong file. See <a href="/reference/evidence-model/#tautology-rule">the tautology rule</a>.</div>
+      <h2 id="what-to-do">What to do</h2>
+      <ol><li><strong>Find out how many entries fail.</strong> One is a bad file; many is a bad disk, and the disk is the more urgent problem.</li><li><strong>Copy the archive off the medium it is on</strong> before anything else, if several entries fail.</li><li><strong>Re-download if you can.</strong> A CRC error on a downloaded archive is often a bad transfer, and a fresh copy verifies cleanly.</li><li><strong>Extract everything that verifies</strong>, and treat the failing entries as lost unless you have another copy of them.</li><li><strong>Look for another copy of just those files.</strong> You rarely need the whole archive again — only the entries that failed.</li></ol>
+      <div class="terminal"><pre># which entries fail, and which verify
+phx analyze archive.zip
+
+# extract only the verified entries; failures are reported, not patched
+phx recover archive.zip --output recovered/</pre></div>
+      <h2 id="limit">The limit of what a passing CRC proves</h2>
+      <p>Worth knowing even when everything passes. A matching CRC-32 is strong evidence against <strong>accidental</strong> change and no evidence at all against <strong>deliberate</strong> change: CRC-32 is linear, so any chosen value can be hit by direct construction.</p>
+      <p>We built archives that demonstrate this — different contents, identical CRC-32, and <code>gzip -t</code> and <code>unzip -t</code> both report them as healthy. If your question is "did this get corrupted", the checksum answers it. If your question is "could someone have swapped this", it does not, and you need a hash recorded before the damage. <a href="/research/crc32-collisions-that-pass-gzip-t/">The measurement is here</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about CRC errors</h2>
+    <div class="faq">
+      <div class="qa"><h3>What does "CRC failed" mean when extracting a ZIP?</h3><p>Each entry stores a CRC-32 of its uncompressed contents, written when the archive was created. If the value recomputed at extraction differs, that entry's bytes changed after the archive was written. It is a verdict on that one entry — the others in the same archive may be perfectly intact.</p></div>
+      <div class="qa"><h3>Can a file with a CRC error be repaired?</h3><p>Not into a verified file. The checksum tells you the bytes are wrong but not what they should have been, and a CRC-32 constrains at most four bytes. What can be done is recover every other entry with proof, and report the failing one honestly rather than shipping unverifiable output.</p></div>
+      <div class="qa"><h3>Are the other files in the archive still good?</h3><p>Very likely, and it is checkable rather than a matter of hope: each entry carries its own CRC-32, so each can be verified independently. A failure on one entry says nothing about the entry next to it.</p></div>
+      <div class="qa"><h3>Why do several entries fail at once?</h3><p>That usually points at the storage or the transfer rather than the archive — a failing drive, a bad cable, a truncated or resumed download. Copy the archive to healthy storage before doing anything else, and prefer re-downloading if the source still exists.</p></div>
+      <div class="qa"><h3>If the CRC passes, is the file definitely correct?</h3><p>Correct against accidental corruption, yes — a random error has about a one-in-four-billion chance of passing. Against someone who chose the bytes, no: CRC-32 is linear and any target value can be forced by construction. We built collisions that pass gzip -t and unzip -t to demonstrate exactly that.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/research/crc32-collisions-that-pass-gzip-t/"><h3>What a passing CRC proves</h3><p>Collisions that pass the native integrity checks, across five formats.</p></a>
+      <a class="card link-card" href="/guides/central-directory-not-found/"><h3>When the index is the problem</h3><p>A structural failure that usually costs no data at all.</p></a>
+      <a class="card link-card" href="/reference/rule-ids/#zip_crc_001"><h3>ZIP_CRC_001 / ZIP_CRC_002</h3><p>The two findings, with severity and evidence type.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

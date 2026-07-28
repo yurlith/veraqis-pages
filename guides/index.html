@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>Guides — diagnose and recover a damaged file | VERAQIS</title>
 <meta name="description" content="Practical guides for damaged archives: diagnose why a ZIP will not open, decide when recovery beats re-downloading, and see what is provable." />
 <link rel="canonical" href="https://veraqis.tech/guides/" />
@@ -116,7 +119,12 @@
 <section>
   <div class="wrap">
     <div class="">
+      <h2 id="start">Start here</h2>
       <div class="grid g2"><div class="card"><h3>Why a ZIP file won't open</h3><p>Five causes, most common first, and how to tell them apart before doing anything irreversible. Only one of the five is actual corruption.</p><p class="note"><a href="/guides/zip-file-wont-open/">Read the guide →</a></p></div><div class="card"><h3>Repair a corrupted ZIP file</h3><p>What "corrupted" usually means in practice, when re-downloading is the better answer, and what can be verified rather than merely produced.</p><p class="note"><a href="/guides/repair-corrupted-zip/">Read the guide →</a></p></div></div>
+      <h2 id="by-error">By the error you are seeing</h2>
+      <div class="grid g3"><div class="card"><h3>"End of central directory signature not found"</h3><p>The index is gone, the files are not. In a measured case: <strong>336,414 bytes recovered from 6 members</strong> where Python and PowerShell each extracted zero.</p><p class="note"><a href="/guides/central-directory-not-found/">Read the guide →</a></p></div><div class="card"><h3>"Unexpected end of archive"</h3><p>Truncation, not corruption — the data is not wrong, there is less of it. What survives the cut across ZIP, TAR and GZIP, measured.</p><p class="note"><a href="/guides/unexpected-end-of-zip/">Read the guide →</a></p></div><div class="card"><h3>"CRC failed, the file is corrupt"</h3><p>A verdict on one entry, not the archive. The others can still be proven byte-exact — and what a <em>passing</em> checksum does not prove.</p><p class="note"><a href="/guides/zip-crc-error/">Read the guide →</a></p></div></div>
+      <h2 id="before-you-upload">Before you hand your file to anyone</h2>
+      <div class="grid g2"><div class="card"><h3>Is online file repair safe?</h3><p>Two questions: what you hand over, and how you would know the returned file is right. The second is the one almost nobody asks — with benchmark numbers on what stock recovery actually returns.</p><p class="note"><a href="/guides/is-online-file-repair-safe/">Read the guide →</a></p></div><div class="card"><h3>A test you can run on any tool</h3><p>Feed it something genuinely unrecoverable — an encrypted archive without the password, or random bytes named <code>.zip</code>. A tool that reports success has told you what its other results are worth.</p></div></div>
       <h2 id="before">Before you run any repair tool</h2>
       <ol><li><strong>Work on a copy.</strong> Repair tools that write in place can turn a recoverable file into an unrecoverable one. VERAQIS opens the original read-only and never writes to it.</li><li><strong>Check whether it is really damaged.</strong> Compare the size against the source, or re-download. A truncated download is the single most common cause and a fresh copy simply works.</li><li><strong>Check whether it is really that format.</strong> The <a href="/reference/glossary/#magic-number">magic number</a> decides, not the extension. Files renamed to <code>.zip</code> are common.</li><li><strong>Check whether it is encrypted.</strong> An encrypted archive is not damaged and cannot be repaired into an open one. No legitimate tool bypasses that.</li><li><strong>Then diagnose, then decide.</strong> Knowing which entries are provably intact tells you whether recovery is worth attempting at all.</li></ol>
       <div class="callout warn"><strong>Be careful with online repair services.</strong> Uploading a damaged file sends its full contents to a third party — including anything private inside the archive. For a backup, an export or a work archive that is often the most sensitive data you have. Any tool worth using can analyse it locally.</div>

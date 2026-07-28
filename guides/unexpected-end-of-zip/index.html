@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>Unexpected end of archive — what a truncated file keeps | VERAQIS</title>
+<meta name="description" content="A truncated archive is not scrambled, it is short. Everything that finished writing before the cut is still exact — and can be proven. What survives, and what does not." />
+<link rel="canonical" href="https://veraqis.tech/guides/unexpected-end-of-zip/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Unexpected end of archive — what a truncated file keeps" />
+<meta property="og:description" content="Truncation is the friendliest kind of damage: the data is not wrong, there is just less of it. What survives the cut, and how it is proven." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/guides/unexpected-end-of-zip/" />
+<meta property="article:published_time" content="2026-07-28" />
+<meta property="article:modified_time" content="2026-07-28" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Unexpected end of archive — what a truncated file keeps" />
+<meta name="twitter:description" content="Truncation is the friendliest kind of damage: the data is not wrong, there is just less of it. What survives the cut, and how it is proven." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/guides/unexpected-end-of-zip/#article",
+      "url": "https://veraqis.tech/guides/unexpected-end-of-zip/",
+      "headline": "\"Unexpected end of archive\" — what a truncated file still holds",
+      "name": "Unexpected end of archive — what a truncated file keeps | VERAQIS",
+      "description": "A truncated archive is not scrambled, it is short. Everything that finished writing before the cut is still exact — and can be proven. What survives, and what does not.",
+      "datePublished": "2026-07-28",
+      "dateModified": "2026-07-28",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Beginner",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "ZIP"
+        },
+        {
+          "@type": "Thing",
+          "name": "truncation"
+        },
+        {
+          "@type": "Thing",
+          "name": "incomplete download"
+        },
+        {
+          "@type": "Thing",
+          "name": "file recovery"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/guides/unexpected-end-of-zip/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does \"unexpected end of archive\" mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The file ends before the archive format says it should. Almost always the transfer or copy stopped early, so the bookkeeping written last — the ZIP index, the gzip checksum, the tar end marker — never arrived. The data written before that point is intact."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can files be recovered from a truncated archive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, everything that finished writing before the cut, and it can be verified rather than merely produced. In measured cases this was 336,414 bytes from a truncated ZIP and 2,594,816 of 2,611,200 bytes from a truncated TAR, where the standard tools returned nothing usable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I tell truncation from corruption?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Compare the file size against the source. Smaller means truncated: the bytes present are correct and the loss is at the tail. The same size but failing means bytes inside changed, which is corruption and behaves differently."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can an interrupted download be resumed instead?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Often, yes, and it is the better answer. Many servers support ranged requests, so curl -C - or a download manager can complete the existing file rather than start over. Keep the partial copy until the replacement is verified."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens to the file that was half-written?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Its compressed data is incomplete and its checksum never arrived, so it cannot be verified. VERAQIS reports it as damaged rather than decompressing what is there and presenting a partial file as a whole one."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/guides/unexpected-end-of-zip/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://veraqis.tech/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Unexpected end of archive",
+          "item": "https://veraqis.tech/guides/unexpected-end-of-zip/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/guides/" class="active">Guides</a>
+        <a href="/formats/">Formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/desktop.html">Desktop</a>
+        <a href="/mobile.html">Mobile</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/guides/">Guides</a></p>
+    <p class="kicker">Guide · ZIP_TRUNC_001</p>
+    <h1>"Unexpected end of archive" — what a truncated file still holds</h1>
+    <p class="lead">Truncation is the most common archive failure and the least understood one. Nothing in the file is <em>wrong</em> — there is simply less of it than there should be. Everything that finished writing before the cut is byte-exact, and can be proven byte-exact.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-07-28">28 July 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="recognise">How to recognise it</h2>
+      <div class="terminal"><pre>7-Zip:      Unexpected end of archive
+tar:        Unexpected EOF in archive
+gzip:       unexpected end of file
+Python:     BadZipFile / ReadError: end of file header
+unzip:      End-of-central-directory signature not found</pre></div>
+      <p>The giveaway is the file size. Compare it against the source, the original upload, a directory listing, an email attachment size — anything. If your copy is smaller, you are not looking at corruption. You are looking at an incomplete file, and that is a different and much better problem.</p>
+      <div class="grid g2"><div class="card"><h3>Truncation</h3><p>The file ends early. Every byte present is the byte that was written. Damage is at the tail, and the boundary is sharp.</p><p class="note">Everything before the cut is recoverable and verifiable.</p></div><div class="card"><h3>Corruption</h3><p>Bytes inside the file changed. The file may be the right length, and the damage can be anywhere.</p><p class="note">What survives depends on where the damage landed.</p></div></div>
+      <p>This distinction decides everything downstream. With corruption you have to find the damage. With truncation you already know exactly where it is: at the end.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="why">Why the last thing written is the first thing lost</h2>
+      <p>Archive formats put their bookkeeping at the end, because a writer streaming data out does not know the final sizes until it is done. ZIP writes its index last. gzip writes its CRC-32 and length last. tar writes its end-of-archive marker last. xz writes its block Index last.</p>
+      <p>So truncation removes the part every tool reads first. That is why a file missing its final kilobyte reports as completely invalid while containing megabytes of untouched data.</p>
+      <div class="callout info">The practical consequence: <strong>the error you see describes the missing bookkeeping, not the missing data.</strong> Reading that error as "the archive is destroyed" is the single most expensive misreading in this whole area.</div>
+      <h2 id="measured">What survives, measured</h2>
+      <p>Three separate measurements, each labelled with the format it was actually run on. Do not carry a number from one row to another — the formats behave differently.</p>
+      <div class="table-scroll"><table><thead><tr><th>format</th><th>damage</th><th>stock tool</th><th>recovered with proof</th></tr></thead><tbody><tr><td><strong>ZIP</strong></td><td>end-of-central-directory truncated away</td><td>Python <code>zipfile</code> and PowerShell <code>Expand-Archive</code>: <strong>0 files</strong>; libarchive listed 6 members but did not extract</td><td><strong>336,414 bytes, 0 lost</strong> — index rebuilt from local headers, each member CRC-verified</td></tr><tr><td><strong>TAR</strong></td><td>premature zero block before the remaining members</td><td>Python <code>tarfile</code>: <code>ReadError: end of file header</code>; libarchive listed <strong>0 members</strong></td><td><strong>2,594,816 bytes recovered, 16,384 lost</strong> — size resync plus continuation salvage</td></tr><tr><td><strong>GZIP</strong></td><td>truncation, 48 cases</td><td>modelled stock baseline: emitted 0 bytes, <strong>862 recoverable bytes missed</strong></td><td><strong>862 bytes, all verified</strong>, precision 1.000 (95% CI 0.996–1.000), 0 false bytes</td></tr></tbody></table></div><p class="note">ZIP and TAR rows: local demonstrator benchmark 2026-07-04 (Python 3.12.13, bsdtar 3.8.4 / libarchive 3.8.4) — single archives, so read the pattern rather than the byte count. GZIP row: PCRB scorecard, N = 48, a corpus measurement with ground truth.</p>
+      <div class="claim" id="claim-truncation"><p class="claim-text">Truncation destroys the bookkeeping, not the data before the cut. Across three formats the stock tools returned nothing usable from truncated inputs, while the same inputs yielded 336,414 bytes (ZIP), 2,594,816 of 2,611,200 bytes (TAR) and 862 verified bytes across 48 GZIP cases at precision 1.000 with zero false bytes.</p><p class="claim-src">Local demonstrator benchmark 2026-07-04 (ZIP, TAR) + PCRB scorecard truncation (GZIP), N = 48 · VERAQIS 0.2.1</p></div>
+      <p>The TAR row is the honest one to look at: 16,384 bytes <strong>were</strong> lost, and the report says so. Recovery reporting that never mentions loss is not reporting.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="straddle">The entry that straddles the cut</h2>
+      <p>One entry is always in the worst position: the one that was half-written when the transfer stopped. Its compressed bytes are partly present, its checksum is not.</p>
+      <p>A tool has two options. It can decompress what it has and hand you a partial file — which will look like a real file, open in some applications, and be wrong in ways you find out later. Or it can say so.</p>
+      <div class="callout warn">VERAQIS abstains on that entry. It is reported as damaged, not truncated-and-shipped. A half-file that presents itself as a whole one is worse than an absence, because an absence is visible in a way silent wrongness is not.</div>
+      <h2 id="what-to-do">What to do</h2>
+      <ol><li><strong>Re-download or re-copy if you possibly can.</strong> This is the failure where a fresh copy most often just works, and a complete original beats any reconstruction.</li><li><strong>Check whether the transfer can be resumed.</strong> Many servers support ranged requests; <code>curl -C -</code> or a download manager may complete the file rather than restart it.</li><li><strong>Do not delete the truncated copy</strong> until you have the replacement. It is still worth something.</li><li><strong>If the source is gone, analyse before repairing.</strong> How many entries finished before the cut is the number that decides whether recovery is worth doing.</li></ol>
+      <div class="terminal"><pre># how much finished writing before the cut?
+phx analyze truncated.zip
+
+# extract only the entries that verify
+phx recover truncated.zip --output recovered/</pre></div>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>Data after the cut does not exist.</strong> No tool recovers it; anything claiming to has invented it.</li><li><strong>Compressed formats differ sharply.</strong> <code>bzip2</code> and threaded <code>xz</code> keep independent per-block checksums and recover cleanly; <code>zstd</code> and <code>lz4</code> carry no independent verifier and we <a href="/research/recovering-past-corruption-xz-bzip2/">abstain on them</a>.</li><li><strong>Solid archives are position-dependent.</strong> In a solid 7z, how much survives depends on where the damage landed — <a href="/research/7z-solid-archive-bit-flip/">measured here</a>.</li><li><strong>Encrypted archives stay closed</strong> regardless of how much of them arrived.</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about truncated archives</h2>
+    <div class="faq">
+      <div class="qa"><h3>What does "unexpected end of archive" mean?</h3><p>The file ends before the archive format says it should. Almost always the transfer or copy stopped early, so the bookkeeping written last — the ZIP index, the gzip checksum, the tar end marker — never arrived. The data written before that point is intact.</p></div>
+      <div class="qa"><h3>Can files be recovered from a truncated archive?</h3><p>Yes, everything that finished writing before the cut, and it can be verified rather than merely produced. In measured cases this was 336,414 bytes from a truncated ZIP and 2,594,816 of 2,611,200 bytes from a truncated TAR, where the standard tools returned nothing usable.</p></div>
+      <div class="qa"><h3>How do I tell truncation from corruption?</h3><p>Compare the file size against the source. Smaller means truncated: the bytes present are correct and the loss is at the tail. The same size but failing means bytes inside changed, which is corruption and behaves differently.</p></div>
+      <div class="qa"><h3>Can an interrupted download be resumed instead?</h3><p>Often, yes, and it is the better answer. Many servers support ranged requests, so curl -C - or a download manager can complete the existing file rather than start over. Keep the partial copy until the replacement is verified.</p></div>
+      <div class="qa"><h3>What happens to the file that was half-written?</h3><p>Its compressed data is incomplete and its checksum never arrived, so it cannot be verified. VERAQIS reports it as damaged rather than decompressing what is there and presenting a partial file as a whole one.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/guides/central-directory-not-found/"><h3>When the index is what is missing</h3><p>The most common consequence of truncation, and what it costs.</p></a>
+      <a class="card link-card" href="/research/recovering-past-corruption-xz-bzip2/"><h3>Truncated xz and bzip2</h3><p>Where per-block checksums exist, truncation recovery reaches the safe optimum.</p></a>
+      <a class="card link-card" href="/formats/zip/"><h3>ZIP failure modes</h3><p>All seven, with what is provably recoverable from each.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Knowledge</div>
+        <a href="/guides/">Guides</a>
+        <a href="/formats/">File formats</a>
+        <a href="/research/">Research</a>
+        <a href="/reference/">Reference</a>
+        <a href="/reference/glossary/">Glossary</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/desktop.html">VERAQIS Recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver</a>
+        <a href="/download.html">Download</a>
+        <a href="/coldpass.html">ColdPass (archived project)</a>
+      </div>
+      <div>
+        <div class="colhead">Trust</div>
+        <a href="/testing.html">Test Record</a>
+        <a href="/security.html">Security</a>
+        <a href="/reports.html">Reports &amp; Verification</a>
+        <a href="/changelog.html">Changelog</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+      </div>
+    </div>
+    <hr style="margin:28px 0 18px">
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
