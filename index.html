@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<title>VERAQIS — analyze damaged archives, recover what is proven</title>
-<meta name="description" content="VERAQIS analyzes damaged ZIP archives locally and recovers only what can be verified, marking the rest as unknown. Offline, no uploads. Signed Android beta." />
+<title>Offline ZIP recovery and archive integrity checks | VERAQIS</title>
+<meta name="description" content="Analyze damaged ZIP archives on your own machine. VERAQIS recovers only what its checksums can prove and labels the rest unknown. No uploads. Signed Android app." />
 <link rel="canonical" href="https://veraqis.tech/" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="VERAQIS - Honest archive safety and recovery" />
-<meta property="og:description" content="Check damaged files, recover only what can be proven, and review the test record behind the beta." />
+<meta property="og:title" content="Offline ZIP recovery and archive integrity checks" />
+<meta property="og:description" content="Analyze a damaged ZIP on your own machine. Recover only what the archive's own checksums can prove — the rest stays labelled unknown, never guessed." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -21,8 +21,8 @@
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
 <meta property="og:url" content="https://veraqis.tech/" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="VERAQIS - Honest archive safety and recovery" />
-<meta name="twitter:description" content="Check damaged files, recover only what can be proven, and review the test record behind the beta." />
+<meta name="twitter:title" content="Offline ZIP recovery and archive integrity checks" />
+<meta name="twitter:description" content="Analyze a damaged ZIP on your own machine. Recover only what the archive's own checksums can prove — the rest stays labelled unknown, never guessed." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -50,8 +50,8 @@
       "@type": "WebPage",
       "@id": "https://veraqis.tech/#webpage",
       "url": "https://veraqis.tech/",
-      "name": "VERAQIS - Honest archive safety and recovery",
-      "description": "VERAQIS is an offline-first beta toolkit for archive safety, damaged-file analysis, proof-gated recovery, verifiable reports, and transparent test records. No telemetry. No password recovery. No invented data.",
+      "name": "Offline ZIP recovery and archive integrity checks",
+      "description": "VERAQIS analyzes damaged ZIP archives on your own machine, recovers only what its checksums can prove, and labels everything else unknown. No uploads, no telemetry, no password recovery, no invented data.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-07-30",
       "inLanguage": "en"
     },
     {
@@ -126,23 +126,23 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
+
 <header>
   <div class="wrap">
-    <nav>
-      <a class="brand" href="index.html">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
         <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         VERAQIS
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="docs.html">Docs</a>
-        <a href="desktop.html">Desktop</a>
-        <a href="mobile.html">Mobile</a>
-        <a href="download.html">Download</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
       </div>
     </nav>
   </div>
@@ -159,10 +159,15 @@
       <p class="lead">VERAQIS analyzes damaged archives and data files, recovers only what can be
         verified, and clearly marks everything else as unknown. Your files stay on your device.</p>
       <div class="cta">
-        <a class="btn primary" href="mobile.html">Download Android beta</a>
-        <a class="btn ghost" href="desktop.html">View Recovery status</a>
+        <a class="btn primary" href="/recovery.html">Recover a damaged ZIP archive</a>
+        <a class="btn ghost" href="/download.html">Downloads &amp; release status</a>
       </div>
-      <p class="note" style="margin-top:16px"><a href="testing.html">See the test record →</a></p>
+      <p class="note mt-16">Have the file to hand?
+        <a href="/tools/zip-checker/">Check a ZIP archive locally in your browser</a> — nothing is
+        uploaded. Or read the guide for
+        <a href="/guides/central-directory-not-found/">end of central directory not found</a> ·
+        <a href="/guides/zip-crc-error/">CRC failed</a> ·
+        <a href="/guides/">all guides</a></p>
       <div class="status-line">
         <span class="status status--available">Android APK</span>
         <p class="note">Available now: the signed Android Archiver APK — the only public download. VERAQIS
@@ -187,12 +192,16 @@
     <div class="grid g3">
       <div class="card"><p><a href="/guides/zip-file-wont-open/">A ZIP file won't open</a> and you need to find out why.</p></div>
       <div class="card"><p>A ZIP, DOCX, XLSX, PPTX or another supported container <a href="/guides/repair-corrupted-zip/">appears damaged</a>.</p></div>
-      <div class="card"><p>You need to inspect an archive safely before extracting it.</p></div>
-      <div class="card"><p>You want to verify a backup before it becomes critical.</p></div>
-      <div class="card"><p>A confidential file must stay offline.</p></div>
-      <div class="card"><p>You need to distinguish verified recovery from uncertain output.</p></div>
+      <div class="card"><p>A download or copy stopped halfway and the archive is
+        <a href="/guides/unexpected-end-of-zip/">cut short</a>.</p></div>
+      <div class="card"><p>You need to <a href="/mobile.html">inspect an archive safely on Android</a>
+        before extracting it.</p></div>
+      <div class="card"><p>A confidential file must stay offline, and
+        <a href="/guides/is-online-file-repair-safe/">uploading it to a repair site</a> is not an option.</p></div>
+      <div class="card"><p>You need to <a href="/recovery.html">tell verified recovery from uncertain
+        output</a> before you trust the result.</p></div>
     </div>
-    <p class="note" style="margin-top:14px">A listed format is not a promise that every damaged file
+    <p class="note mt-14">A listed format is not a promise that every damaged file
       can be recovered — recovery depends on what surviving bytes can prove.</p>
   </div>
 </section>
@@ -209,8 +218,8 @@
         <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
         <p>Analyze damaged ZIP archives and recover only what can be verified. Free analysis and preview;
           you pay only to save the recovered result.</p>
-        <p style="margin:12px 0"><span class="status status--experimental">Windows — store release pending</span></p>
-        <div class="cta" style="margin-top:8px">
+        <p class="my-12"><span class="status status--experimental">Windows — store release pending</span></p>
+        <div class="cta mt-8">
           <a class="btn ghost" href="desktop.html">View Recovery status</a>
           <a class="btn ghost" href="contact.html">Join beta</a>
         </div>
@@ -219,11 +228,11 @@
         <div class="ic">APK</div><h3>VERAQIS Archiver for Android</h3>
         <p>Inspect archives safely before extracting. Read-only scan, damage and path-traversal detection,
           bomb limits, and transactional extraction — fully offline, no telemetry.</p>
-        <p style="margin:12px 0"><span class="status status--available">Available — signed Android beta</span></p>
-        <div class="cta" style="margin-top:8px"><a class="btn primary" href="mobile.html">Download Android beta</a></div>
+        <p class="my-12"><span class="status status--available">Available — signed Android beta</span></p>
+        <div class="cta mt-8"><a class="btn primary" href="mobile.html">Download Android beta</a></div>
       </div>
     </div>
-    <p class="note" style="margin-top:16px">The command-line interface is a Technician capability of
+    <p class="note mt-16">The command-line interface is a Technician capability of
       VERAQIS Recovery, not a separate product; Reports, Shield, reconcile and exact-copy recovery are
       likewise <strong>capabilities</strong>. Advanced formats (PDF, SQLite, TAR/GZIP, 7z, RAR and others)
       are experimental capabilities, not stable commercial promises. See <a href="reports.html">Reports &amp;
@@ -239,7 +248,7 @@
     <p class="sub">The simple version, before any of the technical terms.</p>
     <p class="quote">Each recovered part is checked before it is marked as verified. Anything that
       cannot be proven remains clearly labelled as unknown.</p>
-    <p class="note" style="margin-top:16px">Want the detail? See how verification works in
+    <p class="note mt-16">Want the detail? See how verification works in
       <a href="reports.html">Reports &amp; Verification</a>
         <a href="changelog.html">Changelog</a>, the measured results in the
       <a href="testing.html">Test Record</a>, and the commands in the <a href="docs.html">docs</a>.</p>
@@ -310,7 +319,7 @@
         </ul>
       </div>
     </div>
-    <div class="grid g3" style="margin-top:34px">
+    <div class="grid g3 mt-34">
       <div class="card"><h3>Security before recovery</h3><p>Inputs are treated as hostile. Source files
         are opened read-only, untrusted work is sandboxed, and output goes to a destination you choose.</p></div>
       <div class="card"><h3>No password or restriction bypass</h3><p>Encrypted files are detected and
@@ -398,7 +407,7 @@
       <div class="card metric"><div class="n">0</div><div class="l">moderate-or-higher vulnerabilities in the Desktop UI npm audit</div></div>
       <div class="card metric"><div class="n">1</div><div class="l">reviewed public beta artifact currently published: the signed Android APK</div></div>
     </div>
-    <div class="callout warn" style="margin-top:22px">
+    <div class="callout warn mt-22">
       <strong>Release limit:</strong> the Android APK is release-key signed. Previous Windows artifacts
       were withdrawn; Recovery and ColdPass are being rebuilt and reviewed before republishing.
     </div>
@@ -431,23 +440,26 @@
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
             <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="desktop.html">VERAQIS Recovery</a>
-        <a href="download.html">VERAQIS Recovery CLI</a>
-        <a href="mobile.html">VERAQIS Archiver</a>
-        <a href="coldpass.html">ColdPass (archived project)</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
         <div class="colhead">Trust</div>
@@ -457,16 +469,15 @@
       </div>
       <div>
         <div class="colhead">Company</div>
-        <a href="about.html">About VERAQIS</a>
-        <a href="contact.html">Contact / Support</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Use</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
-      this site is fully static and makes no network requests.</p>
+      this site is fully static and makes no network requests. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
   </div>
 </footer>
 

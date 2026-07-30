@@ -1,0 +1,704 @@
+// VERAQIS — browser-side ZIP integrity analysis core.
+//
+// Pure ES module. NO DOM access, NO network access, NO third-party imports.
+// Everything it touches arrives through the `reader` argument, so the same code
+// runs in a Web Worker (over a File) and in Node (over a Buffer) — which is how
+// the fixture tests exercise it.
+//
+// This module ANALYSES. It never extracts, never writes, and never modifies the
+// input. See docs/site-improvement/ZIP_CHECKER_ARCHITECTURE.md.
+//
+// Reader contract:
+//   { size: number, read(offset, length) -> Promise<Uint8Array> }
+//   `read` must clamp to the file end and may return fewer bytes than requested.
+
+/* ---------------------------------------------------------------- constants */
+
+export const SIG = {
+  LFH: 0x04034b50,        // PK\x03\x04  local file header
+  CDH: 0x02014b50,        // PK\x01\x02  central directory header
+  EOCD: 0x06054b50,       // PK\x05\x06  end of central directory
+  EOCD64: 0x06064b50,     // PK\x06\x06  zip64 end of central directory
+  EOCD64_LOC: 0x07064b50, // PK\x06\x07  zip64 EOCD locator
+  DD: 0x08074b50,         // PK\x07\x08  data descriptor
+};
+
+export const STATUS = {
+  VERIFIED: 'VERIFIED',
+  STRUCTURALLY_VALID: 'STRUCTURALLY_VALID',
+  POTENTIALLY_RECOVERABLE: 'POTENTIALLY_RECOVERABLE',
+  DAMAGED: 'DAMAGED',
+  UNKNOWN: 'UNKNOWN',
+};
+
+// A declared length is attacker-controlled. Nothing is allocated from one before
+// it has been checked against the real file size; these are the last-resort caps.
+export const LIMITS = {
+  MAX_COMMENT: 65535,          // ZIP spec maximum
+  EOCD_SEARCH: 65557,          // 22-byte EOCD + max comment
+  MAX_NAME: 4096,              // a filename longer than this is not credible
+  MAX_ENTRIES: 200000,         // stop enumerating; report the cap in warnings
+  MAX_EXTRA: 65535,
+  CHUNK: 1 << 20,              // 1 MiB streaming read unit
+  MAX_CRC_BYTES: 512 * 1024 * 1024, // per-entry ceiling for CRC verification
+};
+
+export const METHOD_NAMES = {
+  0: 'Stored', 1: 'Shrunk', 6: 'Imploded', 8: 'Deflate', 9: 'Deflate64',
+  12: 'BZIP2', 14: 'LZMA', 93: 'Zstandard', 95: 'XZ', 98: 'PPMd',
+};
+
+/* -------------------------------------------------------------------- crc32 */
+
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    t[i] = c >>> 0;
+  }
+  return t;
+})();
+
+export function crc32Update(crc, bytes) {
+  let c = crc ^ 0xffffffff;
+  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
+  return (c ^ 0xffffffff) >>> 0;
+}
+
+/* ------------------------------------------------------------------ helpers */
+
+const u16 = (b, o) => b[o] | (b[o + 1] << 8);
+const u32 = (b, o) => (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)) >>> 0;
+// ZIP64 fields are 64-bit. JS numbers hold integers exactly to 2^53, far beyond
+// any file a browser can open, so a Number is safe here — but the high word is
+// still range-checked rather than silently truncated.
+function u64(b, o) {
+  const lo = u32(b, o), hi = u32(b, o + 4);
+  if (hi > 0x001fffff) return Number.MAX_SAFE_INTEGER; // implausible; caller rejects
+  return hi * 0x100000000 + lo;
+}
+
+const throwIfAborted = (signal) => {
+  if (signal && signal.aborted) {
+    const e = new Error('Analysis cancelled');
+    e.name = 'AbortError';
+    throw e;
+  }
+};
+
+// Filenames are untrusted. This never decides layout or is passed to the DOM as
+// markup — the UI escapes it again — but obviously-hostile shapes are flagged.
+function inspectName(raw) {
+  const flags = [];
+  if (raw.indexOf('\u0000') !== -1) flags.push('contains NUL');
+  if (raw.startsWith('/') || /^[A-Za-z]:[\\/]/.test(raw)) flags.push('absolute path');
+  if (raw.split(/[\\/]/).includes('..')) flags.push('path traversal (..)');
+  if (raw.includes('\\')) flags.push('backslash separator');
+  if (raw.length > 255) flags.push('very long name');
+  // eslint-disable-next-line no-control-regex
+  if (/[\u0001-\u001f\u007f]/.test(raw)) flags.push('control characters');
+  return flags;
+}
+
+function decodeName(bytes, utf8Flag) {
+  try {
+    return new TextDecoder(utf8Flag ? 'utf-8' : 'utf-8', { fatal: false }).decode(bytes);
+  } catch {
+    return '(undecodable name)';
+  }
+}
+
+/* ------------------------------------------------------------ reader adapters */
+
+export function readerFromArrayBuffer(buf) {
+  const all = new Uint8Array(buf);
+  return {
+    size: all.length,
+    async read(offset, length) {
+      const s = Math.max(0, Math.min(all.length, offset));
+      const e = Math.max(s, Math.min(all.length, offset + length));
+      return all.subarray(s, e);
+    },
+  };
+}
+
+export function readerFromBlob(blob) {
+  return {
+    size: blob.size,
+    async read(offset, length) {
+      const s = Math.max(0, Math.min(blob.size, offset));
+      const e = Math.max(s, Math.min(blob.size, offset + length));
+      if (e <= s) return new Uint8Array(0);
+      return new Uint8Array(await blob.slice(s, e).arrayBuffer());
+    },
+  };
+}
+
+/* ------------------------------------------------------------------- EOCD */
+
+async function findEocd(reader) {
+  const size = reader.size;
+  if (size < 22) return { found: false, reason: 'file is smaller than the 22-byte minimum EOCD record' };
+  const span = Math.min(size, LIMITS.EOCD_SEARCH);
+  const start = size - span;
+  const tail = await reader.read(start, span);
+  for (let i = tail.length - 22; i >= 0; i--) {
+    if (u32(tail, i) !== SIG.EOCD) continue;
+    const commentLen = u16(tail, i + 20);
+    // The record must end exactly at EOF for a well-formed archive; a shorter
+    // comment than declared means the tail was cut.
+    const declaredEnd = start + i + 22 + commentLen;
+    return {
+      found: true,
+      offset: start + i,
+      diskNumber: u16(tail, i + 4),
+      cdDisk: u16(tail, i + 6),
+      entriesThisDisk: u16(tail, i + 8),
+      entriesTotal: u16(tail, i + 10),
+      cdSize: u32(tail, i + 12),
+      cdOffset: u32(tail, i + 16),
+      commentLen,
+      commentTruncated: declaredEnd > size,
+      trailingBytes: declaredEnd < size ? size - declaredEnd : 0,
+    };
+  }
+  return { found: false, reason: 'no end-of-central-directory signature (PK\\x05\\x06) in the last 64 KiB' };
+}
+
+async function findZip64(reader, eocdOffset) {
+  if (eocdOffset < 20) return null;
+  const b = await reader.read(eocdOffset - 20, 20);
+  if (b.length < 20 || u32(b, 0) !== SIG.EOCD64_LOC) return null;
+  const rel = u64(b, 8);
+  if (rel >= reader.size) return { present: true, usable: false, reason: 'ZIP64 locator points past EOF' };
+  const z = await reader.read(rel, 56);
+  if (z.length < 56 || u32(z, 0) !== SIG.EOCD64) {
+    return { present: true, usable: false, reason: 'ZIP64 EOCD record not found where the locator points' };
+  }
+  return {
+    present: true, usable: true,
+    entriesTotal: u64(z, 32), cdSize: u64(z, 40), cdOffset: u64(z, 48),
+  };
+}
+
+/* -------------------------------------------------- central directory parse */
+
+async function parseCentralDirectory(reader, cdOffset, cdSize, signal, onProgress) {
+  const out = { entries: [], errors: [], truncated: false };
+  if (cdOffset >= reader.size) {
+    out.errors.push(`central directory offset ${cdOffset} is past the end of the file (${reader.size} bytes)`);
+    return out;
+  }
+  const available = reader.size - cdOffset;
+  const span = Math.min(cdSize > 0 ? cdSize : available, available);
+  if (cdSize > available) {
+    out.errors.push(`central directory declares ${cdSize} bytes but only ${available} remain in the file`);
+    out.truncated = true;
+  }
+  const buf = await reader.read(cdOffset, span);
+  let p = 0;
+  while (p + 46 <= buf.length) {
+    throwIfAborted(signal);
+    if (u32(buf, p) !== SIG.CDH) {
+      out.errors.push(`central directory record ${out.entries.length + 1} has a bad signature at offset ${cdOffset + p}`);
+      break;
+    }
+    const nameLen = u16(buf, p + 28), extraLen = u16(buf, p + 30), cmtLen = u16(buf, p + 32);
+    if (nameLen > LIMITS.MAX_NAME || extraLen > LIMITS.MAX_EXTRA) {
+      out.errors.push(`central directory record ${out.entries.length + 1} declares an implausible name/extra length`);
+      break;
+    }
+    const total = 46 + nameLen + extraLen + cmtLen;
+    if (p + total > buf.length) { out.truncated = true; break; }
+    const flags = u16(buf, p + 8);
+    const nameBytes = buf.subarray(p + 46, p + 46 + nameLen);
+    out.entries.push({
+      index: out.entries.length,
+      name: decodeName(nameBytes, (flags & 0x800) !== 0),
+      flags,
+      method: u16(buf, p + 10),
+      crc32: u32(buf, p + 16),
+      compressedSize: u32(buf, p + 20),
+      uncompressedSize: u32(buf, p + 24),
+      localHeaderOffset: u32(buf, p + 42),
+      hasDataDescriptor: (flags & 0x08) !== 0,
+      encrypted: (flags & 0x01) !== 0 || (flags & 0x40) !== 0,
+      zip64Sentinel: u32(buf, p + 20) === 0xffffffff || u32(buf, p + 24) === 0xffffffff
+        || u32(buf, p + 42) === 0xffffffff,
+    });
+    if (out.entries.length >= LIMITS.MAX_ENTRIES) {
+      out.errors.push(`stopped after ${LIMITS.MAX_ENTRIES} central directory records (limit)`);
+      break;
+    }
+    p += total;
+    if (onProgress && out.entries.length % 500 === 0) {
+      onProgress({ phase: 'central-directory', done: p, total: buf.length });
+    }
+  }
+  return out;
+}
+
+/* --------------------------------------------------- local file header scan */
+
+// The recovery-relevant pass: local headers sit next to the data they describe,
+// so they survive damage that destroys the index at the end of the file. This is
+// what lets the tool say something useful about an archive that will not open.
+async function scanLocalHeaders(reader, signal, onProgress) {
+  const found = [];
+  const size = reader.size;
+  let carry = new Uint8Array(0);
+  let base = 0;
+  for (let off = 0; off < size; off += LIMITS.CHUNK) {
+    throwIfAborted(signal);
+    const chunk = await reader.read(off, LIMITS.CHUNK);
+    if (chunk.length === 0) break;
+    // 3-byte overlap so a signature straddling a chunk boundary is not missed.
+    const buf = carry.length ? concat(carry, chunk) : chunk;
+    const bufStart = carry.length ? base : off;
+    for (let i = 0; i + 30 <= buf.length; i++) {
+      if (u32(buf, i) !== SIG.LFH) continue;
+      const abs = bufStart + i;
+      const flags = u16(buf, i + 6);
+      const nameLen = u16(buf, i + 26), extraLen = u16(buf, i + 28);
+      if (nameLen > LIMITS.MAX_NAME || extraLen > LIMITS.MAX_EXTRA) continue;
+      if (abs + 30 + nameLen + extraLen > size) continue;
+      // The name may straddle the chunk; read it directly rather than guessing.
+      found.push({
+        offset: abs, flags,
+        method: u16(buf, i + 8),
+        crc32: u32(buf, i + 14),
+        compressedSize: u32(buf, i + 18),
+        uncompressedSize: u32(buf, i + 22),
+        nameLen, extraLen,
+        dataOffset: abs + 30 + nameLen + extraLen,
+        hasDataDescriptor: (flags & 0x08) !== 0,
+        encrypted: (flags & 0x01) !== 0 || (flags & 0x40) !== 0,
+      });
+      if (found.length >= LIMITS.MAX_ENTRIES) return { found, capped: true };
+    }
+    carry = buf.subarray(Math.max(0, buf.length - 3));
+    base = bufStart + buf.length - carry.length;
+    if (onProgress) onProgress({ phase: 'local-headers', done: Math.min(off + LIMITS.CHUNK, size), total: size });
+  }
+  // Fill in names with targeted reads (bounded, one per header).
+  for (const h of found) {
+    throwIfAborted(signal);
+    const nb = await reader.read(h.offset + 30, h.nameLen);
+    h.name = decodeName(nb, (h.flags & 0x800) !== 0);
+  }
+  return { found, capped: false };
+}
+
+function concat(a, b) {
+  const out = new Uint8Array(a.length + b.length);
+  out.set(a, 0); out.set(b, a.length);
+  return out;
+}
+
+/* ----------------------------------------------------------- CRC verification */
+
+// Returns { checked:boolean, ok:boolean, reason:string, bytes:number }
+async function verifyCrc(reader, entry, signal) {
+  const { method, dataOffset, compressedSize, crc32: expected, encrypted } = entry;
+  if (encrypted) return { checked: false, ok: false, reason: 'entry is encrypted' };
+  if (expected === 0 && compressedSize === 0) {
+    return { checked: false, ok: false, reason: 'no stored CRC (empty or streamed entry)' };
+  }
+  if (dataOffset + compressedSize > reader.size) {
+    return { checked: false, ok: false, reason: 'entry data extends past the end of the file' };
+  }
+  if (compressedSize > LIMITS.MAX_CRC_BYTES) {
+    return { checked: false, ok: false, reason: 'entry larger than the CRC verification limit' };
+  }
+
+  if (method === 0) {
+    let crc = 0, read = 0;
+    while (read < compressedSize) {
+      throwIfAborted(signal);
+      const n = Math.min(LIMITS.CHUNK, compressedSize - read);
+      const b = await reader.read(dataOffset + read, n);
+      if (b.length === 0) break;
+      crc = crc32Update(crc, b);
+      read += b.length;
+    }
+    if (read !== compressedSize) {
+      return { checked: false, ok: false, reason: 'could not read the whole entry', bytes: read };
+    }
+    return { checked: true, ok: crc === expected, reason: crc === expected ? 'stored data CRC-32 matches' : 'stored data CRC-32 does not match', bytes: read };
+  }
+
+  if (method === 8) {
+    if (typeof DecompressionStream === 'undefined') {
+      return { checked: false, ok: false, reason: 'raw DEFLATE decoding unavailable in this browser' };
+    }
+    try {
+      // Native browser decoder — no third-party library. The output is CRC'd
+      // chunk by chunk and never accumulated, so a bomb cannot exhaust memory.
+      const ds = new DecompressionStream('deflate-raw');
+      const writer = ds.writable.getWriter();
+      const readerStream = ds.readable.getReader();
+      let crc = 0, outBytes = 0, failed = null;
+
+      const pump = (async () => {
+        for (;;) {
+          const { done, value } = await readerStream.read();
+          if (done) break;
+          crc = crc32Update(crc, value);
+          outBytes += value.length;
+          if (outBytes > LIMITS.MAX_CRC_BYTES) { failed = 'decompressed output exceeded the safety limit'; break; }
+        }
+      })();
+
+      let pos = 0;
+      try {
+        while (pos < compressedSize) {
+          throwIfAborted(signal);
+          const n = Math.min(LIMITS.CHUNK, compressedSize - pos);
+          const b = await reader.read(dataOffset + pos, n);
+          if (b.length === 0) break;
+          await writer.write(b);
+          pos += b.length;
+        }
+        await writer.close();
+      } catch (e) {
+        try { await writer.abort(); } catch { /* already errored */ }
+        failed = failed || e.message;
+      }
+      await pump.catch((e) => { failed = failed || e.message; });
+
+      if (failed) return { checked: false, ok: false, reason: `DEFLATE stream did not decode (${String(failed).slice(0, 80)})`, bytes: outBytes };
+      const sizeOk = entry.uncompressedSize === 0 || entry.uncompressedSize === outBytes;
+      return {
+        checked: true,
+        ok: crc === expected && sizeOk,
+        reason: crc !== expected ? 'decompressed CRC-32 does not match'
+          : !sizeOk ? `decompressed to ${outBytes} bytes, header declares ${entry.uncompressedSize}`
+            : 'decompressed data CRC-32 matches',
+        bytes: outBytes,
+      };
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      return { checked: false, ok: false, reason: `DEFLATE decode failed (${String(e.message).slice(0, 80)})` };
+    }
+  }
+
+  return { checked: false, ok: false, reason: `compression method ${method} (${METHOD_NAMES[method] || 'unknown'}) is not decoded by this tool` };
+}
+
+/* ----------------------------------------------------------------- analysis */
+
+/**
+ * Analyse a ZIP archive.
+ * @param {{size:number, read:(o:number,l:number)=>Promise<Uint8Array>}} reader
+ * @param {{verifyCrc?:boolean, fileName?:string}} options
+ * @param {(p:{phase:string,done:number,total:number,message?:string})=>void} onProgress
+ * @param {AbortSignal} signal
+ */
+export async function analyzeArchive(reader, options = {}, onProgress = () => {}, signal = undefined) {
+  const t0 = Date.now();
+  const doCrc = options.verifyCrc !== false;
+  const warnings = [];
+  const limitations = [];
+
+  throwIfAborted(signal);
+  onProgress({ phase: 'start', done: 0, total: 1 });
+
+  const head = await reader.read(0, 4);
+  const headSig = head.length >= 4 ? u32(head, 0) : 0;
+  const looksZip = headSig === SIG.LFH || headSig === SIG.EOCD || headSig === SIG.CDH || headSig === 0x08074b50;
+
+  // All state `finish()` reads is declared before the first early return, so an
+  // early exit cannot hit a temporal dead zone.
+  let eocd = { found: false, reason: 'not examined' };
+  let zip64 = null;
+  let cd = { entries: [], errors: [], truncated: false };
+  let cdStatus = 'MISSING';
+  let scan = { found: [], capped: false };
+  let entries = [];
+  let counts = { total: 0, verified: 0, structurallyValid: 0, potentiallyRecoverable: 0, damaged: 0, unknown: 0 };
+  let recoverableBytes = 0;
+  let crcCoverage = 0;
+
+  if (reader.size === 0) {
+    return finish({ verdict: 'NOT_A_ZIP', reason: 'the file is empty' });
+  }
+
+  /* ---- EOCD ---- */
+  onProgress({ phase: 'eocd', done: 0, total: 1 });
+  eocd = await findEocd(reader);
+  zip64 = eocd.found ? await findZip64(reader, eocd.offset) : null;
+
+  if (!looksZip && !eocd.found) {
+    return finish({
+      verdict: 'NOT_A_ZIP',
+      reason: 'no ZIP signature at the start of the file and no end-of-central-directory record',
+    });
+  }
+  if (!looksZip && eocd.found) {
+    warnings.push('The file does not begin with a ZIP signature. It may have data prepended (a self-extracting stub or a corrupted header).');
+  }
+  if (eocd.found && eocd.trailingBytes > 0) {
+    warnings.push(`${eocd.trailingBytes} byte(s) follow the end-of-central-directory record.`);
+  }
+  if (eocd.found && eocd.commentTruncated) {
+    warnings.push('The archive comment declared in the EOCD extends past the end of the file — the tail is truncated.');
+  }
+  if (eocd.found && (eocd.diskNumber !== 0 || eocd.cdDisk !== 0)) {
+    warnings.push('This looks like one part of a split/spanned archive. Analysis of a single part is incomplete.');
+    limitations.push('Split/spanned archives are not reassembled by this tool.');
+  }
+  if (zip64 && zip64.present) {
+    limitations.push(zip64.usable
+      ? 'ZIP64 detected. Sizes are read from the ZIP64 record; entries above 4 GiB are not CRC-verified in the browser.'
+      : `ZIP64 structures are present but unusable (${zip64.reason}).`);
+  }
+
+  /* ---- central directory ---- */
+  if (eocd.found) {
+    const cdOffset = zip64 && zip64.usable ? zip64.cdOffset : eocd.cdOffset;
+    const cdSize = zip64 && zip64.usable ? zip64.cdSize : eocd.cdSize;
+    onProgress({ phase: 'central-directory', done: 0, total: 1 });
+    cd = await parseCentralDirectory(reader, cdOffset, cdSize, signal, onProgress);
+    const expected = zip64 && zip64.usable ? zip64.entriesTotal : eocd.entriesTotal;
+    // An archive that legitimately holds nothing has an empty central directory;
+    // that is a healthy state, not a damaged one.
+    if (cd.entries.length === 0 && expected === 0 && cd.errors.length === 0) cdStatus = 'OK';
+    else if (cd.entries.length === 0) cdStatus = 'DAMAGED';
+    else if (cd.errors.length || cd.truncated || cd.entries.length !== expected) cdStatus = 'PARTIAL';
+    else cdStatus = 'OK';
+    if (cd.entries.length !== expected) {
+      warnings.push(`The EOCD declares ${expected} entries; ${cd.entries.length} central directory record(s) could be read.`);
+    }
+    cd.errors.forEach((e) => warnings.push(e));
+  }
+
+  /* ---- local header scan (always; this is the recovery view) ---- */
+  onProgress({ phase: 'local-headers', done: 0, total: reader.size });
+  scan = await scanLocalHeaders(reader, signal, onProgress);
+  if (scan.capped) warnings.push(`Local-header scan stopped at ${LIMITS.MAX_ENTRIES} candidates (limit).`);
+
+  const lfhByOffset = new Map(scan.found.map((h) => [h.offset, h]));
+
+  /* ---- build the entry list ---- */
+  entries = [];
+  const seenLocalOffsets = new Set();
+  const nameCount = new Map();
+
+  const pushEntry = (e) => {
+    nameCount.set(e.name, (nameCount.get(e.name) || 0) + 1);
+    entries.push(e);
+  };
+
+  // 1. entries the central directory knows about
+  for (const c of cd.entries) {
+    throwIfAborted(signal);
+    const lfh = lfhByOffset.get(c.localHeaderOffset);
+    const reasons = [];
+    let status = STATUS.STRUCTURALLY_VALID;
+    let source = 'central-directory';
+
+    if (c.zip64Sentinel) reasons.push('ZIP64 sentinel values in the central directory');
+    if (!lfh) {
+      reasons.push(c.localHeaderOffset >= reader.size
+        ? `local header offset ${c.localHeaderOffset} is past the end of the file`
+        : `no local file header found at the declared offset ${c.localHeaderOffset}`);
+      status = STATUS.DAMAGED;
+    } else {
+      seenLocalOffsets.add(lfh.offset);
+      if (lfh.name !== c.name) reasons.push(`name differs between local header ("${lfh.name}") and central directory ("${c.name}")`);
+      if (lfh.method !== c.method) reasons.push(`compression method differs (local ${lfh.method}, central ${c.method})`);
+      if (!c.hasDataDescriptor && lfh.crc32 !== c.crc32 && lfh.crc32 !== 0) {
+        reasons.push('CRC-32 differs between local header and central directory');
+      }
+      const end = lfh.dataOffset + c.compressedSize;
+      if (end > reader.size) {
+        reasons.push(`entry data ends at ${end}, past the end of the file (${reader.size})`);
+        status = STATUS.DAMAGED;
+      }
+    }
+
+    const nameFlags = inspectName(c.name);
+    if (nameFlags.length) reasons.push(`filename: ${nameFlags.join(', ')}`);
+
+    if (c.encrypted) {
+      status = STATUS.UNKNOWN;
+      reasons.push('entry is encrypted — contents cannot be checked');
+    }
+
+    pushEntry({
+      name: c.name, method: c.method, methodName: METHOD_NAMES[c.method] || `method ${c.method}`,
+      compressedSize: c.compressedSize, uncompressedSize: c.uncompressedSize,
+      localHeaderOffset: c.localHeaderOffset,
+      dataOffset: lfh ? lfh.dataOffset : null,
+      declaredCrc32: c.crc32, encrypted: c.encrypted,
+      hasDataDescriptor: c.hasDataDescriptor,
+      status, reasons, source,
+      crcChecked: false, crcOk: false, crcReason: '',
+      nameFlags,
+    });
+  }
+
+  // 2. local headers the central directory does NOT cover — the recoverable set
+  for (const h of scan.found) {
+    if (seenLocalOffsets.has(h.offset)) continue;
+    throwIfAborted(signal);
+    const reasons = [];
+    let status = STATUS.POTENTIALLY_RECOVERABLE;
+    if (cdStatus === 'OK') {
+      reasons.push('local header is not referenced by the central directory');
+    } else {
+      reasons.push('found by scanning for local file headers; the central directory does not describe it');
+    }
+    const end = h.dataOffset + h.compressedSize;
+    if (h.compressedSize === 0 && h.hasDataDescriptor) {
+      reasons.push('sizes are in a data descriptor after the data; the entry length is not known from the header alone');
+      status = STATUS.UNKNOWN;
+    } else if (end > reader.size) {
+      reasons.push(`declared data range ends at ${end}, past the end of the file (${reader.size}) — the entry is truncated`);
+      status = STATUS.DAMAGED;
+    }
+    if (h.encrypted) { status = STATUS.UNKNOWN; reasons.push('entry is encrypted — contents cannot be checked'); }
+    const nameFlags = inspectName(h.name || '');
+    if (nameFlags.length) reasons.push(`filename: ${nameFlags.join(', ')}`);
+
+    pushEntry({
+      name: h.name || '(unnamed)', method: h.method, methodName: METHOD_NAMES[h.method] || `method ${h.method}`,
+      compressedSize: h.compressedSize, uncompressedSize: h.uncompressedSize,
+      localHeaderOffset: h.offset, dataOffset: h.dataOffset,
+      declaredCrc32: h.crc32, encrypted: h.encrypted,
+      hasDataDescriptor: h.hasDataDescriptor,
+      status, reasons, source: 'local-header-scan',
+      crcChecked: false, crcOk: false, crcReason: '',
+      nameFlags,
+    });
+  }
+
+  /* ---- duplicates and overlaps ---- */
+  for (const e of entries) {
+    if ((nameCount.get(e.name) || 0) > 1) e.reasons.push('duplicate filename in this archive');
+  }
+  const ranges = entries
+    .filter((e) => e.dataOffset != null && e.compressedSize > 0)
+    .map((e) => ({ e, s: e.dataOffset, x: e.dataOffset + e.compressedSize }))
+    .sort((a, b) => a.s - b.s);
+  for (let i = 1; i < ranges.length; i++) {
+    if (ranges[i].s < ranges[i - 1].x) {
+      ranges[i].e.reasons.push('data range overlaps the previous entry');
+      ranges[i - 1].e.reasons.push('data range overlaps the next entry');
+    }
+  }
+
+  /* ---- CRC pass ---- */
+  if (doCrc) {
+    let done = 0;
+    for (const e of entries) {
+      throwIfAborted(signal);
+      onProgress({ phase: 'crc', done, total: entries.length, message: e.name });
+      done++;
+      if (e.dataOffset == null || e.status === STATUS.DAMAGED) {
+        e.crcReason = e.status === STATUS.DAMAGED ? 'skipped — entry already failed a structural check' : 'skipped — no data offset';
+        continue;
+      }
+      const r = await verifyCrc(reader, {
+        method: e.method, dataOffset: e.dataOffset, compressedSize: e.compressedSize,
+        uncompressedSize: e.uncompressedSize, crc32: e.declaredCrc32, encrypted: e.encrypted,
+      }, signal);
+      e.crcChecked = r.checked; e.crcOk = r.ok; e.crcReason = r.reason;
+      if (r.checked && r.ok) {
+        // Only a passing, independently recomputed CRC promotes an entry.
+        if (e.status === STATUS.STRUCTURALLY_VALID || e.status === STATUS.POTENTIALLY_RECOVERABLE) {
+          const contradicted = e.reasons.some((x) => /differs|overlap|past the end/.test(x));
+          e.status = contradicted ? STATUS.STRUCTURALLY_VALID : STATUS.VERIFIED;
+          e.reasons.push('CRC-32 recomputed from the archive data and matches the stored value');
+        }
+      } else if (r.checked && !r.ok) {
+        e.status = STATUS.DAMAGED;
+        e.reasons.push(r.reason);
+      } else if (r.reason) {
+        // Every status must carry its reason, including the recoverable-but-
+        // unproven case: "why was this not verified?" is the whole question.
+        e.reasons.push(`CRC not verified: ${r.reason}`);
+      }
+    }
+  } else {
+    limitations.push('CRC verification was disabled for this run.');
+  }
+
+  /* ---- counts and verdict ---- */
+  const count = (s) => entries.filter((e) => e.status === s).length;
+  counts = {
+    total: entries.length,
+    verified: count(STATUS.VERIFIED),
+    structurallyValid: count(STATUS.STRUCTURALLY_VALID),
+    potentiallyRecoverable: count(STATUS.POTENTIALLY_RECOVERABLE),
+    damaged: count(STATUS.DAMAGED),
+    unknown: count(STATUS.UNKNOWN),
+  };
+  recoverableBytes = entries
+    .filter((e) => e.status === STATUS.POTENTIALLY_RECOVERABLE || e.status === STATUS.VERIFIED)
+    .reduce((n, e) => n + (e.compressedSize || 0), 0);
+  crcCoverage = entries.length ? entries.filter((e) => e.crcChecked).length / entries.length : 0;
+
+  let verdict;
+  if (entries.length === 0) {
+    verdict = eocd.found && eocd.entriesTotal === 0 ? 'EMPTY_ARCHIVE' : 'NO_ENTRIES_FOUND';
+  } else if (counts.damaged === 0 && counts.unknown === 0 && counts.potentiallyRecoverable === 0 && cdStatus === 'OK') {
+    verdict = counts.verified === entries.length ? 'INTACT_VERIFIED' : 'INTACT_STRUCTURE';
+  } else if (counts.verified + counts.structurallyValid + counts.potentiallyRecoverable > 0) {
+    verdict = 'PARTIALLY_RECOVERABLE';
+  } else if (counts.damaged === 0 && counts.unknown > 0) {
+    // Encrypted or unsupported-codec entries are not evidence of damage; saying
+    // "DAMAGED" here would be an overclaim in the opposite direction.
+    verdict = 'UNDETERMINED';
+  } else {
+    verdict = 'DAMAGED';
+  }
+
+  if (!eocd.found) {
+    limitations.push('No end-of-central-directory record was found, so the archive index is unavailable. Every entry below came from scanning for local file headers.');
+  }
+  if (crcCoverage < 1) {
+    limitations.push('Entries whose CRC could not be recomputed are never reported as verified.');
+  }
+  limitations.push('A matching CRC-32 is evidence against accidental damage. It is not a cryptographic signature and does not prove the archive was not deliberately modified.');
+  limitations.push('This check analyses the archive. It does not extract, repair or modify it.');
+
+  return finish({ verdict });
+
+  function finish(extra) {
+    return {
+      schema: 'veraqis-zip-check/1',
+      generatedAt: new Date().toISOString(),
+      tool: { name: 'VERAQIS browser ZIP integrity check', version: '1.0.0', engine: 'javascript' },
+      file: {
+        name: options.fileName || null,
+        size: reader.size,
+        startsWithZipSignature: looksZip,
+      },
+      eocd: eocd.found
+        ? {
+          found: true, offset: eocd.offset, entriesDeclared: eocd.entriesTotal,
+          centralDirectoryOffset: eocd.cdOffset, centralDirectorySize: eocd.cdSize,
+          commentLength: eocd.commentLen, trailingBytes: eocd.trailingBytes,
+        }
+        : { found: false, reason: eocd.reason },
+      zip64: zip64 || { present: false },
+      centralDirectory: {
+        status: cdStatus,
+        recordsRead: cd.entries.length,
+        truncated: cd.truncated,
+        errors: cd.errors,
+      },
+      localHeaderScan: { candidatesFound: scan ? scan.found.length : 0, capped: scan ? scan.capped : false },
+      counts,
+      recoverableBytes,
+      crcCoverage: Number(crcCoverage.toFixed(4)),
+      entries,
+      warnings,
+      limitations,
+      elapsedMs: Date.now() - t0,
+      ...extra,
+    };
+  }
+}

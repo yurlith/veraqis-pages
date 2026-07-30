@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>ColdPass — archived experimental project | VERAQIS</title>
 <meta name="description" content="ColdPass is an archived VERAQIS experiment: a local offline password manager. No active development, no release and nothing offered for download." />
@@ -28,23 +28,22 @@
   "applicationCategory": "SecurityApplication",
   "operatingSystem": "Windows x86_64",
   "softwareVersion": "archived",
-  "isAccessibleForFree": true,
   "description": "Archived VERAQIS experimental project: a local offline password manager. No active public release or development; no package is offered for download. Source code and history are preserved."
 }
 </script>
 </head>
 <body>
-<header><div class="wrap"><nav>
-  <a class="brand" href="index.html">VERAQIS</a><span class="pill beta">archived</span>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header><div class="wrap"><nav aria-label="Main">
+  <a class="brand" href="/">VERAQIS</a><span class="pill beta">archived</span>
   <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="docs.html">Docs</a>
-        <a href="desktop.html">Desktop</a>
-        <a href="mobile.html">Mobile</a>
-        <a href="download.html">Download</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
       </div>
 </nav></div></header>
 
@@ -62,8 +61,8 @@
         <span class="status status--withdrawn">Archived · no active development</span>
         <p class="note">No package is offered for download. Source code and history are preserved.</p>
       </div>
-      <div class="cta" style="margin-top:16px">
-        <a class="btn ghost" href="index.html">Back to VERAQIS products</a>
+      <div class="cta mt-16">
+        <a class="btn ghost" href="/">Back to VERAQIS products</a>
       </div>
     </div>
     <figure class="hero-visual">
@@ -75,11 +74,11 @@
 </div>
 
 <section><div class="wrap">
-  <div class="callout warn" style="margin-top:0"><strong>Archived project.</strong> The previous v1.0.0
+  <div class="callout warn mt-0"><strong>Archived project.</strong> The previous v1.0.0
     package is no longer distributed, and no new ColdPass binary is planned. Do not install or
     redistribute previously downloaded copies as a current VERAQIS release. The material below is
     historical reference only.</div>
-  <div class="grid g3" style="margin-top:28px">
+  <div class="grid g3 mt-28">
     <div class="card"><div class="ic">LOC</div><h3>Local by design</h3><p>The encrypted vault stays on your computer. ColdPass has no cloud account, telemetry or call-home.</p></div>
     <div class="card"><div class="ic">AES</div><h3>Encrypted vault</h3><p>AES-GCM-256 protects vault contents. The previous implementation derived keys with PBKDF2-SHA-256.</p></div>
     <div class="card"><div class="ic">SAFE</div><h3>Safer storage workflow</h3><p>Atomic saves and local backups reduce the chance that an interrupted write destroys the current vault.</p></div>
@@ -90,7 +89,7 @@
   <h2>About the previous v1.0.0 release</h2>
   <p class="sub">These are the features of the earlier, now-withdrawn ColdPass v1.0.0 Windows package —
     described here for reference, not offered as a current download.</p>
-  <ul class="checks" style="max-width:850px">
+  <ul class="checks mw-850">
     <li>Native Windows GUI, self-contained for x64.</li>
     <li>Create, unlock, search and edit a local encrypted password vault.</li>
     <li>English and Russian interface, light/dark presentation and accessibility support.</li>
@@ -116,19 +115,21 @@
 </main>
 
 <footer><div class="wrap"><div class="cols">
-  <div><a class="brand" href="index.html">VERAQIS</a><p class="note">Offline-first safety tools.</p></div>
+  <div><a class="brand" href="/">VERAQIS</a><p class="note">Offline-first safety tools.</p></div>
         <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
   <div>
         <div class="colhead">Products</div><a href="desktop.html">VERAQIS Recovery</a><a href="mobile.html">VERAQIS Archiver</a><a href="coldpass.html">ColdPass (archived project)</a></div>
   <div><div class="colhead">Trust</div><a href="testing.html">Test Record</a><a href="security.html">Security</a><a href="downloads/SHA256SUMS.txt">Checksums</a></div>
   <div><div class="colhead">Company</div><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a></div>
-</div><hr style="margin:28px 0 18px"><p class="note">© 2026 VERAQIS · ColdPass archived experimental project · no telemetry</p></div></footer>
+</div><hr><p class="note">© 2026 VERAQIS · ColdPass archived experimental project · no telemetry</p></div></footer>
 </body>
 </html>

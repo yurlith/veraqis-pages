@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>CRC-32 collisions that pass gzip -t and unzip -t | VERAQIS</title>
@@ -193,6 +193,7 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
 <header>
   <div class="wrap">
     <nav aria-label="Main">
@@ -201,13 +202,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/" class="active">Research</a>
-        <a href="/reference/">Reference</a>
         <a href="/docs.html">Docs</a>
-        <a href="/desktop.html">Desktop</a>
-        <a href="/mobile.html">Mobile</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -243,7 +242,7 @@
     <div class="prose">
       <h2 id="native">Result 1 — the native tools accept the forgery</h2>
       <p>For each container we produced a file <code>F</code> whose content differs from the true content <code>G</code>, with <code>CRC-32(F) == CRC-32(G)</code>, and ran the format's own integrity check.</p>
-      <div class="table-scroll"><table><thead><tr><th>format</th><th>container</th><th>native check</th><th>passes?</th><th>forged ≠ truth</th><th>CRC field</th></tr></thead><tbody><tr><td>GZIP</td><td>real gzip, stored block</td><td><code>gzip -t</code></td><td><strong>YES</strong></td><td>True</td><td>trailer CRC-32 = <code>0x2a4d3027</code></td></tr><tr><td>ZIP</td><td>real zip, stored member</td><td><code>unzip -t</code></td><td><strong>YES</strong></td><td>True</td><td>member CRC-32 = <code>0x3165c0e5</code></td></tr><tr><td>PNG</td><td>PNG tEXt chunk</td><td>chunk CRC (CRC over type‖data)</td><td><strong>YES</strong></td><td>True</td><td>chunk CRC-32 = <code>0x651d89af</code></td></tr><tr><td>BZIP2</td><td>—</td><td>not built</td><td>—</td><td>—</td><td>LZ-coupled: the block CRC covers decompressed data behind the LZ stream</td></tr><tr><td>XZ</td><td>—</td><td>not built</td><td>—</td><td>—</td><td>LZ-coupled: same reason</td></tr></tbody></table></div><p class="note">BZIP2 and XZ container-level forgeries were <strong>not</strong> built, and we say so rather than implying coverage we do not have: their block CRC sits behind an LZ-coupled stream, so a decodable container-level forge is out of reach. The region-level test below covers exactly the CRC check our per-block salvage relies on, and it does discriminate.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">format</th><th scope="col">container</th><th scope="col">native check</th><th scope="col">passes?</th><th scope="col">forged ≠ truth</th><th scope="col">CRC field</th></tr></thead><tbody><tr><td>GZIP</td><td>real gzip, stored block</td><td><code>gzip -t</code></td><td><strong>YES</strong></td><td>True</td><td>trailer CRC-32 = <code>0x2a4d3027</code></td></tr><tr><td>ZIP</td><td>real zip, stored member</td><td><code>unzip -t</code></td><td><strong>YES</strong></td><td>True</td><td>member CRC-32 = <code>0x3165c0e5</code></td></tr><tr><td>PNG</td><td>PNG tEXt chunk</td><td>chunk CRC (CRC over type‖data)</td><td><strong>YES</strong></td><td>True</td><td>chunk CRC-32 = <code>0x651d89af</code></td></tr><tr><td>BZIP2</td><td>—</td><td>not built</td><td>—</td><td>—</td><td>LZ-coupled: the block CRC covers decompressed data behind the LZ stream</td></tr><tr><td>XZ</td><td>—</td><td>not built</td><td>—</td><td>—</td><td>LZ-coupled: same reason</td></tr></tbody></table></div><p class="note">BZIP2 and XZ container-level forgeries were <strong>not</strong> built, and we say so rather than implying coverage we do not have: their block CRC sits behind an LZ-coupled stream, so a decodable container-level forge is out of reach. The region-level test below covers exactly the CRC check our per-block salvage relies on, and it does discriminate.</p>
       <div class="claim" id="claim-native-accept"><p class="claim-text">We constructed archives whose content differs from the original but whose CRC-32 matches, and <code>gzip -t</code> and <code>unzip -t</code> both report them as intact. A passing native integrity check is therefore evidence about accidental damage only — it is not evidence that the bytes are the ones that were originally stored.</p><p class="claim-src">EXP-ADV-PCC, Attack Family 1 (container-level) · seed 20260705 · gzip trailer CRC <code>0x2a4d3027</code>, zip member CRC <code>0x3165c0e5</code>, PNG chunk CRC <code>0x651d89af</code> · VERAQIS 0.2.1</p></div>
     </div>
   </div>
@@ -255,7 +254,7 @@
       <h2 id="threat-models">Result 2 — the same evidence, judged under two threat models</h2>
       <p>The interesting part is not that CRC-32 is forgeable. It is that the <em>same certificate</em> must be accepted for one purpose and rejected for another — and that a verifier can be built to make that distinction explicit instead of leaving it to the reader.</p>
       <p>We ran every forged and honest candidate through <strong>two independent verifiers</strong>: the shipped Rust re-verifier, and a clean-room Python implementation that shares no code with it. Each was run at accidental grade and at forensic grade.</p>
-      <div class="table-scroll"><table><thead><tr><th>format</th><th>case</th><th>accidental grade</th><th>forensic grade</th><th>independent witness</th></tr></thead><tbody><tr><td>ZIP</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>ZIP</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>GZIP</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>GZIP</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>BZIP2</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>BZIP2</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>XZ</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>XZ</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>PNG</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>PNG</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr></tbody></table></div><p class="note">Both verifiers agreed on every row. Ten cases, five formats. The forged CRC values were, in order: <code>0xbdb7c46c</code> (zip), <code>0x14cc3e21</code> (gzip), <code>0x1f9d7361</code> (bzip2), <code>0x1977ed13</code> (xz), <code>0xfbb4d1c7</code> (png) — each identical to the stored expected CRC of the true content.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">format</th><th scope="col">case</th><th scope="col">accidental grade</th><th scope="col">forensic grade</th><th scope="col">independent witness</th></tr></thead><tbody><tr><td>ZIP</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>ZIP</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>GZIP</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>GZIP</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>BZIP2</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>BZIP2</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>XZ</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>XZ</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr><tr><td>PNG</td><td>forged chosen-CRC</td><td>ACCEPT</td><td><strong>REJECT</strong></td><td>contradicts / absent</td></tr><tr><td>PNG</td><td>honest</td><td>ACCEPT</td><td><strong>ACCEPT</strong></td><td>confirms</td></tr></tbody></table></div><p class="note">Both verifiers agreed on every row. Ten cases, five formats. The forged CRC values were, in order: <code>0xbdb7c46c</code> (zip), <code>0x14cc3e21</code> (gzip), <code>0x1f9d7361</code> (bzip2), <code>0x1977ed13</code> (xz), <code>0xfbb4d1c7</code> (png) — each identical to the stored expected CRC of the true content.</p>
       <div class="claim" id="claim-two-grades"><p class="claim-text">Every forged chosen-CRC candidate was accepted at accidental grade and rejected at forensic grade, in all five formats and by both independent verifiers. The discriminator is not a better checksum — it is whether an independent cryptographic witness, created before the repair, confirms the result.</p><p class="claim-src">EXP-ADV-PCC, Attack Family 1 · shipped Rust <code>phx-verify-cert</code> + clean-room Python verifier (no shared code) · seed 20260705 · VERAQIS 0.2.1</p></div>
       <p>This is why VERAQIS carries an explicit threat model on any claim whose meaning changes between the two, and why an unlabelled result defaults to the weaker reading. A result that does not say which question it answers must not be read as answering the harder one.</p>
     </div>
@@ -267,7 +266,7 @@
     <div class="prose">
       <h2 id="cert-forgery">Result 3 — forging the proof itself</h2>
       <p>If a recovery result ships with a certificate, the certificate becomes the next thing worth attacking. We wrote seven forgeries against our own certificate format and required <strong>both</strong> verifiers to reject <strong>all</strong> of them.</p>
-      <div class="table-scroll"><table><thead><tr><th>forgery</th><th>what it tries</th><th>Rust</th><th>Python</th></tr></thead><tbody><tr><td>region_overlay_check_divergence</td><td>a passing check that covers a different region than the one claimed</td><td>REJECT</td><td>REJECT</td></tr><tr><td>region_extension</td><td>stretch the claimed region past what the check covers</td><td>REJECT</td><td>REJECT</td></tr><tr><td>overlapping_region</td><td>double-count one check across overlapping claims</td><td>REJECT</td><td>REJECT</td></tr><tr><td>tautology_smuggling</td><td>present the checksum that was solved against as independent evidence</td><td>REJECT</td><td>REJECT</td></tr><tr><td>wrong_artifact</td><td>attach a valid certificate to a different file</td><td>REJECT</td><td>REJECT</td></tr><tr><td>recovered_substitution</td><td>swap the recovered bytes after the certificate was issued</td><td>REJECT</td><td>REJECT</td></tr><tr><td>forged_negative_false_loss</td><td>certify as permanently lost a region that was recoverable</td><td>REJECT</td><td>REJECT</td></tr></tbody></table></div><p class="note">7 / 7 rejected by both verifiers. Each case has a fixed certificate hash so the result is re-checkable, e.g. <code>tautology_smuggling</code> → <code>4bc59d448fac0377</code>.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">forgery</th><th scope="col">what it tries</th><th scope="col">Rust</th><th scope="col">Python</th></tr></thead><tbody><tr><td>region_overlay_check_divergence</td><td>a passing check that covers a different region than the one claimed</td><td>REJECT</td><td>REJECT</td></tr><tr><td>region_extension</td><td>stretch the claimed region past what the check covers</td><td>REJECT</td><td>REJECT</td></tr><tr><td>overlapping_region</td><td>double-count one check across overlapping claims</td><td>REJECT</td><td>REJECT</td></tr><tr><td>tautology_smuggling</td><td>present the checksum that was solved against as independent evidence</td><td>REJECT</td><td>REJECT</td></tr><tr><td>wrong_artifact</td><td>attach a valid certificate to a different file</td><td>REJECT</td><td>REJECT</td></tr><tr><td>recovered_substitution</td><td>swap the recovered bytes after the certificate was issued</td><td>REJECT</td><td>REJECT</td></tr><tr><td>forged_negative_false_loss</td><td>certify as permanently lost a region that was recoverable</td><td>REJECT</td><td>REJECT</td></tr></tbody></table></div><p class="note">7 / 7 rejected by both verifiers. Each case has a fixed certificate hash so the result is re-checkable, e.g. <code>tautology_smuggling</code> → <code>4bc59d448fac0377</code>.</p>
       <p>The last row is the one people rarely think about. Over-claiming recovery is the obvious dishonesty; <strong>over-claiming loss</strong> is the other one, and it has real consequences when an insurer or a court is reading the report. Our reference emitter cross-checks every surviving surface before it certifies anything as lost — a naive single-surface emitter would have manufactured a false loss for a region the ground truth knows was recoverable.</p>
       <div class="claim" id="claim-false-loss"><p class="claim-text">Adversarial false-loss bytes measured 0. A negative certificate from VERAQIS states that a region is not uniquely recoverable from the surviving redundancy as found — a scoped claim about the evidence, never an absolute claim that the data is intrinsically gone.</p><p class="claim-src">EXP-ADV-PCC, Attack Family 3 (MOAT_AUDIT A4) · required 0, measured 0 · seed 20260705</p></div>
     </div>
@@ -350,34 +349,44 @@ Engine: VERAQIS 0.2.1 · Measured: 5 July 2026 · Experiment: EXP-ADV-PCC</pre><
     <div class="cols">
       <div>
         <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
       <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/desktop.html">VERAQIS Recovery</a>
-        <a href="/mobile.html">VERAQIS Archiver</a>
-        <a href="/download.html">Download</a>
-        <a href="/coldpass.html">ColdPass (archived project)</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
-        <div class="colhead">Trust</div>
-        <a href="/testing.html">Test Record</a>
-        <a href="/security.html">Security</a>
-        <a href="/reports.html">Reports &amp; Verification</a>
-        <a href="/changelog.html">Changelog</a>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
       this site is fully static and makes no network requests.
       <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>

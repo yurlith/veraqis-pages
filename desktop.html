@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<title>VERAQIS Recovery for Windows — damaged archive repair</title>
-<meta name="description" content="VERAQIS Recovery public beta: proof-gated analysis, structural recovery and semantic reconstruction are currently free. Offline, no telemetry." />
+<title>VERAQIS Recovery for Windows — release status</title>
+<meta name="description" content="Build and release status for the VERAQIS Recovery desktop application: what is implemented, what is measured, and why no unsigned Windows package is published." />
 <link rel="canonical" href="https://veraqis.tech/desktop.html" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="VERAQIS Recovery | VERAQIS" />
-<meta property="og:description" content="Analyze, diagnose and recover damaged archives where it can be proven. Format-aware repair + Tier-3 semantic recovery. Beta." />
+<meta property="og:title" content="VERAQIS Recovery for Windows — release status" />
+<meta property="og:description" content="What is built, what is measured, and why no unsigned Windows package is published. A signed store release is pending." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -21,8 +21,8 @@
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
 <meta property="og:url" content="https://veraqis.tech/desktop.html" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="VERAQIS Recovery | VERAQIS" />
-<meta name="twitter:description" content="Analyze, diagnose and recover damaged archives where it can be proven. Beta." />
+<meta name="twitter:title" content="VERAQIS Recovery for Windows — release status" />
+<meta name="twitter:description" content="What is built, what is measured, and why no unsigned Windows package is published. A signed store release is pending." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -137,23 +137,23 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
+
 <header>
   <div class="wrap">
-    <nav>
-      <a class="brand" href="index.html">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
         <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         VERAQIS
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="docs.html">Docs</a>
-        <a href="desktop.html">Desktop</a>
-        <a href="mobile.html">Mobile</a>
-        <a href="download.html">Download</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
       </div>
     </nav>
   </div>
@@ -163,22 +163,23 @@
 
 <div class="page-head">
   <div class="wrap">
-    <div class="crumb"><a href="index.html">VERAQIS</a> / Products / Desktop</div>
-    <h1>See what can actually be recovered before you pay.</h1>
-    <p class="lead">VERAQIS Recovery analyzes damaged ZIP archives locally, shows which files are
-      verified, damaged or unknown, and lets you unlock saving only after you see the result. Your files
-      stay on your device — nothing is uploaded.</p>
+    <div class="crumb"><a href="/">VERAQIS</a> / Products / Desktop</div>
+    <h1>VERAQIS Recovery for Windows — release status</h1>
+    <p class="lead">The desktop application that analyzes damaged ZIP archives locally, shows which
+      files are verified, damaged or unknown, and unlocks saving only after you have seen the result.
+      This page tracks what is built and where the release stands. For how the recovery itself works,
+      read <a href="/recovery.html">verified ZIP recovery</a>.</p>
     <div class="status-line">
       <span class="status status--experimental">Windows — signed store release pending</span>
       <p class="note">Not publicly downloadable yet. VERAQIS Recovery for Windows will ship only as a
         properly signed package (Microsoft Store) — never as an unsigned download.</p>
     </div>
-    <div class="cta" style="margin-top:14px">
+    <div class="cta mt-14">
       <a class="btn ghost" href="download.html">View release status</a>
       <a class="btn ghost" href="testing.html">See the test record</a>
       <a class="btn ghost" href="contact.html">Join beta</a>
     </div>
-    <p class="note" style="margin-top:14px"><strong>First commercial scenario:</strong> analyze damaged
+    <p class="note mt-14"><strong>First commercial scenario:</strong> analyze damaged
       ZIP archives — missing/corrupt central directory, truncation, unexpected end of archive, CRC errors,
       damaged backups and Google Takeout exports — and recover only what can be verified. Full analysis
       and preview are free; you pay only to save the recovered result. Advanced formats below (Office is
@@ -210,7 +211,7 @@
       <div class="card"><div class="ic">KEY</div><h3>Future licensing</h3><p>Offline signed-license support is
         under development for a later commercial release. No license is required during public beta.</p></div>
     </div>
-    <div class="callout ok" style="margin-top:22px">
+    <div class="callout ok mt-22">
       <strong>Honest empty state.</strong> On first run, with no history, the dashboard shows an honest
       zero-state rather than invented numbers. The interface never fabricates results.
     </div>
@@ -231,11 +232,11 @@
     <h2>Formats &amp; what's recoverable</h2>
     <p class="sub">Honest scope. Where a format carries redundancy, veraqis recovers it byte-exact. Where it
       doesn't, VERAQIS says so — a measured NO-GO is a valid outcome, never a fake recovery.</p>
-    <div class="card table-scroll" style="padding:6px 6px 2px">
+    <div class="card table-scroll">
     <table>
-      <thead><tr><th>Format</th><th>Detect</th><th>Recovery capability</th><th>Tier</th></tr></thead>
+      <thead><tr><th scope="col">Format</th><th scope="col">Detect</th><th scope="col">Recovery capability</th><th scope="col">Tier</th></tr></thead>
       <tbody>
-        <tr><td class="f">ZIP / OPC<br><span class="mut" style="font-size:12px">jar·apk·docx·xlsx·epub</span></td><td>✓</td><td>EOCD/central-dir rebuild, local-header scan, CRC reconcile, exact part extraction</td><td><span class="tag t-exact">Exact</span> <span class="tag t-tier3">Tier-3</span></td></tr>
+        <tr><td class="f">ZIP / OPC<br><span class="mut fs-12">jar·apk·docx·xlsx·epub</span></td><td>✓</td><td>EOCD/central-dir rebuild, local-header scan, CRC reconcile, exact part extraction</td><td><span class="tag t-exact">Exact</span> <span class="tag t-tier3">Tier-3</span></td></tr>
         <tr><td class="f">SQLite</td><td>✓</td><td>Schema + verified rows, WAL overlay, overflow chains, orphan-page relink</td><td><span class="tag t-tier3">Tier-3</span></td></tr>
         <tr><td class="f">PDF</td><td>✓</td><td>Object-graph rebuild, Root recovery, verified-stream salvage (graph-proven only)</td><td><span class="tag t-tier3">Tier-3</span></td></tr>
         <tr><td class="f">TAR · GZIP · DEFLATE</td><td>✓</td><td>Resync salvage, multi-member &amp; continuation recovery, exact structural repair</td><td><span class="tag t-exact">Exact</span></td></tr>
@@ -248,9 +249,9 @@
       </tbody>
     </table>
     </div>
-    <p class="note" style="margin-top:14px">Encryption is always detected and <strong>abstained</strong> —
+    <p class="note mt-14">Encryption is always detected and <strong>abstained</strong> —
       VERAQIS never decrypts, recovers passwords, or bypasses restrictions.</p>
-    <div class="callout warn" style="margin-top:14px">
+    <div class="callout warn mt-14">
       <strong>Exact-copy reconstruction is experimental.</strong> It restores exact bytes from a
       same-owner duplicate only, and is still being validated on real backup data. It is not part of
       general, guaranteed recovery and is not sold as a stable feature.
@@ -288,15 +289,15 @@
       documents the development-build CLI surface; no public Windows or Linux package is offered today.</p>
     <div class="grid g2">
       <div>
-        <h3 style="font-size:17px">Install status</h3>
+        <h3 class="fs-17">Install status</h3>
         <p class="note">The previous Windows beta was withdrawn after release verification failed.
           A clean CLI and installer rebuild is in progress; no Windows or Linux download is currently
           offered. See the <a href="download.html">release status</a>.</p>
       </div>
       <div>
-        <h3 style="font-size:17px">Use it</h3>
+        <h3 class="fs-17">Use it</h3>
         <div class="terminal">
-          <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+          <div class="bar"><i></i><i></i><i></i></div>
 <pre><span class="c"># 1 · audit — free, read-only</span>
 <span class="p">veraqis</span> analyze backup.zip <span class="a">--format</span> json
 
@@ -328,22 +329,26 @@
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
             <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="desktop.html">VERAQIS Recovery</a>
-        <a href="download.html">VERAQIS Recovery CLI</a>
-        <a href="mobile.html">VERAQIS Archiver</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
         <div class="colhead">Trust</div>
@@ -353,14 +358,13 @@
       </div>
       <div>
         <div class="colhead">Company</div>
-        <a href="about.html">About VERAQIS</a>
-        <a href="contact.html">Contact / Support</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Use</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
   </div>
 </footer>

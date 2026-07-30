@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Recovery reports and verification certificates | VERAQIS</title>
 <meta name="description" content="Every VERAQIS result is verifiable: a two-axis evidence model, JSON/Markdown/HTML reports, and certificates a third party can re-check without trusting us." />
@@ -124,23 +124,23 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
+
 <header>
   <div class="wrap">
-    <nav>
-      <a class="brand" href="index.html">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
         <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         VERAQIS
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="docs.html">Docs</a>
-        <a href="desktop.html">Desktop</a>
-        <a href="mobile.html">Mobile</a>
-        <a href="download.html">Download</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
       </div>
     </nav>
   </div>
@@ -150,7 +150,7 @@
 
 <div class="page-head">
   <div class="wrap">
-    <div class="crumb"><a href="index.html">VERAQIS</a> / Products / Reports</div>
+    <div class="crumb"><a href="/">VERAQIS</a> / Products / Reports</div>
     <h1>Reports &amp; Verification</h1>
     <p class="lead">A recovery you can't verify is just a claim. VERAQIS attaches evidence to every
       result and lets a third party re-check it — without trusting VERAQIS.</p>
@@ -165,13 +165,13 @@
       fitted to counts for nothing (the tautology rule).</p>
     <div class="grid g2">
       <div class="card">
-        <h3 style="font-size:17px">Axis P — probabilistic, in bits</h3>
+        <h3 class="fs-17">Axis P — probabilistic, in bits</h3>
         <p>Strength is quantified: a CRC-32 that the solver was <em>not</em> fitted to contributes 32
         bits; a checksum it solved against contributes <strong>zero</strong>. A result with zero
         evidence bits and no exact-erasure basis may not be emitted at all.</p>
       </div>
       <div class="card">
-        <h3 style="font-size:17px">Axis L — structural uniqueness</h3>
+        <h3 class="fs-17">Axis L — structural uniqueness</h3>
         <p>"Unique under the stated structural constraints" — e.g. a PDF object reachable from Root, a
         SQLite page consistent with exactly one schema. Validated empirically at
         <span class="mono">false = 0</span> on a differential corpus. Health never rises on a guess.</p>
@@ -186,14 +186,14 @@
     <p class="sub">The auditor produces a human console report and machine-readable output, written to
       a file or stdout.</p>
     <div class="grid g3">
-      <div class="card"><h3 style="font-size:17px">Console</h3><p>Health bar, ranked issues, recoverability
+      <div class="card"><h3 class="fs-17">Console</h3><p>Health bar, ranked issues, recoverability
         factors and a recommendation — the default human view.</p></div>
-      <div class="card"><h3 style="font-size:17px">JSON</h3><p>A stable <code>PlatformReport</code>
+      <div class="card"><h3 class="fs-17">JSON</h3><p>A stable <code>PlatformReport</code>
         (<code>format_version 2.0</code>) for pipelines, dashboards and OEM integration.</p></div>
-      <div class="card"><h3 style="font-size:17px">Markdown / HTML</h3><p>A self-contained report you can
+      <div class="card"><h3 class="fs-17">Markdown / HTML</h3><p>A self-contained report you can
         archive, attach to a ticket, or hand to a colleague.</p></div>
     </div>
-<pre style="margin-top:20px"><span class="c"># machine-readable report to a file</span>
+<pre class="mt-20"><span class="c"># machine-readable report to a file</span>
 <span class="p">VERAQIS</span> analyze backup.zip <span class="a">--format</span> json <span class="a">--output</span> report.json
 <span class="p">VERAQIS</span> report  backup.zip <span class="a">--format</span> html <span class="a">--output</span> report.html</pre>
   </div>
@@ -227,21 +227,21 @@
       shares no code with the solver.</p>
     <div class="grid g2">
       <div class="card">
-        <h3 style="font-size:17px">Re-check without trusting VERAQIS</h3>
+        <h3 class="fs-17">Re-check without trusting VERAQIS</h3>
         <p>A standalone re-verifier validates a certificate against the damaged input — tamper, a
         wrong artifact, or a tautological "proof" are all rejected. Independence from the solver is
         enforced by a build-time fitness test.</p>
       </div>
       <div class="card">
-        <h3 style="font-size:17px">Honest bounds, and provable loss</h3>
+        <h3 class="fs-17">Honest bounds, and provable loss</h3>
         <p>Without the original, VERAQIS reports a bound — <span class="mono">P(wrong) &#8804; 2^(&#8722;evidence_bits)</span>
         — never "verified correct." Genuinely unrecoverable regions can carry a negative
         certificate, gated so a recoverable region is never certified as lost.</p>
       </div>
     </div>
-<pre style="margin-top:20px"><span class="c"># re-verify a certificate independently of the recovery tool</span>
+<pre class="mt-20"><span class="c"># re-verify a certificate independently of the recovery tool</span>
 <span class="p">phx-verify-cert</span> cert.json <span class="a">--against</span> damaged.bin <span class="a">--recovered</span> out.bin</pre>
-    <p class="note" style="margin-top:14px">Certificate emission is wired per recovery path and expands
+    <p class="note mt-14">Certificate emission is wired per recovery path and expands
       during beta. The benchmark and certificate tooling are standing infrastructure today.</p>
   </div>
 </section>
@@ -272,40 +272,45 @@
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
             <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="desktop.html">VERAQIS Recovery</a>
-        <a href="download.html">VERAQIS Recovery CLI</a>
-        <a href="mobile.html">VERAQIS Archiver</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
-        <div class="colhead">Trust</div>
-        <a href="testing.html">Test Record</a>
-        <a href="security.html">Security</a>
-        <a href="reports.html">Reports &amp; Verification</a>
-        <a href="changelog.html">Changelog</a>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
       </div>
       <div>
         <div class="colhead">Company</div>
-        <a href="about.html">About VERAQIS</a>
-        <a href="contact.html">Contact / Support</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Use</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
   </div>
 </footer>

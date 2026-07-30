@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>File formats — structure, failure modes, recoverability | VERAQIS</title>
@@ -82,6 +82,7 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
 <header>
   <div class="wrap">
     <nav aria-label="Main">
@@ -90,13 +91,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/" class="active">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
         <a href="/docs.html">Docs</a>
-        <a href="/desktop.html">Desktop</a>
-        <a href="/mobile.html">Mobile</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -123,7 +122,7 @@
       <div class="grid g2"><div class="card"><h3>ZIP — and DOCX, XLSX, APK, EPUB</h3><p>Entries plus an index at the end. Seven distinct failure modes, of which the most common destroys no data at all. 24 classifier rules.</p><p class="note"><a href="/formats/zip/">Open the ZIP reference →</a></p></div><div class="card"><h3>Coming from the same measurements</h3><p>Per-format pages for 7z, xz/bzip2, gzip/tar, PDF, SQLite and ISO are being written from the same experiments already published under Research. Until each exists, the measurement it will be built on is linked below.</p></div></div>
       <h2 id="matrix">Recoverability at a glance</h2>
       <p>What decides whether damaged data can be recovered <em>with proof</em> is whether the format carries an independent verifier over the region in question — measured, not assumed:</p>
-      <div class="table-scroll"><table><thead><tr><th>format</th><th>independent payload verifier</th><th>salvage past damage?</th><th>measurement</th></tr></thead><tbody><tr><td>ZIP</td><td>CRC-32 per entry</td><td>yes — other entries verify independently</td><td><a href="/formats/zip/">ZIP reference</a></td></tr><tr><td>7z (solid)</td><td>CRC-32 per file</td><td>prefix only — no resync point exists after the damage</td><td><a href="/research/7z-solid-archive-bit-flip/">bit-flip measurement</a></td></tr><tr><td>xz</td><td>CRC-32 or CRC-64 per block</td><td>yes — 9 of 10 blocks in the headline case</td><td><a href="/research/recovering-past-corruption-xz-bzip2/">salvage measurement</a></td></tr><tr><td>bzip2</td><td>CRC-32 per block</td><td>yes — reaches the safe optimum</td><td><a href="/research/recovering-past-corruption-xz-bzip2/">salvage measurement</a></td></tr><tr><td>gzip</td><td>CRC-32 per member</td><td>member-level resync</td><td><a href="/reference/rule-ids/#fmt-gzip">rule reference</a></td></tr><tr><td>zstd / lz4</td><td><strong>none</strong></td><td><strong>no — we abstain</strong></td><td><a href="/research/recovering-past-corruption-xz-bzip2/#abstain">why we abstain</a></td></tr><tr><td>PDF / SQLite / TAR / ISO</td><td><strong>none</strong></td><td>structural recovery only, not byte-level proof</td><td><a href="/research/joint-verifier-surface-is-empty/">joint-verifier measurement</a></td></tr><tr><td>RAR</td><td>CRC-32 per file</td><td>inventory and stored files only — the codec is proprietary</td><td><a href="/reference/rule-ids/#fmt-rar">rule reference</a></td></tr></tbody></table></div><p class="note">The "none" rows are not gaps in our support. They are properties of those formats: there is nothing inside the stream that can independently confirm a recovered region, which is why we report the limit instead of emitting unverifiable bytes.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">format</th><th scope="col">independent payload verifier</th><th scope="col">salvage past damage?</th><th scope="col">measurement</th></tr></thead><tbody><tr><td>ZIP</td><td>CRC-32 per entry</td><td>yes — other entries verify independently</td><td><a href="/formats/zip/">ZIP reference</a></td></tr><tr><td>7z (solid)</td><td>CRC-32 per file</td><td>prefix only — no resync point exists after the damage</td><td><a href="/research/7z-solid-archive-bit-flip/">bit-flip measurement</a></td></tr><tr><td>xz</td><td>CRC-32 or CRC-64 per block</td><td>yes — 9 of 10 blocks in the headline case</td><td><a href="/research/recovering-past-corruption-xz-bzip2/">salvage measurement</a></td></tr><tr><td>bzip2</td><td>CRC-32 per block</td><td>yes — reaches the safe optimum</td><td><a href="/research/recovering-past-corruption-xz-bzip2/">salvage measurement</a></td></tr><tr><td>gzip</td><td>CRC-32 per member</td><td>member-level resync</td><td><a href="/reference/rule-ids/#fmt-gzip">rule reference</a></td></tr><tr><td>zstd / lz4</td><td><strong>none</strong></td><td><strong>no — we abstain</strong></td><td><a href="/research/recovering-past-corruption-xz-bzip2/#abstain">why we abstain</a></td></tr><tr><td>PDF / SQLite / TAR / ISO</td><td><strong>none</strong></td><td>structural recovery only, not byte-level proof</td><td><a href="/research/joint-verifier-surface-is-empty/">joint-verifier measurement</a></td></tr><tr><td>RAR</td><td>CRC-32 per file</td><td>inventory and stored files only — the codec is proprietary</td><td><a href="/reference/rule-ids/#fmt-rar">rule reference</a></td></tr></tbody></table></div><p class="note">The "none" rows are not gaps in our support. They are properties of those formats: there is nothing inside the stream that can independently confirm a recovered region, which is why we report the limit instead of emitting unverifiable bytes.</p>
       <div class="callout info"><strong>Practical reading of this table:</strong> if you are choosing a format for data you might one day need to recover part of, prefer one with per-block verifiers — <code>xz -T0</code>, <code>bzip2</code>, or a non-solid archive. If you need position-independent recovery, that requires parity added in advance; no format gives it to you for free.</div>
       <ul class="source-list"><li><a href="/reference/rule-ids/">All 87 rule IDs by format</a> — what each format can detect</li><li><a href="/research/">Research</a> — the measurements behind every row above</li><li><a href="/guides/">Guides</a> — if you have a damaged file right now</li></ul>
     </div>
@@ -146,34 +145,44 @@
     <div class="cols">
       <div>
         <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
       <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/desktop.html">VERAQIS Recovery</a>
-        <a href="/mobile.html">VERAQIS Archiver</a>
-        <a href="/download.html">Download</a>
-        <a href="/coldpass.html">ColdPass (archived project)</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
-        <div class="colhead">Trust</div>
-        <a href="/testing.html">Test Record</a>
-        <a href="/security.html">Security</a>
-        <a href="/reports.html">Reports &amp; Verification</a>
-        <a href="/changelog.html">Changelog</a>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
       this site is fully static and makes no network requests.
       <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Repair a corrupted ZIP file | VERAQIS</title>
 <meta name="description" content="A corrupted ZIP won't open? See which files are verified, damaged or unknown before you act — and when re-downloading is the better fix. Local, no uploads." />
@@ -93,22 +93,22 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
+
 <header>
   <div class="wrap">
-    <nav>
-      <a class="brand" href="/index.html">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
         <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         VERAQIS
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
         <a href="/docs.html">Docs</a>
-        <a href="/desktop.html">Desktop</a>
-        <a href="/mobile.html">Mobile</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -133,7 +133,7 @@
       <!--/VERAQIS_CTA_RECOVERY-->
       <a class="btn ghost" href="/testing.html">See the test record</a>
     </div>
-    <p class="note" style="margin-top:14px">Analysis is free and your file never leaves your device.
+    <p class="note mt-14">Analysis is free and your file never leaves your device.
       VERAQIS Recovery for Windows is a signed store release that's still pending — <a href="/contact.html">join
       the beta</a>. The <a href="/mobile.html">Android Archiver</a> can inspect ZIPs on-device today.</p>
   </div>
@@ -142,7 +142,7 @@
 <!-- 1 & 2: the error + plain explanation -->
 <section>
   <div class="wrap">
-    <h2 style="margin-top:0">What "corrupted ZIP" usually means</h2>
+    <h2 class="mt-0">What "corrupted ZIP" usually means</h2>
     <p class="sub">A ZIP is a set of compressed <em>entries</em> plus an index (the "central directory")
       at the very end that lists them. "Corrupted" almost always means one of a few concrete failures —
       not that the whole file is gone.</p>
@@ -253,6 +253,11 @@
   <div class="wrap">
     <h2>Go deeper</h2>
     <div class="grid g3">
+      <a class="card link-card" href="/tools/zip-checker/">
+        <h3>Check your own archive</h3>
+        <p>A browser-based integrity check: which entries are verified, damaged or unknown. The
+          file is read locally and never uploaded.</p>
+      </a>
       <a class="card link-card" href="/guides/zip-file-wont-open/">
         <h3>Diagnose it first</h3>
         <p>Five reasons a ZIP won't open, most common first. Only one of them is actual
@@ -300,16 +305,18 @@
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="/index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
             <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
@@ -330,7 +337,7 @@
         <a href="/pricing.html">Pricing</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span></p>
   </div>
 </footer>

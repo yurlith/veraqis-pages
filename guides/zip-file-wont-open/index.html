@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Why a ZIP file won't open (and how to fix it) | VERAQIS</title>
 <meta name="description" content="A ZIP that won't open usually has one of five causes. Diagnose which — incomplete download, wrong app, not really a ZIP, encrypted, or truly corrupted — and fix each. Offline." />
@@ -62,7 +62,7 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "How do I know if my ZIP is actually corrupted or just failed to download?",
+          "name": "How do I know if my ZIP is corrupted or just failed to download?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Compare the file size to the source if you can, or re-download and see if the new copy opens. A truncated download is the most common cause and a fresh, complete copy opens normally. If a known-complete copy still fails, the archive itself is likely damaged."
@@ -93,22 +93,22 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
+
 <header>
   <div class="wrap">
-    <nav>
-      <a class="brand" href="/index.html">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
         <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         VERAQIS
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
         <a href="/docs.html">Docs</a>
-        <a href="/desktop.html">Desktop</a>
-        <a href="/mobile.html">Mobile</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -130,14 +130,14 @@
       <a class="btn primary" href="/guides/repair-corrupted-zip/">It's actually corrupted — what now?</a>
       <a class="btn ghost" href="/mobile.html">Inspect it on Android</a>
     </div>
-    <p class="note" style="margin-top:14px">Everything below happens on your own device. VERAQIS never
+    <p class="note mt-14">Everything below happens on your own device. VERAQIS never
       uploads your file and has no telemetry.</p>
   </div>
 </div>
 
 <section>
   <div class="wrap">
-    <h2 style="margin-top:0">The five causes, most common first</h2>
+    <h2 class="mt-0">The five causes, most common first</h2>
     <div class="grid g2">
       <div class="card"><h3>1. The download or copy was incomplete</h3><p>By far the most common cause. The
         transfer stopped early, so the end of the archive (including its index) never arrived. <strong>Fix:</strong>
@@ -153,7 +153,7 @@
         password, and no tool can honestly change that. <strong>Fix:</strong> find the password. VERAQIS
         detects encryption and says so — it never bypasses it.</p></div>
     </div>
-    <div class="card" style="margin-top:16px"><h3>5. The archive is genuinely corrupted</h3><p>If a
+    <div class="card mt-16"><h3>5. The archive is genuinely corrupted</h3><p>If a
       known-complete, unencrypted, real ZIP still won't open, the bytes themselves are damaged — a missing
       central directory, a truncated tail, or a failing CRC on one entry. This is the only case where
       <em>recovery</em> is the right tool, and where a per-file verdict matters.
@@ -199,7 +199,7 @@
         </ul>
       </div>
     </div>
-    <p class="note" style="margin-top:14px">Analysis is free: you see the per-file verdict before deciding
+    <p class="note mt-14">Analysis is free: you see the per-file verdict before deciding
       anything. VERAQIS Recovery for Windows is a signed store release that's still pending — the
       <a href="/mobile.html">Android Archiver</a> can already inspect ZIPs on-device, and you can
       <a href="/testing.html">review the test record</a>.</p>
@@ -210,6 +210,11 @@
   <div class="wrap">
     <h2>Go deeper</h2>
     <div class="grid g3">
+      <a class="card link-card" href="/tools/zip-checker/">
+        <h3>Check your own archive</h3>
+        <p>A browser-based integrity check: which entries are verified, damaged or unknown. The
+          file is read locally and never uploaded.</p>
+      </a>
       <a class="card link-card" href="/guides/repair-corrupted-zip/">
         <h3>If it really is corrupted</h3>
         <p>What "corrupted" means in practice, when re-downloading beats recovery, and what can
@@ -259,16 +264,18 @@
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="/index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
             <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
@@ -289,7 +296,7 @@
         <a href="/pricing.html">Pricing</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span></p>
   </div>
 </footer>

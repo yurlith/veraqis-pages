@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>Recover a corrupted ZIP archive offline | VERAQIS</title>
+<meta name="description" content="How VERAQIS recovers damaged ZIP archives: what a local file header can prove, what a missing central directory costs, and why unverifiable data stays labelled unknown." />
+<link rel="canonical" href="https://veraqis.tech/recovery.html" />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Recover a corrupted ZIP archive offline" />
+<meta property="og:description" content="Verified recovery: every returned file is checked against the archive's own checksum. What cannot be proven is reported as unknown, not repaired." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS verified archive recovery" />
+<meta property="og:url" content="https://veraqis.tech/recovery.html" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Recover a corrupted ZIP archive offline" />
+<meta name="twitter:description" content="Verified recovery: every returned file is checked against the archive's own checksum. What cannot be proven is reported as unknown, not repaired." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": { "@id": "https://veraqis.tech/#organization" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/recovery.html#webpage",
+      "url": "https://veraqis.tech/recovery.html",
+      "name": "Recover a corrupted ZIP archive offline",
+      "description": "How VERAQIS recovers damaged ZIP archives: what a local file header can prove, what a missing central directory costs, and why unverifiable data stays labelled unknown.",
+      "isPartOf": { "@id": "https://veraqis.tech/#website" },
+      "about": { "@id": "https://veraqis.tech/#organization" },
+      "dateModified": "2026-07-30",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/recovery.html#breadcrumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "VERAQIS", "item": "https://veraqis.tech/" },
+        { "@type": "ListItem", "position": 2, "name": "Recovery", "item": "https://veraqis.tech/recovery.html" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/recovery.html#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can VERAQIS recover any corrupted ZIP file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Recovery depends entirely on what survived. If the bytes of a file are gone, no tool can return them, and VERAQIS reports that region as lost rather than filling it in. What VERAQIS does guarantee is the opposite direction: it does not report a file as recovered unless the archive's own checksum confirms it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Analysis and recovery run on your own machine. The source archive is opened read-only and never modified, and recovered output is written to a destination you choose."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does verified recovery mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A file is only labelled verified when a check independent of the repair confirms it — for a ZIP entry, the CRC-32 that was stored when the archive was created. A structural repair does not make its own result true, so the checksum has the last word."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can VERAQIS open a password-protected or encrypted archive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Encrypted archives are detected and reported, and recovery stops there. VERAQIS does not guess, derive or brute-force passwords, and it does not bypass encryption. The unencrypted structure around an encrypted payload can still be repaired without touching the payload."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is VERAQIS Recovery available for Windows today?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not yet. VERAQIS Recovery for Windows is pending a signed store release and is not publicly downloadable. No unsigned build is published. The Android archive inspector is available now and is release-key signed."
+          }
+        }
+      ],
+      "mainEntityOfPage": { "@id": "https://veraqis.tech/recovery.html#webpage" }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html" class="active">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / Recovery</div>
+    <h1>Recover a corrupted ZIP archive — and know which files you can trust</h1>
+    <p class="lead">When an archive will not open, the useful question is not "can it be repaired?"
+      but "which of these files can still be proven intact?" VERAQIS answers the second question
+      first, on your own machine, and refuses to answer the first one with a guess.</p>
+    <div class="cta">
+      <a class="btn primary" href="/download.html">Get the Android inspector</a>
+      <a class="btn ghost" href="/desktop.html">Windows Recovery release status</a>
+    </div>
+    <div class="status-line">
+      <span class="status status--available">Android</span>
+      <p class="note">The signed Android archive inspector is available now. VERAQIS Recovery for
+        Windows — the desktop product described on this page — is pending a signed store release
+        and is not publicly downloadable. No unsigned Windows build is published.</p>
+    </div>
+  </div>
+</div>
+
+<!-- 1. THE PROBLEM -->
+<section>
+  <div class="wrap prose">
+    <h2 id="problem">What is actually wrong with your archive</h2>
+    <p>A ZIP is not one blob. It is a sequence of stored files, each with its own header and its own
+      checksum, followed by an index at the very end that lists where everything is. Damage almost
+      never destroys all of that at once — it destroys one part of it. Which part decides everything
+      about what you can get back.</p>
+    <p>Most tools report a single verdict: the archive opens, or it does not. That verdict throws
+      away the information you need. An archive can be unopenable and still contain fifty perfectly
+      intact files.</p>
+    <div class="grid g2 mt-22">
+      <div class="card">
+        <h3>The index is damaged</h3>
+        <p>The archive will not open at all, but the files themselves are usually untouched. This is
+          the most recoverable case there is — and it is the most common one.</p>
+        <p class="note mt-10"><a href="/guides/central-directory-not-found/">End of central directory
+          signature not found →</a></p>
+      </div>
+      <div class="card">
+        <h3>A file's contents changed</h3>
+        <p>The archive opens and lists everything, but one entry fails on extraction. The damage is
+          scoped to that entry; its neighbours can still be proven byte-exact.</p>
+        <p class="note mt-10"><a href="/guides/zip-crc-error/">CRC failed — what it costs →</a></p>
+      </div>
+      <div class="card">
+        <h3>The file was cut short</h3>
+        <p>An interrupted download or copy. Everything written before the cut can still be there;
+          the index, which lives at the end, is gone.</p>
+        <p class="note mt-10"><a href="/guides/unexpected-end-of-zip/">Unexpected end of archive →</a></p>
+      </div>
+      <div class="card">
+        <h3>It is not corruption at all</h3>
+        <p>A renamed file, a partial download still in progress, an unsupported encryption scheme, a
+          split archive missing its other parts. Four of the five common causes are not damage.</p>
+        <p class="note mt-10"><a href="/guides/zip-file-wont-open/">Diagnose it first →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. HOW IT READS THE ARCHIVE -->
+<section class="band">
+  <div class="wrap prose">
+    <h2 id="structure">How VERAQIS reads a damaged ZIP</h2>
+    <p>A working ZIP reader starts at the end, reads the central directory, and trusts it. That is
+      fast and correct for a healthy file — and useless for a damaged one, because the index is the
+      part most likely to be missing.</p>
+    <p>VERAQIS reads the archive the other way round.</p>
+
+    <h3>Local file headers</h3>
+    <p>Every entry in a ZIP is preceded by its own <strong>local file header</strong>, carrying the
+      signature <code>PK\x03\x04</code>, the entry's name, its compressed and uncompressed sizes,
+      and a CRC-32 of the original contents. These headers are spread throughout the archive, next
+      to the data they describe. Damage at the end of the file does not touch them.</p>
+    <p>Scanning for those signatures reconstructs the archive's contents without consulting the
+      index at all. This is why a missing central directory is usually survivable: the information
+      it held is duplicated, entry by entry, right next to each entry.</p>
+
+    <h3>When the central directory is damaged or missing</h3>
+    <p>The index is rebuilt from what the local headers prove — not invented. Where a header and the
+      surviving index disagree, the actual bytes decide: if the data on disk contradicts a stored
+      value, the stored value is not emitted. An entry whose header is itself destroyed is reported
+      as unrecoverable rather than reconstructed from a plausible guess.</p>
+
+    <h3>What CRC validation settles</h3>
+    <p>Each entry carries a CRC-32 computed when the archive was written. After decompression,
+      VERAQIS recomputes it. A match is strong evidence that these are the original bytes: random
+      corruption has roughly a one-in-four-billion chance of still matching.</p>
+    <div class="callout info">
+      <strong>An honest limit.</strong> CRC-32 proves that bytes did not change <em>by accident</em>.
+      It is not a cryptographic guarantee and it is not tamper-proof — we
+      <a href="/research/crc32-collisions-that-pass-gzip-t/">built archives whose contents differ
+      from the original but whose CRC-32 still matches</a>, and the standard tools call them healthy.
+      Accidental damage is what a CRC catches, and that is what it is used for here.
+    </div>
+  </div>
+</section>
+
+<!-- 3. VERIFIED VS UNKNOWN -->
+<section>
+  <div class="wrap prose">
+    <h2 id="verified">Recovered, damaged, unknown — kept separate</h2>
+    <p>The single design decision behind this product: a result is only called verified when
+      something <em>independent of the repair</em> confirms it. A structural fix does not get to
+      certify its own output.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Label</th><th scope="col">What it means</th><th scope="col">What proved it</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="f">Verified</td>
+            <td>These are the original bytes.</td>
+            <td>The entry decompressed cleanly and its stored CRC-32 matched.</td>
+          </tr>
+          <tr>
+            <td class="f">Damaged</td>
+            <td>The entry exists but its contents changed.</td>
+            <td>The entry decompressed, but the CRC-32 did not match.</td>
+          </tr>
+          <tr>
+            <td class="f">Unknown</td>
+            <td>We cannot say either way.</td>
+            <td>No surviving evidence settles it — a destroyed header, an unreadable region.</td>
+          </tr>
+          <tr>
+            <td class="f">Lost</td>
+            <td>The data is not in the file.</td>
+            <td>The bytes are absent — truncated away or overwritten.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Unknown is a legitimate result. A report that says "43 files verified, 2 damaged,
+      1 unknown" is more useful than one that says "repaired!" and leaves you to discover which
+      documents are quietly wrong.</p>
+    <p class="mt-16">The full definition of what counts as evidence — and the rule that a checksum a
+      repair was fitted to proves nothing — is written up in the
+      <a href="/reference/evidence-model/">evidence model</a>.</p>
+  </div>
+</section>
+
+<!-- 4. PROCESS -->
+<section class="band">
+  <div class="wrap prose">
+    <h2 id="process">Analyze → preview → recover → report</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1 · analyze</div>
+        <h3>Read, never write</h3>
+        <p>The archive is opened read-only. Structure is mapped, defects are named with a rule ID,
+          and nothing is modified.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">2 · preview</div>
+        <h3>See the verdict first</h3>
+        <p>A per-entry list of what is verified, damaged and unknown — before you commit to
+          anything, and before any payment.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">3 · recover</div>
+        <h3>Write somewhere else</h3>
+        <p>Recovered output goes to a destination you choose. The source file is never repaired in
+          place, so a failed attempt costs you nothing.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">4 · report</div>
+        <h3>A manifest, not a claim</h3>
+        <p>Byte ranges, rule IDs, before/after hashes, and the verified / unverified / lost split,
+          recorded so the result can be checked later.</p>
+      </div>
+    </div>
+    <div class="callout info">
+      <strong>You can run step 1 right now, in this browser.</strong> The
+      <a href="/tools/zip-checker/">browser-based ZIP integrity check</a> performs the same first
+      pass — EOCD, central directory, local file headers and per-entry CRC-32 — on your own machine,
+      with no upload and no install. It analyses only; it does not extract or repair.
+    </div>
+    <p class="mt-22">Analysis and preview are free. Findings carry rule IDs from the same registry
+      the engine uses internally — all <a href="/reference/rule-ids/">87 of them are published</a>,
+      so a finding on your screen can be looked up rather than taken on trust. Example reports are
+      on the <a href="/reports.html">reports page</a>.</p>
+  </div>
+</section>
+
+<!-- 5. MEASURED EXAMPLE -->
+<section>
+  <div class="wrap prose">
+    <h2 id="example">A measured example</h2>
+    <p>From the published test record, on a ZIP whose end-of-central-directory record was destroyed
+      by truncation:</p>
+    <div class="claim" id="claim-eocd">
+      <p class="claim-text">Health scored 15/100. The finding <code>ZIP_EOCD_001</code> was raised,
+        the central directory was rebuilt from surviving local headers, and 8 412 bytes were
+        recovered with 0 bytes lost.</p>
+      <p class="claim-src">VERAQIS 0.2.1 · analysis JSON, recovery manifest and the generated HTML
+        report are all published alongside the <a href="/testing.html#live-product-run">test record</a>.</p>
+    </div>
+    <p>The number that matters in that sentence is not 8 412. It is <strong>0 bytes lost</strong>
+      together with a manifest that lets someone else check the claim. Our benchmarks gate on
+      <em>false</em> recovery — bytes returned as good that were not — and that gate is zero, not
+      "low".</p>
+    <p class="mt-16">Two more measurements, both including a negative result we published anyway:
+      <a href="/research/7z-solid-archive-bit-flip/">what survives a single bit flip in a solid
+      archive</a>, and <a href="/research/joint-verifier-surface-is-empty/">an engine we cancelled
+      after measuring that it had nothing to work on</a>.</p>
+  </div>
+</section>
+
+<!-- 6. LIMITS -->
+<section class="band">
+  <div class="wrap prose">
+    <h2 id="limits">What this cannot do</h2>
+    <p>Every recovery tool has these limits. Most do not print them.</p>
+    <ul class="checks">
+      <li class="no"><strong>Data that is gone stays gone.</strong> If the bytes were truncated away
+        or overwritten, no analysis returns them. The region is reported as lost.</li>
+      <li class="no"><strong>No password recovery, no encryption bypass.</strong> Encrypted archives
+        are detected and reported. VERAQIS does not guess, derive, enumerate or brute-force a
+        password, and does not remove access controls. The unencrypted structure around an encrypted
+        payload can be repaired without touching the payload.</li>
+      <li class="no"><strong>A compressed stream can fail as a unit.</strong> Where a format ties
+        later bytes to earlier ones, damage can cost more than it physically destroyed. What
+        survives is then a measurement, not an assumption —
+        <a href="/research/recovering-past-corruption-xz-bzip2/">we measured it per format</a>.</li>
+      <li class="no"><strong>A verified entry is verified against accidental damage.</strong>
+        CRC-32 is not a tamper-proof signature. For deliberate modification you need an independent
+        cryptographic witness, not the archive's own checksum.</li>
+      <li class="no"><strong>Formats beyond ZIP are experimental.</strong> PDF, SQLite, TAR/GZIP, 7z
+        and RAR handling exists and is measured, but it is not a stable commercial promise. The
+        <a href="/formats/">format reference</a> states the position for each one.</li>
+      <li><strong>Analysis is free and always will be.</strong> You can see the full verdict on your
+        archive before deciding whether the result is worth anything to you.</li>
+    </ul>
+    <div class="callout warn">
+      <strong>Before you try anything, on any tool:</strong> work on a copy. Keep the original file
+      untouched and unmodified somewhere safe. A repair that overwrites your only copy can turn a
+      recoverable archive into an unrecoverable one, and that is a far more common way to lose data
+      than the original damage. VERAQIS opens sources read-only for exactly this reason.
+    </div>
+  </div>
+</section>
+
+<!-- 7. PRIVACY -->
+<section>
+  <div class="wrap prose">
+    <h2 id="offline">Your files do not leave your machine</h2>
+    <p>Recovery runs locally. There is no upload step, no account, and no telemetry — not as a
+      setting you can turn on, but as an absence of the code that would do it.</p>
+    <p>This matters more than it sounds. A damaged archive is often the one containing something you
+      cannot replace and would rather not hand to a stranger: financial records, client work, legal
+      documents, photographs. Uploading it to a web repair service means giving an unknown operator a
+      copy of exactly that.</p>
+    <p class="mt-16"><a href="/guides/is-online-file-repair-safe/">Is online file repair safe? The
+      two questions worth asking →</a></p>
+    <p class="note">This page describes the desktop product. The website itself is fully static: it
+      runs no JavaScript, sets no cookies, and its Content-Security-Policy forbids it from contacting
+      any other host. See <a href="/security.html">the security model</a> and
+      <a href="/privacy.html">the privacy policy</a>.</p>
+  </div>
+</section>
+
+<!-- 8. FAQ -->
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Common questions</h2>
+    <div class="faq">
+      <div class="qa">
+        <h3>Can VERAQIS recover any corrupted ZIP file?</h3>
+        <p>No. Recovery depends entirely on what survived. If the bytes of a file are gone, no tool
+          can return them, and VERAQIS reports that region as lost rather than filling it in. What
+          VERAQIS does guarantee is the opposite direction: it does not report a file as recovered
+          unless the archive's own checksum confirms it.</p>
+      </div>
+      <div class="qa">
+        <h3>Are my files uploaded to a server?</h3>
+        <p>No. Analysis and recovery run on your own machine. The source archive is opened read-only
+          and never modified, and recovered output is written to a destination you choose.</p>
+      </div>
+      <div class="qa">
+        <h3>What does verified recovery mean?</h3>
+        <p>A file is only labelled verified when a check independent of the repair confirms it — for
+          a ZIP entry, the CRC-32 that was stored when the archive was created. A structural repair
+          does not make its own result true, so the checksum has the last word.</p>
+      </div>
+      <div class="qa">
+        <h3>Can VERAQIS open a password-protected or encrypted archive?</h3>
+        <p>Encrypted archives are detected and reported, and recovery stops there. VERAQIS does not
+          guess, derive or brute-force passwords, and it does not bypass encryption. The unencrypted
+          structure around an encrypted payload can still be repaired without touching the payload.</p>
+      </div>
+      <div class="qa">
+        <h3>Is VERAQIS Recovery available for Windows today?</h3>
+        <p>Not yet. VERAQIS Recovery for Windows is pending a signed store release and is not
+          publicly downloadable. No unsigned build is published. The Android archive inspector is
+          available now and is release-key signed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. CTA -->
+<section>
+  <div class="wrap">
+    <h2>Start with the diagnosis</h2>
+    <p class="sub">You do not need to install anything to make progress. Identify the error you are
+      seeing, and the guide will tell you what is recoverable before you commit to a tool.</p>
+    <div class="grid g3">
+      <a class="card link-card" href="/guides/central-directory-not-found/">
+        <h3>End of central directory not found</h3>
+        <p>The index is gone. Usually the most recoverable failure there is.</p>
+      </a>
+      <a class="card link-card" href="/guides/zip-crc-error/">
+        <h3>CRC failed, the file is corrupt</h3>
+        <p>One entry's verdict — not the archive's. The rest can still be proven.</p>
+      </a>
+      <a class="card link-card" href="/guides/zip-file-wont-open/">
+        <h3>The ZIP just will not open</h3>
+        <p>Five causes, most common first. Only one of them is corruption.</p>
+      </a>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="/download.html">Downloads &amp; release status</a>
+      <a class="btn ghost" href="/contact.html">Join the Windows beta</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

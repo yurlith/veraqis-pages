@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>Recovering past corruption in xz and bzip2 | VERAQIS</title>
@@ -197,6 +197,7 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
 <header>
   <div class="wrap">
     <nav aria-label="Main">
@@ -205,13 +206,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/" class="active">Research</a>
-        <a href="/reference/">Reference</a>
         <a href="/docs.html">Docs</a>
-        <a href="/desktop.html">Desktop</a>
-        <a href="/mobile.html">Mobile</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -258,7 +257,7 @@
     <div class="prose">
       <h2 id="measurement">Full measurement</h2>
       <p>Yield here means <em>recovered-useful ÷ recoverable-given-the-damage</em> — not a share of the original file. A truncated stream cannot yield bytes that were never written; the question is whether we get everything that survived. Each cell is 24 damage positions, and we gate on the <strong>lower</strong> bound of the 95% Wilson interval rather than the point estimate.</p>
-      <div class="table-scroll"><table><thead><tr><th>cell</th><th>yield (95% Wilson LB)</th><th>false bytes</th><th>limiting factor</th></tr></thead><tbody><tr><td>bzip2, truncation</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — reaches the safe optimum</td></tr><tr><td>bzip2, mid-stream corruption</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — full resync</td></tr><tr><td>xz, mid-stream (CRC-32 and CRC-64)</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — the Index survives, so resync is exact</td></tr><tr><td>xz, truncation (<code>-T0</code> / seekable)</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — Index-free forward block-header walk</td></tr><tr><td>zstd, truncation · <code>xz -T1</code>, truncation</td><td>—</td><td><strong>0</strong></td><td>decoder — block sizes are absent, so bounds cannot be established without decoding</td></tr><tr><td>lz4 · zstd, mid-stream</td><td>—</td><td><strong>0</strong></td><td>fundamental — LZ-coupled, no independent per-block verifier exists</td></tr></tbody></table></div><p class="note">N = 24 damage positions per cell. <code>false_recovered_bytes</code> is a hard gate at 0, and it holds by construction: a block is emitted only after its own check value verifies.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">cell</th><th scope="col">yield (95% Wilson LB)</th><th scope="col">false bytes</th><th scope="col">limiting factor</th></tr></thead><tbody><tr><td>bzip2, truncation</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — reaches the safe optimum</td></tr><tr><td>bzip2, mid-stream corruption</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — full resync</td></tr><tr><td>xz, mid-stream (CRC-32 and CRC-64)</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — the Index survives, so resync is exact</td></tr><tr><td>xz, truncation (<code>-T0</code> / seekable)</td><td>1.000 (1.000)</td><td><strong>0</strong></td><td>none — Index-free forward block-header walk</td></tr><tr><td>zstd, truncation · <code>xz -T1</code>, truncation</td><td>—</td><td><strong>0</strong></td><td>decoder — block sizes are absent, so bounds cannot be established without decoding</td></tr><tr><td>lz4 · zstd, mid-stream</td><td>—</td><td><strong>0</strong></td><td>fundamental — LZ-coupled, no independent per-block verifier exists</td></tr></tbody></table></div><p class="note">N = 24 damage positions per cell. <code>false_recovered_bytes</code> is a hard gate at 0, and it holds by construction: a block is emitted only after its own check value verifies.</p>
       <figure class="chart">
 <svg viewBox="0 0 720 220" width="100%" height="auto" role="img" aria-labelledby="ct-ehln4s" preserveAspectRatio="xMinYMin meet"><title id="ct-ehln4s">Salvage yield by format and damage class</title><desc>Yield with the 95% Wilson lower bound, per cell. The four block-verified cells reach the safe optimum; the abstention cells are shown at zero because emitting anything there would be unproven.</desc><text x="0" y="28" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">bzip2 trunc</text><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="15" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="28" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="62" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">bzip2 mid</text><rect x="150" y="49" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="49" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="62" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="96" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">xz mid</text><rect x="150" y="83" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="83" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="96" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="130" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">xz trunc (-T0)</text><rect x="150" y="117" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="117" width="474" height="16" rx="3" fill="var(--recovery-accent)" opacity="0.82"/><text x="634" y="130" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1.000</text><text x="0" y="164" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">zstd trunc</text><rect x="150" y="151" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="151" width="2" height="16" rx="3" fill="var(--brand-primary)" opacity="1"/><text x="634" y="164" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">abstain</text><text x="0" y="198" font-size="13" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">lz4 / zstd mid</text><rect x="150" y="185" width="474" height="16" rx="3" fill="var(--bg2)"/><rect x="150" y="185" width="2" height="16" rx="3" fill="var(--brand-primary)" opacity="1"/><text x="634" y="198" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">abstain</text></svg>
 <figcaption>Yield with the 95% Wilson lower bound, per cell. The four block-verified cells reach the safe optimum; the abstention cells are shown at zero because emitting anything there would be unproven.</figcaption>
@@ -364,34 +363,44 @@ Engine: VERAQIS 0.2.1 · Measured: 18 July 2026 · Experiment: EXP-PDS</pre></di
     <div class="cols">
       <div>
         <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
       <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/desktop.html">VERAQIS Recovery</a>
-        <a href="/mobile.html">VERAQIS Archiver</a>
-        <a href="/download.html">Download</a>
-        <a href="/coldpass.html">ColdPass (archived project)</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
-        <div class="colhead">Trust</div>
-        <a href="/testing.html">Test Record</a>
-        <a href="/security.html">Security</a>
-        <a href="/reports.html">Reports &amp; Verification</a>
-        <a href="/changelog.html">Changelog</a>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
       this site is fully static and makes no network requests.
       <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Documentation — recovery commands and concepts | VERAQIS</title>
 <meta name="description" content="VERAQIS Recovery documentation: safe workflow, CLI commands, supported formats, recovery modes, reports, verification and the current v0.2.1 limits." />
@@ -124,23 +124,23 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
+
 <header>
   <div class="wrap">
-    <nav>
-      <a class="brand" href="index.html">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
         <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         VERAQIS
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="docs.html">Docs</a>
-        <a href="desktop.html">Desktop</a>
-        <a href="mobile.html">Mobile</a>
-        <a href="download.html">Download</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
       </div>
     </nav>
   </div>
@@ -150,7 +150,7 @@
 
 <div class="page-head">
   <div class="wrap">
-    <div class="crumb"><a href="index.html">VERAQIS</a> / Documentation</div>
+    <div class="crumb"><a href="/">VERAQIS</a> / Documentation</div>
     <h1>Documentation</h1>
     <p class="lead">Installation, commands, supported formats, safety rules and verification
       references for <span class="mono">v0.2.1 beta</span>.</p>
@@ -159,18 +159,18 @@
 
 <section>
   <div class="wrap">
-    <div class="callout warn" style="margin-top:0">
+    <div class="callout warn mt-0">
       <strong>Public Windows and Linux Recovery packages are currently unavailable.</strong> The commands
       below document the current <span class="mono">v0.2.1</span> command surface and are intended for
       reviewed development builds until clean public packages return. The signed
       <a href="mobile.html">Android Archiver</a> is the only public download today; it focuses on safe
       inspection and extraction, not the desktop CLI recovery commands.
     </div>
-    <h2 style="margin-top:26px">Recovery command reference</h2>
+    <h2 class="mt-26">Recovery command reference</h2>
     <p class="sub">Always analyze before recovery. These commands describe the development-build CLI
       surface; they are not an install path for a package you can download today.</p>
     <div class="terminal">
-      <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+      <div class="bar"><i></i><i></i><i></i></div>
 <pre><span class="c"># audit first — read-only, never changes the source</span>
 <span class="p">veraqis</span> analyze damaged.zip <span class="a">--format</span> json
 
@@ -188,9 +188,9 @@
     <h2>The <code>VERAQIS</code> command surface</h2>
     <p class="sub">Recovery is opt-in and gated by default. <code>analyze</code> is the permanently-free,
       read-only auditor.</p>
-    <div class="card" style="padding:6px 6px 2px">
+    <div class="card">
     <div class="table-scroll"><table>
-      <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+      <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
       <tbody>
         <tr><td class="f">veraqis analyze &lt;file&gt;</td><td>Read-only audit. Use <code>--format json|md|html</code>; use <code>--recursive</code> for nested containers.</td></tr>
         <tr><td class="f">veraqis verify &lt;file&gt;</td><td>Human "is it healthy?" check.</td></tr>
@@ -208,7 +208,7 @@
       </tbody>
     </table></div>
     </div>
-    <p class="note" style="margin-top:14px">Optional modes are never enabled silently. Semantic
+    <p class="note mt-14">Optional modes are never enabled silently. Semantic
       recovery, salvage, reconciliation and exact-copy reconstruction require their explicit flags.</p>
   </div>
 </section>
@@ -217,11 +217,11 @@
   <div class="wrap">
     <h2>Concepts</h2>
     <div class="grid g3">
-      <a class="card link-card" href="reports.html"><h3 style="font-size:17px">Evidence model</h3><p>Two
+      <a class="card link-card" href="reports.html"><h3 class="fs-17">Evidence model</h3><p>Two
         orthogonal axes; the tautology rule; why <code>false_recovered_bytes = 0</code> is a hard gate.</p></a>
-      <a class="card link-card" href="desktop.html"><h3 style="font-size:17px">Formats &amp; scope</h3><p>Exactly
+      <a class="card link-card" href="desktop.html"><h3 class="fs-17">Formats &amp; scope</h3><p>Exactly
         what is recoverable per format — including measured NO-GO cases.</p></a>
-      <a class="card link-card" href="security.html"><h3 style="font-size:17px">Safety model</h3><p>Read-only
+      <a class="card link-card" href="security.html"><h3 class="fs-17">Safety model</h3><p>Read-only
         source, sandboxing, encryption → abstain, no telemetry.</p></a>
     </div>
   </div>
@@ -239,7 +239,7 @@
       <div class="card"><div class="ic">03</div><h3>Recover separately</h3><p>Choose a new output directory.
         Review the manifest and keep the original until the result has been independently checked.</p></div>
     </div>
-    <div class="callout warn" style="margin-top:18px"><strong>Encryption is not bypassed.</strong>
+    <div class="callout warn mt-18"><strong>Encryption is not bypassed.</strong>
       Unknown passwords, unsupported encryption and encrypted formats outside the narrowly supported
       user-supplied traditional-ZIP opening path are detected and refused.</div>
   </div>
@@ -250,9 +250,9 @@
     <h2>Recovery modes</h2>
     <p class="sub">Higher-trust methods run first. A mode emits only what its verifier can support;
       otherwise it reports an unknown region.</p>
-    <div class="card" style="padding:6px 6px 2px">
+    <div class="card">
     <div class="table-scroll"><table>
-      <thead><tr><th>Mode</th><th>Enable it</th><th>Output and proof</th><th>Main limits</th></tr></thead>
+      <thead><tr><th scope="col">Mode</th><th scope="col">Enable it</th><th scope="col">Output and proof</th><th scope="col">Main limits</th></tr></thead>
       <tbody>
         <tr><td><strong>Structural recovery</strong></td><td>default <code>recover</code></td><td>Format-aware structural bytes with checksum or parser confirmation.</td><td>Abstains when surviving structure cannot prove a repair.</td></tr>
         <tr><td><strong>Semantic recovery</strong></td><td><code>--semantic sqlite|opc|pdf|7z|rar</code></td><td>Verified rows, parts, objects or inventory with provenance.</td><td>Partial output is labelled partial; unproven objects are not promoted to verified.</td></tr>
@@ -271,9 +271,9 @@
     <h2>Formats and current limits</h2>
     <p class="sub">Support is damage-dependent. A listed format is not a promise that every damaged
       file can be recovered.</p>
-    <div class="card" style="padding:6px 6px 2px">
+    <div class="card">
     <div class="table-scroll"><table>
-      <thead><tr><th>Format</th><th>Current verified surface</th><th>Important limitation</th></tr></thead>
+      <thead><tr><th scope="col">Format</th><th scope="col">Current verified surface</th><th scope="col">Important limitation</th></tr></thead>
       <tbody>
         <tr><td class="f">ZIP / JAR / APK</td><td>Structural repair, safe extraction and duplicate-field reconciliation.</td><td>Encrypted input is refused unless it is a supported traditional ZIP opened with the password supplied for that operation.</td></tr>
         <tr><td class="f">DOCX / XLSX / PPTX</td><td>CRC-verified parts plus content-type and relationship-graph checks.</td><td>Missing application content is not invented merely to make a document open.</td></tr>
@@ -302,15 +302,15 @@
       <div class="card"><h3>Proof certificate</h3><p>Certificate-enabled recovery paths can be checked
         by <code>phx-verify-cert</code>, a separately built verifier that does not depend on the recovery solver.</p></div>
     </div>
-    <div class="terminal" style="margin-top:18px">
-      <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+    <div class="terminal mt-18">
+      <div class="bar"><i></i><i></i><i></i></div>
 <pre><span class="c"># produce a self-contained HTML analysis report</span>
 <span class="p">veraqis</span> report damaged.zip <span class="a">--format</span> html <span class="a">--output</span> report.html
 
 <span class="c"># source-built standalone certificate check</span>
 <span class="p">phx-verify-cert</span> cert.json <span class="a">--against</span> damaged.bin <span class="a">--recovered</span> recovered.bin</pre>
     </div>
-    <p class="note" style="margin-top:14px">Without the original ground truth, VERAQIS reports the
+    <p class="note mt-14">Without the original ground truth, VERAQIS reports the
       evidence bound and certificate result. It does not claim measured correctness in the field.</p>
   </div>
 </section>
@@ -321,11 +321,11 @@
     <p class="sub">Product source and development repositories are private. The only public download is
       the signed Android Archiver; verify it before installing.</p>
     <div class="terminal">
-      <div class="bar"><i style="background:#ff5f56"></i><i style="background:#ffbd2e"></i><i style="background:#27c93f"></i></div>
+      <div class="bar"><i></i><i></i><i></i></div>
 <pre><span class="c"># verify the published Android APK before installing</span>
 <span class="p">CertUtil</span> -hashfile VERAQIS-Archiver-Android-1.7.0-rc1.apk SHA256</pre>
     </div>
-    <div class="callout info" style="margin-top:18px"><strong>Future public installation:</strong> clean
+    <div class="callout info mt-18"><strong>Future public installation:</strong> clean
       Windows and Linux Recovery packages will return only after fresh builds, functional tests,
       release-content inspection and signing review. Every current Recovery capability is free during
       public beta; the offline entitlement implementation remains in the source for later development,
@@ -362,22 +362,26 @@
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
             <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="desktop.html">VERAQIS Recovery</a>
-        <a href="download.html">VERAQIS Recovery CLI</a>
-        <a href="mobile.html">VERAQIS Archiver</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
         <div class="colhead">Trust</div>
@@ -387,14 +391,13 @@
       </div>
       <div>
         <div class="colhead">Company</div>
-        <a href="about.html">About VERAQIS</a>
-        <a href="contact.html">Contact / Support</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Use</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
   </div>
 </footer>

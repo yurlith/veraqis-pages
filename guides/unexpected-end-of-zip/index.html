@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>Unexpected end of archive — what a truncated file keeps | VERAQIS</title>
@@ -163,6 +163,7 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
 <header>
   <div class="wrap">
     <nav aria-label="Main">
@@ -171,13 +172,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/" class="active">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
         <a href="/docs.html">Docs</a>
-        <a href="/desktop.html">Desktop</a>
-        <a href="/mobile.html">Mobile</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -222,7 +221,7 @@ unzip:      End-of-central-directory signature not found</pre></div>
       <div class="callout info">The practical consequence: <strong>the error you see describes the missing bookkeeping, not the missing data.</strong> Reading that error as "the archive is destroyed" is the single most expensive misreading in this whole area.</div>
       <h2 id="measured">What survives, measured</h2>
       <p>Three separate measurements, each labelled with the format it was actually run on. Do not carry a number from one row to another — the formats behave differently.</p>
-      <div class="table-scroll"><table><thead><tr><th>format</th><th>damage</th><th>stock tool</th><th>recovered with proof</th></tr></thead><tbody><tr><td><strong>ZIP</strong></td><td>end-of-central-directory truncated away</td><td>Python <code>zipfile</code> and PowerShell <code>Expand-Archive</code>: <strong>0 files</strong>; libarchive listed 6 members but did not extract</td><td><strong>336,414 bytes, 0 lost</strong> — index rebuilt from local headers, each member CRC-verified</td></tr><tr><td><strong>TAR</strong></td><td>premature zero block before the remaining members</td><td>Python <code>tarfile</code>: <code>ReadError: end of file header</code>; libarchive listed <strong>0 members</strong></td><td><strong>2,594,816 bytes recovered, 16,384 lost</strong> — size resync plus continuation salvage</td></tr><tr><td><strong>GZIP</strong></td><td>truncation, 48 cases</td><td>modelled stock baseline: emitted 0 bytes, <strong>862 recoverable bytes missed</strong></td><td><strong>862 bytes, all verified</strong>, precision 1.000 (95% CI 0.996–1.000), 0 false bytes</td></tr></tbody></table></div><p class="note">ZIP and TAR rows: local demonstrator benchmark 2026-07-04 (Python 3.12.13, bsdtar 3.8.4 / libarchive 3.8.4) — single archives, so read the pattern rather than the byte count. GZIP row: PCRB scorecard, N = 48, a corpus measurement with ground truth.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">format</th><th scope="col">damage</th><th scope="col">stock tool</th><th scope="col">recovered with proof</th></tr></thead><tbody><tr><td><strong>ZIP</strong></td><td>end-of-central-directory truncated away</td><td>Python <code>zipfile</code> and PowerShell <code>Expand-Archive</code>: <strong>0 files</strong>; libarchive listed 6 members but did not extract</td><td><strong>336,414 bytes, 0 lost</strong> — index rebuilt from local headers, each member CRC-verified</td></tr><tr><td><strong>TAR</strong></td><td>premature zero block before the remaining members</td><td>Python <code>tarfile</code>: <code>ReadError: end of file header</code>; libarchive listed <strong>0 members</strong></td><td><strong>2,594,816 bytes recovered, 16,384 lost</strong> — size resync plus continuation salvage</td></tr><tr><td><strong>GZIP</strong></td><td>truncation, 48 cases</td><td>modelled stock baseline: emitted 0 bytes, <strong>862 recoverable bytes missed</strong></td><td><strong>862 bytes, all verified</strong>, precision 1.000 (95% CI 0.996–1.000), 0 false bytes</td></tr></tbody></table></div><p class="note">ZIP and TAR rows: local demonstrator benchmark 2026-07-04 (Python 3.12.13, bsdtar 3.8.4 / libarchive 3.8.4) — single archives, so read the pattern rather than the byte count. GZIP row: PCRB scorecard, N = 48, a corpus measurement with ground truth.</p>
       <div class="claim" id="claim-truncation"><p class="claim-text">Truncation destroys the bookkeeping, not the data before the cut. Across three formats the stock tools returned nothing usable from truncated inputs, while the same inputs yielded 336,414 bytes (ZIP), 2,594,816 of 2,611,200 bytes (TAR) and 862 verified bytes across 48 GZIP cases at precision 1.000 with zero false bytes.</p><p class="claim-src">Local demonstrator benchmark 2026-07-04 (ZIP, TAR) + PCRB scorecard truncation (GZIP), N = 48 · VERAQIS 0.2.1</p></div>
       <p>The TAR row is the honest one to look at: 16,384 bytes <strong>were</strong> lost, and the report says so. Recovery reporting that never mentions loss is not reporting.</p>
     </div>
@@ -268,6 +267,7 @@ phx recover truncated.zip --output recovered/</pre></div>
   <div class="wrap">
     <h2 id="related">Related</h2>
     <div class="grid g3">
+      <a class="card link-card" href="/tools/zip-checker/"><h3>Check your own archive</h3><p>A browser-based integrity check that reads the file locally and never uploads it.</p></a>
       <a class="card link-card" href="/guides/central-directory-not-found/"><h3>When the index is what is missing</h3><p>The most common consequence of truncation, and what it costs.</p></a>
       <a class="card link-card" href="/research/recovering-past-corruption-xz-bzip2/"><h3>Truncated xz and bzip2</h3><p>Where per-block checksums exist, truncation recovery reaches the safe optimum.</p></a>
       <a class="card link-card" href="/formats/zip/"><h3>ZIP failure modes</h3><p>All seven, with what is provably recoverable from each.</p></a>
@@ -295,34 +295,44 @@ phx recover truncated.zip --output recovered/</pre></div>
     <div class="cols">
       <div>
         <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
       <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/desktop.html">VERAQIS Recovery</a>
-        <a href="/mobile.html">VERAQIS Archiver</a>
-        <a href="/download.html">Download</a>
-        <a href="/coldpass.html">ColdPass (archived project)</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
-        <div class="colhead">Trust</div>
-        <a href="/testing.html">Test Record</a>
-        <a href="/security.html">Security</a>
-        <a href="/reports.html">Reports &amp; Verification</a>
-        <a href="/changelog.html">Changelog</a>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
       this site is fully static and makes no network requests.
       <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>

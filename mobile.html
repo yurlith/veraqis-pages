@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>VERAQIS Archiver for Android — scan a ZIP before extracting</title>
 <meta name="description" content="Scan an archive before you open it, then list and extract safe entries into a folder you choose. Honest verdicts, offline, no telemetry. Signed Android beta." />
@@ -146,23 +146,23 @@
 </head>
 <body>
 
+<a class="skip-link" href="#content">Skip to main content</a>
+
 <header>
   <div class="wrap">
-    <nav>
-      <a class="brand" href="index.html">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
         <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         VERAQIS
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
-        <a href="/formats/">Formats</a>
         <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="docs.html">Docs</a>
-        <a href="desktop.html">Desktop</a>
-        <a href="mobile.html">Mobile</a>
-        <a href="download.html">Download</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
       </div>
     </nav>
   </div>
@@ -172,20 +172,24 @@
 
 <div class="page-head">
   <div class="wrap">
-    <div class="crumb"><a href="index.html">VERAQIS</a> / Products / Mobile</div>
+    <div class="crumb"><a href="/">VERAQIS</a> / Products / Mobile</div>
     <h1>VERAQIS Archiver for Android</h1>
     <p class="lead">Check an archive on your phone <em>before</em> you open it. List and extract only
       what is safe, into a folder you choose — and get an honest verdict on everything else.</p>
-    <p class="note" style="margin-top:14px">Android · 7 languages · offline · no telemetry · beta</p>
-    <div class="cta" style="margin-top:22px">
+    <p class="note mt-14">Android · 7 languages · offline · no telemetry · beta</p>
+    <div class="cta mt-22">
       <a class="btn primary" href="downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk" download>Download signed APK</a>
       <a class="btn ghost" href="downloads/SHA256SUMS.txt" download>Verify SHA-256</a>
     </div>
-    <p class="note" style="margin-top:14px">Free during beta and after release; no account,
+    <p class="note mt-14">Free during beta and after release; no account,
       payment or license file is required.</p>
-    <p class="note" style="margin-top:8px">Distributed as a directly verifiable signed APK during
+    <p class="note mt-8">Distributed as a directly verifiable signed APK during
       beta for sideload testing. A Google Play listing is planned after internal testing, Play App
       Signing and permissions review.</p>
+    <p class="note mt-8">The Android app inspects and extracts safely; it does not perform deep
+      recovery. If your archive is already damaged, start with
+      <a href="/recovery.html">verified ZIP recovery</a> or the guide for
+      <a href="/guides/zip-file-wont-open/">a ZIP that will not open</a>.</p>
   </div>
 </div>
 
@@ -201,7 +205,7 @@
         Unsupported — before any content is opened. You decide with the facts in front of you.</p>
         <p class="note"><strong>“Safe” means structurally safe to extract.</strong> File contents were
           not checked for malware — VERAQIS Archiver is a structural safety inspector, not an antivirus.</p>
-        <figure class="evidence-shot" style="max-width:320px;margin:18px auto 0">
+        <figure class="evidence-shot mw-320">
           <img src="assets/mobile-safety-scan.png" width="320" height="640"
             alt="VERAQIS Archiver showing a suspicious archive verdict and the risk found" loading="lazy"  decoding="async" />
           <figcaption>Current Android beta: the scan reports the verdict and the reason behind it.</figcaption>
@@ -221,7 +225,7 @@
         <div class="ic">OUT</div><h3>Writes only where you choose</h3>
         <p>Output is written into the target folder you select through Android's system picker.
         VERAQIS Archiver doesn't roam your storage.</p>
-        <figure class="evidence-shot" style="max-width:320px;margin:18px auto 0">
+        <figure class="evidence-shot mw-320">
           <img src="assets/mobile-folder-picker.png" width="320" height="640"
             alt="Android system folder picker opened by VERAQIS Archiver" loading="lazy"  decoding="async" />
           <figcaption>The operating system asks you to choose and approve the destination.</figcaption>
@@ -236,7 +240,7 @@
     <h2>Honest handling of hard cases</h2>
     <p class="sub">Mobile follows the same rule as the rest of VERAQIS: report the truth, never fake a
       result.</p>
-    <ul class="checks" style="max-width:760px">
+    <ul class="checks mw-760">
       <li><strong>Encrypted archives</strong> are detected and reported as encrypted — VERAQIS never
         decrypts, recovers passwords, or bypasses restrictions.</li>
       <li><strong>Unsupported formats</strong> are detected and reported honestly rather than
@@ -268,7 +272,7 @@
       <span class="chip">العربية <span class="x">RTL</span></span>
       <span class="chip">Português</span>
     </div>
-    <p class="note" style="margin-top:16px">Translations are reviewed for key parity and placeholder
+    <p class="note mt-16">Translations are reviewed for key parity and placeholder
       safety; native-speaker polish is ongoing during beta.</p>
   </div>
 </section>
@@ -305,11 +309,11 @@
       facade — never directly to the low-level engine. This keeps every safety decision in one
       audited place, and is enforced by an architecture test in the build.</p>
     <div class="grid g3">
-      <div class="card"><h3 style="font-size:17px">One seam</h3><p>Scan, list, extract, verify, report
+      <div class="card"><h3 class="fs-17">One seam</h3><p>Scan, list, extract, verify, report
         and license all flow through the <code>VERAQIS Archiver Facade API</code> (schema v1).</p></div>
-      <div class="card"><h3 style="font-size:17px">Pure core</h3><p>The safety logic is a plain
+      <div class="card"><h3 class="fs-17">Pure core</h3><p>The safety logic is a plain
         Kotlin/JVM module with no Android dependencies, adapted to the phone at the edges only.</p></div>
-      <div class="card"><h3 style="font-size:17px">No native blobs</h3><p>No JNI/NDK and no copied-in
+      <div class="card"><h3 class="fs-17">No native blobs</h3><p>No JNI/NDK and no copied-in
         engine internals — the mobile app is its own clean implementation of the safety surface.</p></div>
     </div>
     <div class="cta">
@@ -324,40 +328,45 @@
   <div class="wrap">
     <div class="cols">
       <div>
-        <a class="brand" href="index.html"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
-        <p class="note" style="margin-top:10px">Proof-first safety tools.</p>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
       </div>
             <div>
-        <div class="colhead">Knowledge</div>
-        <a href="/guides/">Guides</a>
-        <a href="/formats/">File formats</a>
-        <a href="/research/">Research</a>
-        <a href="/reference/">Reference</a>
-        <a href="/reference/glossary/">Glossary</a>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="desktop.html">VERAQIS Recovery</a>
-        <a href="download.html">VERAQIS Recovery CLI</a>
-        <a href="mobile.html">VERAQIS Archiver</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
       </div>
       <div>
-        <div class="colhead">Trust</div>
-        <a href="testing.html">Test Record</a>
-        <a href="security.html">Security</a>
-        <a href="reports.html">Reports &amp; Verification</a>
-        <a href="changelog.html">Changelog</a>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
       </div>
       <div>
         <div class="colhead">Company</div>
-        <a href="about.html">About VERAQIS</a>
-        <a href="contact.html">Contact / Support</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="privacy.html">Privacy Policy</a>
-        <a href="terms.html">Terms of Use</a>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
       </div>
     </div>
-    <hr style="margin:28px 0 18px">
+    <hr>
     <p class="note">© 2026 VERAQIS · <span class="mono">Site v0.2.1 · App v1.7.0-rc1</span></p>
   </div>
 </footer>
