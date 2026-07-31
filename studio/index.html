@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>VERAQIS Studio — private archive analysis in your browser</title>
+<meta name="description" content="A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports." />
+<link rel="canonical" href="https://veraqis.tech/studio/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="#1b1233" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="VERAQIS Local Recovery Studio" />
+<meta property="og:description" content="A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="VERAQIS Local Recovery Studio" />
+<meta property="og:url" content="https://veraqis.tech/studio/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="VERAQIS Local Recovery Studio" />
+<meta name="twitter:description" content="A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/studio/#webpage",
+      "url": "https://veraqis.tech/studio/",
+      "name": "VERAQIS Studio — private archive analysis in your browser",
+      "description": "A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "dateModified": "2026-07-30",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/studio/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Studio",
+          "item": "https://veraqis.tech/studio/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / Studio</div>
+    <h1>VERAQIS Local Recovery Studio</h1>
+    <p class="lead">A workspace for examining damaged archives that runs entirely in your browser. Nothing is uploaded, no account is needed, and the file you select is never modified.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="callout ok">
+      <strong>Your files stay on this device.</strong> Studio has no server, no account and no
+      upload step. Archives are read in this browser tab, the original file is never modified, and
+      nothing is saved unless you explicitly ask for it.
+      <a href="/studio/#privacy">How that is enforced</a>.
+    </div>
+    <noscript><div class="callout warn">
+      <strong>The interactive workspace needs JavaScript.</strong> Everything described on this
+      page — what Studio does, its limits, and how local processing is enforced — is static text
+      and stays readable without it. The controls below will not respond.
+    </div></noscript>
+
+    <div id="studio-root" data-view="home">
+      <div class="st-bar" role="group" aria-label="Studio status">
+        <span class="st-bar-item">Engine: <span id="studio-worker-status">not started</span></span>
+        <span class="st-bar-item">Storage: <span id="studio-storage-status">nothing saved</span></span>
+      </div>
+
+      <div class="cta cta-start">
+        <a class="btn primary" href="/studio/new/">Analyze a local archive</a>
+        <a class="btn ghost" href="/studio/reports/">Open a report or project</a>
+        <a class="btn ghost" href="/studio/settings/">Settings</a>
+      </div>
+
+      <h2>Saved projects on this device</h2>
+      <p class="note" id="studio-empty-state" hidden>No saved projects yet. A project is only stored
+        when you choose <em>Save project on this device</em> after an analysis.</p>
+      <div id="studio-project-list" hidden></div>
+
+      <h2>What this browser can do</h2>
+      <div id="studio-capabilities" class="st-caps"></div>
+    </div>
+    <div id="studio-error" class="callout warn" role="alert" hidden></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap prose">
+    <h2 id="what">What Studio does</h2>
+    <p>Studio is the workspace form of the <a href="/tools/zip-checker/">ZIP integrity check</a>.
+      The quick checker answers one question about one file. Studio keeps the result as a project you
+      can name, save, export, re-open and compare — still without a server.</p>
+    <ul>
+      <li><strong>Analyse</strong> a ZIP archive: end-of-central-directory record, central directory,
+        local file headers, entry boundaries, overlaps, truncation and per-entry CRC-32.</li>
+      <li><strong>Classify</strong> every entry as verified, structurally valid, potentially
+        recoverable, damaged or unknown — each with the reason that produced it.</li>
+      <li><strong>Keep</strong> the result as a local project, if you ask for it.</li>
+      <li><strong>Export</strong> a machine-readable JSON report, a standalone HTML report, or the
+        whole project as a portable file.</li>
+      <li><strong>Re-open</strong> a report later, on any machine, without the original archive.</li>
+    </ul>
+
+    <h2 id="privacy">How local processing is enforced</h2>
+    <p>"Nothing is uploaded" is a claim worth checking rather than trusting. Four things make it true
+      here, and you can verify each yourself:</p>
+    <ul>
+      <li><strong>There is no server.</strong> The site is static files. No endpoint exists that
+        could receive an archive.</li>
+      <li><strong>The browser blocks it.</strong> This page ships
+        <code>default-src 'none'</code> with <code>connect-src 'self'</code>: no third-party origin
+        can be contacted at all, and the browser enforces that, not us.</li>
+      <li><strong>The analysis code contains no network call.</strong> No <code>fetch</code>, no
+        <code>XMLHttpRequest</code>, no <code>WebSocket</code>, no <code>sendBeacon</code>. An
+        automated test asserts their absence on every run.</li>
+      <li><strong>Nothing persists by default.</strong> An ordinary analysis lives in memory and is
+        gone when you reload. Saving is a separate, explicit action.</li>
+    </ul>
+    <p>Open your browser's developer tools, switch to the Network tab, and analyse a file. The only
+      request is Studio loading its own worker script.</p>
+
+    <h2 id="evidence">What the statuses mean</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Status</th><th scope="col">Meaning</th><th scope="col">What established it</th></tr></thead>
+        <tbody>
+          <tr><td class="f">Verified</td><td>These are the original bytes.</td>
+            <td>The entry was read, decompressed if needed, and the recomputed CRC-32 matched the stored value.</td></tr>
+          <tr><td class="f">Structurally valid</td><td>Consistent, but contents unproven.</td>
+            <td>Headers agree and the data lies inside the file, but the CRC could not be recomputed.</td></tr>
+          <tr><td class="f">Potentially recoverable</td><td>Data was found that <em>may</em> be recoverable.</td>
+            <td>A local header and a plausible data range exist; the index does not describe the entry and its content is unproven.</td></tr>
+          <tr><td class="f">Damaged</td><td>A contradiction was confirmed.</td>
+            <td>A CRC mismatch, a range past the end of the file, or fields that disagree.</td></tr>
+          <tr><td class="f">Unknown</td><td>Not enough evidence either way.</td>
+            <td>Encrypted, an undecodable codec, or the analysis was stopped.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>These are <em>evidence</em> statuses. When extraction arrives, it will carry a separate
+      operation status, so an extracted entry never silently becomes a verified one.</p>
+
+    <h2 id="limits">What Studio does not do</h2>
+    <ul class="checks">
+      <li class="no"><strong>It does not extract, repair or rewrite anything.</strong> This release
+        analyses. Verified extraction and rebuilt archives are later phases, each gated on its own
+        measured benchmark.</li>
+      <li class="no"><strong>It never modifies your file.</strong> The archive is opened read-only by
+        the browser; Studio has no write path to it at all.</li>
+      <li class="no"><strong>Encrypted entries stay unknown.</strong> Encryption is detected and
+        reported. Nothing guesses, derives or requests a password.</li>
+      <li class="no"><strong>Only Stored and Deflate get a checksum check.</strong> BZIP2, LZMA,
+        Zstandard and PPMd entries are described structurally and reported unverified — never
+        assumed intact.</li>
+      <li class="no"><strong>Nested archives are detected, not opened.</strong> Recursive expansion
+        is never automatic.</li>
+      <li class="no"><strong>A matching CRC-32 is not a signature.</strong> It is strong evidence
+        against accidental damage and none at all against deliberate modification —
+        <a href="/research/crc32-collisions-that-pass-gzip-t/">we built the collisions that prove it</a>.</li>
+      <li><strong>It works offline</strong> once the page has loaded, because there was never a
+        server in the loop.</li>
+    </ul>
+
+    <h2 id="browsers">Browser support</h2>
+    <p>Studio needs module Web Workers and, for compressed entries,
+      <code>DecompressionStream('deflate-raw')</code>. Current Chrome, Edge, Firefox and Safari all
+      provide them. Saving projects needs IndexedDB; offline use needs Service Workers. Where a
+      feature is missing, Studio disables that control and says why — it never reports an unverified
+      entry as verified because a checksum could not be computed.</p>
+    <p>The File System Access API is <strong>not</strong> required: Firefox does not implement it, so
+      exports fall back to ordinary downloads and no capability is lost.</p>
+
+    <h2 id="next">Related</h2>
+    <ul>
+      <li><a href="/tools/zip-checker/">Quick ZIP integrity check</a> — one file, one answer.</li>
+      <li><a href="/recovery.html">How verified recovery works</a> — what can be proven, and what cannot.</li>
+      <li><a href="/reference/evidence-model/">The evidence model</a> — what counts as proof.</li>
+      <li><a href="/guides/central-directory-not-found/">End of central directory not found</a> ·
+          <a href="/guides/zip-crc-error/">CRC failed</a></li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/studio/">Local Recovery Studio</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+<script src="/assets/studio/app.js" type="module"></script>
+<script src="/assets/studio/register-sw.js" type="module"></script>
+</body>
+</html>

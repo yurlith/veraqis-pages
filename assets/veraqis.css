@@ -402,6 +402,36 @@ main>article{display:block}
   border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--mut);
   background:var(--panel);min-height:28px}
 
+/* ── /studio/ — the local Recovery Studio application shell ───────────────── */
+.st-bar{display:flex;flex-wrap:wrap;gap:8px 18px;padding:10px 14px;margin:0 0 22px;
+  border:1px solid var(--line);border-radius:8px;background:var(--panel);
+  font-family:var(--mono);font-size:12.5px;color:var(--mut)}
+.st-bar-item{white-space:nowrap}
+.st-caps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:16px 0}
+.st-cap{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:14px}
+.st-cap-label{display:block;margin-top:8px;font-size:14.5px;color:var(--ink);font-weight:600}
+.st-cap .note{margin:6px 0 0}
+.st-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0 4px}
+.st-search{flex:1;min-width:200px;max-width:420px;font:inherit;font-size:14.5px;
+  padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.st-pager{display:flex;align-items:center;gap:10px;margin:14px 0}
+.st-sm{font-size:13px;padding:6px 12px;min-height:32px}
+.st-err-msg{font-weight:600;color:var(--ink);margin:0 0 6px}
+.st-err-detail{margin-top:10px}
+.st-err-detail summary{cursor:pointer;font-size:13.5px;color:var(--mut)}
+.st-err-detail pre{margin-top:8px;font-size:12.5px}
+/* The update prompt never steals focus and never covers the primary action. */
+.st-update{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:50;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;max-width:min(560px,calc(100vw - 32px));
+  padding:12px 16px;border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  box-shadow:0 10px 30px rgba(20,34,30,.18);font-size:14px;color:var(--ink)}
+@media(max-width:520px){.st-update{left:16px;right:16px;transform:none;max-width:none}}
+#studio-settings-form label{font-size:14.5px;color:var(--ink)}
+#studio-settings-form input[type="number"],#studio-settings-form select{
+  font:inherit;font-size:14.5px;padding:6px 10px;border:1px solid var(--line);
+  border-radius:6px;background:var(--panel);color:var(--ink);margin-left:8px}
+#studio-settings-form h2{margin-top:30px}
+
 /* definition entries */
 .term{border-top:1px solid var(--line);padding:16px 0;scroll-margin-top:20px}
 .term:first-of-type{border-top:0}

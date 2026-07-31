@@ -1,0 +1,22 @@
+{
+  "name": "VERAQIS Local Recovery Studio",
+  "short_name": "VERAQIS Studio",
+  "description": "Private archive analysis in your browser. No upload, no account, no server.",
+  "start_url": "/studio/",
+  "scope": "/studio/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#1b1233",
+  "background_color": "#f5f7f6",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["utilities", "productivity"],
+  "icons": [
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

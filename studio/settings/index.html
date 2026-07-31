@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>Studio settings and local data | VERAQIS Studio</title>
+<meta name="description" content="Local Studio settings: checksum verification, fingerprint mode, saved projects, storage usage, and a control to delete every piece of VERAQIS data this browser holds." />
+<link rel="canonical" href="https://veraqis.tech/studio/settings/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="#1b1233" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Settings and local data" />
+<meta property="og:description" content="Local Studio settings: checksum verification, fingerprint mode, saved projects, storage usage, and a control to delete every piece of VERAQIS data this browser holds." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="VERAQIS Local Recovery Studio" />
+<meta property="og:url" content="https://veraqis.tech/studio/settings/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Settings and local data" />
+<meta name="twitter:description" content="Local Studio settings: checksum verification, fingerprint mode, saved projects, storage usage, and a control to delete every piece of VERAQIS data this browser holds." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/studio/settings/#webpage",
+      "url": "https://veraqis.tech/studio/settings/",
+      "name": "Studio settings and local data | VERAQIS Studio",
+      "description": "Local Studio settings: checksum verification, fingerprint mode, saved projects, storage usage, and a control to delete every piece of VERAQIS data this browser holds.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "dateModified": "2026-07-30",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/studio/settings/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Studio",
+          "item": "https://veraqis.tech/studio/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Settings and local data",
+          "item": "https://veraqis.tech/studio/settings/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / <a href="/studio/">Studio</a> / Settings and local data</div>
+    <h1>Settings and local data</h1>
+    <p class="lead">Every setting here is stored on this device only. There is no account and nothing is synchronised.</p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <noscript><div class="callout warn">
+      <strong>Settings need JavaScript.</strong> What each setting does is described below either
+      way. The controls will not respond without it.
+    </div></noscript>
+
+    <div id="studio-root" data-view="settings">
+      <form id="studio-settings-form" onsubmit="return false">
+        <h2 class="mt-0">Analysis</h2>
+        <p><label><input type="checkbox" id="set-verify-crc" /> Recompute CRC-32 checksums during analysis</label></p>
+        <p class="note">Turning this off makes analysis faster and structural only. No entry is
+          reported as verified without a recomputed checksum, so the verified count drops to zero.</p>
+
+        <p><label for="set-fingerprint">Source fingerprint</label>
+          <select id="set-fingerprint">
+            <option value="none">None — size and name only</option>
+            <option value="fast">Fast — size, date and 64 KiB from each end</option>
+            <option value="full">Full SHA-256 — reads the whole file</option>
+          </select></p>
+        <p class="note">Used to detect that a saved project has been re-opened against a different
+          file. Full SHA-256 is exact but reads every byte, which takes time on large archives.</p>
+
+        <p><label for="set-per-page">Entries shown per page</label>
+          <input type="number" id="set-per-page" min="25" max="1000" step="25" /></p>
+        <p class="note">Measured: rendering 10,000 rows at once stalls the main thread for 487 ms in
+          Firefox. Pages keep the interface responsive.</p>
+
+        <p><label for="set-large-mb">Confirm before analysing files larger than (MB)</label>
+          <input type="number" id="set-large-mb" min="16" max="8192" step="16" /></p>
+
+        <h2>Local data</h2>
+        <p><label><input type="checkbox" id="set-autosave" /> Save every analysis as a project automatically</label></p>
+        <p class="note">Off by default. With it off, an analysis exists only in this tab and
+          disappears when you reload.</p>
+        <p><label><input type="checkbox" id="set-advanced" /> Show advanced technical fields</label></p>
+
+        <p id="studio-storage-usage" class="note">Checking storage…</p>
+        <div class="cta cta-start">
+          <button type="button" id="studio-request-persistence" class="btn ghost">Ask the browser to keep this data</button>
+          <button type="button" id="studio-reset-settings" class="btn ghost">Reset settings</button>
+          <button type="button" id="studio-delete-all" class="btn ghost">Delete all local VERAQIS data</button>
+        </div>
+        <div id="studio-settings-result" class="callout info" role="status" hidden></div>
+      </form>
+    </div>
+    <div id="studio-error" class="callout warn" role="alert" hidden></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap prose">
+    <h2>Where this data lives</h2>
+    <p>Settings are stored in this browser's local storage. Saved projects are stored in this
+      browser's IndexedDB. Neither ever leaves the device, neither is synchronised, and there is no
+      account to attach them to.</p>
+    <p><strong>Delete all local VERAQIS data</strong> removes saved projects, settings and any cached
+      application files this browser holds for VERAQIS. It cannot touch your archives — Studio never
+      had a copy of them.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/studio/">Local Recovery Studio</a>
+        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is fully static and makes no network requests. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+<script src="/assets/studio/app.js" type="module"></script>
+<script src="/assets/studio/register-sw.js" type="module"></script>
+</body>
+</html>
