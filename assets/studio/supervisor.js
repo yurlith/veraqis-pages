@@ -11,7 +11,10 @@ import {
 } from './protocol.js';
 import { StudioError, ERR, errorFromJSON } from './errors.js';
 
-const WORKER_URL = '/assets/studio/worker.js';
+// Inside the service worker's /studio/ scope, so the worker client it creates is
+// controlled and its script can be served from the offline cache. The modules it
+// imports stay in /assets/studio/. See studio/worker.js for the measurement.
+const WORKER_URL = '/studio/worker.js';
 
 export class WorkerSupervisor {
   constructor(opts = {}) {
@@ -80,6 +83,22 @@ export class WorkerSupervisor {
       if (m.type === RES.RESULT) { this._finish(); a.resolve(m.result); return; }
       if (m.type === RES.CANCELLED) { this._finish(); a.reject(new StudioError(ERR.CANCELLED)); return; }
       if (m.type === RES.ERROR) { this._finish(); a.reject(errorFromJSON(m.error)); return; }
+
+      /* ---- extraction (protocol v2) ---- */
+      // The entry id is checked as well as the task id. A reply that belongs to
+      // a different entry must never be applied to the selected one — that is
+      // the mistake that hands a user the wrong bytes under the right name.
+      if (m.entryId && a.entryId && m.entryId !== a.entryId) return;
+
+      if (m.type === RES.EXTRACTION_ACCEPTED) { if (a.onAccepted) a.onAccepted(m); return; }
+      if (m.type === RES.EXTRACTION_PROGRESS) { a.onProgress(m); return; }
+      if (m.type === RES.EXTRACTION_RESULT) { this._finish(); a.resolve(m.result); return; }
+      if (m.type === RES.EXTRACTION_CANCELLED) {
+        this._finish();
+        a.reject(new StudioError(ERR.CANCELLED, { entryId: m.entryId, outputDiscarded: true }));
+        return;
+      }
+      if (m.type === RES.EXTRACTION_ERROR) { this._finish(); a.reject(errorFromJSON(m.error)); return; }
     };
 
     // A hard worker failure: the script threw at load, or the worker died.
@@ -159,9 +178,59 @@ export class WorkerSupervisor {
     });
   }
 
+  /**
+   * Extract one VERIFIED entry. Rejects with a StudioError; never resolves with
+   * a partial or unverified output.
+   *
+   * @param {File} file
+   * @param {string} entryId
+   * @param {{project:object, plan:object, projectId?:string}} request
+   * @param {(p:object)=>void} [onProgress]
+   * @param {(a:object)=>void} [onAccepted]
+   * @returns {Promise<object>}
+   */
+  async extractVerifiedEntry(file, entryId, request, onProgress = () => {}, onAccepted = () => {}) {
+    if (this.active) {
+      throw new StudioError(ERR.EXTRACTION_ALREADY_RUNNING, { entryId });
+    }
+    await this._spawn();
+    if (this._idleTimer) clearTimeout(this._idleTimer);
+
+    const taskId = newTaskId();
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this._handleCrash('the extraction did not report progress within the timeout');
+      }, TASK_TIMEOUT_MS);
+      this.active = { taskId, entryId, resolve, reject, onProgress, onAccepted, timer };
+      this._status('running');
+      try {
+        this.worker.postMessage({
+          type: REQ.EXTRACT_VERIFIED_ENTRY,
+          taskId, entryId,
+          projectId: request.projectId || null,
+          file,
+          project: request.project,
+          plan: request.plan,
+        });
+      } catch (e) {
+        this._finish();
+        reject(new StudioError(ERR.INTERNAL_EXTRACTION_ERROR, {
+          entryId, detail: 'could not hand the extraction to the worker: ' + (e && e.message),
+        }));
+      }
+    });
+  }
+
+  /** Tell the worker to drop anything it still holds for a task. */
+  disposeOutput(taskId) {
+    if (!this.worker || !taskId) return false;
+    try { this.worker.postMessage({ type: REQ.DISPOSE_OUTPUT, taskId }); return true; }
+    catch { return false; }
+  }
+
   cancel() {
     if (!this.active || !this.worker) return false;
-    this.worker.postMessage({ type: REQ.CANCEL, taskId: this.active.taskId });
+    this.worker.postMessage({ type: REQ.CANCEL_TASK, taskId: this.active.taskId });
     return true;
   }
 

@@ -23,6 +23,41 @@ export const ERR = {
   PROJECT_SCHEMA_INVALID: 'PROJECT_SCHEMA_INVALID',
   VERSION_MISMATCH: 'VERSION_MISMATCH',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
+
+  /* ---- single-entry verified extraction (Phase 3) ----------------------- */
+  // Eligibility refusals. Each one names the single condition that failed, so a
+  // disabled control can say exactly why rather than "not available".
+  ENTRY_NOT_VERIFIED: 'ENTRY_NOT_VERIFIED',
+  SOURCE_FILE_MISMATCH: 'SOURCE_FILE_MISMATCH',
+  EXTRACTION_UNSUPPORTED: 'EXTRACTION_UNSUPPORTED',
+  COMPRESSION_METHOD_UNSUPPORTED: 'COMPRESSION_METHOD_UNSUPPORTED',
+  ENCRYPTED_ENTRY_UNSUPPORTED: 'ENCRYPTED_ENTRY_UNSUPPORTED',
+  OUTPUT_LIMIT_EXCEEDED: 'OUTPUT_LIMIT_EXCEEDED',
+  COMPRESSION_RATIO_LIMIT_EXCEEDED: 'COMPRESSION_RATIO_LIMIT_EXCEEDED',
+  ENTRY_RANGE_INVALID: 'ENTRY_RANGE_INVALID',
+  ENTRY_RANGE_OVERLAP: 'ENTRY_RANGE_OVERLAP',
+  DATA_DESCRIPTOR_AMBIGUOUS: 'DATA_DESCRIPTOR_AMBIGUOUS',
+  UNSUPPORTED_ENTRY_FLAGS: 'UNSUPPORTED_ENTRY_FLAGS',
+  EXTRACTION_ALREADY_RUNNING: 'EXTRACTION_ALREADY_RUNNING',
+  // Runtime failures during extraction. Every one discards the output buffer.
+  DECOMPRESSION_LIMIT_EXCEEDED: 'DECOMPRESSION_LIMIT_EXCEEDED',
+  OUTPUT_SIZE_MISMATCH: 'OUTPUT_SIZE_MISMATCH',
+  SAFE_FILENAME_FAILED: 'SAFE_FILENAME_FAILED',
+  BLOB_CREATION_FAILED: 'BLOB_CREATION_FAILED',
+  DOWNLOAD_PREPARATION_FAILED: 'DOWNLOAD_PREPARATION_FAILED',
+  INTERNAL_EXTRACTION_ERROR: 'INTERNAL_EXTRACTION_ERROR',
+};
+
+/** Pipeline stages an extraction failure can be attributed to. */
+export const EXTRACT_STAGE = {
+  ELIGIBILITY: 'eligibility',
+  SOURCE_BINDING: 'source-binding',
+  LOCAL_HEADER: 'local-header',
+  READ: 'read',
+  DECOMPRESS: 'decompress',
+  CHECKSUM: 'checksum',
+  FINALIZE: 'finalize',
+  DOWNLOAD: 'download',
 };
 
 // message: shown to the user · action: what they can do next · recoverable: may retry
@@ -54,7 +89,7 @@ const CATALOG = {
   },
   [ERR.BROWSER_UNSUPPORTED]: {
     message: 'This browser is missing a feature Studio needs.',
-    action: 'A current version of Chrome, Edge, Firefox or Safari supports everything required.',
+    action: 'Chrome, Edge and Firefox are verified in this release. Safari is expected to support the required APIs but has not yet been verified by the VERAQIS test suite.',
     recoverable: false,
   },
   [ERR.WORKER_CRASH]: {
@@ -102,12 +137,106 @@ const CATALOG = {
     action: 'Your file was not modified. Please run the analysis again.',
     recoverable: true,
   },
+
+  /* ---- single-entry verified extraction --------------------------------- */
+
+  [ERR.ENTRY_NOT_VERIFIED]: {
+    message: 'This entry is not verified, so it cannot be extracted.',
+    action: 'Only entries whose checksum VERAQIS recomputed and matched can be downloaded. This release does not extract structurally valid, potentially recoverable, damaged or unknown entries.',
+    recoverable: false,
+  },
+  [ERR.SOURCE_FILE_MISMATCH]: {
+    message: 'The selected file is not the file this analysis was made from.',
+    action: 'Nothing was decompressed. Choose the original archive, or run a new analysis on this one — a matching name is not evidence that it is the same file.',
+    recoverable: true,
+  },
+  [ERR.EXTRACTION_UNSUPPORTED]: {
+    message: 'This browser cannot extract this entry.',
+    action: 'Analysis is unaffected. The capability list on the Studio overview shows which feature is missing.',
+    recoverable: false,
+  },
+  [ERR.COMPRESSION_METHOD_UNSUPPORTED]: {
+    message: 'This entry uses a compression method VERAQIS does not decode.',
+    action: 'Stored and Deflate entries can be extracted. Others are described in the report but never produced as output.',
+    recoverable: false,
+  },
+  [ERR.ENCRYPTED_ENTRY_UNSUPPORTED]: {
+    message: 'This entry is encrypted.',
+    action: 'VERAQIS does not decrypt, guess, derive or request a password. The entry stays unknown.',
+    recoverable: false,
+  },
+  [ERR.OUTPUT_LIMIT_EXCEEDED]: {
+    message: 'This entry is larger than the extraction limit for this device.',
+    action: 'Nothing was decompressed. The limit is set from the memory this browser reports, because the extracted bytes have to be held while their checksum is recomputed.',
+    recoverable: false,
+  },
+  [ERR.COMPRESSION_RATIO_LIMIT_EXCEEDED]: {
+    message: "This entry's declared sizes are not internally consistent.",
+    action: 'It claims to expand further than DEFLATE can, which no real compressed stream does. Extraction is refused as a safety measure and cannot be overridden.',
+    recoverable: false,
+  },
+  [ERR.ENTRY_RANGE_INVALID]: {
+    message: "This entry's data does not lie inside the archive.",
+    action: 'The declared range starts or ends outside the file, so there is nothing safe to read.',
+    recoverable: false,
+  },
+  [ERR.ENTRY_RANGE_OVERLAP]: {
+    message: "This entry's data overlaps another entry.",
+    action: 'When two entries claim the same bytes, neither can be extracted without guessing which is right. VERAQIS does not guess.',
+    recoverable: false,
+  },
+  [ERR.DATA_DESCRIPTOR_AMBIGUOUS]: {
+    message: "This entry's size is recorded after its data, and its local header does not confirm it.",
+    action: 'Without a local header that agrees, the extent of the entry is not independently established, so extraction is refused.',
+    recoverable: false,
+  },
+  [ERR.UNSUPPORTED_ENTRY_FLAGS]: {
+    message: 'This entry uses a ZIP feature VERAQIS does not extract.',
+    action: 'Patched or strongly-encrypted entries are reported but never produced as output.',
+    recoverable: false,
+  },
+  [ERR.EXTRACTION_ALREADY_RUNNING]: {
+    message: 'An extraction is already running.',
+    action: 'Wait for it to finish, or cancel it, then start the next one.',
+    recoverable: true,
+  },
+  [ERR.DECOMPRESSION_LIMIT_EXCEEDED]: {
+    message: 'The entry produced more data than it declared.',
+    action: 'Extraction was stopped and the partial output was discarded. A stream that exceeds its own declared size is not trustworthy.',
+    recoverable: false,
+  },
+  [ERR.OUTPUT_SIZE_MISMATCH]: {
+    message: 'The extracted output is not the size the archive declares.',
+    action: 'The output was discarded. VERAQIS does not offer a download whose size it cannot account for.',
+    recoverable: false,
+  },
+  [ERR.SAFE_FILENAME_FAILED]: {
+    message: 'A safe download name could not be derived for this entry.',
+    action: 'The archive path could not be reduced to a filename this system accepts.',
+    recoverable: false,
+  },
+  [ERR.BLOB_CREATION_FAILED]: {
+    message: 'The verified output could not be prepared for download.',
+    action: 'This usually means the browser ran out of memory for the file. The output was discarded; try a smaller entry.',
+    recoverable: true,
+  },
+  [ERR.DOWNLOAD_PREPARATION_FAILED]: {
+    message: 'The download could not be started.',
+    action: 'Check that downloads are not blocked for this site, then run the extraction again.',
+    recoverable: true,
+  },
+  [ERR.INTERNAL_EXTRACTION_ERROR]: {
+    message: 'Something went wrong during extraction.',
+    action: 'The output was discarded and your archive was not modified. Nothing partial is offered as a download.',
+    recoverable: true,
+  },
 };
 
 export class StudioError extends Error {
   /**
    * @param {string} code one of ERR
-   * @param {{detail?:string, stage?:string, offset?:number|null, cause?:unknown}} [info]
+   * @param {{detail?:string, stage?:string, offset?:number|null, cause?:unknown,
+   *          entryId?:string|null, outputDiscarded?:boolean}} [info]
    */
   constructor(code, info = {}) {
     const entry = CATALOG[code] || CATALOG[ERR.INTERNAL_ERROR];
@@ -120,6 +249,12 @@ export class StudioError extends Error {
     this.detail = info.detail ? String(info.detail).slice(0, 500) : '';
     this.stage = info.stage || null;
     this.offset = Number.isFinite(info.offset) ? info.offset : null;
+    // Which entry the failure belongs to, and whether any bytes that had been
+    // produced were thrown away. "Were partial bytes kept?" is the first thing a
+    // reader of a failed extraction needs to know, so it is part of the error
+    // rather than something the UI has to infer.
+    this.entryId = typeof info.entryId === 'string' ? info.entryId.slice(0, 64) : null;
+    this.outputDiscarded = info.outputDiscarded === true;
     if (info.cause !== undefined) this.cause = info.cause;
   }
 
@@ -133,6 +268,8 @@ export class StudioError extends Error {
       detail: this.detail,
       stage: this.stage,
       offset: this.offset,
+      entryId: this.entryId,
+      outputDiscarded: this.outputDiscarded,
     };
   }
 }
@@ -140,7 +277,10 @@ export class StudioError extends Error {
 /** Rebuild a StudioError from the plain object that crossed a postMessage boundary. */
 export function errorFromJSON(o) {
   if (!o || typeof o !== 'object') return new StudioError(ERR.INTERNAL_ERROR);
-  const e = new StudioError(o.code, { detail: o.detail, stage: o.stage, offset: o.offset });
+  const e = new StudioError(o.code, {
+    detail: o.detail, stage: o.stage, offset: o.offset,
+    entryId: o.entryId, outputDiscarded: o.outputDiscarded === true,
+  });
   // Trust the sender's prose only for fields the catalog also defines, so a
   // malformed message cannot inject arbitrary text into the UI.
   return e;

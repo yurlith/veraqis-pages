@@ -8,12 +8,22 @@
 // any non-GET request, blob: and data: URLs, and the APK (a 1.1 MB binary that
 // belongs to the download page, not the app shell).
 
-const VERSION = 'v1';
+// v2: the six extraction modules joined the shell. The version is bumped so the
+// old cache is deleted on activate rather than serving a mix of v1 and v2
+// modules — a page on protocol v2 driving a v1 worker is exactly the failure the
+// protocol handshake exists to catch, and there is no reason to rely on it here.
+const VERSION = 'v2';
 const CACHE = `veraqis-studio-${VERSION}`;
 
 // The complete application shell. Every entry is same-origin and static.
 const PRECACHE = [
   '/studio/',
+  // The worker ENTRY POINT lives inside the scope on purpose. A Worker's client
+  // is matched to a service-worker registration by the worker script's own URL,
+  // so an entry point under /assets/ would never be controlled by a worker
+  // scoped to /studio/ — and its script load would go to the network even when
+  // every module it imports is cached. Measured; see studio/worker.js.
+  '/studio/worker.js',
   '/studio/new/',
   '/studio/reports/',
   '/studio/settings/',
@@ -33,6 +43,17 @@ const PRECACHE = [
   '/assets/studio/store.js',
   '/assets/studio/ui.js',
   '/assets/studio/register-sw.js',
+  // Single-entry verified extraction. Static application code, same-origin, and
+  // on the allowlist for exactly the same reason as the rest of the shell:
+  // extraction must keep working offline. No user data is added by their
+  // presence — the allowlist is a list of OUR files, and nothing else can enter.
+  '/assets/studio/extract.js',
+  '/assets/studio/eligibility.js',
+  '/assets/studio/policy.js',
+  '/assets/studio/filename.js',
+  '/assets/studio/crc32.js',
+  '/assets/studio/output.js',
+  '/assets/studio/report.js',
   '/assets/zip-checker/zip-core.js',
   '/assets/zip-checker/app.js',
   '/assets/zip-checker/worker.js',

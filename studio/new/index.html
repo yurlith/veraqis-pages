@@ -7,7 +7,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>Analyze a local archive | VERAQIS Studio</title>
-<meta name="description" content="Select a ZIP archive and analyse it in your browser. Structure, central directory, local file headers and per-entry CRC-32, with nothing uploaded." />
+<meta name="description" content="Analyse a ZIP archive in your browser and download individually verified files. Structure, headers, per-entry CRC-32. Nothing is uploaded." />
 <link rel="canonical" href="https://veraqis.tech/studio/new/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="manifest" href="/manifest.webmanifest" />
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="Analyze a local archive" />
-<meta property="og:description" content="Select a ZIP archive and analyse it in your browser. Structure, central directory, local file headers and per-entry CRC-32, with nothing uploaded." />
+<meta property="og:description" content="Analyse a ZIP archive in your browser and download individually verified files. Structure, headers, per-entry CRC-32. Nothing is uploaded." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -24,7 +24,7 @@
 <meta property="og:url" content="https://veraqis.tech/studio/new/" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Analyze a local archive" />
-<meta name="twitter:description" content="Select a ZIP archive and analyse it in your browser. Structure, central directory, local file headers and per-entry CRC-32, with nothing uploaded." />
+<meta name="twitter:description" content="Analyse a ZIP archive in your browser and download individually verified files. Structure, headers, per-entry CRC-32. Nothing is uploaded." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -52,7 +52,7 @@
       "@id": "https://veraqis.tech/studio/new/#webpage",
       "url": "https://veraqis.tech/studio/new/",
       "name": "Analyze a local archive | VERAQIS Studio",
-      "description": "Select a ZIP archive and analyse it in your browser. Structure, central directory, local file headers and per-entry CRC-32, with nothing uploaded.",
+      "description": "Analyse a ZIP archive in your browser and download individually verified files. Structure, headers, per-entry CRC-32. Nothing is uploaded.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -117,16 +117,16 @@
   <div class="wrap">
     <div class="crumb"><a href="/">VERAQIS</a> / <a href="/studio/">Studio</a> / Analyze a local archive</div>
     <h1>Analyze a local archive</h1>
-    <p class="lead">Choose an archive from this device. It is read in your browser, analysed by a worker thread, and never sent anywhere.</p>
+    <p class="lead">Choose an archive from this device. It is read in your browser, analysed by a worker thread, and never sent anywhere. Verified entries can then be downloaded one at a time.</p>
   </div>
 </div>
 
 <section>
   <div class="wrap">
     <div class="callout ok">
-      <strong>Your files stay on this device.</strong> Studio has no server, no account and no
-      upload step. Archives are read in this browser tab, the original file is never modified, and
-      nothing is saved unless you explicitly ask for it.
+      <strong>Your files stay on this device.</strong> Studio has no application backend, no account
+      and no upload step. Archives are read in this browser tab, the original file is never modified,
+      and nothing is saved unless you explicitly ask for it.
       <a href="/studio/#privacy">How that is enforced</a>.
     </div>
     <noscript><div class="callout warn">
@@ -191,6 +191,7 @@
           <table>
             <caption class="zc-visually-hidden">Per-entry analysis results</caption>
             <thead><tr>
+              <th scope="col">Select</th>
               <th scope="col">Name</th><th scope="col">Method</th><th scope="col">Compressed</th>
               <th scope="col">Uncompressed</th><th scope="col">Header offset</th>
               <th scope="col">CRC-32</th><th scope="col">Status</th><th scope="col">Reason</th>
@@ -199,6 +200,29 @@
           </table>
         </div>
         <div id="studio-pager" class="st-pager" hidden></div>
+
+        <h2 id="extract-heading">Download a verified file</h2>
+        <p class="sub">Select one verified entry below. VERAQIS re-reads it from the archive,
+          recomputes its checksum, and offers a download only if the result matches. Your archive
+          is not changed.</p>
+        <div id="studio-extract" class="st-extract" role="group" aria-labelledby="extract-heading">
+          <p class="note" id="studio-extract-none">No entry is selected.</p>
+          <div id="studio-extract-detail" hidden>
+            <dl id="studio-extract-facts" class="zc-dl"></dl>
+            <div id="studio-extract-reasons" class="callout warn" role="status" hidden></div>
+            <div class="cta cta-start">
+              <button type="button" id="studio-extract-run" class="btn primary">Download verified file</button>
+              <button type="button" id="studio-extract-cancel" class="btn ghost" hidden>Cancel extraction</button>
+            </div>
+            <div id="studio-extract-progress" hidden>
+              <p id="studio-extract-stage"></p>
+              <progress id="studio-extract-bar" max="100" value="0" class="zc-progress">Extracting…</progress>
+            </div>
+            <div id="studio-extract-result" class="callout ok" role="status" hidden></div>
+            <div id="studio-extract-error" class="callout warn" role="alert" hidden></div>
+          </div>
+        </div>
+        <p id="studio-extract-live" role="status" aria-live="polite" class="zc-visually-hidden"></p>
 
         <h2>Keep this result</h2>
         <p class="sub">Nothing above is stored unless you choose to store it. A reload discards it.</p>
@@ -284,7 +308,7 @@
     </div>
     <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
-      this site is fully static and makes no network requests. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+      this site is statically hosted and does not upload files or send telemetry. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
   </div>
 </footer>
 

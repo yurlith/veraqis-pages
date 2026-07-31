@@ -40,7 +40,14 @@ export function detectSync() {
   };
 }
 
-/** Probes that need to await. */
+/**
+ * Probes that need to await.
+ *
+ * `deflateRawVerified` is the one that matters for extraction: `detectSync`
+ * proves only that the constructor exists, and a decoder that exists but
+ * produces the wrong bytes would be worse than one that is absent. The
+ * known-answer test lives in extract.js next to the code that depends on it.
+ */
 export async function detect() {
   const base = detectSync();
   let opfs = false;
@@ -58,7 +65,31 @@ export async function detect() {
       usageMB = Math.round((est.usage || 0) / 1048576);
     }
   } catch { /* storage unavailable; the fallbacks below cover it */ }
-  return { ...base, opfs, quotaMB, usageMB };
+
+  // Functional check of the raw-DEFLATE decoder, not a constructor check.
+  let deflateRawVerified = false;
+  let deflateRawReason = 'not probed';
+  if (base.deflateRaw) {
+    try {
+      const { probeDeflateRaw } = await import('./extract.js');
+      const r = await probeDeflateRaw();
+      deflateRawVerified = r.ok;
+      deflateRawReason = r.reason || 'known-answer test passed';
+    } catch (e) {
+      deflateRawReason = `the decoder probe could not run (${String(e && e.message).slice(0, 80)})`;
+    }
+  } else {
+    deflateRawReason = "DecompressionStream('deflate-raw') is unavailable";
+  }
+
+  return {
+    ...base, opfs, quotaMB, usageMB,
+    deflateRawVerified,
+    deflateRawReason,
+    // Extraction uses the VERIFIED decoder, never the merely-present one.
+    deflateRaw: base.deflateRaw && deflateRawVerified,
+    deflateRawPresent: base.deflateRaw,
+  };
 }
 
 /**
@@ -75,6 +106,15 @@ export function featureMatrix(c) {
     crcDeflate: c.deflateRaw
       ? { level: LEVEL.SUPPORTED, why: '' }
       : { level: LEVEL.UNSUPPORTED, why: "This browser has no DecompressionStream('deflate-raw'), so compressed entries cannot have their checksum recomputed. They are reported as unverified, never as verified." },
+    // Extraction is split in two, because the honest answer differs by method.
+    // A browser without raw-DEFLATE can still extract a Stored entry exactly, so
+    // collapsing both into one "extraction: unsupported" row would understate
+    // what the user can do — and the reverse would overstate it.
+    extractStored: need(c.worker && c.blobSlice,
+      'Extracting a verified stored entry needs Web Workers and Blob slicing.'),
+    extractDeflate: c.deflateRaw
+      ? { level: LEVEL.SUPPORTED, why: '' }
+      : { level: LEVEL.UNSUPPORTED, why: "This browser has no DecompressionStream('deflate-raw'), so compressed entries cannot be decoded here. Analysis is unaffected, stored entries can still be extracted, and no external decompression library is loaded to work around it." },
     zipWriting: c.deflateRawCompress
       ? { level: LEVEL.EXPERIMENTAL, why: 'Building a new archive is planned; not enabled in this release.' }
       : { level: LEVEL.UNSUPPORTED, why: "This browser has no CompressionStream('deflate-raw')." },

@@ -10,6 +10,7 @@
 import { analyzeArchive, readerFromBlob, STATUS } from '../zip-checker/zip-core.js';
 import { StudioError, ERR, toStudioError } from './errors.js';
 import { STAGE } from './protocol.js';
+import { extractVerifiedEntry as runExtraction, EXTRACT_ENGINE_VERSION, probeDeflateRaw } from './extract.js';
 
 export const ENGINE_RESULT_SCHEMA = 'veraqis-studio-analysis/1';
 
@@ -71,7 +72,7 @@ function classifyZipFamily(fileName, entries) {
 export const zipEngine = {
   id: 'zip',
   label: 'ZIP',
-  version: '1.0.0',
+  version: '1.1.0',
   extensions: ['zip', 'docx', 'xlsx', 'pptx', 'apk', 'jar', 'epub', 'odt', 'ods'],
 
   capabilities: {
@@ -83,13 +84,20 @@ export const zipEngine = {
     encryptedEntries: 'detect-only',
     unicodeNames: true,
     crcVerification: true,
-    individualExtraction: false, // Phase 3 — not enabled in this release
+    // Phase 3: one entry, already VERIFIED, re-checksummed after extraction.
+    // The value is a scope, not a boolean, so nothing can read it as "extraction
+    // works" in general.
+    individualExtraction: 'verified-only',
+    extractionMethods: [0, 8],
     rebuiltZipOutput: false,     // Phase 4 — not enabled in this release
+    massExtraction: false,       // deliberately never: see VERIFIED_EXTRACTION_POLICY.md
+    extractionEngineVersion: EXTRACT_ENGINE_VERSION,
   },
 
   limitations: [
-    'Analysis only: nothing is extracted, repaired or written.',
-    'Stored and Deflate entries can have their CRC-32 recomputed. Other methods are described but never verified.',
+    'Analysis never writes. Extraction produces a new local download and never modifies the source archive.',
+    'Only an entry already classified VERIFIED can be extracted, and only one at a time.',
+    'Stored and Deflate entries can have their CRC-32 recomputed. Other methods are described but never verified and never extracted.',
     'Encrypted entries are detected and reported as unknown. No password is guessed, derived or requested.',
     'ZIP64 is parsed, but entries above 4 GiB are not CRC-verified in a browser.',
     'Split and spanned archives are detected, not reassembled.',
@@ -144,10 +152,33 @@ export const zipEngine = {
     };
   },
 
-  // Declared so the contract is visible and callers can feature-test it. Phase 3/4.
+  /**
+   * Extract exactly one entry that is already classified VERIFIED.
+   *
+   * The UI never reaches into the ZIP parser to do this: it hands over a project,
+   * an entry id and the file, and gets back a result or a typed error. That seam
+   * is why a second format could add extraction without the workspace changing.
+   *
+   * @param {Blob|File} file
+   * @param {string} entryId
+   * @param {{plan:object, project:object, capabilities:object, policy:object}} options
+   * @param {{onProgress?:Function, onAccepted?:Function}} callbacks
+   * @param {AbortSignal} [signal]
+   */
+  async extractVerifiedEntry(file, entryId, options, callbacks, signal) {
+    return runExtraction(file, entryId, options, callbacks, signal);
+  },
+
+  /** Known-answer test for this browser's raw-DEFLATE decoder. */
+  probeDeflateRaw,
+
+  // Declared so the contract is visible and callers can feature-test it. Phase 4.
   async verifyEntry() { throw new StudioError(ERR.INTERNAL_ERROR, { detail: 'verifyEntry is not implemented in this release' }); },
   async buildRecoveryPlan() { throw new StudioError(ERR.INTERNAL_ERROR, { detail: 'buildRecoveryPlan is not implemented in this release' }); },
-  async extractEntry() { throw new StudioError(ERR.INTERNAL_ERROR, { detail: 'extractEntry is not implemented in this release' }); },
+  /** Unscoped extraction stays unimplemented on purpose: every extraction in
+   *  this release goes through the eligibility gate, and a method that bypassed
+   *  it would be the one an accident reaches for. */
+  async extractEntry() { throw new StudioError(ERR.INTERNAL_ERROR, { detail: 'unscoped extractEntry is not implemented; use extractVerifiedEntry, which enforces the eligibility gate' }); },
   dispose() { /* stateless */ },
 };
 

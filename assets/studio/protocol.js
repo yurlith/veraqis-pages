@@ -6,7 +6,12 @@
 // the supervisor refuses to use a worker whose version it does not understand —
 // which is exactly what happens when a service worker serves a stale script.
 
-export const PROTOCOL_VERSION = 1;
+// v2 adds single-entry verified extraction. The version is bumped rather than
+// extended in place because a page that speaks v2 must not drive a v1 worker
+// served from a stale cache: it would ask for an extraction and get silence.
+// The supervisor refuses a version it does not understand, which turns that
+// failure mode into a visible "reload" prompt.
+export const PROTOCOL_VERSION = 2;
 
 /** main thread -> worker */
 export const REQ = {
@@ -16,7 +21,13 @@ export const REQ = {
   VERIFY_ENTRY: 'VERIFY_ENTRY',
   BUILD_RECOVERY_PLAN: 'BUILD_RECOVERY_PLAN',
   EXTRACT_ENTRY: 'EXTRACT_ENTRY',
+  /** v2: extract exactly one entry that is already classified VERIFIED. */
+  EXTRACT_VERIFIED_ENTRY: 'EXTRACT_VERIFIED_ENTRY',
   CANCEL: 'CANCEL',
+  /** v2: explicit alias used by the extraction flow; same semantics as CANCEL. */
+  CANCEL_TASK: 'CANCEL_TASK',
+  /** v2: drop any output the worker still holds for a task. */
+  DISPOSE_OUTPUT: 'DISPOSE_OUTPUT',
   DISPOSE: 'DISPOSE',
 };
 
@@ -29,6 +40,35 @@ export const RES = {
   ERROR: 'ERROR',
   CANCELLED: 'CANCELLED',
   DISPOSED: 'DISPOSED',
+  /** v2 extraction responses. Separate names so an extraction reply can never be
+   *  mistaken for an analysis reply by a handler that only checks the type. */
+  EXTRACTION_ACCEPTED: 'EXTRACTION_ACCEPTED',
+  EXTRACTION_PROGRESS: 'EXTRACTION_PROGRESS',
+  EXTRACTION_RESULT: 'EXTRACTION_RESULT',
+  EXTRACTION_ERROR: 'EXTRACTION_ERROR',
+  EXTRACTION_CANCELLED: 'EXTRACTION_CANCELLED',
+  OUTPUT_DISPOSED: 'OUTPUT_DISPOSED',
+};
+
+/** Stages reported in EXTRACTION_PROGRESS, in the order they occur. */
+export const EXTRACT_PHASE = {
+  ELIGIBILITY: 'eligibility',
+  BINDING: 'source-binding',
+  LOCAL_HEADER: 'local-header',
+  READING: 'reading',
+  DECOMPRESSING: 'decompressing',
+  CHECKSUM: 'checksum',
+  FINALIZING: 'finalizing',
+};
+
+export const EXTRACT_PHASE_LABEL = {
+  [EXTRACT_PHASE.ELIGIBILITY]: 'Checking what the evidence allows',
+  [EXTRACT_PHASE.BINDING]: 'Confirming this is the analysed file',
+  [EXTRACT_PHASE.LOCAL_HEADER]: 'Re-reading the local file header',
+  [EXTRACT_PHASE.READING]: 'Reading the entry',
+  [EXTRACT_PHASE.DECOMPRESSING]: 'Decompressing',
+  [EXTRACT_PHASE.CHECKSUM]: 'Recomputing the checksum',
+  [EXTRACT_PHASE.FINALIZING]: 'Preparing the verified output',
 };
 
 /** Pipeline stages, reported in PROGRESS and attached to errors. */
@@ -89,5 +129,27 @@ export function isValidResponse(m) {
   if (typeof m.type !== 'string' || !Object.prototype.hasOwnProperty.call(RES, m.type)) return false;
   if (m.type === RES.READY) return typeof m.protocol === 'number';
   // Every other response belongs to a task.
-  return typeof m.taskId === 'string' && m.taskId.length > 0 && m.taskId.length < 64;
+  if (typeof m.taskId !== 'string' || m.taskId.length === 0 || m.taskId.length >= 64) return false;
+  // An extraction reply carries the id of the entry it is about. A reply that
+  // does not say which entry it belongs to must not be applied to whichever
+  // entry the UI happens to have selected.
+  if (m.type === RES.EXTRACTION_ACCEPTED || m.type === RES.EXTRACTION_PROGRESS
+      || m.type === RES.EXTRACTION_RESULT || m.type === RES.EXTRACTION_CANCELLED) {
+    return typeof m.entryId === 'string' && m.entryId.length > 0 && m.entryId.length < 64;
+  }
+  return true;
+}
+
+/**
+ * Structural validation of an EXTRACT_VERIFIED_ENTRY request, applied inside the
+ * worker before anything is read. The worker trusts the *file*, not the plan:
+ * every field here is re-derived from the archive bytes before it is used.
+ */
+export function isValidExtractRequest(m) {
+  if (!m || typeof m !== 'object') return false;
+  if (typeof m.taskId !== 'string' || !m.taskId || m.taskId.length >= 64) return false;
+  if (typeof m.entryId !== 'string' || !m.entryId || m.entryId.length >= 64) return false;
+  if (!m.file || typeof m.file.slice !== 'function' || typeof m.file.size !== 'number') return false;
+  if (!m.plan || typeof m.plan !== 'object') return false;
+  return true;
 }

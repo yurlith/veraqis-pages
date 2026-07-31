@@ -71,7 +71,7 @@
           "name": "Is my archive uploaded anywhere?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. The file is read by JavaScript running in your own browser tab. There is no server component, no account and no storage. This page's Content-Security-Policy permits same-origin requests only, and the analysis code contains no network call at all. Closing or reloading the tab discards everything."
+            "text": "No. The file is read by JavaScript running in your own browser tab. There is no application backend, no account and no storage. This page's Content-Security-Policy permits same-origin requests only, and the analysis code contains no network call at all. Closing or reloading the tab discards everything."
           }
         },
         {
@@ -148,7 +148,7 @@
       read by your own browser and never leaves your device.</p>
     <div class="callout ok">
       <strong>Your archive is processed locally in this browser. It is not uploaded to VERAQIS.</strong>
-      There is no server behind this page. It has no account, no storage and no analytics, and its
+      There is no application backend behind this page. It has no account, no storage and no analytics, and its
       security policy permits same-origin requests only.
       <a href="#privacy">How that is enforced</a>.
     </div>
@@ -306,8 +306,9 @@
     <p>"We do not upload your file" is a claim worth checking rather than trusting. On this page it
       rests on four things you can verify yourself:</p>
     <ul>
-      <li><strong>There is no server.</strong> The site is static files on a CDN. No endpoint exists
-        that could receive an archive.</li>
+      <li><strong>There is no application backend or file-upload endpoint.</strong> The site is static
+        files on a CDN, which is what serves this page. No endpoint exists on the other side of
+        that connection that could receive an archive.</li>
       <li><strong>The page's security policy blocks it.</strong> Every VERAQIS page ships
         <code>default-src 'none'</code>; this one adds only <code>script-src 'self'</code> and
         <code>connect-src 'self'</code>. No third-party origin can be contacted at all, and the
@@ -366,8 +367,8 @@
     <div class="faq">
       <div class="qa">
         <h3>Is my archive uploaded anywhere?</h3>
-        <p>No. The file is read by JavaScript running in your own browser tab. There is no server
-          component, no account and no storage. This page's Content-Security-Policy permits
+        <p>No. The file is read by JavaScript running in your own browser tab. There is no application
+          backend, no account and no storage. This page's Content-Security-Policy permits
           same-origin requests only, and the analysis code contains no network call at all. Closing
           or reloading the tab discards everything.</p>
       </div>
@@ -452,7 +453,7 @@
     </div>
     <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
-      this site is fully static and makes no network requests. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+      this site is statically hosted and does not upload files or send telemetry. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
   </div>
 </footer>
 

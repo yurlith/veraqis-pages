@@ -10,10 +10,15 @@ import { detect, featureMatrix, sizePolicy, LEVEL } from './capabilities.js';
 import { ProjectStore, loadSettings, saveSettings, resetSettings, deleteAllLocalData, DEFAULT_SETTINGS } from './store.js';
 import {
   createProject, fingerprintFile, fingerprintMatches, serializeProject,
-  projectFileName, OP_STATUS,
+  projectFileName, recordOperation, OP_STATUS,
 } from './project.js';
 import { StudioError, ERR, toStudioError } from './errors.js';
-import { STAGE_LABEL } from './protocol.js';
+import { STAGE_LABEL, EXTRACT_PHASE_LABEL } from './protocol.js';
+import { extractionPolicy } from './policy.js';
+import { evaluateExtractionEligibility, OPERATION_STATUS } from './eligibility.js';
+import { OutputRegistry, sourceKeyOf } from './output.js';
+import { crcHex } from './crc32.js';
+import { buildHtmlReport, buildJsonReport } from './report.js';
 import { t } from './messages.js';
 import { $, el, clear, append, fmtBytes, fmtDate, makeAnnouncer, renderError, downloadText, statusPill } from './ui.js';
 
@@ -32,8 +37,10 @@ async function boot(mount) {
   const store = await ProjectStore.open();
   let settings = loadSettings();
 
+  const policy = extractionPolicy(caps);
+
   const state = {
-    caps, features, sizes, store, settings,
+    caps, features, sizes, store, settings, policy,
     project: null,        // in-memory project (not persisted unless saved)
     file: null,           // the File the user selected this session
     saved: false,
@@ -41,6 +48,12 @@ async function boot(mount) {
     page: 0,
     filter: 'ALL',
     query: '',
+    // Extraction is a separate axis from analysis, and its state is separate
+    // too: which entry is selected, whether one is running, and the single
+    // prepared output. Nothing here is persisted.
+    selectedEntryId: null,
+    extracting: false,
+    output: new OutputRegistry(policy),
   };
 
   // The shell is present in the HTML and visible from first paint; JavaScript
@@ -67,6 +80,8 @@ function renderCapabilityStrip(s) {
   const rows = [
     ['Analysis engine', s.features.analysis],
     ['Compressed-entry checksums', s.features.crcDeflate],
+    ['Download a verified stored file', s.features.extractStored],
+    ['Download a verified compressed file', s.features.extractDeflate],
     ['Save projects locally', s.features.saveProjects],
     ['Offline use', s.features.offline],
     ['Folder export', s.features.directoryExport],
@@ -193,7 +208,12 @@ function renderNew(s) {
         unavailable: t('worker.unavailable'), 'version-mismatch': t('worker.versionMismatch'),
       };
       setWorkerStatus(map[state] || state);
-      if (state === 'crashed' && detail) announce(t('worker.crashed'), true);
+      if (state === 'crashed') {
+        // A crashed worker may have been mid-extraction. Whatever it produced is
+        // unverified by definition, so the prepared output goes with it.
+        resetExtraction(s, 'the engine stopped');
+        if (detail) announce(t('worker.crashed'), true);
+      }
     },
   });
 
@@ -221,6 +241,10 @@ function renderNew(s) {
 
   async function start(file) {
     if (!file) return;
+    // A different source file invalidates anything prepared from the last one,
+    // before any of it can be re-offered next to the new result.
+    s.output.revokeIfStale({ sourceKey: sourceKeyOf(file) });
+    resetExtraction(s, 'a new file was selected');
     errBox.hidden = true;
     if (file.size > s.sizes.hard) {
       renderError(errBox, new StudioError(ERR.MEMORY_LIMIT, {
@@ -267,6 +291,7 @@ function renderNew(s) {
 
   const clearBtn = $('studio-clear');
   if (clearBtn) clearBtn.addEventListener('click', () => {
+    resetExtraction(s, 'the workspace was cleared');
     s.project = null; s.file = null; s.saved = false; s.page = 0; s.filter = 'ALL'; s.query = '';
     input.value = '';
     if (s.supervisor) s.supervisor.terminate();
@@ -329,6 +354,11 @@ function renderResult(s) {
 
   renderNotes($('studio-warnings'), p.warnings, 'Warnings');
   renderNotes($('studio-limitations'), p.limitations, 'What this analysis did not establish');
+
+  // A new result means any previously prepared output belongs to a different
+  // analysis. Revoke before the new entry table is drawn, so there is no frame
+  // in which a stale download button is enabled next to fresh rows.
+  resetExtraction(s, 'a new analysis replaced the previous result');
 
   wireEntryExplorer(s);
   wireProjectActions(s);
@@ -404,7 +434,19 @@ function renderEntries(s) {
 
   const frag = document.createDocumentFragment();
   for (const e of slice) {
+    // A native radio: keyboard-operable with no JavaScript key handling, exposed
+    // to a screen reader as a real selection, and — importantly — selecting a row
+    // never starts an extraction. That is a separate, explicit action.
+    const radio = el('input', {
+      type: 'radio', name: 'studio-entry-select', value: e.entryId,
+      id: 'sel-' + e.entryId, class: 'st-entry-radio',
+      checked: s.selectedEntryId === e.entryId,
+    });
+    radio.addEventListener('change', () => { selectEntry(s, e.entryId); });
+    const label = el('label', { class: 'zc-visually-hidden', for: 'sel-' + e.entryId, text: `Select ${e.name}` });
+
     frag.appendChild(el('tr', {}, [
+      el('td', {}, [radio, label]),
       el('td', { class: 'zc-name', text: e.name }),
       el('td', { text: e.methodName }),
       el('td', { text: fmtBytes(e.compressedSize) }),
@@ -434,6 +476,302 @@ function renderEntries(s) {
   }
 }
 
+/* ------------------------------------------------ verified single extraction */
+
+// The extraction panel has one job that matters more than the rest: never leave
+// an enabled download button pointing at bytes that are no longer the answer.
+// Every path that changes what is on screen calls resetExtraction().
+
+function extractLive(text, force = false) {
+  const node = $('studio-extract-live');
+  if (!node) return;
+  if (!extractLive._announce) extractLive._announce = makeAnnouncer(node);
+  extractLive._announce(text, force);
+}
+
+/** Drop any prepared output and return the panel to "nothing selected". */
+function resetExtraction(s, reason) {
+  s.output.revoke(reason || 'the workspace changed');
+  s.selectedEntryId = null;
+  s.extracting = false;
+  const detail = $('studio-extract-detail');
+  const none = $('studio-extract-none');
+  if (detail) detail.hidden = true;
+  if (none) { none.hidden = false; none.textContent = t('extract.none'); }
+  // Only the containers this code FILLS are emptied. The progress element and
+  // its label are static markup that lives in the HTML, so clearing their parent
+  // would delete them for the rest of the session — which is exactly what it did
+  // until the browser gate caught it.
+  for (const id of ['studio-extract-result', 'studio-extract-error', 'studio-extract-reasons']) {
+    const n = $(id);
+    if (n) { n.hidden = true; clear(n); }
+  }
+  const progress = $('studio-extract-progress');
+  if (progress) progress.hidden = true;
+  const bar = $('studio-extract-bar');
+  if (bar) bar.value = 0;
+  const stage = $('studio-extract-stage');
+  if (stage) stage.textContent = '';
+  const runBtn = $('studio-extract-run');
+  if (runBtn) { runBtn.disabled = true; runBtn.textContent = t('extract.ready'); }
+  const cancelBtn = $('studio-extract-cancel');
+  if (cancelBtn) cancelBtn.hidden = true;
+}
+
+function selectEntry(s, entryId) {
+  if (s.extracting) return;                        // a running task owns the panel
+  s.output.revoke('a different entry was selected');
+  s.selectedEntryId = entryId;
+  renderExtractionPanel(s);
+}
+
+/** Show what the evidence allows for the selected entry, before anything runs. */
+function renderExtractionPanel(s) {
+  const host = $('studio-extract');
+  if (!host || !s.project) return;
+  const none = $('studio-extract-none');
+  const detail = $('studio-extract-detail');
+  const facts = $('studio-extract-facts');
+  const reasonsBox = $('studio-extract-reasons');
+  const runBtn = $('studio-extract-run');
+  const resultBox = $('studio-extract-result');
+  const errBox = $('studio-extract-error');
+  if (!detail || !facts || !runBtn) return;
+
+  const entry = s.project.entries.find((e) => e.entryId === s.selectedEntryId);
+  if (!entry) { resetExtraction(s, 'no entry is selected'); return; }
+
+  if (resultBox) { resultBox.hidden = true; clear(resultBox); }
+  if (errBox) { errBox.hidden = true; clear(errBox); }
+  none.hidden = true;
+  detail.hidden = false;
+
+  const gate = evaluateExtractionEligibility(s.project, entry, s.caps, s.policy, {
+    activeExtraction: s.extracting,
+  });
+
+  clear(facts);
+  const rows = [
+    ['Archive path', entry.name],
+    ['Saved as', gate.outputName || '—'],
+    ['Evidence status', t('status.' + entry.status)],
+    ['Compression', entry.methodName],
+    ['Compressed size', fmtBytes(entry.compressedSize)],
+    ['Expected output size', fmtBytes(entry.uncompressedSize)],
+    ['Expected CRC-32', entry.declaredCrc32 === null ? '—' : crcHex(entry.declaredCrc32)],
+    ['Extraction policy', gate.policyVersion],
+  ];
+  if (gate.filenameModified) {
+    rows.push(['Why the name changed', gate.filenameReasons.join('; ') || 'normalised for this system']);
+  }
+  for (const [k, v] of rows) { facts.appendChild(el('dt', { text: k })); facts.appendChild(el('dd', { text: v })); }
+
+  // Reasons and warnings are text, never colour alone, and they are inside a
+  // role="status" region so a screen reader hears why a control is disabled.
+  clear(reasonsBox);
+  const notes = [];
+  for (const r of gate.reasons) notes.push(`Cannot extract: ${r.message}`);
+  for (const w of gate.warnings) notes.push(w);
+  if (notes.length) {
+    reasonsBox.hidden = false;
+    reasonsBox.className = gate.eligible ? 'callout info' : 'callout warn';
+    for (const nline of notes) reasonsBox.appendChild(el('p', { text: nline }));
+  } else {
+    reasonsBox.hidden = true;
+  }
+
+  runBtn.disabled = !gate.eligible || s.extracting;
+  runBtn.textContent = gate.eligible ? t('extract.ready') : t('extract.unavailable');
+  runBtn.setAttribute('aria-describedby', 'studio-extract-reasons');
+
+  if (!runBtn.dataset.wired) {
+    runBtn.dataset.wired = '1';
+    runBtn.addEventListener('click', () => runExtraction(s));
+  }
+  const cancelBtn = $('studio-extract-cancel');
+  if (cancelBtn && !cancelBtn.dataset.wired) {
+    cancelBtn.dataset.wired = '1';
+    cancelBtn.addEventListener('click', () => {
+      if (!s.extracting) return;
+      cancelBtn.disabled = true;
+      cancelBtn.textContent = t('extract.cancelling');
+      s.supervisor.cancel();
+      extractLive('Cancelling the extraction.', true);
+    });
+  }
+}
+
+async function runExtraction(s) {
+  const entry = s.project && s.project.entries.find((e) => e.entryId === s.selectedEntryId);
+  if (!entry || s.extracting) return;
+
+  const runBtn = $('studio-extract-run');
+  const cancelBtn = $('studio-extract-cancel');
+  const progress = $('studio-extract-progress');
+  const bar = $('studio-extract-bar');
+  const stage = $('studio-extract-stage');
+  const resultBox = $('studio-extract-result');
+  const errBox = $('studio-extract-error');
+
+  // A prepared output from a previous run stops being the answer the moment a
+  // new run starts.
+  s.output.revoke('a new extraction started');
+  s.extracting = true;
+  runBtn.disabled = true;
+  runBtn.textContent = t('extract.running');
+  cancelBtn.hidden = false;
+  cancelBtn.disabled = false;
+  cancelBtn.textContent = t('extract.cancel');
+  progress.hidden = false;
+  bar.value = 0;
+  stage.textContent = EXTRACT_PHASE_LABEL.eligibility;
+  resultBox.hidden = true; clear(resultBox);
+  errBox.hidden = true; clear(errBox);
+  extractLive(t('extract.started', { name: entry.name }), true);
+
+  const startedAt = new Date().toISOString();
+  let announcedHalf = false;
+
+  try {
+    const result = await s.supervisor.extractVerifiedEntry(
+      s.file, entry.entryId,
+      { project: s.project, projectId: s.project.id, plan: { entryId: entry.entryId } },
+      (p) => {
+        if (stage) stage.textContent = EXTRACT_PHASE_LABEL[p.phase] || p.phase || 'Working';
+        if (bar && Number.isFinite(p.percent)) bar.value = Math.max(0, Math.min(100, p.percent));
+        // One mid-point announcement, not one per chunk: a live region that
+        // fires every 80 ms is unusable with a screen reader.
+        if (!announcedHalf && Number.isFinite(p.percent) && p.percent >= 50) {
+          announcedHalf = true;
+          extractLive(t('extract.half'));
+        }
+      },
+      () => { /* accepted: the panel already shows these facts */ }
+    );
+
+    s.output.adopt(result.blob, {
+      filename: result.outputFilename,
+      entryId: result.entryId,
+      taskId: result.taskId,
+      projectId: s.project.id,
+      sourceKey: sourceKeyOf(s.file),
+    });
+
+    entry.operationStatus = OP_STATUS.EXTRACTED_VERIFIED;
+    recordOperation(s.project, {
+      entryId: result.entryId, entryName: result.entryName,
+      evidenceStatusAtStart: result.evidenceStatus,
+      operationStatus: OP_STATUS.EXTRACTED_VERIFIED,
+      startedAt, finishedAt: new Date().toISOString(),
+      engineVersion: result.engineVersion, policyVersion: result.policyVersion,
+      sourceFingerprintMatch: 'exact',
+      compressionMethod: result.compressionMethod,
+      expectedSize: result.expectedOutputBytes, actualSize: result.outputBytesProduced,
+      crcExpected: result.crcExpected, crcActual: result.crcActual, crcMatch: true,
+      outputFilename: result.outputFilename, filenameModified: result.filenameModified,
+      durationMs: result.durationMs, warnings: result.warnings, errorCode: '',
+    });
+
+    renderExtractionSuccess(s, result);
+    extractLive(`Extraction verified. ${result.outputBytesProduced} bytes, checksum ${result.crcActualHex} matches. Ready to download.`, true);
+  } catch (e) {
+    const se = toStudioError(e, ERR.INTERNAL_EXTRACTION_ERROR);
+    entry.operationStatus = se.code === ERR.CANCELLED ? OP_STATUS.CANCELLED : OP_STATUS.FAILED;
+    recordOperation(s.project, {
+      entryId: entry.entryId, entryName: entry.name,
+      evidenceStatusAtStart: entry.status,
+      operationStatus: entry.operationStatus,
+      startedAt, finishedAt: new Date().toISOString(),
+      engineVersion: '1.0.0', policyVersion: s.policy.policyVersion,
+      compressionMethod: entry.method,
+      expectedSize: entry.uncompressedSize, actualSize: null,
+      crcExpected: entry.declaredCrc32, crcActual: null, crcMatch: false,
+      outputFilename: '', filenameModified: false,
+      durationMs: null, warnings: [], errorCode: se.code,
+    });
+    renderExtractionFailure(s, se);
+    extractLive(se.code === ERR.CANCELLED
+      ? 'Extraction cancelled. Nothing was produced.'
+      : `Extraction failed. ${se.userMessage}`, true);
+  } finally {
+    s.extracting = false;
+    progress.hidden = true;
+    cancelBtn.hidden = true;
+    // The evidence status is untouched by all of the above; only the operation
+    // status moved. Re-render so the button reflects the new operation state.
+    const stillEligible = evaluateExtractionEligibility(s.project, entry, s.caps, s.policy, {});
+    runBtn.disabled = !stillEligible.eligible;
+    runBtn.textContent = s.output.hasOutput ? t('extract.again') : t('extract.ready');
+  }
+}
+
+function renderExtractionSuccess(s, result) {
+  const box = $('studio-extract-result');
+  if (!box) return;
+  clear(box);
+  box.hidden = false;
+  box.appendChild(el('p', {}, [
+    el('strong', { text: 'Extracted and verified. ' }),
+    `The output is ${result.outputBytesProduced} bytes and its recomputed CRC-32 is `,
+    el('span', { class: 'mono', text: result.crcActualHex }),
+    ', which matches the ',
+    el('span', { class: 'mono', text: result.crcExpectedHex }),
+    ' recorded in the archive.',
+  ]));
+  const dl = el('dl', { class: 'zc-dl' });
+  for (const [k, v] of [
+    ['Download name', result.outputFilename],
+    ['Archive path', result.entryName],
+    ['Evidence status', `${result.evidenceStatus} (unchanged by this operation)`],
+    ['Operation status', result.operationStatus],
+    ['Size', `${result.outputBytesProduced} bytes (expected ${result.expectedOutputBytes})`],
+    ['CRC-32 expected', result.crcExpectedHex],
+    ['CRC-32 recomputed', result.crcActualHex],
+    ['Elapsed', `${result.durationMs} ms`],
+    ['Engine / policy', `${result.engineVersion} / ${result.policyVersion}`],
+  ]) { dl.appendChild(el('dt', { text: k })); dl.appendChild(el('dd', { text: v })); }
+  box.appendChild(dl);
+
+  const btn = el('button', {
+    type: 'button', class: 'btn primary',
+    text: `Download verified output (${result.outputFilename})`,
+  });
+  btn.addEventListener('click', () => {
+    if (!s.output.hasOutput) {
+      btn.disabled = true;
+      btn.textContent = t('extract.expired');
+      extractLive(t('extract.expired'), true);
+      return;
+    }
+    if (!s.output.download()) {
+      renderExtractionFailure(s, new StudioError(ERR.DOWNLOAD_PREPARATION_FAILED, { entryId: result.entryId }));
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Download started';
+    extractLive(`Download of ${result.outputFilename} started.`, true);
+  });
+  box.appendChild(el('div', { class: 'cta cta-start' }, btn));
+
+  for (const l of result.limitations) box.appendChild(el('p', { class: 'note', text: l }));
+}
+
+function renderExtractionFailure(s, se) {
+  const box = $('studio-extract-error');
+  if (!box) return;
+  renderError(box, se);
+  box.appendChild(el('p', {
+    class: 'note',
+    text: se.outputDiscarded
+      ? 'Any bytes produced before the failure were discarded. Nothing partial is offered as a download.'
+      : 'Nothing was produced, and your archive was not modified.',
+  }));
+  // Focus the error so a keyboard user is taken to the explanation rather than
+  // left on a button whose label just changed underneath them.
+  box.setAttribute('tabindex', '-1');
+  try { box.focus({ preventScroll: false }); } catch { /* focus is best-effort */ }
+}
+
 /* -------------------------------------------------------- project actions */
 
 function wireProjectActions(s) {
@@ -441,7 +779,7 @@ function wireProjectActions(s) {
   if (jsonBtn && !jsonBtn.dataset.wired) {
     jsonBtn.dataset.wired = '1';
     jsonBtn.addEventListener('click', () => {
-      downloadText(reportName(s.project, 'json'), JSON.stringify(s.project.analysisReport || s.project, null, 2));
+      downloadText(reportName(s.project, 'json'), JSON.stringify(buildJsonReport(s.project), null, 2));
     });
   }
   const exportBtn = $('studio-export-project');
@@ -483,59 +821,6 @@ function wireProjectActions(s) {
 function reportName(p, ext) {
   const base = (p.source.name || 'archive').replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 60);
   return `veraqis-report-${base}.${ext}`;
-}
-
-/* ------------------------------------------------------------ HTML report */
-
-// Standalone, no external resources, no scripts. Every user-controlled value is
-// escaped here rather than interpolated raw.
-function buildHtmlReport(p) {
-  const esc = (v) => String(v === null || v === undefined ? '' : v)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  const a = p.analysis;
-  const c = a.counts || {};
-  const rows = p.entries.map((e) => `<tr><td>${esc(e.name)}</td><td>${esc(e.methodName)}</td>`
-    + `<td>${esc(e.compressedSize)}</td><td>${esc(e.uncompressedSize)}</td>`
-    + `<td>${e.crcChecked ? (e.crcOk ? 'matched' : 'mismatch') : 'not verified'}</td>`
-    + `<td>${esc(e.status)}</td><td>${esc(e.reasons.join('; '))}</td></tr>`).join('\n');
-  return `<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
-<title>VERAQIS report — ${esc(p.source.name)}</title>
-<style>
-body{font-family:system-ui,sans-serif;max-width:1000px;margin:2rem auto;padding:0 1rem;line-height:1.55;color:#17211f}
-table{width:100%;border-collapse:collapse;font-size:14px;margin:1rem 0}
-th,td{border-bottom:1px solid #dbe4df;padding:8px;text-align:left;vertical-align:top;word-break:break-word}
-th{font-size:12px;text-transform:uppercase;color:#5d6b67}
-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px}dt{color:#5d6b67}dd{margin:0}
-.note{color:#5d6b67;font-size:13px}h1{font-size:22px}
-</style></head><body>
-<h1>VERAQIS analysis report</h1>
-<p class="note">Generated by ${esc(p.generator)} ${esc(p.generatorVersion)} on ${esc(p.analysis.timestamp)}.
-This report describes an analysis performed entirely in a browser. No file was uploaded.</p>
-<h2>Source</h2>
-<dl><dt>File</dt><dd>${esc(p.source.name)}</dd>
-<dt>Size</dt><dd>${esc(p.source.size)} bytes</dd>
-<dt>Format</dt><dd>${esc(a.format ? a.format.label : '')}</dd>
-<dt>Verdict</dt><dd>${esc(a.verdict)}</dd></dl>
-<h2>Findings</h2>
-<dl><dt>Entries</dt><dd>${esc(c.total)}</dd>
-<dt>Verified</dt><dd>${esc(c.verified)}</dd>
-<dt>Structurally valid</dt><dd>${esc(c.structurallyValid)}</dd>
-<dt>Potentially recoverable</dt><dd>${esc(c.potentiallyRecoverable)}</dd>
-<dt>Damaged</dt><dd>${esc(c.damaged)}</dd>
-<dt>Unknown</dt><dd>${esc(c.unknown)}</dd>
-<dt>CRC coverage</dt><dd>${Math.round((a.crcCoverage || 0) * 100)}%</dd></dl>
-<h2>Entries</h2>
-<table><thead><tr><th>Name</th><th>Method</th><th>Compressed</th><th>Uncompressed</th><th>CRC-32</th><th>Status</th><th>Reason</th></tr></thead>
-<tbody>${rows}</tbody></table>
-<h2>Method and limits</h2>
-<ul>${(p.limitations || []).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
-<p class="note">An entry is VERIFIED only when its CRC-32 was recomputed from the archive's bytes and matched.
-A matching CRC-32 is evidence against accidental damage; it is not a cryptographic signature.
-This report contains no data from inside the analysed files.</p>
-</body></html>`;
 }
 
 /* ------------------------------------------------------------ report viewer */
@@ -666,4 +951,4 @@ function renderProjectView() {
   // the empty state in the HTML is already the right thing to show.
 }
 
-export { buildHtmlReport };
+export { buildHtmlReport, buildJsonReport };

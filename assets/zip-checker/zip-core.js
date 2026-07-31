@@ -302,8 +302,38 @@ function concat(a, b) {
 async function verifyCrc(reader, entry, signal) {
   const { method, dataOffset, compressedSize, crc32: expected, encrypted } = entry;
   if (encrypted) return { checked: false, ok: false, reason: 'entry is encrypted' };
-  if (expected === 0 && compressedSize === 0) {
-    return { checked: false, ok: false, reason: 'no stored CRC (empty or streamed entry)' };
+
+  // An entry whose sizes are ZERO is one of two very different things, and the
+  // difference decides whether it can be verified at all.
+  //
+  //  * Streamed (general-purpose bit 3): the header's sizes are placeholders and
+  //    the real values follow the data. Nothing is known from the header, so
+  //    nothing can be checked.
+  //
+  //  * Genuinely empty: the archive declares a zero-length entry. Reading its
+  //    (empty) range gives zero bytes, and CRC-32 of zero bytes is 0 — which is
+  //    exactly what such an entry stores. That is a COMPLETE check, not a vacuous
+  //    one: the entry's content is fully determined by its declared length, and
+  //    there is no further byte to be wrong about. A zero-length entry that
+  //    declares a non-zero CRC is a genuine contradiction and fails below.
+  //
+  // Treating both as unverifiable, as this code originally did, left a correct
+  // empty file permanently unverified — and therefore permanently unextractable.
+  if (entry.hasDataDescriptor && compressedSize === 0 && entry.uncompressedSize === 0) {
+    return { checked: false, ok: false, reason: 'sizes are recorded after the data (streamed entry), so nothing can be checked from the header' };
+  }
+  if (compressedSize === 0 && entry.uncompressedSize === 0) {
+    return {
+      checked: true,
+      ok: expected === 0,
+      reason: expected === 0
+        ? 'the entry is empty and stores the CRC-32 of no bytes (0), which is what it contains'
+        : `the entry declares zero length but a non-zero CRC-32 (${expected >>> 0})`,
+      bytes: 0,
+    };
+  }
+  if (compressedSize === 0) {
+    return { checked: false, ok: false, reason: 'the entry declares zero compressed bytes but a non-zero length' };
   }
   if (dataOffset + compressedSize > reader.size) {
     return { checked: false, ok: false, reason: 'entry data extends past the end of the file' };
@@ -485,9 +515,14 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
   const seenLocalOffsets = new Set();
   const nameCount = new Map();
 
+  // A stable identity per entry. Two entries can share a name, a size and even a
+  // local-header offset, so anything that addresses one entry (extraction, an
+  // operation record, a report row) needs an id that cannot collide. Index plus
+  // header offset is unique by construction and deterministic, so re-analysing
+  // the same bytes yields the same ids.
   const pushEntry = (e) => {
     nameCount.set(e.name, (nameCount.get(e.name) || 0) + 1);
-    entries.push(e);
+    entries.push({ entryId: `e${entries.length}-${e.localHeaderOffset ?? 'x'}`, ...e });
   };
 
   // 1. entries the central directory knows about
@@ -533,6 +568,10 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
       dataOffset: lfh ? lfh.dataOffset : null,
       declaredCrc32: c.crc32, encrypted: c.encrypted,
       hasDataDescriptor: c.hasDataDescriptor,
+      // The raw general-purpose bit flag. Carried through because bits 5, 6 and
+      // 13 decide what may be done with the entry later, and re-deriving them
+      // from booleans loses the ones nothing has needed yet.
+      flags: c.flags,
       status, reasons, source,
       crcChecked: false, crcOk: false, crcReason: '',
       nameFlags,
@@ -568,6 +607,7 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
       localHeaderOffset: h.offset, dataOffset: h.dataOffset,
       declaredCrc32: h.crc32, encrypted: h.encrypted,
       hasDataDescriptor: h.hasDataDescriptor,
+      flags: h.flags,
       status, reasons, source: 'local-header-scan',
       crcChecked: false, crcOk: false, crcReason: '',
       nameFlags,
@@ -603,6 +643,10 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
       const r = await verifyCrc(reader, {
         method: e.method, dataOffset: e.dataOffset, compressedSize: e.compressedSize,
         uncompressedSize: e.uncompressedSize, crc32: e.declaredCrc32, encrypted: e.encrypted,
+        // Needed to tell a genuinely empty entry from a streamed one whose sizes
+        // are merely placeholders. Omitting it made every empty entry look
+        // streamed, and therefore unverifiable.
+        hasDataDescriptor: e.hasDataDescriptor,
       }, signal);
       e.crcChecked = r.checked; e.crcOk = r.ok; e.crcReason = r.reason;
       if (r.checked && r.ok) {
@@ -662,7 +706,10 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
     limitations.push('Entries whose CRC could not be recomputed are never reported as verified.');
   }
   limitations.push('A matching CRC-32 is evidence against accidental damage. It is not a cryptographic signature and does not prove the archive was not deliberately modified.');
-  limitations.push('This check analyses the archive. It does not extract, repair or modify it.');
+  // Scoped to the analysis pass on purpose. Single-entry verified extraction is a
+  // separate, explicit operation that never runs during analysis, so this sentence
+  // must not read as a claim about the product as a whole.
+  limitations.push('This analysis does not extract, repair or modify the archive. Extraction, where offered, is a separate action you choose.');
 
   return finish({ verdict });
 

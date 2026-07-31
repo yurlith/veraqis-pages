@@ -7,7 +7,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>VERAQIS Studio — private archive analysis in your browser</title>
-<meta name="description" content="A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports." />
+<meta name="description" content="A local-first archive analysis workspace that runs entirely in your browser. No uploads, no account, no application backend. Analyse ZIP archives and export reports." />
 <link rel="canonical" href="https://veraqis.tech/studio/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="manifest" href="/manifest.webmanifest" />
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="VERAQIS Local Recovery Studio" />
-<meta property="og:description" content="A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports." />
+<meta property="og:description" content="A local-first archive analysis workspace that runs entirely in your browser. No uploads, no account, no application backend. Analyse ZIP archives and export reports." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -24,7 +24,7 @@
 <meta property="og:url" content="https://veraqis.tech/studio/" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="VERAQIS Local Recovery Studio" />
-<meta name="twitter:description" content="A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports." />
+<meta name="twitter:description" content="A local-first archive analysis workspace that runs entirely in your browser. No uploads, no account, no application backend. Analyse ZIP archives and export reports." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -52,7 +52,7 @@
       "@id": "https://veraqis.tech/studio/#webpage",
       "url": "https://veraqis.tech/studio/",
       "name": "VERAQIS Studio — private archive analysis in your browser",
-      "description": "A local-first archive analysis workspace that runs entirely in your browser. No upload, no account, no server. Analyse ZIP archives and export reports.",
+      "description": "A local-first archive analysis workspace that runs entirely in your browser. No uploads, no account, no application backend. Analyse ZIP archives and export reports.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -118,9 +118,9 @@
 <section>
   <div class="wrap">
     <div class="callout ok">
-      <strong>Your files stay on this device.</strong> Studio has no server, no account and no
-      upload step. Archives are read in this browser tab, the original file is never modified, and
-      nothing is saved unless you explicitly ask for it.
+      <strong>Your files stay on this device.</strong> Studio has no application backend, no account
+      and no upload step. Archives are read in this browser tab, the original file is never modified,
+      and nothing is saved unless you explicitly ask for it.
       <a href="/studio/#privacy">How that is enforced</a>.
     </div>
     <noscript><div class="callout warn">
@@ -165,6 +165,8 @@
       <li><strong>Classify</strong> every entry as verified, structurally valid, potentially
         recoverable, damaged or unknown — each with the reason that produced it.</li>
       <li><strong>Keep</strong> the result as a local project, if you ask for it.</li>
+      <li><strong>Download</strong> one verified entry at a time, revalidated after extraction —
+        see <a href="/studio/#extraction">Download individually verified files</a> below.</li>
       <li><strong>Export</strong> a machine-readable JSON report, a standalone HTML report, or the
         whole project as a portable file.</li>
       <li><strong>Re-open</strong> a report later, on any machine, without the original archive.</li>
@@ -174,8 +176,10 @@
     <p>"Nothing is uploaded" is a claim worth checking rather than trusting. Four things make it true
       here, and you can verify each yourself:</p>
     <ul>
-      <li><strong>There is no server.</strong> The site is static files. No endpoint exists that
-        could receive an archive.</li>
+      <li><strong>There is no application backend or file-upload endpoint.</strong> The site is
+        static files delivered by a web server or CDN, which is what serves the HTML, CSS and
+        JavaScript you are reading. Nothing on the other side of that connection can receive an
+        archive: no endpoint exists that accepts one.</li>
       <li><strong>The browser blocks it.</strong> This page ships
         <code>default-src 'none'</code> with <code>connect-src 'self'</code>: no third-party origin
         can be contacted at all, and the browser enforces that, not us.</li>
@@ -206,16 +210,47 @@
         </tbody>
       </table>
     </div>
-    <p>These are <em>evidence</em> statuses. When extraction arrives, it will carry a separate
-      operation status, so an extracted entry never silently becomes a verified one.</p>
+    <p>These are <em>evidence</em> statuses. Extraction carries a separate <em>operation</em>
+      status, so an extracted entry never silently becomes a verified one — and a failed extraction
+      never makes a verified entry stop being verified. The two axes answer different questions:
+      what the archive proves, and what you asked Studio to do.</p>
+
+    <h2 id="extraction">Download individually verified files</h2>
+    <p>Select one entry that is already <strong>Verified</strong> and Studio will read it back out of
+      the archive, decompress it if it is compressed, recompute its CRC-32 over exactly the bytes it
+      is about to hand you, and offer a download only if that checksum matches the value the archive
+      records. <strong>Available only when VERAQIS can revalidate the extracted output.</strong></p>
+    <ul class="checks">
+      <li><strong>One entry, one explicit action.</strong> Selecting a row does nothing on its own.
+        There is no extract-all, no automatic extraction and no rebuilt archive.</li>
+      <li><strong>The source archive is never changed.</strong> The browser opens it read-only;
+        Studio has no write path to it. The download is a new file.</li>
+      <li><strong>Potentially recoverable entries are not extracted in this release.</strong>
+        Neither are structurally valid, damaged or unknown entries — if the checksum has not been
+        recomputed and matched, there is nothing to revalidate against.</li>
+      <li><strong>Encrypted entries are refused.</strong> No password is guessed, derived, stored or
+        requested.</li>
+      <li><strong>Stored and Deflate only.</strong> Deflate uses the browser's own decoder, checked
+        against a known-answer test first. No decompression library is loaded from anywhere.</li>
+      <li><strong>The download name is not the archive path.</strong> A single file is saved as one
+        file, so <code>../../etc/passwd</code> is saved as <code>passwd</code> — and Studio tells you
+        that it changed the name and why.</li>
+      <li><strong>Nothing partial is ever offered.</strong> Cancel, a size mismatch, a checksum
+        mismatch or a crash all discard the bytes produced so far.</li>
+      <li class="no"><strong>A matching CRC-32 is not proof of authorship.</strong> It shows the
+        extracted bytes are the bytes the archive recorded. It is not a cryptographic authenticity
+        guarantee, and <a href="/research/crc32-collisions-that-pass-gzip-t/">we built the collisions
+        that prove the difference</a>.</li>
+    </ul>
 
     <h2 id="limits">What Studio does not do</h2>
     <ul class="checks">
-      <li class="no"><strong>It does not extract, repair or rewrite anything.</strong> This release
-        analyses. Verified extraction and rebuilt archives are later phases, each gated on its own
-        measured benchmark.</li>
+      <li class="no"><strong>It does not repair or rewrite anything.</strong> It analyses, and it
+        can hand you one verified file at a time. Rebuilt archives, multi-file export and any form
+        of speculative recovery are later phases, each gated on its own measured benchmark.</li>
       <li class="no"><strong>It never modifies your file.</strong> The archive is opened read-only by
-        the browser; Studio has no write path to it at all.</li>
+        the browser; Studio has no write path to it at all. Extraction produces a new download and
+        leaves the archive byte-for-byte as it found it.</li>
       <li class="no"><strong>Encrypted entries stay unknown.</strong> Encryption is detected and
         reported. Nothing guesses, derives or requests a password.</li>
       <li class="no"><strong>Only Stored and Deflate get a checksum check.</strong> BZIP2, LZMA,
@@ -226,16 +261,19 @@
       <li class="no"><strong>A matching CRC-32 is not a signature.</strong> It is strong evidence
         against accidental damage and none at all against deliberate modification —
         <a href="/research/crc32-collisions-that-pass-gzip-t/">we built the collisions that prove it</a>.</li>
-      <li><strong>It works offline</strong> once the page has loaded, because there was never a
-        server in the loop.</li>
+      <li><strong>It works offline</strong> once the page has loaded, because no application
+        backend was ever in the loop.</li>
     </ul>
 
     <h2 id="browsers">Browser support</h2>
     <p>Studio needs module Web Workers and, for compressed entries,
-      <code>DecompressionStream('deflate-raw')</code>. Current Chrome, Edge, Firefox and Safari all
-      provide them. Saving projects needs IndexedDB; offline use needs Service Workers. Where a
-      feature is missing, Studio disables that control and says why — it never reports an unverified
-      entry as verified because a checksum could not be computed.</p>
+      <code>DecompressionStream('deflate-raw')</code>. Saving projects needs IndexedDB; offline use
+      needs Service Workers. Where a feature is missing, Studio disables that control and says why —
+      it never reports an unverified entry as verified because a checksum could not be computed.</p>
+    <p><strong>Chrome, Edge and Firefox are verified in this release. Safari is expected to support
+      the required APIs but has not yet been verified by the VERAQIS test suite.</strong> That is a
+      gap in our evidence, not a claim about Safari: we do not mark a browser as supported on the
+      strength of a compatibility table.</p>
     <p>The File System Access API is <strong>not</strong> required: Firefox does not implement it, so
       exports fall back to ordinary downloads and no capability is lost.</p>
 
@@ -295,7 +333,7 @@
     </div>
     <hr>
     <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
-      this site is fully static and makes no network requests. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+      this site is statically hosted and does not upload files or send telemetry. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
   </div>
 </footer>
 

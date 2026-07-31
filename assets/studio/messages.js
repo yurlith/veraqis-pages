@@ -11,7 +11,7 @@ const EN = {
   'app.tagline': 'Private archive analysis in your browser',
 
   'privacy.local': 'Files stay on this device',
-  'privacy.detail': 'No upload, no account, no server. Your archive is read in this tab and is never modified.',
+  'privacy.detail': 'No uploads, no account, no application backend. Your archive is read in this tab and is never modified.',
 
   'worker.starting': 'Starting the analysis engine…',
   'worker.ready': 'Engine ready',
@@ -72,6 +72,35 @@ const EN = {
 
   'fingerprint.mismatch': 'This is not the file this project was made from.',
   'fingerprint.weak': 'The size matches but the modification time differs.',
+
+  // Extraction. Every label states the state it belongs to, because a button
+  // whose text does not match what it will do is the defect §17 exists to stop.
+  'extract.heading': 'Download a verified file',
+  'extract.none': 'No entry is selected.',
+  'extract.unavailable': 'Extraction unavailable',
+  'extract.ready': 'Download verified file',
+  'extract.running': 'Extracting…',
+  'extract.cancel': 'Cancel extraction',
+  'extract.cancelling': 'Cancelling…',
+  'extract.download': 'Download verified output',
+  'extract.again': 'Run extraction again',
+  'extract.expired': 'This output has expired — run the extraction again',
+  'extract.started': 'Extracting {name}.',
+  'extract.half': 'Extraction half complete.',
+  'extract.verified': 'Extraction verified. {bytes} bytes, checksum {crc} matches. Ready to download.',
+  'extract.failed': 'Extraction failed. {reason}',
+  'extract.cancelled': 'Extraction cancelled. Nothing was produced.',
+  'extract.discarded': 'Any bytes produced before the failure were discarded. Nothing partial is offered as a download.',
+  'extract.notDiscarded': 'Nothing was produced, and your archive was not modified.',
+  'extract.crcMeaning': 'CRC confirms that the extracted bytes match the checksum recorded by the archive. CRC is not a cryptographic authenticity guarantee.',
+
+  'operation.READY': 'Ready',
+  'operation.EXTRACTING': 'Extracting',
+  'operation.CANCELLING': 'Cancelling',
+  'operation.EXTRACTED_VERIFIED': 'Extracted and verified',
+  'operation.FAILED': 'Failed',
+  'operation.CANCELLED': 'Cancelled',
+  'operation.OUTPUT_EXPIRED': 'Output expired',
 
   'import.untrusted': 'Imported files are treated as untrusted: validated, never executed.',
   'import.downgraded': '{n} entry claimed VERIFIED without a matching checksum and was downgraded to UNKNOWN.',

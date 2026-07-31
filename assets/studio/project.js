@@ -9,22 +9,39 @@
 
 import { StudioError, ERR } from './errors.js';
 
-export const PROJECT_SCHEMA = 'veraqis-project/1';
-export const PROJECT_SCHEMA_VERSION = 1;
-export const STUDIO_VERSION = '1.0.0';
+export const PROJECT_SCHEMA = 'veraqis-project/2';
+export const PROJECT_SCHEMA_VERSION = 2;
+export const STUDIO_VERSION = '1.1.0';
+
+// Version 1 projects still import. The only differences are additive — per-entry
+// `entryId` and `flags`, and the `operations` ledger — so a v1 file is migrated
+// rather than refused. A project exported before extraction existed describes an
+// analysis that is still perfectly valid.
+export const ACCEPTED_SCHEMAS = new Set(['veraqis-project/1', 'veraqis-project/2']);
 
 /** Operation status — deliberately separate from the evidence status. An entry
- *  that was extracted does not thereby become VERIFIED. */
+ *  that was extracted does not thereby become VERIFIED, and an entry that failed
+ *  to extract does not thereby stop being VERIFIED. */
 export const OP_STATUS = {
   NOT_SELECTED: 'NOT_SELECTED',
   READY: 'READY',
   EXTRACTING: 'EXTRACTING',
+  CANCELLING: 'CANCELLING',
   EXTRACTED_VERIFIED: 'EXTRACTED_VERIFIED',
   EXTRACTED_UNVERIFIED: 'EXTRACTED_UNVERIFIED',
   SKIPPED: 'SKIPPED',
   FAILED: 'FAILED',
   CANCELLED: 'CANCELLED',
+  OUTPUT_EXPIRED: 'OUTPUT_EXPIRED',
 };
+
+/** The only operation type this release records. */
+export const OPERATION_TYPE = { EXTRACT_VERIFIED_ENTRY: 'EXTRACT_VERIFIED_ENTRY' };
+
+/** How many operation records a project keeps. Older ones are dropped, oldest
+ *  first: an operation ledger is a convenience, not an audit log, and it must
+ *  not be able to grow a project without bound. */
+export const MAX_OPERATIONS = 200;
 
 const CAPS = { STR: 2000, NAME: 1024, ARR: 200000, NOTE: 10000 };
 
@@ -71,7 +88,8 @@ export async function fingerprintFile(file, mode = 'fast') {
   }
 }
 
-/** Does this file look like the one the project was built from? */
+/** Does this file look like the one the project was built from? Metadata only —
+ *  cheap, synchronous, and NOT sufficient to authorise extraction. */
 export function fingerprintMatches(fp, file) {
   if (!fp) return { match: false, reason: 'the project has no source fingerprint' };
   if (fp.size !== file.size) {
@@ -81,6 +99,81 @@ export function fingerprintMatches(fp, file) {
     return { match: 'weak', reason: 'the size matches but the modification time differs' };
   }
   return { match: true, reason: 'size and modification time match' };
+}
+
+/**
+ * The binding check extraction actually uses: re-read the file's content and
+ * compare it against the hashes recorded at analysis time.
+ *
+ * A matching name and size is not evidence — two builds of the same installer
+ * are the same size, and a user with two downloads of one archive has two files
+ * with one name. So this recomputes the first and last 64 KiB (or the whole file
+ * when the project holds a full SHA-256) and refuses on any difference.
+ *
+ * No new full-file hash is computed unless the project already carries one:
+ * re-hashing a gigabyte before every download would be a cost with no extra
+ * evidence, because head+tail already fails on any edit that changes either end
+ * and on any change of length.
+ *
+ * @returns {Promise<{match:true|'weak'|false, reason:string, checks:string[]}>}
+ */
+export async function verifySourceBinding(fp, file) {
+  const checks = [];
+  if (!fp) return { match: false, reason: 'this project has no source fingerprint, so the file cannot be re-identified', checks };
+  if (!file || typeof file.slice !== 'function') {
+    return { match: false, reason: 'no file was supplied', checks };
+  }
+
+  if (fp.size !== file.size) {
+    return { match: false, reason: `size differs: the project recorded ${fp.size} bytes, this file is ${file.size}`, checks };
+  }
+  checks.push('size');
+
+  const subtle = globalThis.crypto && globalThis.crypto.subtle;
+  const sha = async (blob) => {
+    const d = await subtle.digest('SHA-256', await blob.arrayBuffer());
+    return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const hasContent = !!(fp.sha256 || (fp.headSha256 && fp.tailSha256));
+  if (!hasContent) {
+    // Size and name alone. Explicitly reported as weak so a caller cannot mistake
+    // it for a match; the extraction policy refuses to act on it.
+    return {
+      match: 'weak',
+      reason: 'this project recorded no content fingerprint, only a size and a name',
+      checks,
+    };
+  }
+  if (!subtle) {
+    return { match: false, reason: 'the Web Crypto API is unavailable, so the file cannot be re-identified by content', checks };
+  }
+
+  try {
+    if (fp.sha256) {
+      const full = await sha(file);
+      checks.push('sha256');
+      if (full !== fp.sha256) {
+        return { match: false, reason: 'the file contents differ from the analysed file (SHA-256 mismatch)', checks };
+      }
+      return { match: true, reason: 'size and full SHA-256 match the analysed file', checks };
+    }
+
+    const CHUNK = 65536;
+    const head = await sha(file.slice(0, Math.min(CHUNK, file.size)));
+    checks.push('head-sha256');
+    if (head !== fp.headSha256) {
+      return { match: false, reason: 'the first 64 KiB differ from the analysed file', checks };
+    }
+    const tail = file.size > CHUNK ? await sha(file.slice(Math.max(0, file.size - CHUNK))) : head;
+    checks.push('tail-sha256');
+    if (tail !== fp.tailSha256) {
+      return { match: false, reason: 'the last 64 KiB differ from the analysed file', checks };
+    }
+    return { match: true, reason: 'size, first 64 KiB and last 64 KiB match the analysed file', checks };
+  } catch (e) {
+    return { match: false, reason: `the file could not be re-read to confirm it: ${String(e && e.message).slice(0, 120)}`, checks };
+  }
 }
 
 /* ---------------------------------------------------------------- construction */
@@ -122,9 +215,13 @@ export function createProject({ file, fingerprint, engineResult, settings }) {
       nestedArchives: engineResult.nestedArchives || [],
     },
 
-    entries: (a.entries || []).map((e) => ({
+    entries: (a.entries || []).map((e, i) => ({
+      // Stable identity. The engine supplies one; the fallback keeps older
+      // engine results addressable rather than silently unextractable.
+      entryId: str(e.entryId, 64) || `e${i}-${num(e.localHeaderOffset) ?? 'x'}`,
       name: str(e.name, CAPS.NAME),
       method: num(e.method),
+      flags: num(e.flags),
       methodName: str(e.methodName, 64),
       compressedSize: num(e.compressedSize),
       uncompressedSize: num(e.uncompressedSize),
@@ -146,10 +243,62 @@ export function createProject({ file, fingerprint, engineResult, settings }) {
     warnings: arr(a.warnings).map((w) => str(w, 500)),
     limitations: arr(a.limitations).map((l) => str(l, 500)),
     recoveryPlan: null,          // Phase 4
-    exportedArtifacts: [],       // Phase 3
+    exportedArtifacts: [],       // retained for v1 compatibility; superseded by operations
+    // The extraction ledger. Metadata only: what was attempted, whether the
+    // output re-verified, and under which engine and policy. Never any bytes.
+    operations: [],
     notes: '',
     settingsSnapshot: settings || null,
   };
+}
+
+/* ------------------------------------------------- extraction operations */
+
+/**
+ * Build one operation record from an extraction outcome.
+ *
+ * Deliberately explicit about what is NOT here: no output bytes, no Blob URL, no
+ * archive bytes, no decompressed content, no filesystem path. A test asserts
+ * their absence on every run, because "the report is metadata" is the kind of
+ * property that decays one convenient field at a time.
+ */
+export function makeExtractionOperation(o = {}) {
+  return {
+    operationId: `o${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
+    operationType: OPERATION_TYPE.EXTRACT_VERIFIED_ENTRY,
+    entryId: str(o.entryId, 64),
+    entryName: str(o.entryName, CAPS.NAME),
+    evidenceStatusAtStart: str(o.evidenceStatusAtStart, 40),
+    operationStatus: OP_STATUS[str(o.operationStatus, 40)] || OP_STATUS.FAILED,
+    startedAt: str(o.startedAt, 40),
+    finishedAt: str(o.finishedAt, 40),
+    engineVersion: str(o.engineVersion, 40),
+    policyVersion: str(o.policyVersion, 60),
+    sourceFingerprintMatch: str(o.sourceFingerprintMatch, 20),
+    compressionMethod: num(o.compressionMethod),
+    expectedSize: num(o.expectedSize),
+    actualSize: num(o.actualSize),
+    crcExpected: num(o.crcExpected),
+    crcActual: num(o.crcActual),
+    crcMatch: bool(o.crcMatch),
+    outputFilename: str(o.outputFilename, 300),
+    filenameModified: bool(o.filenameModified),
+    durationMs: num(o.durationMs),
+    warnings: arr(o.warnings).map((w) => str(w, 300)),
+    errorCode: str(o.errorCode, 60),
+  };
+}
+
+/** Append an operation record, oldest-first eviction at the cap. */
+export function recordOperation(project, op) {
+  if (!project) return project;
+  if (!Array.isArray(project.operations)) project.operations = [];
+  project.operations.push(makeExtractionOperation(op));
+  if (project.operations.length > MAX_OPERATIONS) {
+    project.operations.splice(0, project.operations.length - MAX_OPERATIONS);
+  }
+  project.updated = new Date().toISOString();
+  return project;
 }
 
 /* ------------------------------------------------------------------ validation */
@@ -164,8 +313,8 @@ export function validateProject(input) {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     return { ok: false, project: null, errors: ['the file does not contain a JSON object'], unknownFields };
   }
-  if (input.schema !== PROJECT_SCHEMA) {
-    errors.push(`schema is "${str(input.schema, 60)}", expected "${PROJECT_SCHEMA}"`);
+  if (!ACCEPTED_SCHEMAS.has(input.schema)) {
+    errors.push(`schema is "${str(input.schema, 60)}", expected one of ${[...ACCEPTED_SCHEMAS].join(', ')}`);
   }
   const v = Number(input.schemaVersion);
   if (!Number.isFinite(v)) errors.push('schemaVersion is missing or not a number');
@@ -185,7 +334,7 @@ export function validateProject(input) {
 
   const KNOWN = new Set(['schema', 'schemaVersion', 'generator', 'generatorVersion', 'id', 'created',
     'updated', 'source', 'analysis', 'entries', 'warnings', 'limitations', 'recoveryPlan',
-    'exportedArtifacts', 'notes', 'settingsSnapshot']);
+    'exportedArtifacts', 'operations', 'notes', 'settingsSnapshot', 'imported']);
   for (const k of Object.keys(input)) if (!KNOWN.has(k)) unknownFields.push(k);
 
   // Rebuild from scratch: nothing from the file is carried through unchecked.
@@ -238,9 +387,14 @@ export function validateProject(input) {
         name: str(n && n.name, CAPS.NAME), size: num(n && n.size), status: str(n && n.status, 40),
       })),
     },
-    entries: arr(input.entries).map((e) => ({
+    entries: arr(input.entries).map((e, i) => ({
+      // A v1 project has no entryId. Synthesising one from the position and the
+      // recorded header offset is a migration, not an invention: it restores the
+      // same value this build would have written for the same analysis.
+      entryId: str(e && e.entryId, 64) || `e${i}-${num(e && e.localHeaderOffset) ?? 'x'}`,
       name: str(e && e.name, CAPS.NAME),
       method: num(e && e.method),
+      flags: num(e && e.flags),
       methodName: str(e && e.methodName, 64),
       compressedSize: num(e && e.compressedSize),
       uncompressedSize: num(e && e.uncompressedSize),
@@ -262,6 +416,10 @@ export function validateProject(input) {
     limitations: arr(input.limitations).map((l) => str(l, 500)),
     recoveryPlan: null,
     exportedArtifacts: [],
+    // Operation records are rebuilt field by field like everything else. An
+    // imported operation is a claim about something that happened elsewhere: it
+    // is displayed as history and never grants a permission.
+    operations: arr(input.operations).slice(0, MAX_OPERATIONS).map((o) => makeExtractionOperation(o || {})),
     notes: str(input.notes, CAPS.NOTE),
     settingsSnapshot: sanitizePlain(input.settingsSnapshot),
   };
@@ -274,7 +432,24 @@ export function validateProject(input) {
       e.status = 'UNKNOWN';
       e.reasons.push('Downgraded on import: the project claimed VERIFIED without a matching recomputed CRC.');
     }
+    // No imported project may arrive with an entry already in an extraction
+    // state. Output bytes are never persisted, so a stored "ready to download"
+    // could only ever be stale — and a stale enabled download button is exactly
+    // the defect §17 forbids.
+    e.operationStatus = OP_STATUS.NOT_SELECTED;
   }
+
+  // The same rule, one level up: an operation record may not claim the output
+  // re-verified unless its own CRC fields say so. A ledger entry is a claim
+  // about the past; it is displayed, never trusted.
+  for (const op of project.operations) {
+    if (op.operationStatus === OP_STATUS.EXTRACTED_VERIFIED && !(op.crcMatch && op.crcExpected === op.crcActual)) {
+      op.operationStatus = OP_STATUS.FAILED;
+      op.errorCode = 'CRC_MISMATCH';
+      op.warnings = [...op.warnings, 'Downgraded on import: this record claimed a verified extraction without matching checksums.'];
+    }
+  }
+
   return { ok: true, project, errors: [], unknownFields };
 }
 
