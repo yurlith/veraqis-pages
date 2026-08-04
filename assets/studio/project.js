@@ -9,15 +9,15 @@
 
 import { StudioError, ERR } from './errors.js';
 
-export const PROJECT_SCHEMA = 'veraqis-project/2';
-export const PROJECT_SCHEMA_VERSION = 2;
-export const STUDIO_VERSION = '1.1.0';
+export const PROJECT_SCHEMA = 'veraqis-project/3';
+export const PROJECT_SCHEMA_VERSION = 3;
+export const STUDIO_VERSION = '1.2.0';
 
 // Version 1 projects still import. The only differences are additive — per-entry
 // `entryId` and `flags`, and the `operations` ledger — so a v1 file is migrated
 // rather than refused. A project exported before extraction existed describes an
 // analysis that is still perfectly valid.
-export const ACCEPTED_SCHEMAS = new Set(['veraqis-project/1', 'veraqis-project/2']);
+export const ACCEPTED_SCHEMAS = new Set(['veraqis-project/1', 'veraqis-project/2', 'veraqis-project/3']);
 
 /** Operation status — deliberately separate from the evidence status. An entry
  *  that was extracted does not thereby become VERIFIED, and an entry that failed
@@ -35,8 +35,24 @@ export const OP_STATUS = {
   OUTPUT_EXPIRED: 'OUTPUT_EXPIRED',
 };
 
-/** The only operation type this release records. */
-export const OPERATION_TYPE = { EXTRACT_VERIFIED_ENTRY: 'EXTRACT_VERIFIED_ENTRY' };
+export const OPERATION_TYPE = {
+  EXTRACT_VERIFIED_ENTRY: 'EXTRACT_VERIFIED_ENTRY',
+  BUILD_VERIFIED_ARCHIVE: 'BUILD_VERIFIED_ARCHIVE',
+};
+
+/** Batch operation statuses. A separate axis from evidence, like every other
+ *  operation status, and separate again from the per-entry operation status. */
+export const BATCH_OP_STATUS = {
+  NOT_SELECTED: 'BATCH_NOT_SELECTED',
+  PLAN_READY: 'BATCH_PLAN_READY',
+  BUILDING: 'BATCH_BUILDING',
+  CANCELLING: 'BATCH_CANCELLING',
+  OUTPUT_VERIFYING: 'BATCH_OUTPUT_VERIFYING',
+  EXPORT_VERIFIED: 'BATCH_EXPORT_VERIFIED',
+  FAILED: 'BATCH_FAILED',
+  CANCELLED: 'BATCH_CANCELLED',
+  OUTPUT_EXPIRED: 'BATCH_OUTPUT_EXPIRED',
+};
 
 /** How many operation records a project keeps. Older ones are dropped, oldest
  *  first: an operation ledger is a convenience, not an audit log, and it must
@@ -247,6 +263,10 @@ export function createProject({ file, fingerprint, engineResult, settings }) {
     // The extraction ledger. Metadata only: what was attempted, whether the
     // output re-verified, and under which engine and policy. Never any bytes.
     operations: [],
+    // The batch-export ledger. Separate from  because a batch is one
+    // action over many entries, and flattening it into per-entry records would
+    // lose the thing that matters most: which entries went into WHICH archive.
+    batchOperations: [],
     notes: '',
     settingsSnapshot: settings || null,
   };
@@ -287,6 +307,69 @@ export function makeExtractionOperation(o = {}) {
     warnings: arr(o.warnings).map((w) => str(w, 300)),
     errorCode: str(o.errorCode, 60),
   };
+}
+
+/**
+ * Build one batch-export operation record.
+ *
+ * Metadata only, and deliberately explicit about what is absent: no output
+ * bytes, no Blob URL, no archive bytes, no compressed payload, no temporary
+ * path. What it does keep is the path MAPPING, because "where did my file end
+ * up in the new archive, and why is it named that?" is the question a user asks
+ * afterwards, and the answer is not reconstructable from anything else.
+ */
+export function makeBatchOperation(o = {}) {
+  return {
+    operationId: `bo${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
+    operationType: OPERATION_TYPE.BUILD_VERIFIED_ARCHIVE,
+    planId: str(o.planId, 64),
+    planHash: str(o.planHash, 80),
+    operationStatus: BATCH_OP_STATUS[String(o.operationStatus || '').replace(/^BATCH_/, '')]
+      || (Object.values(BATCH_OP_STATUS).includes(o.operationStatus) ? o.operationStatus : BATCH_OP_STATUS.FAILED),
+    startedAt: str(o.startedAt, 40),
+    finishedAt: str(o.finishedAt, 40),
+    durationMs: num(o.durationMs),
+    engineVersion: str(o.engineVersion, 40),
+    writerVersion: str(o.writerVersion, 40),
+    policyVersion: str(o.policyVersion, 60),
+    sourceFingerprintMatch: str(o.sourceFingerprintMatch, 20),
+    includedCount: num(o.includedCount),
+    excludedCount: num(o.excludedCount),
+    outputName: str(o.outputName, 300),
+    outputSize: num(o.outputSize),
+    outputSha256: str(o.outputSha256, 64),
+    manifestName: str(o.manifestName, 300),
+    entryCount: num(o.entryCount),
+    selfVerified: bool(o.selfVerified),
+    verificationSummary: sanitizePlain(o.verificationSummary),
+    pathMappings: arr(o.pathMappings).slice(0, CAPS.ARR).map((m) => ({
+      entryId: str(m && m.entryId, 64),
+      originalPath: str(m && m.originalPath, CAPS.NAME),
+      outputPath: str(m && m.outputPath, CAPS.NAME),
+      modified: bool(m && m.modified),
+      reasons: arr(m && m.reasons).map((r) => str(r, 200)),
+    })),
+    excludedEntries: arr(o.excludedEntries).map((e) => ({
+      entryId: str(e && e.entryId, 64),
+      name: str(e && e.name, CAPS.NAME),
+      evidenceStatus: str(e && e.evidenceStatus, 40),
+      reasonCodes: arr(e && e.reasonCodes).map((c) => str(c, 60)),
+    })),
+    warnings: arr(o.warnings).map((w) => str(w, 300)),
+    errorCode: str(o.errorCode, 60),
+  };
+}
+
+/** Append a batch operation record, oldest-first eviction at the cap. */
+export function recordBatchOperation(project, op) {
+  if (!project) return project;
+  if (!Array.isArray(project.batchOperations)) project.batchOperations = [];
+  project.batchOperations.push(makeBatchOperation(op));
+  if (project.batchOperations.length > MAX_OPERATIONS) {
+    project.batchOperations.splice(0, project.batchOperations.length - MAX_OPERATIONS);
+  }
+  project.updated = new Date().toISOString();
+  return project;
 }
 
 /** Append an operation record, oldest-first eviction at the cap. */
@@ -334,7 +417,7 @@ export function validateProject(input) {
 
   const KNOWN = new Set(['schema', 'schemaVersion', 'generator', 'generatorVersion', 'id', 'created',
     'updated', 'source', 'analysis', 'entries', 'warnings', 'limitations', 'recoveryPlan',
-    'exportedArtifacts', 'operations', 'notes', 'settingsSnapshot', 'imported']);
+    'exportedArtifacts', 'operations', 'batchOperations', 'notes', 'settingsSnapshot', 'imported']);
   for (const k of Object.keys(input)) if (!KNOWN.has(k)) unknownFields.push(k);
 
   // Rebuild from scratch: nothing from the file is carried through unchecked.
@@ -420,6 +503,7 @@ export function validateProject(input) {
     // imported operation is a claim about something that happened elsewhere: it
     // is displayed as history and never grants a permission.
     operations: arr(input.operations).slice(0, MAX_OPERATIONS).map((o) => makeExtractionOperation(o || {})),
+    batchOperations: arr(input.batchOperations).slice(0, MAX_OPERATIONS).map((o) => makeBatchOperation(o || {})),
     notes: str(input.notes, CAPS.NOTE),
     settingsSnapshot: sanitizePlain(input.settingsSnapshot),
   };

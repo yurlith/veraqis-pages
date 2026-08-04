@@ -46,6 +46,38 @@ export const ERR = {
   BLOB_CREATION_FAILED: 'BLOB_CREATION_FAILED',
   DOWNLOAD_PREPARATION_FAILED: 'DOWNLOAD_PREPARATION_FAILED',
   INTERNAL_EXTRACTION_ERROR: 'INTERNAL_EXTRACTION_ERROR',
+
+  /* ---- verified batch export (Phase 4) ---------------------------------- */
+  BATCH_NO_ELIGIBLE_ENTRIES: 'BATCH_NO_ELIGIBLE_ENTRIES',
+  BATCH_ENTRY_LIMIT_EXCEEDED: 'BATCH_ENTRY_LIMIT_EXCEEDED',
+  BATCH_OUTPUT_LIMIT_EXCEEDED: 'BATCH_OUTPUT_LIMIT_EXCEEDED',
+  BATCH_DUPLICATE_SELECTION: 'BATCH_DUPLICATE_SELECTION',
+  BATCH_PATH_INVALID: 'BATCH_PATH_INVALID',
+  OUTPUT_PATH_COLLISION_UNRESOLVED: 'OUTPUT_PATH_COLLISION_UNRESOLVED',
+  ZIP64_OUTPUT_REQUIRED: 'ZIP64_OUTPUT_REQUIRED',
+  BATCH_PLAN_STALE: 'BATCH_PLAN_STALE',
+  BATCH_ENTRY_REVALIDATION_FAILED: 'BATCH_ENTRY_REVALIDATION_FAILED',
+  BATCH_SELF_VERIFICATION_FAILED: 'BATCH_SELF_VERIFICATION_FAILED',
+  BATCH_ALREADY_RUNNING: 'BATCH_ALREADY_RUNNING',
+  /** A capability this build does not implement was requested. Distinct from
+   *  EXTRACTION_UNSUPPORTED, which means the *browser* cannot do it: this one
+   *  means the code is not in this build at all. */
+  CAPABILITY_NOT_AVAILABLE: 'CAPABILITY_NOT_AVAILABLE',
+  BATCH_MANIFEST_INVALID: 'BATCH_MANIFEST_INVALID',
+  INTERNAL_BATCH_ERROR: 'INTERNAL_BATCH_ERROR',
+};
+
+/** Stages a batch export failure can be attributed to. */
+export const BATCH_STAGE = {
+  PLAN: 'plan',
+  SOURCE_BINDING: 'source-binding',
+  REVALIDATE: 'revalidating-entries',
+  WRITE_HEADERS: 'writing-local-headers',
+  WRITE_PAYLOAD: 'writing-payloads',
+  WRITE_DIRECTORY: 'writing-central-directory',
+  WRITE_EOCD: 'writing-eocd',
+  SELF_VERIFY: 'self-verifying-output',
+  FINALIZE: 'preparing-download',
 };
 
 /** Pipeline stages an extraction failure can be attributed to. */
@@ -150,6 +182,11 @@ const CATALOG = {
     action: 'Nothing was decompressed. Choose the original archive, or run a new analysis on this one — a matching name is not evidence that it is the same file.',
     recoverable: true,
   },
+  [ERR.CAPABILITY_NOT_AVAILABLE]: {
+    message: 'This build of VERAQIS does not include that capability.',
+    action: 'Nothing was produced and nothing was requested over the network. The capability list on the Studio overview shows what this build does include.',
+    recoverable: false,
+  },
   [ERR.EXTRACTION_UNSUPPORTED]: {
     message: 'This browser cannot extract this entry.',
     action: 'Analysis is unaffected. The capability list on the Studio overview shows which feature is missing.',
@@ -228,6 +265,74 @@ const CATALOG = {
   [ERR.INTERNAL_EXTRACTION_ERROR]: {
     message: 'Something went wrong during extraction.',
     action: 'The output was discarded and your archive was not modified. Nothing partial is offered as a download.',
+    recoverable: true,
+  },
+
+  /* ---- verified batch export --------------------------------------------- */
+
+  [ERR.BATCH_NO_ELIGIBLE_ENTRIES]: {
+    message: 'None of the selected entries can be exported.',
+    action: 'Only entries whose checksum VERAQIS recomputed and matched can go into a verified archive. The list below says why each one was refused.',
+    recoverable: false,
+  },
+  [ERR.BATCH_ENTRY_LIMIT_EXCEEDED]: {
+    message: 'Too many entries were selected for one archive.',
+    action: 'Export in smaller batches. The limit exists so the review screen stays something a person can actually check.',
+    recoverable: true,
+  },
+  [ERR.BATCH_OUTPUT_LIMIT_EXCEEDED]: {
+    message: 'The archive this selection would produce is larger than this device can build safely.',
+    action: 'Nothing was written. Select fewer or smaller entries — the limit is set from the memory this browser reports.',
+    recoverable: true,
+  },
+  [ERR.BATCH_DUPLICATE_SELECTION]: {
+    message: 'The same entry was selected more than once.',
+    action: 'Each entry can appear in the archive only once. Clear the selection and choose again.',
+    recoverable: true,
+  },
+  [ERR.BATCH_PATH_INVALID]: {
+    message: 'An entry name could not be turned into a safe path inside the new archive.',
+    action: 'That entry is excluded. The others are unaffected.',
+    recoverable: false,
+  },
+  [ERR.OUTPUT_PATH_COLLISION_UNRESOLVED]: {
+    message: 'Two entries want the same place in the new archive and the conflict could not be resolved.',
+    action: 'Nothing was written. VERAQIS renames rather than overwrites, but it ran out of safe alternatives — deselect one of the conflicting entries.',
+    recoverable: true,
+  },
+  [ERR.ZIP64_OUTPUT_REQUIRED]: {
+    message: 'This selection would need a ZIP64 archive, which this release does not write.',
+    action: 'Nothing was written. Export in smaller batches: ZIP64 output is a separate, later piece of work and a half-written ZIP64 archive would be worse than none.',
+    recoverable: true,
+  },
+  [ERR.BATCH_PLAN_STALE]: {
+    message: 'The export plan no longer matches the open project or the selected file.',
+    action: 'Nothing was written. Review the selection again so the plan you confirm is the plan that gets built.',
+    recoverable: true,
+  },
+  [ERR.BATCH_ENTRY_REVALIDATION_FAILED]: {
+    message: 'An entry failed its checks while the archive was being built.',
+    action: 'The whole archive was discarded — VERAQIS does not offer a partial archive. The entry that failed is named below; deselect it and build again.',
+    recoverable: true,
+  },
+  [ERR.BATCH_SELF_VERIFICATION_FAILED]: {
+    message: 'The archive VERAQIS built did not pass its own re-reading.',
+    action: 'It was discarded and never offered for download. This is the check that exists precisely so a malformed archive never reaches you.',
+    recoverable: true,
+  },
+  [ERR.BATCH_ALREADY_RUNNING]: {
+    message: 'An archive is already being built.',
+    action: 'Wait for it to finish, or cancel it, then start the next one.',
+    recoverable: true,
+  },
+  [ERR.BATCH_MANIFEST_INVALID]: {
+    message: 'The archive manifest could not be built correctly.',
+    action: 'Nothing was written. A verified archive always carries a manifest describing what is in it and why.',
+    recoverable: false,
+  },
+  [ERR.INTERNAL_BATCH_ERROR]: {
+    message: 'Something went wrong while building the archive.',
+    action: 'The partial archive was discarded and your source file was not modified.',
     recoverable: true,
   },
 };

@@ -15,6 +15,113 @@ export const LEVEL = {
   UNSUPPORTED: 'Unsupported',
 };
 
+/**
+ * Named product capabilities.
+ *
+ * Each is a separate switch on purpose. "Studio can extract" and "Studio can
+ * build an archive" are different promises with different evidence behind them,
+ * and a single boolean would let one imply the other. The registry is the one
+ * place that answers "is this feature on?", and the worker, the writer and the
+ * UI all ask it rather than deciding for themselves.
+ *
+ * `enabled` is a build-time property of this release. It is deliberately NOT a
+ * user-toggleable or payment-derived flag: there is no entitlement machinery
+ * here, no `isPaid`, and nothing client-side that could be flipped to unlock
+ * something. If a capability ever becomes commercial, the check stays in this
+ * one place and gains a real, server-independent licence input — which is a
+ * separate decision from this phase.
+ */
+export const CAPABILITY = {
+  VERIFIED_SINGLE_ENTRY_EXTRACTION: 'verified_single_entry_extraction',
+  VERIFIED_BATCH_EXPORT: 'verified_batch_export',
+  REBUILT_ZIP: 'rebuilt_zip',
+  LOCAL_HEADER_RECOVERY: 'local_header_recovery',
+  EXPERIMENTAL_RECOVERY: 'experimental_recovery',
+  WASM_ZIP_CORE: 'wasm_zip_core',
+};
+
+const CAPABILITY_REGISTRY = {
+  [CAPABILITY.VERIFIED_SINGLE_ENTRY_EXTRACTION]: {
+    enabled: true,
+    label: 'Download individually verified files',
+    scope: 'One entry at a time, VERIFIED only, re-checksummed after extraction.',
+  },
+  // Declared here, implemented elsewhere. The free build ships no batch-export
+  // implementation at all, so this stays false and there is no flag to flip:
+  // `enableCapability` is only ever called by a module that registers a working
+  // handler, and that module is not part of the free deployment.
+  [CAPABILITY.VERIFIED_BATCH_EXPORT]: {
+    enabled: false,
+    label: 'Build verified-files archive',
+    scope: 'Several VERIFIED entries into a new ZIP built from scratch, self-verified before download.',
+    unavailableReason: 'Not included in this build of VERAQIS.',
+  },
+  // Declared so the boundaries are visible in code rather than only in prose.
+  [CAPABILITY.REBUILT_ZIP]: {
+    enabled: false,
+    label: 'Rebuilt archive',
+    scope: 'Repairing the source archive itself. Not implemented.',
+  },
+  [CAPABILITY.LOCAL_HEADER_RECOVERY]: {
+    enabled: false,
+    label: 'Local-header recovery',
+    scope: 'Recovering entries the index does not describe. Not implemented.',
+  },
+  [CAPABILITY.EXPERIMENTAL_RECOVERY]: {
+    enabled: false,
+    label: 'Experimental recovery',
+    scope: 'Speculative reconstruction. Not implemented.',
+  },
+  // Phase G / G4 (docs/web-studio/WASM_FEASIBILITY.md, owner-approved
+  // 2026-08-04): `wasmZipEngine` (wasm-engine.js) is a full `ArchiveEngine` —
+  // same contract as `engine.js`'s `zipEngine` — backed by the wasm32 build
+  // of phx_zip_core. Its verdict/status mapping (wasm-verdict.js) passes the
+  // 23-fixture parity contract against zip-core.js in Node AND in real
+  // Chrome, Edge and Firefox (tools/wasm-zip-core/browser-parity.mjs), under
+  // the real CSP. `enabled: true` and first in `engine.js`'s `REGISTRY`: this
+  // is now the live analysis engine for a real Studio user, whenever its own
+  // `detect()` claims the file — it refuses (falls through to `zipEngine`)
+  // above the device's recommended size bound (no chunked/streamed parse) or
+  // if the capability were ever disabled. `wasmEngine` in `featureMatrix`
+  // below now reflects this instead of a hardcoded CSP-blocked refusal.
+  [CAPABILITY.WASM_ZIP_CORE]: {
+    enabled: true,
+    label: 'Rust/WASM analysis core',
+    scope: 'Single-source-of-truth ZIP structure walk, shared with the desktop recovery engine. Verified against the JavaScript reference core across 23 fixtures, in Node and in Chrome/Edge/Firefox.',
+  },
+};
+
+/** Is a named capability available in this build? */
+export function capabilityEnabled(id) {
+  const c = CAPABILITY_REGISTRY[id];
+  return !!(c && c.enabled);
+}
+
+/**
+ * Mark an optional capability as present, because its implementation registered.
+ *
+ * This is not a feature flag and it is not reachable from the UI, a URL, a
+ * project file or the DOM. The only caller is the worker's
+ * `registerOptionalCapability`, which is itself only reached by importing an
+ * implementation module — and in the free build that module does not exist.
+ * Enabling therefore cannot be simulated: there would be no handler behind it.
+ *
+ * A capability that was never declared is not creatable here either; unknown
+ * ids are ignored rather than added.
+ */
+export function enableCapability(id) {
+  const c = CAPABILITY_REGISTRY[id];
+  if (!c) return false;
+  c.enabled = true;
+  delete c.unavailableReason;
+  return true;
+}
+
+/** The whole registry, for the capability strip and for tests. */
+export function listCapabilities() {
+  return Object.entries(CAPABILITY_REGISTRY).map(([id, c]) => ({ id, ...c }));
+}
+
 const probe = (fn) => { try { return !!fn(); } catch { return false; } };
 
 /** Synchronous platform probes. Cheap; safe to call at boot. */
@@ -115,9 +222,17 @@ export function featureMatrix(c) {
     extractDeflate: c.deflateRaw
       ? { level: LEVEL.SUPPORTED, why: '' }
       : { level: LEVEL.UNSUPPORTED, why: "This browser has no DecompressionStream('deflate-raw'), so compressed entries cannot be decoded here. Analysis is unaffected, stored entries can still be extracted, and no external decompression library is loaded to work around it." },
+    // Verified batch export. Note what it does NOT need: `CompressionStream`.
+    // The writer copies each entry's already-compressed payload after verifying
+    // it, so no browser compressor is involved and Firefox's lack of the File
+    // System Access API is irrelevant. What it does need is the same worker and
+    // Blob slicing as extraction, plus a verified decoder for any Deflate entry
+    // in the selection — because verifying a Deflate entry means decoding it.
+    verifiedBatchExport: need(c.worker && c.blobSlice && c.webCrypto,
+      'Building a verified archive needs Web Workers, Blob slicing and the Web Crypto API.'),
     zipWriting: c.deflateRawCompress
-      ? { level: LEVEL.EXPERIMENTAL, why: 'Building a new archive is planned; not enabled in this release.' }
-      : { level: LEVEL.UNSUPPORTED, why: "This browser has no CompressionStream('deflate-raw')." },
+      ? { level: LEVEL.EXPERIMENTAL, why: 'Re-compressing entries is not part of verified batch export, which copies already-verified compressed payloads.' }
+      : { level: LEVEL.UNSUPPORTED, why: "This browser has no CompressionStream('deflate-raw'). Verified batch export does not require it." },
     saveProjects: need(c.indexedDB,
       'Saving a project on this device needs IndexedDB, which is unavailable (private-browsing mode can disable it).'),
     fingerprintSha256: need(c.webCrypto,
@@ -130,9 +245,17 @@ export function featureMatrix(c) {
     opfsStaging: c.opfs
       ? { level: LEVEL.SUPPORTED, why: '' }
       : { level: LEVEL.UNSUPPORTED, why: 'The private origin filesystem is unavailable.' },
-    // WebAssembly is present in every tested browser but is blocked by this
-    // site's Content-Security-Policy, which omits 'wasm-unsafe-eval' on purpose.
-    wasmEngine: { level: LEVEL.UNSUPPORTED, why: "The site's security policy does not permit WebAssembly. The analysis engine is JavaScript by design." },
+    // Phase G / G4: the studio page class's CSP now permits WebAssembly, and
+    // wasmZipEngine is the live analysis engine whenever CAPABILITY.WASM_ZIP_CORE
+    // is enabled (it is, by default — see capabilities registry above) and the
+    // browser has WebAssembly at all. EXPERIMENTAL, not SUPPORTED: it is newly
+    // shipped, not yet used for extraction, and Safari is not yet verified —
+    // this matches the LEVEL vocabulary's own distinction, not an overclaim.
+    wasmEngine: capabilityEnabled(CAPABILITY.WASM_ZIP_CORE)
+      ? (c.wasm
+        ? { level: LEVEL.EXPERIMENTAL, why: 'The Rust/WASM analysis core is live for this session. Verified against the JavaScript reference core across 23 fixtures in Node, Chrome, Edge and Firefox; Safari not yet verified; not yet used for extraction.' }
+        : { level: LEVEL.UNSUPPORTED, why: 'This browser has no WebAssembly support.' })
+      : { level: LEVEL.UNSUPPORTED, why: "The site's security policy does not permit WebAssembly on this page." },
   };
 }
 

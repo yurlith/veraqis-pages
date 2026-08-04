@@ -117,3 +117,102 @@ export function extractionPolicy(caps = {}) {
 
 /** The policy used when no capability probe is available (tests, worker boot). */
 export const DEFAULT_EXTRACTION_POLICY = extractionPolicy({});
+
+/* ------------------------------------------------------ batch export policy */
+
+export const BATCH_EXPORT_POLICY_VERSION = 'veraqis-batch-export-policy/1';
+
+/** ZIP32 structural ceilings. Not preferences — the format's own field widths.
+ *  APPNOTE 4.4.x: 16-bit entry counts, 32-bit offsets and sizes. */
+export const ZIP32 = {
+  MAX_ENTRIES: 0xffff,
+  MAX_OFFSET: 0xffffffff,
+  MAX_SIZE: 0xffffffff,
+};
+
+/**
+ * Build the batch-export policy for this device.
+ *
+ * The aggregate ceiling is NOT the single-entry ceiling multiplied by anything.
+ * Batch export has a materially better memory profile than single-entry
+ * extraction, and the limits reflect the measured difference rather than a
+ * guess in either direction:
+ *
+ *   Single-entry extraction must HOLD the decompressed output, because
+ *   `EXTRACTED_VERIFIED` promises the CRC was computed over the bytes handed to
+ *   the user. Batch export hands over the COMPRESSED payload, so it verifies by
+ *   streaming the decoder and never accumulates decompressed bytes at all. What
+ *   it accumulates is the compressed payload — which for the archives this
+ *   feature exists for is smaller, often much smaller, than the plaintext.
+ *
+ * The ceiling therefore governs the OUTPUT ARCHIVE, and the decompressed size
+ * is bounded separately only to stop a bomb from spending unbounded CPU.
+ *
+ * @param {object} caps result of capabilities.detect()
+ */
+export function batchExportPolicy(caps = {}) {
+  const memGB = caps.deviceMemoryGB || 4;
+  // 48 MiB of output archive per GB of reported memory. Higher per-GB than the
+  // single-entry ceiling because the held bytes are compressed rather than
+  // expanded; floored so a small device can still export a folder of documents,
+  // capped so a large one does not invite a gigabyte in the JS heap.
+  const maxOutputBytes = Math.min(768 * MiB, Math.max(96 * MiB, memGB * 48 * MiB));
+
+  return {
+    policyVersion: BATCH_EXPORT_POLICY_VERSION,
+
+    /* --- what may be exported --------------------------------------------- */
+    requiredEvidenceStatus: 'VERIFIED',
+    supportedMethods: [0, 8],
+    requireContentFingerprint: true,
+
+    /* --- batch shape ------------------------------------------------------- */
+    // Well under the ZIP32 ceiling of 65 535. The binding constraint in practice
+    // is the review screen: a user cannot meaningfully confirm a list of 60 000
+    // paths, and an export nobody reviewed is not a verified export.
+    maxSelectedEntries: 4096,
+    maxOutputBytes,
+    // Total decompressed bytes the verification pass will stream. Streaming, so
+    // this bounds CPU rather than memory.
+    maxTotalUncompressedBytes: maxOutputBytes * 4,
+    maxCentralDirectoryBytes: 16 * MiB,
+    maxManifestBytes: 4 * MiB,
+    maxPlanEntries: 4096,
+
+    /* --- paths -------------------------------------------------------------- */
+    maxSegmentLength: 100,
+    maxPathLength: 240,
+    maxDepth: 16,
+    fallbackName: 'veraqis-entry',
+    manifestName: 'VERAQIS-VERIFIED-MANIFEST.json',
+
+    /* --- ZIP32 -------------------------------------------------------------- */
+    zip32: ZIP32,
+    allowZip64Output: false,
+
+    /* --- determinism --------------------------------------------------------- */
+    // A fixed DOS timestamp. The DOS epoch (1980-01-01 00:00:00) is what most
+    // reproducible-build tooling uses, and using the wall clock would make two
+    // builds of one plan differ for no reason a user could act on.
+    deterministicDosDate: 0x0021,   // year 1980, month 1, day 1
+    deterministicDosTime: 0x0000,
+    useSourceTimestamps: false,
+
+    /* --- streaming ----------------------------------------------------------- */
+    chunkBytes: 1 * MiB,
+    progressIntervalMs: 120,
+    largeOutputWarnBytes: 128 * MiB,
+    slowOperationWarnMs: 60000,
+
+    /* --- lifecycle ------------------------------------------------------------ */
+    blobUrlTtlMs: 300000,
+    blobUrlRevokeDelayMs: 20000,
+    maxConcurrentExports: 1,
+
+    basis: caps.deviceMemoryGB
+      ? `navigator.deviceMemory = ${caps.deviceMemoryGB} GB`
+      : 'navigator.deviceMemory unavailable (Firefox); assuming a 4 GB device',
+  };
+}
+
+export const DEFAULT_BATCH_EXPORT_POLICY = batchExportPolicy({});

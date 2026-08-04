@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>Studio settings and local data | VERAQIS Studio</title>
@@ -129,7 +129,7 @@
     </div></noscript>
 
     <div id="studio-root" data-view="settings">
-      <form id="studio-settings-form" onsubmit="return false">
+      <form id="studio-settings-form">
         <h2 class="mt-0">Analysis</h2>
         <p><label><input type="checkbox" id="set-verify-crc" /> Recompute CRC-32 checksums during analysis</label></p>
         <p class="note">Turning this off makes analysis faster and structural only. No entry is

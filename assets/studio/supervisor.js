@@ -10,6 +10,7 @@ import {
   isValidResponse, TASK_TIMEOUT_MS, IDLE_DISPOSE_MS,
 } from './protocol.js';
 import { StudioError, ERR, errorFromJSON } from './errors.js';
+import { enableCapability } from './capabilities.js';
 
 // Inside the service worker's /studio/ scope, so the worker client it creates is
 // controlled and its script can be served from the offline cache. The modules it
@@ -57,6 +58,13 @@ export class WorkerSupervisor {
       if (m.type === RES.READY) {
         this.protocol = m.protocol;
         this.engines = m.engines || [];
+        // The worker owns the implementations, so it is the authority on which
+        // optional capabilities exist. The page mirrors that into its registry
+        // so the UI offers exactly what the worker can do. This grants nothing
+        // on its own: the worker re-checks every request, so a page that
+        // claimed more than the worker has still gets a typed refusal.
+        this.optionalCapabilities = Array.isArray(m.optionalCapabilities) ? m.optionalCapabilities : [];
+        for (const id of this.optionalCapabilities) enableCapability(id);
         if (m.protocol !== PROTOCOL_VERSION) {
           // A stale cached worker is the realistic cause. Refuse it rather than
           // speaking a protocol we do not understand.
@@ -99,6 +107,18 @@ export class WorkerSupervisor {
         return;
       }
       if (m.type === RES.EXTRACTION_ERROR) { this._finish(); a.reject(errorFromJSON(m.error)); return; }
+
+      /* ---- verified batch export (protocol v3) ---- */
+      if (m.type === RES.BATCH_PLAN_RESULT) { this._finish(); a.resolve(m); return; }
+      if (m.type === RES.BATCH_EXPORT_ACCEPTED) { if (a.onAccepted) a.onAccepted(m); return; }
+      if (m.type === RES.BATCH_EXPORT_PROGRESS) { a.onProgress(m); return; }
+      if (m.type === RES.BATCH_EXPORT_RESULT) { this._finish(); a.resolve(m.result); return; }
+      if (m.type === RES.BATCH_EXPORT_CANCELLED) {
+        this._finish();
+        a.reject(new StudioError(ERR.CANCELLED, { outputDiscarded: true }));
+        return;
+      }
+      if (m.type === RES.BATCH_EXPORT_ERROR) { this._finish(); a.reject(errorFromJSON(m.error)); return; }
     };
 
     // A hard worker failure: the script threw at load, or the worker died.
@@ -219,6 +239,69 @@ export class WorkerSupervisor {
         }));
       }
     });
+  }
+
+  /**
+   * Ask the worker to evaluate a selection and, if it qualifies, build the plan.
+   *
+   * The plan stays in the worker; what comes back is a view of it for the user
+   * to review. `buildVerifiedArchive` then refers to it by id only.
+   */
+  async createBatchExportPlan(project, selectedEntryIds) {
+    if (this.active) throw new StudioError(ERR.BATCH_ALREADY_RUNNING);
+    await this._spawn();
+    if (this._idleTimer) clearTimeout(this._idleTimer);
+
+    const taskId = newTaskId();
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => this._handleCrash('planning did not complete within the timeout'), TASK_TIMEOUT_MS);
+      this.active = { taskId, resolve, reject, onProgress: () => {}, timer };
+      this._status('running');
+      try {
+        this.worker.postMessage({
+          type: REQ.CREATE_BATCH_EXPORT_PLAN, taskId,
+          projectId: project.id, project, selectedEntryIds,
+        });
+      } catch (e) {
+        this._finish();
+        reject(new StudioError(ERR.INTERNAL_BATCH_ERROR, { detail: 'could not hand the selection to the worker: ' + (e && e.message) }));
+      }
+    });
+  }
+
+  /**
+   * Build the archive for a plan the worker already holds.
+   *
+   * Only the plan ID crosses the boundary. The main thread cannot submit a
+   * modified plan because it never held the authoritative one.
+   */
+  async buildVerifiedArchive(file, planId, project, onProgress = () => {}, onAccepted = () => {}) {
+    if (this.active) throw new StudioError(ERR.BATCH_ALREADY_RUNNING);
+    await this._spawn();
+    if (this._idleTimer) clearTimeout(this._idleTimer);
+
+    const taskId = newTaskId();
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => this._handleCrash('the archive build did not report progress within the timeout'), TASK_TIMEOUT_MS);
+      this.active = { taskId, planId, resolve, reject, onProgress, onAccepted, timer };
+      this._status('running');
+      try {
+        this.worker.postMessage({
+          type: REQ.BUILD_VERIFIED_ARCHIVE, taskId,
+          projectId: project.id, project, planId, file,
+        });
+      } catch (e) {
+        this._finish();
+        reject(new StudioError(ERR.INTERNAL_BATCH_ERROR, { detail: 'could not start the archive build: ' + (e && e.message) }));
+      }
+    });
+  }
+
+  /** Cancel a running batch export. */
+  cancelBatchExport() {
+    if (!this.active || !this.worker) return false;
+    this.worker.postMessage({ type: REQ.CANCEL_BATCH_EXPORT, taskId: this.active.taskId });
+    return true;
   }
 
   /** Tell the worker to drop anything it still holds for a task. */

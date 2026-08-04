@@ -11,7 +11,10 @@
 // served from a stale cache: it would ask for an extraction and get silence.
 // The supervisor refuses a version it does not understand, which turns that
 // failure mode into a visible "reload" prompt.
-export const PROTOCOL_VERSION = 2;
+// v3 adds verified batch export. Bumped rather than extended in place for the
+// same reason v2 was: a page that speaks v3 must not drive a v2 worker served
+// from a stale cache, because it would ask for an archive and get silence.
+export const PROTOCOL_VERSION = 3;
 
 /** main thread -> worker */
 export const REQ = {
@@ -28,7 +31,32 @@ export const REQ = {
   CANCEL_TASK: 'CANCEL_TASK',
   /** v2: drop any output the worker still holds for a task. */
   DISPOSE_OUTPUT: 'DISPOSE_OUTPUT',
+  /** v3: verified batch export. */
+  CREATE_BATCH_EXPORT_PLAN: 'CREATE_BATCH_EXPORT_PLAN',
+  BUILD_VERIFIED_ARCHIVE: 'BUILD_VERIFIED_ARCHIVE',
+  CANCEL_BATCH_EXPORT: 'CANCEL_BATCH_EXPORT',
+  DISPOSE_BATCH_OUTPUT: 'DISPOSE_BATCH_OUTPUT',
   DISPOSE: 'DISPOSE',
+};
+
+/**
+ * Requests that belong to an *optional* capability — one whose implementation
+ * may not be in this build at all.
+ *
+ * The free build ships no batch-export implementation. It still has to answer
+ * these requests, because silence is indistinguishable from a hung worker, so
+ * it replies with a typed CAPABILITY_NOT_AVAILABLE. Knowing the name of a
+ * capability is not having it: this map is names only and builds nothing.
+ *
+ * Protocol version is deliberately NOT bumped. No message changed shape, no
+ * message was removed, and a v3 client talking to a build without the
+ * capability gets a typed error it already knows how to render.
+ */
+export const OPTIONAL_CAPABILITY_REQUESTS = {
+  [REQ.CREATE_BATCH_EXPORT_PLAN]: 'verified_batch_export',
+  [REQ.BUILD_VERIFIED_ARCHIVE]: 'verified_batch_export',
+  [REQ.CANCEL_BATCH_EXPORT]: 'verified_batch_export',
+  [REQ.DISPOSE_BATCH_OUTPUT]: 'verified_batch_export',
 };
 
 /** worker -> main thread */
@@ -48,6 +76,28 @@ export const RES = {
   EXTRACTION_ERROR: 'EXTRACTION_ERROR',
   EXTRACTION_CANCELLED: 'EXTRACTION_CANCELLED',
   OUTPUT_DISPOSED: 'OUTPUT_DISPOSED',
+  /** v3 batch-export responses. Distinct names so a batch reply can never be
+   *  applied by a handler that only checks for "a result". */
+  BATCH_PLAN_RESULT: 'BATCH_PLAN_RESULT',
+  BATCH_EXPORT_ACCEPTED: 'BATCH_EXPORT_ACCEPTED',
+  BATCH_EXPORT_PROGRESS: 'BATCH_EXPORT_PROGRESS',
+  BATCH_EXPORT_RESULT: 'BATCH_EXPORT_RESULT',
+  BATCH_EXPORT_ERROR: 'BATCH_EXPORT_ERROR',
+  BATCH_EXPORT_CANCELLED: 'BATCH_EXPORT_CANCELLED',
+  BATCH_OUTPUT_DISPOSED: 'BATCH_OUTPUT_DISPOSED',
+};
+
+/** Stages reported in BATCH_EXPORT_PROGRESS, in the order they occur. */
+export const BATCH_PHASE_LABEL = {
+  plan: 'Preparing the export plan',
+  'source-binding': 'Confirming this is the analysed file',
+  'revalidating-entries': 'Re-checking each selected file',
+  'writing-local-headers': 'Writing file headers',
+  'writing-payloads': 'Writing verified files',
+  'writing-central-directory': 'Writing the archive index',
+  'writing-eocd': 'Closing the archive',
+  'self-verifying-output': 'Re-reading the finished archive',
+  'preparing-download': 'Preparing the download',
 };
 
 /** Stages reported in EXTRACTION_PROGRESS, in the order they occur. */

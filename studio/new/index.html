@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; worker-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>Analyze a local archive | VERAQIS Studio</title>
@@ -186,11 +186,17 @@
           <button type="button" data-filter="DAMAGED" aria-pressed="false">Damaged</button>
           <button type="button" data-filter="UNKNOWN" aria-pressed="false">Unknown</button>
         </div>
+        <div id="studio-batch-toolbar" class="st-batch-bar" role="group" aria-label="Verified files selected for export">
+          <button type="button" id="studio-batch-all" class="btn ghost st-sm">Select all verified</button>
+          <button type="button" id="studio-batch-none" class="btn ghost st-sm">Clear selection</button>
+          <span id="studio-batch-summary" class="note">No files selected for export.</span>
+        </div>
         <p class="note" id="studio-entries-info"></p>
         <div class="table-scroll">
           <table>
             <caption class="zc-visually-hidden">Per-entry analysis results</caption>
             <thead><tr>
+              <th scope="col">Export</th>
               <th scope="col">Select</th>
               <th scope="col">Name</th><th scope="col">Method</th><th scope="col">Compressed</th>
               <th scope="col">Uncompressed</th><th scope="col">Header offset</th>
@@ -223,6 +229,38 @@
           </div>
         </div>
         <p id="studio-extract-live" role="status" aria-live="polite" class="zc-visually-hidden"></p>
+
+        <h2 id="batch-heading">Build a verified-files archive</h2>
+        <p class="sub">Tick the verified files you want, then build a new ZIP containing only
+          those. VERAQIS re-checks every one of them as it writes, rebuilds the archive structure
+          from scratch, and re-reads the finished archive before offering it. Your source archive
+          is not changed.</p>
+        <div id="studio-batch" class="st-extract" role="group" aria-labelledby="batch-heading">
+          <p class="note" id="studio-batch-none-selected">No verified files are selected.</p>
+          <div class="cta cta-start">
+            <button type="button" id="studio-batch-review" class="btn primary" disabled>Review verified export</button>
+          </div>
+
+          <div id="studio-batch-plan" hidden>
+            <div id="studio-batch-plan-summary" class="callout info" role="status"></div>
+            <dl id="studio-batch-facts" class="zc-dl"></dl>
+            <div id="studio-batch-included"></div>
+            <div id="studio-batch-excluded"></div>
+            <div class="cta cta-start">
+              <button type="button" id="studio-batch-build" class="btn primary">Build verified-files archive</button>
+              <button type="button" id="studio-batch-cancel" class="btn ghost" hidden>Cancel archive build</button>
+              <button type="button" id="studio-batch-discard" class="btn ghost">Change selection</button>
+            </div>
+            <div id="studio-batch-progress" hidden>
+              <p id="studio-batch-stage"></p>
+              <progress id="studio-batch-progress-bar" max="100" value="0" class="zc-progress">Building…</progress>
+            </div>
+          </div>
+
+          <div id="studio-batch-result" class="callout ok" role="status" hidden></div>
+          <div id="studio-batch-error" class="callout warn" role="alert" hidden></div>
+        </div>
+        <p id="studio-batch-live" role="status" aria-live="polite" class="zc-visually-hidden"></p>
 
         <h2>Keep this result</h2>
         <p class="sub">Nothing above is stored unless you choose to store it. A reload discards it.</p>

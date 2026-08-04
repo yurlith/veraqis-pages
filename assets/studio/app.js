@@ -10,11 +10,13 @@ import { detect, featureMatrix, sizePolicy, LEVEL } from './capabilities.js';
 import { ProjectStore, loadSettings, saveSettings, resetSettings, deleteAllLocalData, DEFAULT_SETTINGS } from './store.js';
 import {
   createProject, fingerprintFile, fingerprintMatches, serializeProject,
-  projectFileName, recordOperation, OP_STATUS,
+  projectFileName, recordOperation, recordBatchOperation, OP_STATUS, BATCH_OP_STATUS,
 } from './project.js';
 import { StudioError, ERR, toStudioError } from './errors.js';
 import { STAGE_LABEL, EXTRACT_PHASE_LABEL } from './protocol.js';
-import { extractionPolicy } from './policy.js';
+import { extractionPolicy, batchExportPolicy } from './policy.js';
+import { CAPABILITY, capabilityEnabled } from './capabilities.js';
+import { BATCH_PHASE_LABEL } from './protocol.js';
 import { evaluateExtractionEligibility, OPERATION_STATUS } from './eligibility.js';
 import { OutputRegistry, sourceKeyOf } from './output.js';
 import { crcHex } from './crc32.js';
@@ -54,6 +56,14 @@ async function boot(mount) {
     selectedEntryId: null,
     extracting: false,
     output: new OutputRegistry(policy),
+    // Batch export state. `batchSelection` is a Set of entry ids; the plan lives
+    // in the WORKER and only its id and a display view are held here, so the UI
+    // cannot hand back a modified plan.
+    batchPolicy: batchExportPolicy(caps),
+    batchSelection: new Set(),
+    batchPlan: null,
+    batchBuilding: false,
+    batchOutput: new OutputRegistry(batchExportPolicy(caps)),
   };
 
   // The shell is present in the HTML and visible from first paint; JavaScript
@@ -212,6 +222,7 @@ function renderNew(s) {
         // A crashed worker may have been mid-extraction. Whatever it produced is
         // unverified by definition, so the prepared output goes with it.
         resetExtraction(s, 'the engine stopped');
+        resetBatch(s, 'the engine stopped');
         if (detail) announce(t('worker.crashed'), true);
       }
     },
@@ -245,6 +256,7 @@ function renderNew(s) {
     // before any of it can be re-offered next to the new result.
     s.output.revokeIfStale({ sourceKey: sourceKeyOf(file) });
     resetExtraction(s, 'a new file was selected');
+    resetBatch(s, 'a new file was selected');
     errBox.hidden = true;
     if (file.size > s.sizes.hard) {
       renderError(errBox, new StudioError(ERR.MEMORY_LIMIT, {
@@ -292,6 +304,7 @@ function renderNew(s) {
   const clearBtn = $('studio-clear');
   if (clearBtn) clearBtn.addEventListener('click', () => {
     resetExtraction(s, 'the workspace was cleared');
+    resetBatch(s, 'the workspace was cleared');
     s.project = null; s.file = null; s.saved = false; s.page = 0; s.filter = 'ALL'; s.query = '';
     input.value = '';
     if (s.supervisor) s.supervisor.terminate();
@@ -359,8 +372,10 @@ function renderResult(s) {
   // analysis. Revoke before the new entry table is drawn, so there is no frame
   // in which a stale download button is enabled next to fresh rows.
   resetExtraction(s, 'a new analysis replaced the previous result');
+  resetBatch(s, 'a new analysis replaced the previous result');
 
   wireEntryExplorer(s);
+  wireBatchControls(s);
   wireProjectActions(s);
   setStorageStatus(s);
 }
@@ -445,7 +460,29 @@ function renderEntries(s) {
     radio.addEventListener('change', () => { selectEntry(s, e.entryId); });
     const label = el('label', { class: 'zc-visually-hidden', for: 'sel-' + e.entryId, text: `Select ${e.name}` });
 
+    // Export checkbox. Offered ONLY for entries whose CRC was recomputed and
+    // matched — a disabled control with a reason is better than a control that
+    // accepts a click and then refuses.
+    const selectable = batchSelectable(s, e);
+    const box = el('input', {
+      type: 'checkbox', id: 'exp-' + e.entryId, class: 'st-entry-export',
+      checked: s.batchSelection.has(e.entryId),
+      disabled: !selectable || s.batchBuilding,
+    });
+    if (!selectable) {
+      box.setAttribute('aria-describedby', 'studio-batch-none-selected');
+      box.title = `Only verified files can be exported. This entry is ${t('status.' + e.status)}.`;
+    }
+    box.addEventListener('change', () => toggleBatchEntry(s, e.entryId, box.checked));
+    const boxLabel = el('label', {
+      class: 'zc-visually-hidden', for: 'exp-' + e.entryId,
+      text: selectable
+        ? `Include ${e.name} in the verified archive`
+        : `${e.name} cannot be exported: it is ${t('status.' + e.status)}`,
+    });
+
     frag.appendChild(el('tr', {}, [
+      el('td', {}, [box, boxLabel]),
       el('td', {}, [radio, label]),
       el('td', { class: 'zc-name', text: e.name }),
       el('td', { text: e.methodName }),
@@ -772,6 +809,507 @@ function renderExtractionFailure(s, se) {
   try { box.focus({ preventScroll: false }); } catch { /* focus is best-effort */ }
 }
 
+/* ------------------------------------------------- verified batch export */
+
+function batchLive(text, force = false) {
+  const node = $('studio-batch-live');
+  if (!node) return;
+  if (!batchLive._announce) batchLive._announce = makeAnnouncer(node);
+  batchLive._announce(text, force);
+}
+
+/** Drop any prepared archive and return the batch panel to its empty state. */
+function resetBatch(s, reason) {
+  s.batchOutput.revoke(reason || 'the workspace changed');
+  s.batchSelection.clear();
+  s.batchPlan = null;
+  s.batchBuilding = false;
+  const planBox = $('studio-batch-plan');
+  if (planBox) planBox.hidden = true;
+  for (const id of ['studio-batch-result', 'studio-batch-error']) {
+    const n = $(id);
+    if (n) { n.hidden = true; clear(n); }
+  }
+  const prog = $('studio-batch-progress');
+  if (prog) prog.hidden = true;
+  const bar = $('studio-batch-progress-bar');
+  if (bar) bar.value = 0;
+  const cancel = $('studio-batch-cancel');
+  if (cancel) cancel.hidden = true;
+  updateBatchSummary(s);
+}
+
+/** Which entries may even be offered a checkbox. */
+function batchSelectable(s, entry) {
+  if (!capabilityEnabled(CAPABILITY.VERIFIED_BATCH_EXPORT)) return false;
+  return entry.status === 'VERIFIED' && entry.crcChecked === true && entry.crcOk === true;
+}
+
+function updateBatchSummary(s) {
+  // Nothing to summarise when the capability is not in this build, and the
+  // summary must not undo the unavailable state by un-hiding its controls.
+  if (!capabilityEnabled(CAPABILITY.VERIFIED_BATCH_EXPORT)) {
+    renderBatchUnavailable();
+    return;
+  }
+  clearBatchUnavailable();
+  const summary = $('studio-batch-summary');
+  const none = $('studio-batch-none-selected');
+  const review = $('studio-batch-review');
+  if (!s.project) return;
+
+  const chosen = s.project.entries.filter((e) => s.batchSelection.has(e.entryId));
+  const totalBytes = chosen.reduce((n, e) => n + (e.compressedSize || 0), 0);
+  const text = chosen.length === 0
+    ? 'No files selected for export.'
+    : `${chosen.length} verified file${chosen.length === 1 ? '' : 's'} selected · about ${fmtBytes(totalBytes)} of archive data.`;
+  if (summary) summary.textContent = text;
+  if (none) { none.hidden = chosen.length > 0; none.textContent = 'No verified files are selected.'; }
+  if (review) {
+    review.disabled = chosen.length === 0 || s.batchBuilding;
+    review.textContent = 'Review verified export';
+  }
+  // Announced, but only the count — one message per checkbox click would be
+  // unusable with a screen reader.
+  batchLive(text);
+}
+
+function toggleBatchEntry(s, entryId, on) {
+  if (s.batchBuilding) return;
+  if (on) s.batchSelection.add(entryId); else s.batchSelection.delete(entryId);
+  // A changed selection invalidates any plan built from the previous one.
+  if (s.batchPlan) {
+    s.batchPlan = null;
+    s.batchOutput.revoke('the selection changed');
+    const planBox = $('studio-batch-plan');
+    if (planBox) planBox.hidden = true;
+  }
+  updateBatchSummary(s);
+}
+
+/**
+ * Present the batch section honestly when this build cannot do it.
+ *
+ * The controls are removed rather than disabled-with-a-tooltip: a button that
+ * looks live and answers CAPABILITY_NOT_AVAILABLE is a worse experience than no
+ * button, and a disabled control invites someone to re-enable it in devtools
+ * and conclude the product is broken. What stays is a plain statement of what
+ * this build does and does not include.
+ *
+ * It deliberately does NOT advertise a purchase. There is no commercial release
+ * to buy yet, and promising a checkout that does not exist is the kind of claim
+ * PRODUCT_BOUNDARIES forbids.
+ */
+function renderBatchUnavailable() {
+  const section = $('studio-batch');
+  const toolbar = $('studio-batch-toolbar');
+  if (toolbar) toolbar.hidden = true;
+  if (!section) return;
+  for (const id of ['studio-batch-review', 'studio-batch-plan', 'studio-batch-none-selected']) {
+    const el = $(id);
+    if (el) el.hidden = true;
+  }
+  if (section.dataset.unavailableRendered) return;
+  section.dataset.unavailableRendered = '1';
+  const note = document.createElement('p');
+  note.className = 'note';
+  note.id = 'studio-batch-unavailable';
+  note.textContent = 'Building a verified-files archive is not included in this build of VERAQIS. '
+    + 'Analysis, evidence and downloading individually verified files are unaffected.';
+  section.prepend(note);
+}
+
+/** Undo the unavailable state if the worker turned out to implement it after
+ *  all. The worker announces its optional capabilities in READY, which can
+ *  arrive after the first render. */
+function clearBatchUnavailable() {
+  const section = $('studio-batch');
+  const note = $('studio-batch-unavailable');
+  if (note) note.remove();
+  if (section) delete section.dataset.unavailableRendered;
+  const toolbar = $('studio-batch-toolbar');
+  if (toolbar) toolbar.hidden = false;
+  const review = $('studio-batch-review');
+  if (review) review.hidden = false;
+}
+
+function wireBatchControls(s) {
+  if (!capabilityEnabled(CAPABILITY.VERIFIED_BATCH_EXPORT)) {
+    renderBatchUnavailable();
+    return;
+  }
+  clearBatchUnavailable();
+  const all = $('studio-batch-all');
+  if (all && !all.dataset.wired) {
+    all.dataset.wired = '1';
+    all.addEventListener('click', () => {
+      if (s.batchBuilding || !s.project) return;
+      for (const e of s.project.entries) if (batchSelectable(s, e)) s.batchSelection.add(e.entryId);
+      s.batchPlan = null;
+      const planBox = $('studio-batch-plan');
+      if (planBox) planBox.hidden = true;
+      renderEntries(s);
+      updateBatchSummary(s);
+      batchLive(`All verified files selected: ${s.batchSelection.size}.`, true);
+    });
+  }
+  const none = $('studio-batch-none');
+  if (none && !none.dataset.wired) {
+    none.dataset.wired = '1';
+    none.addEventListener('click', () => {
+      if (s.batchBuilding) return;
+      s.batchSelection.clear();
+      s.batchPlan = null;
+      const planBox = $('studio-batch-plan');
+      if (planBox) planBox.hidden = true;
+      renderEntries(s);
+      updateBatchSummary(s);
+      batchLive('Selection cleared.', true);
+    });
+  }
+  const review = $('studio-batch-review');
+  if (review && !review.dataset.wired) {
+    review.dataset.wired = '1';
+    review.addEventListener('click', () => reviewBatch(s));
+  }
+  const build = $('studio-batch-build');
+  if (build && !build.dataset.wired) {
+    build.dataset.wired = '1';
+    build.addEventListener('click', () => buildBatch(s));
+  }
+  const discard = $('studio-batch-discard');
+  if (discard && !discard.dataset.wired) {
+    discard.dataset.wired = '1';
+    discard.addEventListener('click', () => {
+      if (s.batchBuilding) return;
+      s.batchPlan = null;
+      s.batchOutput.revoke('the plan was discarded');
+      $('studio-batch-plan').hidden = true;
+      $('studio-batch-result').hidden = true;
+      batchLive('Plan discarded. Change the selection and review again.', true);
+    });
+  }
+  const cancel = $('studio-batch-cancel');
+  if (cancel && !cancel.dataset.wired) {
+    cancel.dataset.wired = '1';
+    cancel.addEventListener('click', () => {
+      if (!s.batchBuilding) return;
+      cancel.disabled = true;
+      cancel.textContent = 'Cancelling…';
+      s.supervisor.cancelBatchExport();
+      batchLive('Cancelling the archive build.', true);
+    });
+  }
+}
+
+/** Ask the worker for a plan, then show it for confirmation. */
+async function reviewBatch(s) {
+  const errBox = $('studio-batch-error');
+  const resultBox = $('studio-batch-result');
+  errBox.hidden = true; clear(errBox);
+  resultBox.hidden = true; clear(resultBox);
+  s.batchOutput.revoke('a new plan is being prepared');
+
+  try {
+    const reply = await s.supervisor.createBatchExportPlan(s.project, [...s.batchSelection]);
+    if (!reply.verdict.eligible || !reply.plan) {
+      renderBatchVerdictRefusal(s, reply.verdict);
+      return;
+    }
+    s.batchPlan = reply.plan;
+    renderBatchPlan(s, reply.plan, reply.verdict);
+    batchLive(`Export plan ready: ${reply.plan.entries.length} files, about ${fmtBytes(reply.plan.expectedOutputSize)}.`, true);
+  } catch (e) {
+    renderBatchFailure(s, toStudioError(e, ERR.INTERNAL_BATCH_ERROR));
+  }
+}
+
+function renderBatchVerdictRefusal(s, verdict) {
+  const box = $('studio-batch-error');
+  clear(box);
+  box.hidden = false;
+  box.appendChild(el('p', { class: 'st-err-msg', text: 'This selection cannot be exported.' }));
+  for (const r of verdict.globalReasons) box.appendChild(el('p', { text: r.message }));
+  if (verdict.refusedEntries.length) {
+    box.appendChild(el('p', { class: 'note', text: `${verdict.refusedEntries.length} selected entr(y/ies) were refused:` }));
+    const ul = el('ul');
+    for (const r of verdict.refusedEntries.slice(0, 25)) {
+      ul.appendChild(el('li', { text: `${r.name || '(unnamed)'} — ${r.reasons.map((x) => x.message).join(' ')}` }));
+    }
+    box.appendChild(ul);
+  }
+  box.setAttribute('tabindex', '-1');
+  try { box.focus({ preventScroll: false }); } catch { /* best effort */ }
+  batchLive('This selection cannot be exported.', true);
+}
+
+function renderBatchPlan(s, plan, verdict) {
+  const planBox = $('studio-batch-plan');
+  const summary = $('studio-batch-plan-summary');
+  const facts = $('studio-batch-facts');
+  const included = $('studio-batch-included');
+  const excluded = $('studio-batch-excluded');
+  planBox.hidden = false;
+
+  clear(summary);
+  summary.appendChild(el('p', {}, [
+    el('strong', { text: `${plan.entries.length} verified file${plan.entries.length === 1 ? '' : 's'} will be written into a new archive. ` }),
+    'Nothing from the source archive’s structure is copied, and the source file is not changed.',
+  ]));
+  for (const w of verdict.warnings) summary.appendChild(el('p', { class: 'note', text: w }));
+
+  clear(facts);
+  for (const [k, v] of [
+    ['Output name', plan.outputName],
+    ['Files included', String(plan.entries.length)],
+    ['Files excluded from your selection', String(plan.excludedEntries.length)],
+    ['Files in the source that cannot be exported', String((s.project.entries || []).filter((x) => !plan.entries.some((y) => y.entryId === x.entryId)).length)],
+    ['Expected archive size', fmtBytes(plan.expectedOutputSize)],
+    ['Manifest', plan.manifestName],
+    ['Archive format', `${plan.outputZipVersion} (no ZIP64, no data descriptors, no encryption)`],
+    ['Engine / writer / policy', `${plan.engineVersion} / ${plan.writerVersion} / ${plan.policyVersion}`],
+    ['Plan fingerprint', plan.planHash.slice(0, 32)],
+  ]) { facts.appendChild(el('dt', { text: k })); facts.appendChild(el('dd', { text: v })); }
+
+  clear(included);
+  included.appendChild(el('h3', { text: 'Files that will be included' }));
+  const t1 = el('table');
+  t1.appendChild(el('thead', {}, el('tr', {}, [
+    el('th', { scope: 'col', text: 'Path in the source' }),
+    el('th', { scope: 'col', text: 'Path in the new archive' }),
+    el('th', { scope: 'col', text: 'Method' }),
+    el('th', { scope: 'col', text: 'Size' }),
+    el('th', { scope: 'col', text: 'CRC-32' }),
+    el('th', { scope: 'col', text: 'Why the path changed' }),
+  ])));
+  const b1 = el('tbody');
+  for (const e of plan.entries) {
+    b1.appendChild(el('tr', {}, [
+      el('td', { class: 'zc-name', text: e.sourcePath }),
+      el('td', { class: 'zc-name', text: e.outputPath }),
+      el('td', { text: e.method === 0 ? 'Stored' : 'Deflate' }),
+      el('td', { text: fmtBytes(e.uncompressedSize) }),
+      el('td', { class: 'mono', text: crcHex(e.crc32) }),
+      el('td', { class: 'zc-reason', text: e.pathModified ? e.pathReasons.join('; ') : 'unchanged' }),
+    ]));
+  }
+  t1.appendChild(b1);
+  included.appendChild(el('div', { class: 'table-scroll' }, t1));
+
+  clear(excluded);
+
+  // Two different kinds of "not included", kept distinct because they answer
+  // different questions.
+  //
+  //   refused   — you selected it and VERAQIS would not export it. Rare through
+  //               the UI, because the checkbox is disabled for anything that
+  //               cannot qualify; reachable through an imported project.
+  //   ineligible— it was never selectable in the first place. The user still
+  //               needs to see it: "what is being left behind, and why" is the
+  //               main thing a review screen is for.
+  const selectableIds = new Set(plan.entries.map((e) => e.entryId));
+  const refusedIds = new Set(plan.excludedEntries.map((e) => e.entryId));
+  const ineligible = (s.project.entries || []).filter(
+    (e) => !selectableIds.has(e.entryId) && !refusedIds.has(e.entryId));
+
+  if (ineligible.length) {
+    excluded.appendChild(el('h3', { text: 'Files in the source that cannot be exported' }));
+    excluded.appendChild(el('p', { class: 'note', text: 'Only entries whose checksum VERAQIS recomputed and matched can go into a verified archive. These stay in your original file, which is not changed.' }));
+    const t0 = el('table');
+    t0.appendChild(el('thead', {}, el('tr', {}, [
+      el('th', { scope: 'col', text: 'Path' }),
+      el('th', { scope: 'col', text: 'Evidence status' }),
+      el('th', { scope: 'col', text: 'Why' }),
+    ])));
+    const b0 = el('tbody');
+    for (const e of ineligible.slice(0, 200)) {
+      b0.appendChild(el('tr', {}, [
+        el('td', { class: 'zc-name', text: e.name }),
+        el('td', {}, statusPill(e.status, t('status.' + e.status))),
+        el('td', { class: 'zc-reason', text: e.reasons.slice(0, 2).join('; ') || 'not verified' }),
+      ]));
+    }
+    t0.appendChild(b0);
+    excluded.appendChild(el('div', { class: 'table-scroll' }, t0));
+    if (ineligible.length > 200) {
+      excluded.appendChild(el('p', { class: 'note', text: `Showing the first 200 of ${ineligible.length}.` }));
+    }
+  }
+
+  if (plan.excludedEntries.length) {
+    excluded.appendChild(el('h3', { text: 'Files you selected that were refused' }));
+    const t2 = el('table');
+    t2.appendChild(el('thead', {}, el('tr', {}, [
+      el('th', { scope: 'col', text: 'Path' }),
+      el('th', { scope: 'col', text: 'Evidence status' }),
+      el('th', { scope: 'col', text: 'Why' }),
+    ])));
+    const b2 = el('tbody');
+    for (const x of plan.excludedEntries) {
+      b2.appendChild(el('tr', {}, [
+        el('td', { class: 'zc-name', text: x.name || '(unnamed)' }),
+        el('td', {}, x.evidenceStatus ? statusPill(x.evidenceStatus, t('status.' + x.evidenceStatus)) : '—'),
+        el('td', { class: 'zc-reason', text: x.reasons.map((r) => r.message).join(' ') }),
+      ]));
+    }
+    t2.appendChild(b2);
+    excluded.appendChild(el('div', { class: 'table-scroll' }, t2));
+  }
+
+  for (const l of plan.limitations) excluded.appendChild(el('p', { class: 'note', text: l }));
+}
+
+async function buildBatch(s) {
+  if (!s.batchPlan || s.batchBuilding) return;
+  const plan = s.batchPlan;
+  const build = $('studio-batch-build');
+  const cancel = $('studio-batch-cancel');
+  const discard = $('studio-batch-discard');
+  const progress = $('studio-batch-progress');
+  const bar = $('studio-batch-progress-bar');
+  const stage = $('studio-batch-stage');
+  const resultBox = $('studio-batch-result');
+  const errBox = $('studio-batch-error');
+
+  s.batchOutput.revoke('a new build started');
+  s.batchBuilding = true;
+  build.disabled = true; build.textContent = 'Building…';
+  cancel.hidden = false; cancel.disabled = false; cancel.textContent = 'Cancel archive build';
+  discard.disabled = true;
+  progress.hidden = false; bar.value = 0;
+  stage.textContent = BATCH_PHASE_LABEL['source-binding'];
+  resultBox.hidden = true; clear(resultBox);
+  errBox.hidden = true; clear(errBox);
+  batchLive(`Building an archive of ${plan.entries.length} verified files.`, true);
+
+  const startedAt = new Date().toISOString();
+  let announcedHalf = false;
+
+  try {
+    const result = await s.supervisor.buildVerifiedArchive(
+      s.file, plan.planId, s.project,
+      (p) => {
+        stage.textContent = BATCH_PHASE_LABEL[p.stage] || p.stage || 'Working';
+        if (Number.isFinite(p.percent)) bar.value = Math.max(0, Math.min(100, p.percent));
+        if (!announcedHalf && Number.isFinite(p.percent) && p.percent >= 50) {
+          announcedHalf = true;
+          batchLive('Archive build half complete.');
+        }
+      },
+      () => {});
+
+    s.batchOutput.adopt(result.blob, {
+      filename: result.outputName,
+      entryId: result.planId,
+      projectId: s.project.id,
+      sourceKey: sourceKeyOf(s.file),
+    });
+
+    recordBatchOperation(s.project, {
+      planId: result.planId, planHash: result.planHash,
+      operationStatus: BATCH_OP_STATUS.EXPORT_VERIFIED,
+      startedAt, finishedAt: new Date().toISOString(), durationMs: result.durationMs,
+      engineVersion: result.engineVersion, writerVersion: result.writerVersion,
+      policyVersion: result.policyVersion, sourceFingerprintMatch: 'exact',
+      includedCount: result.includedCount, excludedCount: result.excludedCount,
+      outputName: result.outputName, outputSize: result.outputSize, outputSha256: result.outputSha256,
+      manifestName: result.manifestName, entryCount: result.entryCount,
+      selfVerified: true, verificationSummary: result.verification,
+      pathMappings: plan.entries.map((e) => ({
+        entryId: e.entryId, originalPath: e.sourcePath, outputPath: e.outputPath,
+        modified: e.pathModified, reasons: e.pathReasons,
+      })),
+      excludedEntries: plan.excludedEntries.map((x) => ({
+        entryId: x.entryId, name: x.name, evidenceStatus: x.evidenceStatus,
+        reasonCodes: x.reasons.map((r) => r.code),
+      })),
+      warnings: result.warnings, errorCode: '',
+    });
+
+    renderBatchSuccess(s, result);
+    batchLive(`Archive verified. ${result.entryCount} entries, ${fmtBytes(result.outputSize)}. Ready to download.`, true);
+  } catch (e) {
+    const se = toStudioError(e, ERR.INTERNAL_BATCH_ERROR);
+    recordBatchOperation(s.project, {
+      planId: plan.planId, planHash: plan.planHash,
+      operationStatus: se.code === ERR.CANCELLED ? BATCH_OP_STATUS.CANCELLED : BATCH_OP_STATUS.FAILED,
+      startedAt, finishedAt: new Date().toISOString(),
+      engineVersion: plan.engineVersion, writerVersion: plan.writerVersion,
+      policyVersion: plan.policyVersion,
+      includedCount: plan.entries.length, excludedCount: plan.excludedEntries.length,
+      outputName: plan.outputName, selfVerified: false, errorCode: se.code,
+    });
+    renderBatchFailure(s, se);
+    batchLive(se.code === ERR.CANCELLED
+      ? 'Archive build cancelled. No archive was produced.'
+      : `Archive build failed. ${se.userMessage}`, true);
+  } finally {
+    s.batchBuilding = false;
+    progress.hidden = true;
+    cancel.hidden = true;
+    discard.disabled = false;
+    build.disabled = false;
+    build.textContent = s.batchOutput.hasOutput ? 'Build again' : 'Build verified-files archive';
+  }
+}
+
+function renderBatchSuccess(s, result) {
+  const box = $('studio-batch-result');
+  clear(box);
+  box.hidden = false;
+  box.appendChild(el('p', {}, [
+    el('strong', { text: 'Archive built and verified. ' }),
+    `VERAQIS re-read the finished archive with its own analyser: ${result.verification.verifiedEntries} of `,
+    `${result.verification.entriesParsed} entries verified, verdict ${result.verification.verdict}.`,
+  ]));
+  const dl = el('dl', { class: 'zc-dl' });
+  for (const [k, v] of [
+    ['Archive name', result.outputName],
+    ['Archive size', fmtBytes(result.outputSize)],
+    ['SHA-256', result.outputSha256 || 'not computed'],
+    ['Entries', `${result.includedCount} verified file(s) + 1 manifest`],
+    ['Excluded', String(result.excludedCount)],
+    ['Manifest', result.manifestName],
+    ['Self-verification', `passed — re-parsed by ${result.verification.independentParser}`],
+    ['Elapsed', `${result.durationMs} ms`],
+    ['Engine / writer / policy', `${result.engineVersion} / ${result.writerVersion} / ${result.policyVersion}`],
+  ]) { dl.appendChild(el('dt', { text: k })); dl.appendChild(el('dd', { text: v })); }
+  box.appendChild(dl);
+
+  const btn = el('button', {
+    type: 'button', class: 'btn primary',
+    text: `Download verified archive (${result.outputName})`,
+  });
+  btn.addEventListener('click', () => {
+    if (!s.batchOutput.hasOutput) {
+      btn.disabled = true;
+      btn.textContent = 'This archive has expired — build it again';
+      batchLive('The prepared archive expired. Build it again.', true);
+      return;
+    }
+    if (!s.batchOutput.download()) {
+      renderBatchFailure(s, new StudioError(ERR.DOWNLOAD_PREPARATION_FAILED));
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Download started';
+    batchLive(`Download of ${result.outputName} started.`, true);
+  });
+  box.appendChild(el('div', { class: 'cta cta-start' }, btn));
+  for (const l of result.limitations) box.appendChild(el('p', { class: 'note', text: l }));
+}
+
+function renderBatchFailure(s, se) {
+  const box = $('studio-batch-error');
+  renderError(box, se);
+  box.appendChild(el('p', {
+    class: 'note',
+    text: 'No archive was produced. A verified export is all-or-nothing: if one file fails its checks, the whole archive is discarded rather than handing you a partial one.',
+  }));
+  box.setAttribute('tabindex', '-1');
+  try { box.focus({ preventScroll: false }); } catch { /* best effort */ }
+}
+
 /* -------------------------------------------------------- project actions */
 
 function wireProjectActions(s) {
@@ -894,6 +1432,13 @@ function renderReports(s) {
 function renderSettings(s) {
   const form = $('studio-settings-form');
   if (!form) return;
+  // Every control here saves on 'change'; the form never needs to actually
+  // submit (no submit button, no server to send to). This guards only
+  // against Enter inside a text field triggering a native submit/reload.
+  // Was previously an inline `onsubmit="return false"` attribute, which CSP's
+  // script-src (no 'unsafe-inline') already silently disabled in production —
+  // moved to a real listener so it actually runs.
+  form.addEventListener('submit', (e) => e.preventDefault());
   const bind = (id, key, type = 'checkbox') => {
     const n = $(id);
     if (!n) return;

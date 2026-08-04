@@ -1,9 +1,14 @@
 // VERAQIS Studio — report builders.
 //
 // A report is a record of what was established. It carries entry names, sizes,
-// offsets, checksum results, evidence statuses, the reasons behind them, and —
-// new in this release — what extraction was attempted and whether the output
-// re-verified.
+// offsets, checksum results, evidence statuses, the reasons behind them, what
+// extraction was attempted and whether the output re-verified, and — new in
+// this release — what verified batch exports were built, which entries they
+// included, and, just as importantly, which entries were LEFT OUT and why.
+//
+// The exclusion list is not padding. An export that silently drops the entries
+// it could not prove looks identical to one that had nothing to drop, and a
+// reader deserves to tell those apart without rerunning the analysis.
 //
 // It carries NO data from inside the analysed files: no archive bytes, no
 // decompressed content, no Blob URL, no device path. A test asserts that on
@@ -14,7 +19,7 @@
 
 import { crcHex } from './crc32.js';
 
-export const REPORT_SCHEMA = 'veraqis-studio-report/2';
+export const REPORT_SCHEMA = 'veraqis-studio-report/3';
 
 /** HTML-escape every interpolated value. Entry names are untrusted input. */
 const esc = (v) => String(v === null || v === undefined ? '' : v)
@@ -96,11 +101,44 @@ export function buildJsonReport(project) {
       errorCode: o.errorCode,
       warnings: o.warnings,
     })),
+    // The batch export ledger. Same contract as `operations`: present and empty
+    // when nothing was exported.
+    batchOperations: (project.batchOperations || []).map((o) => ({
+      operationId: o.operationId,
+      operationType: o.operationType,
+      planId: o.planId,
+      planHash: o.planHash,
+      operationStatus: o.operationStatus,
+      startedAt: o.startedAt,
+      finishedAt: o.finishedAt,
+      durationMs: o.durationMs,
+      engineVersion: o.engineVersion,
+      writerVersion: o.writerVersion,
+      policyVersion: o.policyVersion,
+      sourceFingerprintMatch: o.sourceFingerprintMatch,
+      includedCount: o.includedCount,
+      excludedCount: o.excludedCount,
+      outputName: o.outputName,
+      outputSize: o.outputSize,
+      // The digest of the archive VERAQIS itself produced, not of the user's
+      // source file. It lets a reader confirm the artifact they hold is the one
+      // this report describes; the source fingerprint stays out of the report.
+      outputSha256: o.outputSha256,
+      manifestName: o.manifestName,
+      entryCount: o.entryCount,
+      selfVerified: o.selfVerified,
+      verificationSummary: o.verificationSummary,
+      pathMappings: o.pathMappings || [],
+      excludedEntries: o.excludedEntries || [],
+      errorCode: o.errorCode,
+      warnings: o.warnings,
+    })),
     warnings: project.warnings || [],
     limitations: project.limitations || [],
     meaning: {
       VERIFIED: 'The entry was read, decompressed where needed, and its recomputed CRC-32 matched the value stored in the archive.',
       EXTRACTED_VERIFIED: 'A local copy of this entry was produced in the browser and its CRC-32, recomputed over exactly those bytes, matched the value the archive records. It does not establish authorship and is not a cryptographic authenticity guarantee.',
+      BATCH_EXPORT_VERIFIED: 'A new archive was built in the browser from entries that were VERIFIED at export time, each entry’s CRC-32 was recomputed over exactly the bytes written, and the finished archive was then re-parsed by the analysis engine and every entry in it re-verified. It does not establish authorship and is not a cryptographic authenticity guarantee.',
     },
   };
 }
@@ -140,6 +178,41 @@ it.</p>
 <p class="note">Engine ${esc(ops[0].engineVersion || '')} · policy ${esc(ops[0].policyVersion || '')}.
 This report contains no extracted bytes.</p>`;
 
+  const bops = p.batchOperations || [];
+  const batchSection = bops.length === 0 ? '' : bops.map((b) => {
+    const included = (b.pathMappings || []).map((m) => `<tr><td>${esc(m.originalPath)}</td>`
+      + `<td>${esc(m.outputPath)}</td>`
+      + `<td>${m.modified ? 'renamed for safety' : 'unchanged'}</td>`
+      + `<td>${esc((m.reasons || []).join('; '))}</td></tr>`).join('\n');
+    // Excluded entries are rendered even when the list is long: "why is my file
+    // not in there" is the first question anyone asks of an export.
+    const excluded = (b.excludedEntries || []).map((e) => `<tr><td>${esc(e.name)}</td>`
+      + `<td>${esc(e.evidenceStatus)}</td><td>${esc((e.reasonCodes || []).join('; '))}</td></tr>`).join('\n');
+    return `
+<h2>Verified batch export</h2>
+<dl><dt>Result</dt><dd>${esc(b.operationStatus)}${b.errorCode ? ' — ' + esc(b.errorCode) : ''}</dd>
+<dt>Archive</dt><dd>${esc(b.outputName || '—')}${b.outputSize ? ' · ' + esc(b.outputSize) + ' bytes' : ''}</dd>
+<dt>SHA-256 of the archive</dt><dd><code>${esc(b.outputSha256 || '—')}</code></dd>
+<dt>Entries written</dt><dd>${esc(b.includedCount)} included · ${esc(b.excludedCount)} excluded</dd>
+<dt>Re-verified after building</dt><dd>${b.selfVerified ? 'yes — the finished archive was re-parsed and every entry re-checked' : 'no'}</dd>
+<dt>Plan</dt><dd><code>${esc(b.planId || '—')}</code> · hash <code>${esc(b.planHash || '—')}</code></dd></dl>
+<p class="note"><strong>BATCH_EXPORT_VERIFIED</strong> means every entry in the new archive was
+VERIFIED at the moment it was written, its CRC-32 was recomputed over exactly the bytes written, and
+the finished archive was then re-parsed independently and every entry in it re-verified. The archive
+was built from scratch: none of the original archive's central directory or end-of-central-directory
+record was copied. It does <strong>not</strong> establish authorship and is not a cryptographic
+authenticity guarantee.</p>
+${included ? `<h3>Entries included</h3>
+<table><thead><tr><th>Original path</th><th>Path in the new archive</th><th>Change</th><th>Why</th></tr></thead>
+<tbody>${included}</tbody></table>` : ''}
+${excluded ? `<h3>Entries left out</h3>
+<p class="note">These were not written. Only entries with evidence status VERIFIED are eligible.</p>
+<table><thead><tr><th>Entry</th><th>Evidence status</th><th>Reason</th></tr></thead>
+<tbody>${excluded}</tbody></table>` : ''}
+<p class="note">Engine ${esc(b.engineVersion || '')} · writer ${esc(b.writerVersion || '')} ·
+policy ${esc(b.policyVersion || '')}. This report contains no exported bytes.</p>`;
+  }).join('\n');
+
   return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
@@ -170,7 +243,7 @@ This report describes work performed entirely in a browser. No file was uploaded
 <dt>CRC coverage</dt><dd>${Math.round((a.crcCoverage || 0) * 100)}%</dd></dl>
 <h2>Entries</h2>
 <table><thead><tr><th>Name</th><th>Method</th><th>Compressed</th><th>Uncompressed</th><th>CRC-32</th><th>Status</th><th>Reason</th></tr></thead>
-<tbody>${rows}</tbody></table>${opSection}
+<tbody>${rows}</tbody></table>${opSection}${batchSection}
 <h2>Method and limits</h2>
 <ul>${(p.limitations || []).map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
 <p class="note">An entry is VERIFIED only when its CRC-32 was recomputed from the archive's bytes and matched.

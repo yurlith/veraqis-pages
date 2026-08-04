@@ -11,6 +11,8 @@ import { analyzeArchive, readerFromBlob, STATUS } from '../zip-checker/zip-core.
 import { StudioError, ERR, toStudioError } from './errors.js';
 import { STAGE } from './protocol.js';
 import { extractVerifiedEntry as runExtraction, EXTRACT_ENGINE_VERSION, probeDeflateRaw } from './extract.js';
+import { wasmZipEngine } from './wasm-engine.js';
+export { wasmZipEngine };
 
 export const ENGINE_RESULT_SCHEMA = 'veraqis-studio-analysis/1';
 
@@ -196,7 +198,14 @@ function mapStage(p) {
 
 /* ------------------------------------------------------------------ registry */
 
-const REGISTRY = [zipEngine];
+// Phase G / G4 (docs/web-studio/WASM_FEASIBILITY.md): wasmZipEngine first —
+// selectEngine() tries it before zipEngine, and its own detect() refuses
+// (claims:false) unless CAPABILITY.WASM_ZIP_CORE is enabled, so zipEngine is
+// what actually runs whenever the capability is off, the file exceeds the
+// size this engine keeps unbounded in memory, or detect() throws for any
+// other reason — the same fallback shape every other capability probe here
+// already uses, not new machinery.
+const REGISTRY = [wasmZipEngine, zipEngine];
 
 export function listEngines() {
   return REGISTRY.map((e) => ({

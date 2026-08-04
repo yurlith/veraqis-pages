@@ -12,7 +12,13 @@
 // old cache is deleted on activate rather than serving a mix of v1 and v2
 // modules — a page on protocol v2 driving a v1 worker is exactly the failure the
 // protocol handshake exists to catch, and there is no reason to rely on it here.
-const VERSION = 'v2';
+// v3: the four batch-export modules joined the shell.
+// v4: and left it again. Verified batch export is not implemented in the free
+// build, so its four modules are no longer deployed and must not be precached.
+// A visitor still holding the v3 cache has those files installed for offline
+// use; bumping the version is what deletes that cache on activate, rather than
+// leaving paid implementation bytes resident on a free user's device.
+const VERSION = 'v4';
 const CACHE = `veraqis-studio-${VERSION}`;
 
 // The complete application shell. Every entry is same-origin and static.

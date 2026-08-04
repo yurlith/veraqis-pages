@@ -8,10 +8,13 @@
 // The File handle arrives by structured clone. A File is a reference to bytes on
 // disk, not a copy — nothing large crosses the boundary and nothing is uploaded.
 
-import { PROTOCOL_VERSION, REQ, RES, PROGRESS_INTERVAL_MS, isValidExtractRequest } from './protocol.js';
+import {
+  PROTOCOL_VERSION, REQ, RES, PROGRESS_INTERVAL_MS, isValidExtractRequest,
+  OPTIONAL_CAPABILITY_REQUESTS,
+} from './protocol.js';
 import { selectEngine, listEngines, zipEngine } from './engine.js';
 import { StudioError, ERR, toStudioError } from './errors.js';
-import { detectSync } from './capabilities.js';
+import { detectSync, enableCapability } from './capabilities.js';
 import { extractionPolicy } from './policy.js';
 
 /** taskId -> AbortController. One task at a time is the policy; the map makes
@@ -24,6 +27,68 @@ const running = new Map();
 const outputs = new Map();
 
 const send = (msg) => self.postMessage(msg);
+
+/* ------------------------------------------------- optional capabilities */
+
+/**
+ * Handlers for capabilities whose implementation is not part of this build.
+ *
+ * The free build never populates this map: the modules that would register into
+ * it are not shipped, so there is nothing to import, nothing to preload and
+ * nothing to unlock. A build that *does* include a capability registers its
+ * handler at module-evaluation time — before any message can be dispatched,
+ * because the worker's module graph is fully evaluated before `onmessage` runs.
+ *
+ * This is what makes the boundary structural rather than a policy. There is no
+ * `isPaid` flag to flip, no query string to add and no dynamic import to
+ * intercept: in the free build the code is absent.
+ */
+const optionalHandlers = new Map();
+
+/**
+ * Register the implementation of an optional capability.
+ *
+ * @param {string} featureId  capability id, e.g. 'verified_batch_export'
+ * @param {{handles: string[], handle: (msg: object, ctx: object) => Promise<void>}} handler
+ */
+export function registerOptionalCapability(featureId, handler) {
+  if (!featureId || !handler || typeof handler.handle !== 'function') {
+    throw new TypeError('registerOptionalCapability(featureId, { handles, handle })');
+  }
+  for (const type of handler.handles || []) {
+    if (OPTIONAL_CAPABILITY_REQUESTS[type] !== featureId) {
+      // A handler may only claim request types the protocol already assigns to
+      // its own capability. Otherwise a registration could quietly take over
+      // analysis or extraction.
+      throw new TypeError(`${type} is not a request type of ${featureId}`);
+    }
+    optionalHandlers.set(type, { featureId, handler });
+  }
+  enableCapability(featureId);
+}
+
+/**
+ * Which optional capabilities this worker actually implements.
+ *
+ * Announced in READY so the page reflects what the worker can do rather than
+ * guessing from its own module graph — the implementation lives in the worker,
+ * so the worker is the authority. The page uses this only to decide what to
+ * *offer*; every request is re-checked here, so a page that claimed a
+ * capability the worker does not have still gets CAPABILITY_NOT_AVAILABLE.
+ */
+function registeredOptionalCapabilities() {
+  return [...new Set([...optionalHandlers.values()].map((v) => v.featureId))];
+}
+
+/** The services an optional handler is allowed to use. Deliberately narrow. */
+const optionalContext = () => ({
+  send,
+  running,
+  outputs,
+  PROTOCOL_VERSION,
+  platformWithVerifiedDecoder,
+  extractionPolicy,
+});
 
 /**
  * The platform report the extractor is allowed to act on.
@@ -49,7 +114,19 @@ async function platformWithVerifiedDecoder() {
   return _platformProbe;
 }
 
-send({ type: RES.READY, protocol: PROTOCOL_VERSION, engines: listEngines() });
+// READY is deferred by one microtask, not sent inline.
+//
+// This module is evaluated before the modules that import it, so any optional
+// capability registering itself has not run yet at this point. Announcing here
+// would report an empty capability list and the page would hide a feature the
+// worker is about to have. A microtask runs after the whole module graph has
+// finished evaluating, which is exactly the moment the answer is correct.
+queueMicrotask(() => {
+  send({
+    type: RES.READY, protocol: PROTOCOL_VERSION, engines: listEngines(),
+    optionalCapabilities: registeredOptionalCapabilities(),
+  });
+});
 
 self.onmessage = async (ev) => {
   const msg = ev.data;
@@ -57,6 +134,33 @@ self.onmessage = async (ev) => {
   // would take the worker down and look like a crash.
   if (!msg || typeof msg !== 'object' || typeof msg.type !== 'string') return;
   const { type, taskId } = msg;
+
+  // Optional capabilities first. If a build registered a handler, it runs; if
+  // not, the request gets a typed refusal rather than silence — a request that
+  // is never answered is indistinguishable from a hung worker, and the UI would
+  // spin forever waiting for a capability this build never had.
+  const featureId = OPTIONAL_CAPABILITY_REQUESTS[type];
+  if (featureId) {
+    const registered = optionalHandlers.get(type);
+    if (!registered) {
+      send({
+        type: RES.BATCH_EXPORT_ERROR, taskId: taskId || 'unavailable',
+        error: new StudioError(ERR.CAPABILITY_NOT_AVAILABLE, {
+          detail: `${featureId} is not included in this build`,
+        }).toJSON(),
+      });
+      return;
+    }
+    try {
+      await registered.handler.handle(msg, optionalContext());
+    } catch (e) {
+      send({
+        type: RES.BATCH_EXPORT_ERROR, taskId: taskId || 'unknown',
+        error: toStudioError(e, ERR.INTERNAL_BATCH_ERROR).toJSON(),
+      });
+    }
+    return;
+  }
 
   if (type === REQ.CANCEL || type === REQ.CANCEL_TASK) {
     const c = running.get(taskId);
@@ -84,12 +188,13 @@ self.onmessage = async (ev) => {
     send({
       type: RES.CAPABILITIES, taskId, protocol: PROTOCOL_VERSION,
       platform: await platformWithVerifiedDecoder(), engines: listEngines(),
+      optionalCapabilities: registeredOptionalCapabilities(),
     });
     return;
   }
 
   if (type === REQ.INIT) {
-    send({ type: RES.READY, taskId, protocol: PROTOCOL_VERSION, engines: listEngines() });
+    send({ type: RES.READY, taskId, protocol: PROTOCOL_VERSION, engines: listEngines(), optionalCapabilities: registeredOptionalCapabilities() });
     return;
   }
 
