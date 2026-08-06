@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<title>Documentation — recovery commands and concepts | VERAQIS</title>
-<meta name="description" content="VERAQIS Recovery documentation: safe workflow, CLI commands, supported formats, recovery modes, reports, verification and the current v0.2.1 limits." />
+<title>Internal engine reference — not a public CLI product | VERAQIS</title>
+<meta name="description" content="Internal reference for VERAQIS's recovery engine command surface. These commands are not publicly downloadable or installable; they document a private development build used to produce the evidence published on this site." />
 <link rel="canonical" href="https://veraqis.tech/docs.html" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="Documentation | VERAQIS" />
-<meta property="og:description" content="Build, CLI surface, recovery modes, evidence model, and where the deep-dive docs live." />
+<meta property="og:title" content="Internal engine reference — not a public CLI product | VERAQIS" />
+<meta property="og:description" content="Internal command-surface reference for VERAQIS's recovery engine. Not publicly downloadable — documents a private development build, not a shipping product." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -21,8 +21,8 @@
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
 <meta property="og:url" content="https://veraqis.tech/docs.html" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Documentation | VERAQIS" />
-<meta name="twitter:description" content="Build, CLI surface, recovery modes, evidence model, and where the deep-dive docs live." />
+<meta name="twitter:title" content="Internal engine reference — not a public CLI product | VERAQIS" />
+<meta name="twitter:description" content="Internal command-surface reference for VERAQIS's recovery engine. Not publicly downloadable." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -50,8 +50,8 @@
       "@type": "WebPage",
       "@id": "https://veraqis.tech/docs.html#webpage",
       "url": "https://veraqis.tech/docs.html",
-      "name": "Documentation",
-      "description": "VERAQIS Recovery documentation: installation, safe workflow, CLI commands, supported formats, recovery modes, reports, verification and current limitations for v0.2.1 beta.",
+      "name": "Internal engine reference",
+      "description": "Internal reference for VERAQIS's recovery engine command surface (analysis, verification, recovery modes, reports). These commands belong to a private, non-public development build and are not installable by the public; the only public download is the VERAQIS Archiver Android APK, documented separately.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-08-06",
       "inLanguage": "en"
     },
     {
@@ -91,10 +91,10 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "What is the first command to run?",
+          "name": "Can I install and run these commands myself?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Run veraqis analyze <file> first. It is the free, read-only audit path and does not modify the input file."
+            "text": "No. veraqis analyze and the rest of this command surface belong to a private, non-public development build used internally to produce the evidence published on this site. They are not installable or downloadable by the public. The only public download is the VERAQIS Archiver Android APK."
           }
         },
         {
@@ -102,7 +102,7 @@
           "name": "Where are the detailed recovery benchmarks?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The public Test Record summarizes measured outcomes. Reports & Verification explains the evidence model and certificate checks. Detailed reproducibility records are included with the source."
+            "text": "The public Test Record summarizes measured outcomes, produced by the private development build referenced on this page. Reports & Verification explains the evidence model and certificate checks."
           }
         },
         {
@@ -110,7 +110,7 @@
           "name": "Can the certificate verifier be run separately?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. phx-verify-cert is built from the source workspace as a separate executable. It is not part of the current public download."
+            "text": "phx-verify-cert is part of the same private development build documented on this page, built from the source workspace as a separate executable. It is not part of any public download."
           }
         }
       ],
@@ -150,10 +150,11 @@
 
 <div class="page-head">
   <div class="wrap">
-    <div class="crumb"><a href="/">VERAQIS</a> / Documentation</div>
-    <h1>Documentation</h1>
-    <p class="lead">Installation, commands, supported formats, safety rules and verification
-      references for <span class="mono">v0.2.1 beta</span>.</p>
+    <div class="crumb"><a href="/">VERAQIS</a> / Internal engine reference</div>
+    <h1>Internal engine reference</h1>
+    <p class="lead">Commands, supported formats, safety rules and verification references for the
+      private <span class="mono">v0.2.1</span> development build — not a public, installable
+      product.</p>
   </div>
 </div>
 
@@ -188,8 +189,8 @@
 <section class="band">
   <div class="wrap">
     <h2>The <code>VERAQIS</code> command surface</h2>
-    <p class="sub">Recovery is opt-in and gated by default. <code>analyze</code> is the permanently-free,
-      read-only auditor.</p>
+    <p class="sub">Recovery is opt-in and gated by default in this internal engine build.
+      <code>analyze</code> is the read-only auditor.</p>
     <div class="card">
     <div class="table-scroll"><table>
       <thead><tr><th scope="col">Command</th><th scope="col">What it does</th></tr></thead>
@@ -198,10 +199,10 @@
         <tr><td class="f">veraqis verify &lt;file&gt;</td><td>Human "is it healthy?" check.</td></tr>
         <tr><td class="f">veraqis report &lt;file&gt;</td><td>Write a structured analysis report without recovering data.</td></tr>
         <tr><td class="f">veraqis score &lt;file&gt;</td><td>Print the calibrated recoverability assessment.</td></tr>
-        <tr><td class="f">veraqis recover &lt;file&gt; --output out/</td><td><strong>Beta-free:</strong> default exact, provenance-backed recovery.</td></tr>
-        <tr><td class="f">veraqis recover … --semantic sqlite|opc|pdf|7z|rar</td><td><strong>Beta-free:</strong> opt-in Tier-3 semantic reconstruction.</td></tr>
-        <tr><td class="f">veraqis recover … --salvage</td><td><strong>Beta-free:</strong> partial-decompression salvage (bzip2 / xz).</td></tr>
-        <tr><td class="f">veraqis recover … --reconcile</td><td><strong>Beta-free:</strong> intra-file redundancy mining (ISO 9660 / ZIP).</td></tr>
+        <tr><td class="f">veraqis recover &lt;file&gt; --output out/</td><td><strong>Ungated in this internal build:</strong> default exact, provenance-backed recovery.</td></tr>
+        <tr><td class="f">veraqis recover … --semantic sqlite|opc|pdf|7z|rar</td><td><strong>Ungated in this internal build:</strong> opt-in Tier-3 semantic reconstruction.</td></tr>
+        <tr><td class="f">veraqis recover … --salvage</td><td><strong>Ungated in this internal build:</strong> partial-decompression salvage (bzip2 / xz).</td></tr>
+        <tr><td class="f">veraqis recover … --reconcile</td><td><strong>Ungated in this internal build:</strong> intra-file redundancy mining (ISO 9660 / ZIP).</td></tr>
         <tr><td class="f">veraqis protect shield &lt;file&gt;</td><td>Create a producer-side parity sidecar (<code>.phxs</code>) before damage occurs.</td></tr>
         <tr><td class="f">veraqis protect check &lt;path&gt;</td><td>Read-only check of a protected file or folder manifest.</td></tr>
         <tr><td class="f">veraqis protect repair &lt;path&gt;</td><td>Reconstruct protected content into a separate output path.</td></tr>
