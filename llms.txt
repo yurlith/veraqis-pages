@@ -63,20 +63,22 @@ from an experiment in our own repository and the page names the experiment and l
 
 ## Products
 
-VERAQIS is Android-only: one brand, two Android apps. There is no active desktop, CLI or
-Windows product on this site.
+VERAQIS is Android-only: one available Android app, one in development. There is no active
+desktop, CLI or Windows product on this site.
 
 - [VERAQIS Archiver](https://veraqis.tech/android/archiver/): free, signed public beta. Open,
   inspect and extract archives safely; a limited recovery preview flags damaged archives without
   saving the full recovered output. No account, ads or telemetry. This is the only publicly
   downloadable build today.
-- [VERAQIS Recovery Pro](https://veraqis.tech/android/recovery-pro/): specialised Android ZIP
-  recovery app. Status: closed test — there is no public APK and no Google Play listing yet.
-  Planned launch price €9.99 one-time (hypothesis, not a live offer). What a local file header
+- [VERAQIS Recovery Pro](https://veraqis.tech/android/recovery-pro/): a specialised Android ZIP
+  recovery app, in development. Status: in development — there is no public APK, no test build
+  and no Google Play listing yet. Planned launch price €9.99 one-time (hypothesis, not a live
+  offer; not currently for sale). Planned recovery scope, once built: what a local file header
   proves when the central directory is gone, what a CRC-32 match does and does not settle, and
-  the four labels a result can carry (Verified / Damaged / Unknown / Lost). States the limits
-  plainly: data that was truncated away is not recoverable, encryption is detected and never
-  bypassed, and a passing CRC is accidental-damage evidence, not a tamper-proof signature.
+  the four labels a result can carry (Verified / Damaged / Unknown / Lost) — this evidence model
+  is already proven at the engine level. Planned limits: data that was truncated away will not be
+  recoverable, encryption will be detected and never bypassed, and a passing CRC will be
+  accidental-damage evidence, not a tamper-proof signature.
 
 ## Verification and process
 

@@ -161,6 +161,8 @@ tbody tr:hover{background:#f1f6f3}
 .status--experimental::before{content:"\2699"}         /* ⚙ */
 .status--closed-test{color:#8a5a12;border-color:#ebd2ad;background:#fff7e9}
 .status--closed-test::before{content:"\23F3"}          /* ⏳ */
+.status--in-development{color:var(--cyan);border-color:#b8d5d8;background:#eef8f7}
+.status--in-development::before{content:"\1F6E0"}      /* 🛠 */
 
 /* small helper row for hero / page-head status lines */
 .status-line{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}

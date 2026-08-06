@@ -16,7 +16,7 @@
       "name": "VERAQIS Recovery Pro",
       "url": "https://veraqis.tech/android/recovery-pro/",
       "platform": "Android",
-      "status": "closed_test",
+      "status": "in_development",
       "publiclyDownloadable": false,
       "download": null
     }
