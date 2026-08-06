@@ -5,25 +5,18 @@
   "category": ["file recovery", "archive safety", "offline security"],
   "products": [
     {
-      "name": "VERAQIS Archiver for Android",
-      "url": "https://veraqis.tech/mobile.html",
+      "name": "VERAQIS Archiver",
+      "url": "https://veraqis.tech/android/archiver/",
       "platform": "Android",
       "status": "available",
       "publiclyDownloadable": true,
       "download": "https://veraqis.tech/download.html"
     },
     {
-      "name": "VERAQIS Recovery for Windows",
-      "url": "https://veraqis.tech/desktop.html",
-      "platform": "Windows",
-      "status": "store_release_pending",
-      "publiclyDownloadable": false,
-      "download": null
-    },
-    {
-      "name": "ColdPass",
-      "url": "https://veraqis.tech/coldpass.html",
-      "status": "archived",
+      "name": "VERAQIS Recovery Pro",
+      "url": "https://veraqis.tech/android/recovery-pro/",
+      "platform": "Android",
+      "status": "closed_test",
       "publiclyDownloadable": false,
       "download": null
     }

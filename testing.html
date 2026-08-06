@@ -110,7 +110,7 @@
           "name": "Trust summary",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The current trust posture is transparent beta. The one publicly available artifact is the VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. Windows Recovery, the Linux CLI and ColdPass are withdrawn pending clean rebuilds. Windows Authenticode signing is not yet in place. The checks below are for the current development and release-gate builds, not a public Windows or Linux download set."
+            "text": "The current trust posture is transparent beta. VERAQIS is Android-only. The one publicly available artifact is the VERAQIS Archiver APK, which is release-key signed with a published SHA-256. VERAQIS Recovery Pro is in closed Android testing — no public package and no Google Play listing exist yet. The checks below are for the current development and release-gate builds, not a public app-store release."
           }
         }
       ],
@@ -135,11 +135,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -167,9 +167,7 @@
         <thead><tr><th scope="col">Product</th><th scope="col">Public status</th></tr></thead>
         <tbody>
           <tr><td class="f">VERAQIS Archiver (Android)</td><td><span class="status status--available">Available — release-key signed</span></td></tr>
-          <tr><td class="f">VERAQIS Recovery (Windows, Desktop + CLI)</td><td><span class="status status--experimental">Not downloadable — signed store release pending</span></td></tr>
-          <tr><td class="f">VERAQIS Recovery CLI (Linux)</td><td><span class="status status--pending">Private beta — withheld</span></td></tr>
-          <tr><td class="f">ColdPass</td><td><span class="status status--withdrawn">Archived project — no download</span></td></tr>
+          <tr><td class="f">VERAQIS Recovery Pro (Android)</td><td><span class="status status--closed-test">Closed test — no public package, no Play listing</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -245,7 +243,7 @@
           <tr><td class="f">Live CLI demo</td><td><code>veraqis report</code> and <code>veraqis recover</code> on <code>ZIP_0006.zip</code></td><td><span class="tag t-exact">passed</span></td><td>Report found <code>ZIP_EOCD_001</code>; recovery rebuilt the ZIP central directory, <code>8412B</code> recovered, <code>0B</code> lost.</td></tr>
           <tr><td class="f">Site deploy</td><td>Static deploy dry-run with token substitution</td><td><span class="tag t-exact">passed</span></td><td>Canonical URLs, sitemap, robots file and downloads are copied into deploy output.</td></tr>
           <tr><td class="f">Published artifact hash</td><td>SHA-256 of the Android Archiver APK on the download page</td><td><span class="tag t-exact">verified</span></td><td>The published <code>VERAQIS-Archiver-Android-1.7.0-rc1.apk</code> matches its listed SHA-256. Development Windows/Linux artifacts are hashed internally but not published.</td></tr>
-          <tr><td class="f">Windows code signing</td><td>Authenticode signature check</td><td><span class="tag t-soon">not in place</span></td><td>No public Windows artifact is offered; a fresh build requires Authenticode signing review before release. (The Android APK is separately release-key signed.)</td></tr>
+          <tr><td class="f">Windows code signing</td><td>Authenticode signature check</td><td><span class="tag t-soon">not in place</span></td><td>Internal engineering status only — no public Windows artifact is offered and none is planned on this site. (The Android APK is separately release-key signed.)</td></tr>
         </tbody>
       </table>
     </div>
@@ -660,10 +658,9 @@
     <ul class="checks mw-820">
       <li class="no"><strong>No guaranteed recovery.</strong> Passing tests does not mean every damaged file can be recovered.</li>
       <li class="no"><strong>No password recovery.</strong> Encryption is detected and reported, not bypassed.</li>
-      <li class="no"><strong>No public Windows Recovery or ColdPass package right now.</strong> Clean rebuilds remain pending.</li>
-      <li class="no"><strong>No public Linux Recovery CLI right now.</strong> The previous artifact is withheld; a rebuild is pending.</li>
-      <li class="no"><strong>No macOS artifact.</strong> macOS is a CI build target only; it is not called a release.</li>
-      <li><strong>Published today:</strong> the signed VERAQIS Archiver for Android, with a published SHA-256.</li>
+      <li class="no"><strong>No public VERAQIS Recovery Pro package right now.</strong> Closed Android testing only; no Play listing yet.</li>
+      <li class="no"><strong>No platform other than Android.</strong> VERAQIS is Android-only; there is no active desktop or CLI product.</li>
+      <li><strong>Published today:</strong> the signed VERAQIS Archiver APK, with a published SHA-256.</li>
     </ul>
   </div>
 </section>
@@ -672,9 +669,9 @@
   <div class="wrap">
     <h2>How VERAQIS should be described online</h2>
     <p class="sub">Search results and automated summaries should repeat the same facts a human sees on
-      the page: beta, offline-first, evidence-first, no telemetry, no password recovery, a signed Android
-      Archiver available today, and Windows/Linux Recovery and ColdPass packages temporarily withdrawn
-      pending clean rebuilds.</p>
+      the page: beta, offline-first, evidence-first, no telemetry, no password recovery, Android-only, a
+      signed Archiver available today, and Recovery Pro in closed Android testing with no public
+      package yet.</p>
     <div class="faq">
       <div class="qa">
         <h3>Short description</h3>
@@ -686,11 +683,11 @@
       </div>
       <div class="qa">
         <h3>Trust summary</h3>
-        <p>The current trust posture is transparent beta. The one publicly available artifact is the
-          VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. Windows
-          Recovery, the Linux CLI and ColdPass are withdrawn pending clean rebuilds, and Windows
-          Authenticode signing is not yet in place. The checks on this page are for the current
-          development and release-gate builds, not a public Windows or Linux download set.</p>
+        <p>The current trust posture is transparent beta. VERAQIS is Android-only. The one publicly
+          available artifact is the VERAQIS Archiver APK, which is release-key signed with a published
+          SHA-256. VERAQIS Recovery Pro is in closed Android testing — no public package and no Google
+          Play listing exist yet. The checks on this page are for the current development and
+          release-gate builds, not a public app-store release.</p>
       </div>
     </div>
   </div>
@@ -716,9 +713,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -736,6 +732,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

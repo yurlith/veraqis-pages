@@ -135,11 +135,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -160,11 +160,13 @@
 <section>
   <div class="wrap">
     <div class="callout warn mt-0">
-      <strong>Public Windows and Linux Recovery packages are currently unavailable.</strong> The commands
-      below document the current <span class="mono">v0.2.1</span> command surface and are intended for
-      reviewed development builds until clean public packages return. The signed
-      <a href="mobile.html">Android Archiver</a> is the only public download today; it focuses on safe
-      inspection and extraction, not the desktop CLI recovery commands.
+      <strong>VERAQIS is Android-only.</strong> The commands below document the engine's internal
+      <span class="mono">v0.2.1</span> command surface, used to produce the evidence published on
+      this site (test record, research pages) — they are not a public download or an active
+      product. The signed <a href="/android/archiver/">VERAQIS Archiver</a> is the only public
+      download today; it focuses on safe inspection and extraction, not these recovery commands.
+      Deeper ZIP recovery is <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>, in closed
+      Android testing.
     </div>
     <h2 class="mt-26">Recovery command reference</h2>
     <p class="sub">Always analyze before recovery. These commands describe the development-build CLI
@@ -219,7 +221,7 @@
     <div class="grid g3">
       <a class="card link-card" href="reports.html"><h3 class="fs-17">Evidence model</h3><p>Two
         orthogonal axes; the tautology rule; why <code>false_recovered_bytes = 0</code> is a hard gate.</p></a>
-      <a class="card link-card" href="desktop.html"><h3 class="fs-17">Formats &amp; scope</h3><p>Exactly
+      <a class="card link-card" href="/formats/"><h3 class="fs-17">Formats &amp; scope</h3><p>Exactly
         what is recoverable per format — including measured NO-GO cases.</p></a>
       <a class="card link-card" href="security.html"><h3 class="fs-17">Safety model</h3><p>Read-only
         source, sandboxing, encryption → abstain, no telemetry.</p></a>
@@ -325,11 +327,10 @@
 <pre><span class="c"># verify the published Android APK before installing</span>
 <span class="p">CertUtil</span> -hashfile VERAQIS-Archiver-Android-1.7.0-rc1.apk SHA256</pre>
     </div>
-    <div class="callout info mt-18"><strong>Future public installation:</strong> clean
-      Windows and Linux Recovery packages will return only after fresh builds, functional tests,
-      release-content inspection and signing review. Every current Recovery capability is free during
-      public beta; the offline entitlement implementation remains in the source for later development,
-      and no license file is required.</div>
+    <div class="callout info mt-18"><strong>Android only.</strong> VERAQIS Archiver is free and
+      publicly downloadable today. VERAQIS Recovery Pro is in closed Android testing; the offline
+      entitlement implementation remains in the source for later development, and no license file
+      is required during testing.</div>
   </div>
 </section>
 
@@ -377,9 +378,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -394,6 +394,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>VERAQIS Recovery Pro — Android ZIP recovery, closed testing</title>
+<meta name="description" content="Recover the parts of a damaged ZIP that the surviving bytes can still prove. Deep local recovery, verified entry by entry. Android only, no uploads, closed testing." />
+<link rel="canonical" href="https://veraqis.tech/android/recovery-pro/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="VERAQIS Recovery Pro — Android ZIP recovery, closed testing" />
+<meta property="og:description" content="Recover the parts of a damaged ZIP the surviving bytes can still prove. Verified entry by entry. Android only, closed testing." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS Recovery Pro for Android" />
+<meta property="og:url" content="https://veraqis.tech/android/recovery-pro/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="VERAQIS Recovery Pro — Android ZIP recovery, closed testing" />
+<meta name="twitter:description" content="Recover the parts of a damaged ZIP the surviving bytes can still prove. Android only, closed testing." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": { "@id": "https://veraqis.tech/#organization" },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/android/recovery-pro/#webpage",
+      "url": "https://veraqis.tech/android/recovery-pro/",
+      "name": "VERAQIS Recovery Pro",
+      "description": "Recover the parts of a damaged ZIP that the surviving bytes can still prove. Deep local recovery, verified entry by entry. Android only, closed testing.",
+      "isPartOf": { "@id": "https://veraqis.tech/#website" },
+      "about": { "@id": "https://veraqis.tech/#organization" },
+      "dateModified": "2026-08-05",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/android/recovery-pro/#breadcrumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "VERAQIS", "item": "https://veraqis.tech/" },
+        { "@type": "ListItem", "position": 2, "name": "VERAQIS Recovery Pro", "item": "https://veraqis.tech/android/recovery-pro/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/android/recovery-pro/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is VERAQIS Recovery Pro available now?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Recovery Pro is in closed Android testing. There is no public APK and no Google Play listing yet." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Recovery Pro the same app as VERAQIS Archiver with more features unlocked?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Recovery Pro is a separate, specialised app for one workflow: recovering a damaged ZIP. It is not VERAQIS Archiver Premium or an ad-free version of the free app." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it recover any damaged ZIP?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Recovery depends on what survived. Data that is gone stays gone; Recovery Pro proves what the surviving bytes support and reports the rest as damaged, unknown or lost." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it open a password-protected ZIP without the password?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Encrypted archives are detected and reported. Recovery Pro does not guess, derive or brute-force a password, and does not bypass encryption." }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the price?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Planned launch price: EUR 9.99 one-time. This is a hypothesis, not a live offer; checkout is not live and no charge applies during closed testing." }
+        }
+      ],
+      "mainEntityOfPage": { "@id": "https://veraqis.tech/android/recovery-pro/#webpage" }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/" class="active">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / Recovery Pro</div>
+    <h1>Recover the parts of a damaged ZIP that the surviving bytes can still prove.</h1>
+    <p class="lead">Deep local recovery, verified entry by entry. No uploads, account or
+      subscription.</p>
+    <div class="cta mt-22">
+      <!--VERAQIS_CTA_RECOVERY-->
+      <a class="btn primary" href="/android/recovery-pro/">Join Android Pro testing</a>
+      <a class="btn ghost" href="/android/recovery-pro/">View recovery capabilities</a>
+      <!--/VERAQIS_CTA_RECOVERY-->
+      <a class="btn ghost" href="/testing.html">See the published ZIP evidence</a>
+    </div>
+    <div class="status-line">
+      <span class="status status--closed-test">Closed test</span>
+      <p class="note">No public Android package and no Google Play listing exist yet. Planned
+        launch price: <strong>&euro;9.99 one-time</strong> — a hypothesis, not a live offer.
+        Checkout is not live.</p>
+    </div>
+  </div>
+</div>
+
+<!-- NOT A CLONE OF FREE -->
+<section>
+  <div class="wrap prose">
+    <h2>A different product, not "Archiver Premium"</h2>
+    <p>Recovery Pro is not the same archiver without limits, not an ad-free version, and not
+      VERAQIS Archiver with buttons unlocked. Its job is not everyday archive browsing — that is
+      what the free <a href="/android/archiver/">VERAQIS Archiver</a> is for. Recovery Pro's one
+      job is the moment an archive stops working and you need to know, entry by entry, what can
+      still be trusted.</p>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="num">1</div>
+        <h3>Choose damaged ZIP</h3>
+        <p>Point Recovery Pro at the archive that no longer opens or extracts correctly.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">2</div>
+        <h3>Analyze read-only</h3>
+        <p>The source is opened read-only and never modified.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">3</div>
+        <h3>Inspect recovery preview</h3>
+        <p>See the verdict before committing to anything.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">4</div>
+        <h3>Review the verdicts</h3>
+        <p>Verified, damaged, unknown, lost — per entry, never blended into one score.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">5</div>
+        <h3>Choose entries, recover</h3>
+        <p>Recover to a new destination you select.</p>
+      </div>
+      <div class="flow-step">
+        <div class="num">6</div>
+        <h3>Export report</h3>
+        <p>A manifest of what was and wasn't recovered, and why.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="band">
+  <div class="wrap">
+    <h2>Who it is for</h2>
+    <p class="sub">Anyone holding a ZIP that will not open, will not fully extract, or fails on
+      one or more entries, and needs to know which files can be proven intact before deciding
+      what to do next.</p>
+  </div>
+</section>
+
+<!-- WHAT DAMAGE IT HANDLES -->
+<section>
+  <div class="wrap prose">
+    <h2 id="capabilities">What damage it handles</h2>
+    <p>The stable ZIP recovery scope for the first commercial release, grounded in the same
+      recovery engine already benchmarked on these damage classes:</p>
+    <ul>
+      <li>Missing end-of-central-directory record</li>
+      <li>Damaged central directory</li>
+      <li>Stale central-directory offsets</li>
+      <li>Local-header scanning when the index cannot be trusted</li>
+      <li>Truncated-entry detection</li>
+      <li>CRC-32 verification of every recovered entry</li>
+      <li>False-signature rejection</li>
+      <li>Overlap detection between entries</li>
+      <li>Recovery of intact entries before and after a damaged region</li>
+      <li>Stored and deflated entries</li>
+      <li>ZIP64, where the full path is verified</li>
+    </ul>
+    <p class="note">This scope is Android's <strong>closed-test</strong> target, grounded in the
+      engine's own benchmark record (see <code>CLAUDE.md</code> "Current technical
+      baseline" — findings F-1, F-2B, F-3 and F-4 closed on the controlled corpus, zero false
+      recoveries). The Android cross-product integration for this scope is not yet publicly
+      shipped.</p>
+  </div>
+</section>
+
+<!-- HOW ANALYSIS WORKS -->
+<section class="band">
+  <div class="wrap prose">
+    <h2 id="how">How analysis works</h2>
+    <p>A working ZIP reader starts at the end, reads the central directory, and trusts it — fast
+      for a healthy file, useless for a damaged one, because the index is what's most likely
+      missing. Recovery Pro reads the other way round: every entry carries its own local file
+      header next to its data, so scanning for those headers reconstructs the archive's contents
+      without depending on the index at all. Where the central directory is damaged, it is
+      rebuilt from what the local headers prove, never invented.</p>
+  </div>
+</section>
+
+<!-- VERDICT MODEL -->
+<section>
+  <div class="wrap">
+    <h2 id="verdicts">VERIFIED / DAMAGED / UNKNOWN / LOST</h2>
+    <p class="sub">A result is only called verified when something independent of the repair
+      confirms it. A structural fix does not get to certify its own output.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Label</th><th scope="col">What it means</th><th scope="col">What proved it</th></tr></thead>
+        <tbody>
+          <tr><td class="f">Verified</td><td>These are the original bytes.</td><td>The entry decompressed cleanly and its stored CRC-32 matched.</td></tr>
+          <tr><td class="f">Damaged</td><td>The entry exists but its contents changed.</td><td>The entry decompressed, but the CRC-32 did not match.</td></tr>
+          <tr><td class="f">Unknown</td><td>We cannot say either way.</td><td>No surviving evidence settles it.</td></tr>
+          <tr><td class="f">Lost</td><td>The data is not in the file.</td><td>The bytes are absent — truncated away or overwritten.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note mt-14">A report that says "43 verified, 2 damaged, 1 unknown" is more useful
+      than one that says "repaired!" and leaves you to discover which files are quietly wrong.</p>
+  </div>
+</section>
+
+<!-- FREE PREVIEW RELATIONSHIP -->
+<section class="band">
+  <div class="wrap">
+    <h2>Relationship to the free preview</h2>
+    <p class="sub">The free <a href="/android/archiver/">VERAQIS Archiver</a> includes a limited
+      recovery preview — damage class, discovered entries, an estimated recoverable size. Recovery
+      Pro is the next step: it recovers the entries the preview identified, verifies each one, and
+      writes them to a destination you choose with a full report. Free tells you whether it's
+      worth pursuing; Pro does the recovery.</p>
+  </div>
+</section>
+
+<!-- GUARANTEES -->
+<section>
+  <div class="wrap">
+    <h2>Read-only source, separate destination</h2>
+    <div class="grid g2">
+      <div class="card"><h3>Read-only source guarantee</h3><p>The source archive is opened
+        read-only and never modified. A failed recovery attempt costs you nothing — the original
+        stays exactly as it was.</p></div>
+      <div class="card"><h3>Recovery destination</h3><p>Recovered output is written to a
+        destination you choose, separate from the source. Nothing is repaired in place.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- REPORT FORMAT -->
+<section class="band">
+  <div class="wrap">
+    <h2>Report format</h2>
+    <p class="sub">Every recovery produces a manifest, not a claim: entry names, verdicts, byte
+      ranges, rule IDs, and before/after hashes, so the result can be checked later rather than
+      taken on trust. See a published example on the <a href="/testing.html">test record</a> and
+      the <a href="/reports.html">reports page</a>.</p>
+  </div>
+</section>
+
+<!-- LIMITATIONS -->
+<section>
+  <div class="wrap">
+    <h2>Honest limitations</h2>
+    <ul class="checks mw-820">
+      <li class="no"><strong>No password recovery.</strong> Encrypted archives are detected and
+        reported, not opened.</li>
+      <li class="no"><strong>No encryption bypass.</strong> Recovery Pro does not remove or
+        circumvent access controls.</li>
+      <li class="no"><strong>No reconstruction of bytes that are absent.</strong> If the data was
+        truncated away or overwritten, no analysis returns it — it is reported as lost.</li>
+      <li class="no"><strong>No guarantee every damaged ZIP is recoverable.</strong> Recovery
+        depends entirely on what survived.</li>
+      <li class="no"><strong>No in-place modification of the source.</strong> The original file is
+        never rewritten.</li>
+      <li class="no"><strong>No malware verdict.</strong> This is a structural recovery tool, not
+        an antivirus.</li>
+      <li class="no"><strong>No legal or forensic certification.</strong> Recovery output is not
+        presented as court-admissible or forensically certified evidence.</li>
+      <li class="no"><strong>Other formats are not part of this commercial promise.</strong> PDF,
+        SQLite, 7z, RAR, TAR, GZIP, XZ, BZIP2, Office and other formats have experimental
+        engine-level work in the repository, but none of it is part of Recovery Pro's stable
+        scope. See the <a href="/formats/">format reference</a> for the honest per-format
+        position.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- RELEASE STATUS + PRICE -->
+<section class="band">
+  <div class="wrap">
+    <h2>Release status and price</h2>
+    <div class="card">
+      <p class="mb-10"><span class="status status--closed-test">Closed test</span></p>
+      <p><strong>Platform:</strong> Android only</p>
+      <p><strong>Planned launch price:</strong> &euro;9.99 one-time <span class="mut">(hypothesis, not a live offer)</span></p>
+      <p><strong>Live price:</strong> none — no checkout exists</p>
+      <p><strong>Purchase availability:</strong> not available; no subscription in this launch model</p>
+      <div class="cta mt-12">
+        <a class="btn primary" href="/contact.html">Join Android Pro testing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="wrap">
+    <h2>Recovery Pro questions</h2>
+    <div class="faq">
+      <div class="qa">
+        <h3>Is VERAQIS Recovery Pro available now?</h3>
+        <p>No. Recovery Pro is in closed Android testing. There is no public APK and no Google
+          Play listing yet.</p>
+      </div>
+      <div class="qa">
+        <h3>Is Recovery Pro the same app as VERAQIS Archiver with more features unlocked?</h3>
+        <p>No. Recovery Pro is a separate, specialised app for one workflow: recovering a damaged
+          ZIP. It is not VERAQIS Archiver Premium or an ad-free version of the free app.</p>
+      </div>
+      <div class="qa">
+        <h3>Can it recover any damaged ZIP?</h3>
+        <p>No. Recovery depends on what survived. Data that is gone stays gone; Recovery Pro
+          proves what the surviving bytes support and reports the rest as damaged, unknown or
+          lost.</p>
+      </div>
+      <div class="qa">
+        <h3>Can it open a password-protected ZIP without the password?</h3>
+        <p>No. Encrypted archives are detected and reported. Recovery Pro does not guess, derive
+          or brute-force a password, and does not bypass encryption.</p>
+      </div>
+      <div class="qa">
+        <h3>What is the price?</h3>
+        <p>Planned launch price: &euro;9.99 one-time. This is a hypothesis, not a live offer;
+          checkout is not live and no charge applies during closed testing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

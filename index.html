@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<title>Offline ZIP recovery and archive integrity checks | VERAQIS</title>
-<meta name="description" content="Analyze damaged ZIP archives on your own machine. VERAQIS recovers only what its checksums can prove and labels the rest unknown. No uploads. Signed Android app." />
+<title>VERAQIS — Android archive tools that tell you what can be trusted</title>
+<meta name="description" content="VERAQIS Archiver opens and extracts archives safely on Android, free. Recovery Pro finds what a damaged ZIP can still prove. No uploads, no telemetry, no account." />
 <link rel="canonical" href="https://veraqis.tech/" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="Offline ZIP recovery and archive integrity checks" />
-<meta property="og:description" content="Analyze a damaged ZIP on your own machine. Recover only what the archive's own checksums can prove — the rest stays labelled unknown, never guessed." />
+<meta property="og:title" content="VERAQIS — Android archive tools that tell you what can be trusted" />
+<meta property="og:description" content="VERAQIS Archiver opens and extracts archives safely on Android, free. VERAQIS Recovery Pro finds what a damaged ZIP's surviving bytes can still prove." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -21,8 +21,8 @@
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
 <meta property="og:url" content="https://veraqis.tech/" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Offline ZIP recovery and archive integrity checks" />
-<meta name="twitter:description" content="Analyze a damaged ZIP on your own machine. Recover only what the archive's own checksums can prove — the rest stays labelled unknown, never guessed." />
+<meta name="twitter:title" content="VERAQIS — Android archive tools that tell you what can be trusted" />
+<meta name="twitter:description" content="VERAQIS Archiver opens and extracts archives safely on Android, free. VERAQIS Recovery Pro finds what a damaged ZIP's surviving bytes can still prove." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -34,7 +34,7 @@
       "name": "VERAQIS",
       "url": "https://veraqis.tech/",
       "logo": "https://veraqis.tech/assets/favicon.svg",
-      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+      "description": "VERAQIS builds proof-first, offline-first Android archive tools."
     },
     {
       "@type": "WebSite",
@@ -50,8 +50,8 @@
       "@type": "WebPage",
       "@id": "https://veraqis.tech/#webpage",
       "url": "https://veraqis.tech/",
-      "name": "Offline ZIP recovery and archive integrity checks",
-      "description": "VERAQIS analyzes damaged ZIP archives on your own machine, recovers only what its checksums can prove, and labels everything else unknown. No uploads, no telemetry, no password recovery, no invented data.",
+      "name": "VERAQIS — Android archive tools that tell you what can be trusted",
+      "description": "VERAQIS Archiver opens and extracts archives safely on Android, free. VERAQIS Recovery Pro finds what a damaged ZIP's surviving bytes can still prove. No uploads, no telemetry, no account.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-30",
+      "dateModified": "2026-08-05",
       "inLanguage": "en"
     },
     {
@@ -85,18 +85,18 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "What is VERAQIS?",
+          "name": "Which VERAQIS Android app do I need?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "VERAQIS is a beta file safety and recovery toolkit. It audits archives and damaged files, recovers only data that surviving bytes can prove, and reports unknown regions honestly."
+            "text": "VERAQIS Archiver, free, for everyday archives: open, inspect and extract safely. VERAQIS Recovery Pro, in closed testing, for a ZIP that no longer opens or extracts correctly."
           }
         },
         {
           "@type": "Question",
-          "name": "What makes VERAQIS different from ordinary recovery tools?",
+          "name": "Is VERAQIS available on desktop or other platforms?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "VERAQIS is built around an evidence model. A recovery result must be backed by checksum, structural, object-graph or independent-copy proof; otherwise VERAQIS abstains instead of inventing data."
+            "text": "No. VERAQIS is Android-only. There is no active desktop or CLI product on this site."
           }
         },
         {
@@ -104,15 +104,15 @@
           "name": "Does VERAQIS send files to a server?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. The beta tools are offline-first, make no telemetry calls, and keep analysis and recovery on the user's machine."
+            "text": "No. Both apps process files on the device. There is no cloud upload, no account and no telemetry."
           }
         },
         {
           "@type": "Question",
-          "name": "Can veraqis recover encrypted files or passwords?",
+          "name": "Can VERAQIS recover encrypted files or passwords?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Encrypted archives and documents are detected and reported, but VERAQIS does not decrypt, recover passwords, or bypass restrictions."
+            "text": "No. Encrypted archives are detected and reported, but VERAQIS does not decrypt, recover passwords, or bypass restrictions."
           }
         }
       ],
@@ -137,11 +137,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -154,13 +154,13 @@
 <div class="hero">
   <div class="wrap">
     <div>
-      <div class="kicker">Offline file safety and recovery</div>
-      <h1>Know what can be trusted before you recover.</h1>
-      <p class="lead">VERAQIS analyzes damaged archives and data files, recovers only what can be
-        verified, and clearly marks everything else as unknown. Your files stay on your device.</p>
+      <div class="kicker">Android archive tools</div>
+      <h1>Android archive tools that tell you what can be trusted.</h1>
+      <p class="lead">Open and extract archives safely with VERAQIS Archiver. When a ZIP is
+        damaged, Recovery Pro finds what can still be proven.</p>
       <div class="cta">
-        <a class="btn primary" href="/recovery.html">Recover a damaged ZIP archive</a>
-        <a class="btn ghost" href="/download.html">Downloads &amp; release status</a>
+        <a class="btn primary" href="/android/archiver/">Get the free Archiver</a>
+        <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
       </div>
       <p class="note mt-16">Have the file to hand?
         <a href="/tools/zip-checker/">Check a ZIP archive locally in your browser</a> — nothing is
@@ -169,16 +169,13 @@
         <a href="/guides/zip-crc-error/">CRC failed</a> ·
         <a href="/guides/">all guides</a></p>
       <div class="status-line">
-        <span class="status status--available">Android APK</span>
-        <p class="note">Available now: the signed Android Archiver APK — the only public download. VERAQIS
-          Recovery for Windows is not yet publicly downloadable; a signed release (Microsoft Store) is
-          pending. No unsigned Windows build is published.</p>
+        <span class="status status--available">Offline · no uploads · no telemetry · no account</span>
       </div>
     </div>
     <figure class="hero-visual">
-      <img src="assets/desktop-protect-2026-07.png" alt="VERAQIS Recovery development build: the Protect screen with folder protection, checking, repair and signing controls" width="1600" height="1000" decoding="async" fetchpriority="high" />
-      <figcaption>Development build shown (VERAQIS Recovery v0.2.1). No public Windows package is
-        currently available.</figcaption>
+      <img src="assets/mobile-safety-scan.png" width="320" height="640"
+        alt="VERAQIS Archiver on Android showing a suspicious archive verdict and the risk found" decoding="async" fetchpriority="high" />
+      <figcaption>Current Android build: VERAQIS Archiver reporting a scan verdict.</figcaption>
     </figure>
   </div>
 </div>
@@ -191,15 +188,16 @@
       is the safe move.</p>
     <div class="grid g3">
       <div class="card"><p><a href="/guides/zip-file-wont-open/">A ZIP file won't open</a> and you need to find out why.</p></div>
-      <div class="card"><p>A ZIP, DOCX, XLSX, PPTX or another supported container <a href="/guides/repair-corrupted-zip/">appears damaged</a>.</p></div>
+      <div class="card"><p>An archive appears damaged and you need to
+        <a href="/guides/repair-corrupted-zip/">know what's recoverable</a> before deciding what to do.</p></div>
       <div class="card"><p>A download or copy stopped halfway and the archive is
         <a href="/guides/unexpected-end-of-zip/">cut short</a>.</p></div>
-      <div class="card"><p>You need to <a href="/mobile.html">inspect an archive safely on Android</a>
-        before extracting it.</p></div>
+      <div class="card"><p>You need to <a href="/android/archiver/">open and extract an archive
+        safely on Android</a> before trusting its contents.</p></div>
       <div class="card"><p>A confidential file must stay offline, and
         <a href="/guides/is-online-file-repair-safe/">uploading it to a repair site</a> is not an option.</p></div>
-      <div class="card"><p>You need to <a href="/recovery.html">tell verified recovery from uncertain
-        output</a> before you trust the result.</p></div>
+      <div class="card"><p>You need to <a href="/android/recovery-pro/">tell verified recovery from
+        uncertain output</a> before you trust the result.</p></div>
     </div>
     <p class="note mt-14">A listed format is not a promise that every damaged file
       can be recovered — recovery depends on what surviving bytes can prove.</p>
@@ -209,35 +207,30 @@
 <!-- PRODUCT FAMILY -->
 <section id="products" class="band">
   <div class="wrap">
-    <h2>Two active products</h2>
-    <p class="sub">One brand, two products. VERAQIS Recovery is the commercial product; VERAQIS Archiver
-      for Android is a free archive-safety tool. One rule across both: a result is shown as verified only
-      after it is checked.</p>
+    <h2>One brand, two Android apps</h2>
+    <p class="sub">Free handles everyday archives safely. Pro handles damaged ZIPs carefully. One
+      rule across both: a result is marked verified only after an independent check supports it.</p>
     <div class="grid g2">
       <div class="card">
-        <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
-        <p>Analyze damaged ZIP archives and recover only what can be verified. Free analysis and preview;
-          you pay only to save the recovered result.</p>
-        <p class="my-12"><span class="status status--experimental">Windows — store release pending</span></p>
-        <div class="cta mt-8">
-          <a class="btn ghost" href="desktop.html">View Recovery status</a>
-          <a class="btn ghost" href="contact.html">Join beta</a>
-        </div>
+        <div class="ic">APK</div><h3>VERAQIS Archiver</h3>
+        <p>A simple, free Android archiver with structural safety checks before extraction. Open,
+          inspect and extract safely — fully offline, no account, no telemetry.</p>
+        <p class="my-12"><span class="status status--available">Available — Free</span></p>
+        <div class="cta mt-8"><a class="btn primary" href="/android/archiver/">Download the free Android app</a></div>
       </div>
       <div class="card">
-        <div class="ic">APK</div><h3>VERAQIS Archiver for Android</h3>
-        <p>Inspect archives safely before extracting. Read-only scan, damage and path-traversal detection,
-          bomb limits, and transactional extraction — fully offline, no telemetry.</p>
-        <p class="my-12"><span class="status status--available">Available — signed Android beta</span></p>
-        <div class="cta mt-8"><a class="btn primary" href="mobile.html">Download Android beta</a></div>
+        <div class="ic">PRO</div><h3>VERAQIS Recovery Pro</h3>
+        <p>A specialised Android recovery app for ZIP archives that no longer open or extract
+          correctly. Deep local recovery, verified entry by entry.</p>
+        <p class="my-12"><span class="status status--closed-test">Closed test</span> <span class="mut">planned &euro;9.99 one-time</span></p>
+        <div class="cta mt-8"><a class="btn ghost" href="/android/recovery-pro/">Join Android Pro testing</a></div>
       </div>
     </div>
-    <p class="note mt-16">The command-line interface is a Technician capability of
-      VERAQIS Recovery, not a separate product; Reports, Shield, reconcile and exact-copy recovery are
-      likewise <strong>capabilities</strong>. Advanced formats (PDF, SQLite, TAR/GZIP, 7z, RAR and others)
-      are experimental capabilities, not stable commercial promises. See <a href="reports.html">Reports &amp;
-      Verification</a> and the <a href="testing.html">Test Record</a> for the evidence behind every claim.
-      ColdPass is an <a href="coldpass.html">archived experimental project</a>.</p>
+    <p class="note mt-16">Formats beyond ZIP have experimental engine-level work but are not part
+      of Recovery Pro's stable commercial promise — see the <a href="/formats/">format reference</a>
+      for the honest per-format position. See <a href="/reports.html">Reports &amp;
+      Verification</a> and the <a href="/testing.html">Test Record</a> for the evidence behind
+      every claim.</p>
   </div>
 </section>
 
@@ -249,9 +242,9 @@
     <p class="quote">Each recovered part is checked before it is marked as verified. Anything that
       cannot be proven remains clearly labelled as unknown.</p>
     <p class="note mt-16">Want the detail? See how verification works in
-      <a href="reports.html">Reports &amp; Verification</a>
-        <a href="changelog.html">Changelog</a>, the measured results in the
-      <a href="testing.html">Test Record</a>, and the commands in the <a href="docs.html">docs</a>.</p>
+      <a href="/reports.html">Reports &amp; Verification</a>,
+        <a href="/changelog.html">Changelog</a>, the measured results in the
+      <a href="/testing.html">Test Record</a>, and the commands in the <a href="/docs.html">docs</a>.</p>
   </div>
 </section>
 
@@ -287,8 +280,8 @@
       </div>
     </div>
     <div class="cta">
-      <a class="btn primary" href="testing.html#live-product-run">See the real report</a>
-      <a class="btn ghost" href="testing.html#benchmark-stats">Read benchmark statistics</a>
+      <a class="btn primary" href="/testing.html#live-product-run">See the real report</a>
+      <a class="btn ghost" href="/testing.html#benchmark-stats">Read benchmark statistics</a>
     </div>
   </div>
 </section>
@@ -297,9 +290,9 @@
 <section>
   <div class="wrap">
     <div class="kicker">Positioning</div>
-    <p class="quote">VERAQIS is not a miracle recovery button. It is an evidence-first safety tool for
-      archives and damaged files: check the risk, recover the provable parts, and say clearly when the
-      data is not recoverable.</p>
+    <p class="quote">VERAQIS is not a miracle recovery button. It is an evidence-first Android
+      archive tool: check the risk, recover the provable parts, and say clearly when the data is
+      not recoverable.</p>
     <div class="zero mono">ship rule | <span class="good">do not emit unproven data</span></div>
     <div class="compare">
       <div class="side">
@@ -313,7 +306,7 @@
       <div class="side veraqis">
         <h3>VERAQIS sells proof</h3>
         <ul>
-          <li>Verified bytes, rows, parts and objects are counted separately.</li>
+          <li>Verified bytes and entries are counted separately from damaged and unknown ones.</li>
           <li>False output is a hard gate, not a footnote.</li>
           <li>Unknown regions remain unknown when evidence is missing.</li>
         </ul>
@@ -334,23 +327,27 @@
 <section>
   <div class="wrap">
     <h2>Common questions</h2>
-    <p class="sub">Plain answers for people deciding whether VERAQIS belongs in their recovery workflow.</p>
+    <p class="sub">Plain answers for people deciding which VERAQIS Android app they need.</p>
     <div class="faq">
       <div class="qa">
-        <h3>What is VERAQIS?</h3>
-        <p>VERAQIS is a beta file safety and recovery toolkit. It audits archives and damaged files, recovers only data that surviving bytes can prove, and reports unknown regions honestly.</p>
+        <h3>Which VERAQIS Android app do I need?</h3>
+        <p>VERAQIS Archiver, free, for everyday archives: open, inspect and extract safely.
+          VERAQIS Recovery Pro, in closed testing, for a ZIP that no longer opens or extracts
+          correctly.</p>
       </div>
       <div class="qa">
-        <h3>What makes VERAQIS different from ordinary recovery tools?</h3>
-        <p>VERAQIS is built around an evidence model. A recovery result must be backed by checksum, structural, object-graph or independent-copy proof; otherwise VERAQIS abstains instead of inventing data.</p>
+        <h3>Is VERAQIS available on desktop or other platforms?</h3>
+        <p>No. VERAQIS is Android-only. There is no active desktop or CLI product on this site.</p>
       </div>
       <div class="qa">
         <h3>Does VERAQIS send files to a server?</h3>
-        <p>No. The beta tools are offline-first, make no telemetry calls, and keep analysis and recovery on the user's machine.</p>
+        <p>No. Both apps process files on the device. There is no cloud upload, no account and no
+          telemetry.</p>
       </div>
       <div class="qa">
-        <h3>Can veraqis recover encrypted files or passwords?</h3>
-        <p>No. Encrypted archives and documents are detected and reported, but VERAQIS does not decrypt, recover passwords, or bypass restrictions.</p>
+        <h3>Can VERAQIS recover encrypted files or passwords?</h3>
+        <p>No. Encrypted archives are detected and reported, but VERAQIS does not decrypt, recover
+          passwords, or bypass restrictions.</p>
       </div>
     </div>
   </div>
@@ -359,10 +356,12 @@
 <!-- KNOWLEDGE LAYER -->
 <section id="knowledge">
   <div class="wrap">
-    <h2>What we have measured</h2>
+    <h2>Research behind the Android recovery engine</h2>
     <p class="sub">Every figure below comes from running our own engine against a corpus with
       known answers, and every report links the data it was derived from. Negative results are
-      published next to the positive ones.</p>
+      published next to the positive ones. These are measured research results, not shipped Pro
+      capabilities — see the <a href="/android/recovery-pro/#capabilities">stable Recovery Pro
+      scope</a> for what the product actually commits to today.</p>
     <div class="grid g2">
       <a class="card link-card" href="/research/7z-solid-archive-bit-flip/">
         <h3>One bit flip in a solid 7z archive</h3>
@@ -404,16 +403,16 @@
     <div class="grid g4">
       <div class="card metric"><div class="n">PASS</div><div class="l"><code>cargo test --workspace --all-targets</code></div></div>
       <div class="card metric"><div class="n">PASS</div><div class="l">Rust fmt and clippy with warnings denied</div></div>
-      <div class="card metric"><div class="n">0</div><div class="l">moderate-or-higher vulnerabilities in the Desktop UI npm audit</div></div>
-      <div class="card metric"><div class="n">1</div><div class="l">reviewed public beta artifact currently published: the signed Android APK</div></div>
+      <div class="card metric"><div class="n">7</div><div class="l">languages shipped in the Android Archiver interface, including Arabic RTL</div></div>
+      <div class="card metric"><div class="n">1</div><div class="l">publicly downloadable Android artifact: the signed VERAQIS Archiver APK</div></div>
     </div>
     <div class="callout warn mt-22">
-      <strong>Release limit:</strong> the Android APK is release-key signed. Previous Windows artifacts
-      were withdrawn; Recovery and ColdPass are being rebuilt and reviewed before republishing.
+      <strong>Release limit:</strong> VERAQIS Recovery Pro is in closed Android testing — no public
+      APK, no Play listing yet. Only VERAQIS Archiver is publicly downloadable today.
     </div>
     <div class="cta">
-      <a class="btn primary" href="testing.html">Read the full test record</a>
-      <a class="btn ghost" href="security.html">Review security model</a>
+      <a class="btn primary" href="/testing.html">Read the full test record</a>
+      <a class="btn ghost" href="/security.html">Review security model</a>
     </div>
   </div>
 </section>
@@ -421,14 +420,14 @@
 <!-- PRICING TEASER -->
 <section>
   <div class="wrap">
-    <h2>Analysis is free. You pay only to save.</h2>
-    <p class="sub">The VERAQIS Recovery model: free full analysis and an evidence-backed preview, then a
-      paid save of the recovered result. The Android Archiver is free and downloadable today; VERAQIS
-      Recovery for Windows is being prepared for a signed store release. Price and availability are
-      separate — see <a href="pricing.html">pricing</a> for the full breakdown.</p>
+    <h2>Archiver is free. Recovery Pro is a planned one-time purchase.</h2>
+    <p class="sub">VERAQIS Archiver is free forever and downloadable today. VERAQIS Recovery Pro's
+      planned launch price is &euro;9.99 one-time — a hypothesis, not a live offer, until closed
+      testing ends and a Google Play listing exists. See <a href="/pricing.html">pricing</a> for
+      the full breakdown.</p>
     <div class="cta">
-      <a class="btn primary" href="mobile.html">Download Android beta</a>
-      <a class="btn ghost" href="contact.html">Send feedback</a>
+      <a class="btn primary" href="/android/archiver/">Download the free Android app</a>
+      <a class="btn ghost" href="/contact.html">Send feedback</a>
     </div>
   </div>
 </section>
@@ -455,9 +454,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -472,6 +470,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

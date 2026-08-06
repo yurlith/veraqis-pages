@@ -6,24 +6,24 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
-<title>File formats — structure, failure modes, recoverability | VERAQIS</title>
-<meta name="description" content="How each supported format is laid out, how it fails, and what is provably recoverable from each failure — with the honest limits stated." />
-<link rel="canonical" href="https://veraqis.tech/formats/" />
+<title>Local file inspection tools — browser-only | VERAQIS</title>
+<meta name="description" content="Browser-only tools that inspect a file on your own machine. No upload, no server, no account — the file never leaves the tab it was opened in." />
+<link rel="canonical" href="https://veraqis.tech/tools/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="/assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="File formats — structure, failure modes, recoverability" />
-<meta property="og:description" content="What each format can prove about itself after damage, and what it cannot." />
+<meta property="og:title" content="Local file inspection tools — nothing leaves your browser" />
+<meta property="og:description" content="Every tool here runs in your browser. No file is ever uploaded." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
-<meta property="og:url" content="https://veraqis.tech/formats/" />
+<meta property="og:url" content="https://veraqis.tech/tools/" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="File formats — structure, failure modes, recoverability" />
-<meta name="twitter:description" content="What each format can prove about itself after damage, and what it cannot." />
+<meta name="twitter:title" content="Local file inspection tools — nothing leaves your browser" />
+<meta name="twitter:description" content="Every tool here runs in your browser. No file is ever uploaded." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -48,11 +48,11 @@
     },
     {
       "@type": "CollectionPage",
-      "@id": "https://veraqis.tech/formats/#webpage",
-      "url": "https://veraqis.tech/formats/",
-      "name": "File formats — structure, failure modes, recoverability | VERAQIS",
-      "description": "How each supported format is laid out, how it fails, and what is provably recoverable from each failure — with the honest limits stated.",
-      "dateModified": "2026-07-28",
+      "@id": "https://veraqis.tech/tools/#webpage",
+      "url": "https://veraqis.tech/tools/",
+      "name": "Local file inspection tools — browser-only | VERAQIS",
+      "description": "Browser-only tools that inspect a file on your own machine. No upload, no server, no account — the file never leaves the tab it was opened in.",
+      "dateModified": "2026-08-05",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
@@ -60,7 +60,7 @@
     },
     {
       "@type": "BreadcrumbList",
-      "@id": "https://veraqis.tech/formats/#breadcrumbs",
+      "@id": "https://veraqis.tech/tools/#breadcrumbs",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -71,8 +71,8 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Formats",
-          "item": "https://veraqis.tech/formats/"
+          "name": "Tools",
+          "item": "https://veraqis.tech/tools/"
         }
       ]
     }
@@ -94,8 +94,8 @@
         <a href="/android/archiver/">Archiver</a>
         <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/tools/">Tools</a>
-        <a href="/formats/" class="active">Formats</a>
+        <a href="/tools/" class="active">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -108,9 +108,9 @@
 <div class="page-head">
   <div class="wrap">
     
-    <p class="kicker">Formats</p>
-    <h1>File formats</h1>
-    <p class="lead">Recoverability is a property of the format, not of the tool. A format that stores an independent checksum per block can be salvaged past damage; one that couples everything into a single stream cannot. These pages map each format to what is actually provable.</p>
+    <p class="kicker">Tools</p>
+    <h1>Local inspection tools</h1>
+    <p class="lead">Each tool below reads a file you choose with the browser's File API and analyses it in place — usually inside a Web Worker, so the page stays responsive. Nothing is written to a server; there is no server in this path to write to.</p>
     
   </div>
 </div>
@@ -118,13 +118,11 @@
 <section>
   <div class="wrap">
     <div class="">
-      <h2 id="refs">Format references</h2>
-      <div class="grid g2"><div class="card"><h3>ZIP — and DOCX, XLSX, APK, EPUB</h3><p>Entries plus an index at the end. Seven distinct failure modes, of which the most common destroys no data at all. 24 classifier rules.</p><p class="note"><a href="/formats/zip/">Open the ZIP reference →</a></p></div><div class="card"><h3>Coming from the same measurements</h3><p>Per-format pages for 7z, xz/bzip2, gzip/tar, PDF, SQLite and ISO are being written from the same experiments already published under Research. Until each exists, the measurement it will be built on is linked below.</p></div></div>
-      <h2 id="matrix">Recoverability at a glance</h2>
-      <p>What decides whether damaged data can be recovered <em>with proof</em> is whether the format carries an independent verifier over the region in question — measured, not assumed:</p>
-      <div class="table-scroll"><table><thead><tr><th scope="col">format</th><th scope="col">independent payload verifier</th><th scope="col">salvage past damage?</th><th scope="col">measurement</th></tr></thead><tbody><tr><td>ZIP</td><td>CRC-32 per entry</td><td>yes — other entries verify independently</td><td><a href="/formats/zip/">ZIP reference</a></td></tr><tr><td>7z (solid)</td><td>CRC-32 per file</td><td>prefix only — no resync point exists after the damage</td><td><a href="/research/7z-solid-archive-bit-flip/">bit-flip measurement</a></td></tr><tr><td>xz</td><td>CRC-32 or CRC-64 per block</td><td>yes — 9 of 10 blocks in the headline case</td><td><a href="/research/recovering-past-corruption-xz-bzip2/">salvage measurement</a></td></tr><tr><td>bzip2</td><td>CRC-32 per block</td><td>yes — reaches the safe optimum</td><td><a href="/research/recovering-past-corruption-xz-bzip2/">salvage measurement</a></td></tr><tr><td>gzip</td><td>CRC-32 per member</td><td>member-level resync</td><td><a href="/reference/rule-ids/#fmt-gzip">rule reference</a></td></tr><tr><td>zstd / lz4</td><td><strong>none</strong></td><td><strong>no — we abstain</strong></td><td><a href="/research/recovering-past-corruption-xz-bzip2/#abstain">why we abstain</a></td></tr><tr><td>PDF / SQLite / TAR / ISO</td><td><strong>none</strong></td><td>structural recovery only, not byte-level proof</td><td><a href="/research/joint-verifier-surface-is-empty/">joint-verifier measurement</a></td></tr><tr><td>RAR</td><td>CRC-32 per file</td><td>inventory and stored files only — the codec is proprietary</td><td><a href="/reference/rule-ids/#fmt-rar">rule reference</a></td></tr></tbody></table></div><p class="note">The "none" rows are not gaps in our support. They are properties of those formats: there is nothing inside the stream that can independently confirm a recovered region, which is why we report the limit instead of emitting unverifiable bytes.</p>
-      <div class="callout info"><strong>Practical reading of this table:</strong> if you are choosing a format for data you might one day need to recover part of, prefer one with per-block verifiers — <code>xz -T0</code>, <code>bzip2</code>, or a non-solid archive. If you need position-independent recovery, that requires parity added in advance; no format gives it to you for free.</div>
-      <ul class="source-list"><li><a href="/reference/rule-ids/">All 87 rule IDs by format</a> — what each format can detect</li><li><a href="/research/">Research</a> — the measurements behind every row above</li><li><a href="/guides/">Guides</a> — if you have a damaged file right now</li></ul>
+      <h2 id="available">Available now</h2>
+      <div class="grid g2"><div class="card"><h3>ZIP integrity checker</h3><p>Parses local file headers, the central directory and the end-of-central-directory record, then verifies each entry against its stored CRC-32 — all in your browser.</p><p class="note"><a href="/tools/zip-checker/">Open the ZIP checker →</a></p></div></div>
+      <h2 id="local">What "local" means here</h2>
+      <ul><li>The file is read with the browser File API and never leaves the page.</li><li>Analysis runs in a Web Worker in your browser; there is no upload endpoint for these tools to call.</li><li>Closing the tab discards everything the tool computed. Nothing persists on a server because nothing was sent to one.</li></ul>
+      <ul class="source-list"><li><a href="/formats/">Format capability matrix</a> — what browser analysis exists per format, honestly stated</li><li><a href="/reference/rule-ids/">Rule ID reference</a> — every finding a VERAQIS analysis can report</li><li><a href="/guides/">Guides</a> — if you have a specific error message right now</li></ul>
     </div>
   </div>
 </section>
