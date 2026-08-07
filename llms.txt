@@ -63,8 +63,7 @@ from an experiment in our own repository and the page names the experiment and l
 
 ## Products
 
-VERAQIS is Android-only: one available Android app, one in development. There is no active
-desktop, CLI or Windows product on this site.
+VERAQIS builds Android archive tools: one available Android app, one in development.
 
 - [VERAQIS Archiver](https://veraqis.tech/android/archiver/): free, signed public beta. Open,
   inspect and extract archives safely; a limited recovery preview flags damaged archives without

@@ -93,7 +93,7 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Why does Windows say a ZIP is invalid when the files are clearly inside it?",
+          "name": "Why does the built-in archive tool say a ZIP is invalid when the files are clearly inside it?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries."
@@ -253,7 +253,7 @@
   <div class="wrap">
     <h2 id="faq">Questions about the ZIP format</h2>
     <div class="faq">
-      <div class="qa"><h3>Why does Windows say a ZIP is invalid when the files are clearly inside it?</h3><p>ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries.</p></div>
+      <div class="qa"><h3>Why does the built-in archive tool say a ZIP is invalid when the files are clearly inside it?</h3><p>ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries.</p></div>
       <div class="qa"><h3>Why is the ZIP index stored at the end of the file?</h3><p>ZIP was designed to be written as a stream, before the writer knows how well each file will compress. Writing entries first and the index last makes that possible, and it makes appending cheap. The cost is that damage to the last few hundred bytes makes the entire archive unreadable to normal tools.</p></div>
       <div class="qa"><h3>Can every corrupted ZIP be repaired?</h3><p>No, and the answer depends on which bytes survived. Losing the index usually costs no data. Losing an entry's compressed bytes destroys that entry. Encrypted archives are not opened without the password at all. VERAQIS reports what surviving bytes can prove and marks the rest unknown.</p></div>
       <div class="qa"><h3>Is a DOCX file really a ZIP?</h3><p>Yes. DOCX, XLSX, PPTX, JAR, APK and EPUB are all ZIP containers with a required internal layout. They can therefore fail in two independent ways: as a damaged ZIP, or as a valid ZIP whose internal package graph no longer resolves.</p></div>

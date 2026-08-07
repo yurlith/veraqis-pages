@@ -304,7 +304,7 @@ phx recover damaged.7z --semantic 7z --output out/
       <p>If you archive with solid compression, damage position is not a detail — it decides your loss. Damage near the end of a solid folder costs almost nothing; damage near the start costs almost everything. If the archive matters, either turn solid mode off for the parts you cannot lose, or add parity so position stops mattering.</p>
       <p>And if you are holding a damaged solid 7z right now: it is very likely <strong>not</strong> a total loss. The correct first step is to find out how much of it is provable, which costs nothing.</p>
       <h2 id="reproduce">Reproduce it</h2>
-      <div class="terminal"><pre>$env:PATH = "$env:LOCALAPPDATA\Microsoft\WindowsApps;" + $env:PATH
+      <div class="terminal"><pre># ensure the python launcher is on PATH for your shell
 cargo build --release -p phx
 python -m pip install py7zr
 python scripts/exp_7z_prefix_salvage_gate.py     # the gate table above
