@@ -1,8 +1,8 @@
 {
   "generated_from": "crates/phx_analyze_engine/src/corruption/rules.rs",
-  "note": "Compile-time classifier registry of VERAQIS Recovery. Every rule ID that can appear in an analysis report is listed here with the format field it is keyed to. Generated, not hand-written.",
-  "rule_count": 87,
-  "format_count": 11,
+  "note": "Compile-time classifier registry of VERAQIS Recovery. Every rule ID that can appear in an analysis report is listed here with the format field it is keyed to. Generated, not hand-written. Rules keyed to \"*\" in the source — those that apply to every format — are published as \"Any\". The extractor refuses to write unless it parses every entry rules.rs declares, so a rule shape it does not recognise fails the build instead of quietly disappearing from here.",
+  "rule_count": 117,
+  "format_count": 13,
   "rules": [
     {
       "id": "ZIP_EOCD_001",
@@ -735,6 +735,166 @@
       "recoverable_hint": false
     },
     {
+      "id": "SQ_MAGIC_001",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Header magic missing",
+      "field": "sqlite.magic",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "SQ_PGSIZE_001",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Page size not a power of two",
+      "field": "sqlite.page_size",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_PGSIZE_002",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Page size mismatch with actual pages",
+      "field": "sqlite.page_size",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_FC_001",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "File change counter mismatch",
+      "field": "sqlite.change_counter",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_BTREE_001",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "B-tree page type byte invalid",
+      "field": "sqlite.btree.page_type",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_BTREE_002",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "B-tree cell count exceeds capacity",
+      "field": "sqlite.btree.cell_count",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_BTREE_003",
+      "format": "SQLite",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Cell pointer references missing offset",
+      "field": "sqlite.btree.cell_ptr",
+      "evidence_type": "Offset Out Of Bounds",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_FREE_001",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "Freelist trunk page number invalid",
+      "field": "sqlite.freelist_trunk",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_FREE_002",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Freelist count exceeds actual pages",
+      "field": "sqlite.freelist_count",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_WAL_001",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Minor",
+      "description": "WAL header magic missing",
+      "field": "wal.magic",
+      "evidence_type": "Signature Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "SQ_WAL_002",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "WAL salt mismatch",
+      "field": "wal.salt",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_TRUNC_001",
+      "format": "SQLite",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "Truncated mid-page",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_TRUNC_002",
+      "format": "SQLite",
+      "category": "Truncation",
+      "severity": "Catastrophic",
+      "description": "Truncated before page 2",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_FLIP_001",
+      "format": "SQLite",
+      "category": "Bit Flip",
+      "severity": "Minor",
+      "description": "Bit flip in row data",
+      "field": "payload.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_FLIP_002",
+      "format": "SQLite",
+      "category": "Bit Flip",
+      "severity": "Major",
+      "description": "Bit flip in B-tree interior key",
+      "field": "sqlite.btree.key",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SQ_COMP_001",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Catastrophic",
+      "description": "Corrupt B-tree + bit flip",
+      "field": "sqlite.btree",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
       "id": "RAR_MAGIC_001",
       "format": "RAR",
       "category": "Structural Corruption",
@@ -865,6 +1025,86 @@
       "recoverable_hint": false
     },
     {
+      "id": "INTEGRITY_HASH_001",
+      "format": "Any",
+      "category": "Checksum Mismatch",
+      "severity": "Major",
+      "description": "Content hash does not match manifest",
+      "field": "manifest.hash",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": true
+    },
+    {
+      "id": "GEN_TRUNC_001",
+      "format": "Any",
+      "category": "Truncation",
+      "severity": "Major",
+      "description": "Stream truncated",
+      "field": "stream.tail",
+      "evidence_type": "Truncation Marker",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GEN_FLIP_001",
+      "format": "Any",
+      "category": "Bit Flip",
+      "severity": "Minor",
+      "description": "Flipped bit(s)",
+      "field": "payload.bits",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GEN_MISSING_001",
+      "format": "Any",
+      "category": "Missing Data",
+      "severity": "Major",
+      "description": "Data region missing",
+      "field": "data.range",
+      "evidence_type": "Structure Missing",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GEN_STRUCT_001",
+      "format": "Any",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "Structural corruption",
+      "field": "stream.layout",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "GEN_REORDER_001",
+      "format": "Any",
+      "category": "Block Reorder",
+      "severity": "Major",
+      "description": "Blocks out of order",
+      "field": "block.order",
+      "evidence_type": "Block Reorder",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SEC_BOMB_RATIO_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Catastrophic",
+      "description": "Compression ratio (per-entry or aggregate) exceeds limit",
+      "field": "decompress.ratio",
+      "evidence_type": "Ratio Exceeded",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SEC_BOMB_OUTPUT_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Catastrophic",
+      "description": "Cumulative uncompressed output exceeds cap",
+      "field": "decompress.output_bytes",
+      "evidence_type": "Ratio Exceeded",
+      "recoverable_hint": false
+    },
+    {
       "id": "SEC_BOMB_OVERLAP_001",
       "format": "ZIP",
       "category": "Security Threat",
@@ -872,6 +1112,66 @@
       "description": "Two local file headers reference overlapping data (Fifield signature)",
       "field": "LocalFileHeader.compressed_data",
       "evidence_type": "Overlapping Entries",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SEC_CYCLE_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Catastrophic",
+      "description": "Nested container hash equals an ancestor's (quine)",
+      "field": "container.sha256",
+      "evidence_type": "Cycle Detected",
+      "recoverable_hint": true
+    },
+    {
+      "id": "SEC_DEPTH_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Major",
+      "description": "Nesting depth exceeds max_depth",
+      "field": "container.depth",
+      "evidence_type": "Depth Exceeded",
+      "recoverable_hint": true
+    },
+    {
+      "id": "SEC_ENTRIES_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Major",
+      "description": "Entry count exceeds limit",
+      "field": "container.entry_count",
+      "evidence_type": "Value Out Of Range",
+      "recoverable_hint": false
+    },
+    {
+      "id": "SEC_TRAVERSAL_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Major",
+      "description": "Entry path escapes staging after normalization",
+      "field": "entry.path",
+      "evidence_type": "Path Escape",
+      "recoverable_hint": true
+    },
+    {
+      "id": "SEC_SYMLINK_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Major",
+      "description": "Symlink/hardlink entry pointing outside sandbox",
+      "field": "entry.link_target",
+      "evidence_type": "Path Escape",
+      "recoverable_hint": true
+    },
+    {
+      "id": "SEC_PARSER_TIMEOUT_001",
+      "format": "Any",
+      "category": "Security Threat",
+      "severity": "Major",
+      "description": "A parser exceeded its CPU-time budget on one container",
+      "field": "container.cpu_time",
+      "evidence_type": "Value Out Of Range",
       "recoverable_hint": false
     }
   ]

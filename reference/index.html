@@ -7,7 +7,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>VERAQIS Reference — rule IDs, evidence model, glossary | VERAQIS</title>
-<meta name="description" content="The precise vocabulary behind every VERAQIS verdict: all 87 damage rule IDs, the two-axis evidence model, and a glossary of file damage terms." />
+<meta name="description" content="The precise vocabulary behind every VERAQIS verdict: every damage rule ID, the two-axis evidence model, and a glossary of file damage terms." />
 <link rel="canonical" href="https://veraqis.tech/reference/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="/assets/veraqis.css" />
@@ -51,7 +51,7 @@
       "@id": "https://veraqis.tech/reference/#webpage",
       "url": "https://veraqis.tech/reference/",
       "name": "VERAQIS Reference — rule IDs, evidence model, glossary | VERAQIS",
-      "description": "The precise vocabulary behind every VERAQIS verdict: all 87 damage rule IDs, the two-axis evidence model, and a glossary of file damage terms.",
+      "description": "The precise vocabulary behind every VERAQIS verdict: every damage rule ID, the two-axis evidence model, and a glossary of file damage terms.",
       "dateModified": "2026-07-28",
       "inLanguage": "en",
       "isPartOf": {
@@ -118,7 +118,7 @@
 <section>
   <div class="wrap">
     <div class="">
-      <div class="grid g3"><div class="card"><h3>Rule ID reference</h3><p>All 87 damage findings across 11 formats — the format field each is keyed to, its category, severity and evidence type. Generated directly from the engine registry, so it cannot drift.</p><p class="note"><a href="/reference/rule-ids/">Open the registry →</a></p></div><div class="card"><h3>The evidence model</h3><p>Two orthogonal axes, evidence counted in bits, the tautology rule, the anti-self-witness rule, and the narrow conditions under which a health score is allowed to improve.</p><p class="note"><a href="/reference/evidence-model/">Read the model →</a></p></div><div class="card"><h3>Glossary</h3><p>EOCD, central directory, solid archive, erasure, LZ-coupled, WAL, xref, parity, bit rot and more — defined with why each one matters when a file is damaged.</p><p class="note"><a href="/reference/glossary/">Open the glossary →</a></p></div></div>
+      <div class="grid g3"><div class="card"><h3>Rule ID reference</h3><p>Every damage finding, by ID — the format field each is keyed to, its category, severity and evidence type. Generated directly from the engine registry, so it cannot drift.</p><p class="note"><a href="/reference/rule-ids/">Open the registry →</a></p></div><div class="card"><h3>The evidence model</h3><p>Two orthogonal axes, evidence counted in bits, the tautology rule, the anti-self-witness rule, and the narrow conditions under which a health score is allowed to improve.</p><p class="note"><a href="/reference/evidence-model/">Read the model →</a></p></div><div class="card"><h3>Glossary</h3><p>EOCD, central directory, solid archive, erasure, LZ-coupled, WAL, xref, parity, bit rot and more — defined with why each one matters when a file is damaged.</p><p class="note"><a href="/reference/glossary/">Open the glossary →</a></p></div></div>
       <h2 id="why">Why publish this at all</h2>
       <p>Because a verdict you cannot check is not a verdict. If a report says an entry is verified, you should be able to look up what "verified" is required to mean, which rule fired, what field it was about, and what evidence was counted — without asking us.</p>
       <p>These definitions are also the ones our own gates enforce. <code>false_recovered_bytes = 0</code> is not a slogan on a marketing page; it is a threshold that fails a build.</p>
