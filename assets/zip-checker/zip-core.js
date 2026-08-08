@@ -18,7 +18,7 @@
 // ZIP, it is a RAR" is the same judgement the engine would make, not a second opinion this
 // file invented.
 
-import { identification, REQUIRED_PREFIX, FORMATS } from './format-id.js';
+import { identification, bytesOf, REQUIRED_PREFIX, REQUIRED_SUFFIX, FORMATS } from './format-id.js';
 
 /* ---------------------------------------------------------------- constants */
 
@@ -169,6 +169,13 @@ export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings
       evidence.push(`the file's own signature identifies it as a ${label(format.byContent)}`);
       if (format.agreement === 'mismatch') {
         evidence.push(`its name claims a ${label(format.byName)} — the name is wrong, the bytes are not`);
+      }
+      // Where that signature came from. A rule taken from a specification and never checked
+      // against a real file of that format is still worth acting on — but a person deserves
+      // to know which kind of answer they just got, especially when it surprises them.
+      if (format.provenance === 'documented') {
+        evidence.push('this signature comes from published documentation and has not been checked here against a real file of that format');
+        if (format.caveat) evidence.push(format.caveat);
       }
     } else {
       code = DIAGNOSIS.NOT_A_ZIP;
@@ -668,10 +675,18 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
   const headSig = head.length >= 4 ? u32(head, 0) : 0;
   const looksZip = headSig === SIG.LFH || headSig === SIG.EOCD || headSig === SIG.CDH || headSig === 0x08074b50;
 
+  // A second bounded read, from the end. Some formats keep their only identity in a footer
+  // — a fixed-size VHD, a DMG's UDIF trailer, a Macrium image — so a head-only table cannot
+  // name them at all. 512 bytes, regardless of how large the file is.
+  const tail = reader.size > REQUIRED_SUFFIX
+    ? await reader.read(reader.size - REQUIRED_SUFFIX, REQUIRED_SUFFIX)
+    : head;
+
   // What the file is, and separately what its name claims. Never merged: a RAR named .zip
   // and a .zip whose header was destroyed both fail every ZIP check, and the advice for
-  // them is opposite.
-  const format = identification(head, options.fileName || '');
+  // them is opposite. `format.provenance` carries how the signature came to be believed,
+  // which must reach the user rather than being flattened into the answer.
+  const format = identification(bytesOf(head, tail, reader.size), options.fileName || '');
 
   // All state `finish()` reads is declared before the first early return, so an
   // early exit cannot hit a temporal dead zone.
