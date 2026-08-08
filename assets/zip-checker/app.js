@@ -23,6 +23,7 @@ const el = {
   live: $('live-region'),
   verdict: $('verdict'),
   verdictNote: $('verdict-note'),
+  diagnosis: $('diagnosis'),
   summary: $('summary-grid'),
   structure: $('structure-list'),
   warnings: $('warnings'),
@@ -207,12 +208,105 @@ function renderEntries() {
   el.tableBody.appendChild(frag);
 }
 
+/**
+ * What went wrong, and what to do about it.
+ *
+ * The verdict says how much can be trusted. This says why, and it is the part a person
+ * with a broken archive actually needs: "the index is gone but your data is intact" and
+ * "your data failed its checksum" are opposite situations that used to share one
+ * sentence. Every line is written to be actionable rather than reassuring — where the
+ * honest answer is "this data is gone", it says so.
+ */
+const DIAGNOSIS_TEXT = {
+  INTACT: {
+    title: 'Nothing is wrong with this archive',
+    what: 'The structure is consistent and every entry that could be checked matched its stored checksum.',
+    next: 'No action needed.',
+  },
+  CONTENT_CORRUPT: {
+    title: 'The stored data is corrupted',
+    what: 'The archive structure is readable, but the bytes of one or more entries no longer match the checksum recorded for them. Something altered the contents after the archive was written.',
+    next: 'Recovering the original bytes is not possible from this file alone. If you have another copy, a backup, or the original source, compare against it. Entries that still verify below are unaffected and can be trusted.',
+  },
+  TRUNCATED: {
+    title: 'The file is incomplete',
+    what: 'Entries declare more data than the file actually contains — the archive was cut short, most often by an interrupted download, copy or disk write.',
+    next: 'Re-download or re-copy the file if you can; a complete copy will simply work. Entries that lie entirely within the surviving bytes are still readable.',
+  },
+  INDEX_MISSING: {
+    title: 'The index is missing — the data is not',
+    what: 'The table of contents at the end of the archive is gone, which is why ordinary tools refuse to open this file. The entries themselves were found by scanning the archive directly, and their data is still present.',
+    next: 'This is one of the most recoverable states there is. The entries below were located without the index; those marked verified matched their checksums.',
+  },
+  INDEX_DAMAGED: {
+    title: 'The index is damaged — the data may not be',
+    what: 'The archive index exists but could not be read in full. That is a fault in the table of contents, not necessarily in the entries it describes.',
+    next: 'Entries were cross-checked against the local headers found in the file itself. Treat anything verified below as sound regardless of the index.',
+  },
+  PREPENDED_DATA: {
+    title: 'Something is attached before the archive',
+    what: 'The file does not start with a ZIP signature. That is normal for self-extracting archives, and it is also what a corrupted or wrongly-joined header looks like.',
+    next: 'If this was meant to be a self-extracting archive, it is probably fine. Otherwise the leading bytes may be junk that a tool prepended by mistake.',
+  },
+  ENCRYPTED_OR_UNSUPPORTED: {
+    title: 'Some entries could not be read here',
+    what: 'One or more entries are encrypted, or use a compression method this browser check does not implement. That is not evidence of damage — it means this tool cannot answer the question.',
+    next: 'Unreadable is not the same as broken. Use the tool that created the archive, or supply the password, to establish these entries.',
+  },
+  NOT_A_ZIP: {
+    title: 'No ZIP structure was found',
+    what: 'Nothing in this file looks like a ZIP archive.',
+    next: 'Check that the file is what you think it is. A wrong extension is far more common than a destroyed archive.',
+  },
+  EMPTY: {
+    title: 'The archive is empty',
+    what: 'The structure is valid and declares no entries at all.',
+    next: 'Nothing to recover — this archive was created empty.',
+  },
+};
+
+function renderDiagnosis(r) {
+  const host = el.diagnosis;
+  if (!host) return;
+  const d = r.diagnosis;
+  if (!d || !DIAGNOSIS_TEXT[d.code]) { host.hidden = true; return; }
+  const t = DIAGNOSIS_TEXT[d.code];
+  host.hidden = false;
+  host.className = 'zc-diagnosis zc-dx-' + d.code.toLowerCase().replace(/_/g, '-')
+    + (d.dataLooksIntact ? ' zc-dx-data-ok' : '');
+  host.textContent = '';
+
+  const h = document.createElement('h3');
+  h.className = 'zc-dx-title';
+  h.textContent = t.title;
+  host.appendChild(h);
+
+  const what = document.createElement('p');
+  what.className = 'zc-dx-what';
+  what.textContent = t.what;
+  host.appendChild(what);
+
+  if (d.evidence && d.evidence.length) {
+    const ev = document.createElement('p');
+    ev.className = 'zc-dx-evidence';
+    // Prefixed so a reader can tell the measurement apart from the explanation.
+    ev.textContent = 'Observed: ' + d.evidence.join(' · ') + '.';
+    host.appendChild(ev);
+  }
+
+  const next = document.createElement('p');
+  next.className = 'zc-dx-next';
+  next.textContent = t.next;
+  host.appendChild(next);
+}
+
 function renderResult(r) {
   currentResult = r;
   const [title, note] = VERDICT_TEXT[r.verdict] || [r.verdict, ''];
   el.verdict.textContent = title;
   el.verdict.className = 'zc-verdict zc-verdict-' + r.verdict.toLowerCase().replace(/_/g, '-');
   el.verdictNote.textContent = note;
+  renderDiagnosis(r);
   renderSummary(r);
   renderStructure(r);
   renderList(el.warnings, r.warnings, 'Warnings');

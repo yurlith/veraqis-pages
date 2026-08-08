@@ -43,10 +43,88 @@ export const LIMITS = {
   MAX_CRC_BYTES: 512 * 1024 * 1024, // per-entry ceiling for CRC verification
 };
 
+/**
+ * Why the archive is in the state it is in.
+ *
+ * The verdict says how much can be trusted; the diagnosis says what went wrong. They are
+ * separate on purpose, because three completely different faults — a missing index, a
+ * truncated file and a failed checksum — all produce the same verdict while calling for
+ * opposite responses. Reporting only the verdict tells a user whose index is gone that
+ * their archive is "partially readable", when the truthful and much better news is that
+ * their data is intact and only the table of contents is missing.
+ *
+ * Ordered by severity of what it implies about the DATA, not about the structure.
+ */
+export const DIAGNOSIS = {
+  INTACT: 'INTACT',
+  CONTENT_CORRUPT: 'CONTENT_CORRUPT',
+  TRUNCATED: 'TRUNCATED',
+  INDEX_DAMAGED: 'INDEX_DAMAGED',
+  INDEX_MISSING: 'INDEX_MISSING',
+  PREPENDED_DATA: 'PREPENDED_DATA',
+  ENCRYPTED_OR_UNSUPPORTED: 'ENCRYPTED_OR_UNSUPPORTED',
+  NOT_A_ZIP: 'NOT_A_ZIP',
+  EMPTY: 'EMPTY',
+};
+
 export const METHOD_NAMES = {
   0: 'Stored', 1: 'Shrunk', 6: 'Imploded', 8: 'Deflate', 9: 'Deflate64',
   12: 'BZIP2', 14: 'LZMA', 93: 'Zstandard', 95: 'XZ', 98: 'PPMd',
 };
+
+/**
+ * Classify the cause from facts already established during analysis.
+ *
+ * This adds no new parsing and makes no new claim — every input here was computed and
+ * cross-checked earlier in the pass. It only decides which of the known faults is the
+ * one worth telling the user about first.
+ *
+ * The ordering matters and is deliberate: a failed checksum outranks a missing index,
+ * because corrupted content is a worse fact about the data than a missing table of
+ * contents, even though the missing index looks more alarming in a file manager.
+ */
+export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings }) {
+  const evidence = [];
+  const truncatedEntries = entries.filter((e) =>
+    (e.reasons || []).some((r) => /past the end of the file|is truncated/.test(r)));
+
+  let code;
+  if (entries.length === 0) {
+    code = eocd.found && eocd.entriesTotal === 0 ? DIAGNOSIS.EMPTY : DIAGNOSIS.NOT_A_ZIP;
+  } else if (counts.damaged > 0 && truncatedEntries.length === 0) {
+    code = DIAGNOSIS.CONTENT_CORRUPT;
+    evidence.push(`${counts.damaged} entr${counts.damaged === 1 ? 'y' : 'ies'} failed a CRC-32 check`);
+  } else if (truncatedEntries.length > 0) {
+    code = DIAGNOSIS.TRUNCATED;
+    evidence.push(`${truncatedEntries.length} entr${truncatedEntries.length === 1 ? 'y' : 'ies'} declare data past the end of the file`);
+    evidence.push(`file is ${reader.size} bytes`);
+  } else if (!eocd.found) {
+    code = DIAGNOSIS.INDEX_MISSING;
+    evidence.push('no end-of-central-directory record was found');
+    evidence.push(`${entries.length} entr${entries.length === 1 ? 'y' : 'ies'} located by scanning for local file headers`);
+  } else if (cdStatus !== 'OK' || (cd && cd.truncated)) {
+    code = DIAGNOSIS.INDEX_DAMAGED;
+    evidence.push('the central directory could not be read completely');
+    if (cd && cd.errors && cd.errors.length) evidence.push(cd.errors[0]);
+  } else if (counts.unknown > 0 && counts.damaged === 0) {
+    code = DIAGNOSIS.ENCRYPTED_OR_UNSUPPORTED;
+    evidence.push(`${counts.unknown} entr${counts.unknown === 1 ? 'y' : 'ies'} could not be decoded here`);
+  } else if (warnings.some((w) => /prepended|does not begin with a ZIP signature/.test(w))) {
+    code = DIAGNOSIS.PREPENDED_DATA;
+    evidence.push('the file does not begin with a ZIP signature');
+  } else {
+    code = DIAGNOSIS.INTACT;
+  }
+
+  // Whether the DATA is believed intact, independently of the structure. This is the
+  // distinction the whole feature exists to make.
+  const dataLooksIntact = code === DIAGNOSIS.INTACT
+    || code === DIAGNOSIS.INDEX_MISSING
+    || code === DIAGNOSIS.INDEX_DAMAGED
+    || code === DIAGNOSIS.PREPENDED_DATA;
+
+  return { code, evidence, dataLooksIntact, verifiedEntries: counts.verified, totalEntries: entries.length };
+}
 
 /* -------------------------------------------------------------------- crc32 */
 
@@ -711,7 +789,7 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
   // must not read as a claim about the product as a whole.
   limitations.push('This analysis does not extract, repair or modify the archive. Extraction, where offered, is a separate action you choose.');
 
-  return finish({ verdict });
+  return finish({ verdict, diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings }) });
 
   function finish(extra) {
     return {

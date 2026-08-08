@@ -465,3 +465,17 @@ main>article{display:block}
 .term h3{margin:0 0 6px;font-size:17px}
 .term p{margin:0 0 6px;max-width:76ch}
 .term .note{margin:0}
+
+/* ZIP checker diagnosis: what went wrong and what to do. Bordered rather than tinted so
+   the state reads without relying on colour, and a data-intact result is marked with a
+   deliberately calm accent — a missing index is good news, not an alarm. */
+.zc-diagnosis{border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:8px;
+  padding:16px 18px;margin:14px 0 18px;background:var(--panel,#fff)}
+.zc-diagnosis.zc-dx-data-ok{border-left-color:var(--good)}
+.zc-dx-content-corrupt,.zc-dx-truncated{border-left-color:var(--bad)}
+.zc-dx-encrypted-or-unsupported,.zc-dx-prepended-data{border-left-color:var(--warn)}
+.zc-dx-title{margin:0 0 8px;font-size:17px;font-weight:700}
+.zc-dx-what{margin:0 0 10px;max-width:78ch}
+.zc-dx-evidence{margin:0 0 10px;font-family:var(--mono,ui-monospace,Consolas,monospace);
+  font-size:12.5px;color:var(--muted)}
+.zc-dx-next{margin:0;max-width:78ch;font-weight:600}
