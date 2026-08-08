@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>gzip and tar — opposite blind spots | VERAQIS</title>
+<meta name="description" content="tar is highly recoverable and cannot detect a corrupted file. gzip detects corruption but never says where. .tar.gz keeps the weakness of both." />
+<link rel="canonical" href="https://veraqis.tech/formats/gzip-tar/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="gzip and tar — why .tar.gz is the fragile half of a good pair" />
+<meta property="og:description" content="tar cannot see a corrupted file. gzip cannot tell you where one is. .tar.gz inherits both problems." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/gzip-tar/" />
+<meta property="article:published_time" content="2026-08-08" />
+<meta property="article:modified_time" content="2026-08-08" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="gzip and tar — why .tar.gz is the fragile half of a good pair" />
+<meta name="twitter:description" content="tar cannot see a corrupted file. gzip cannot tell you where one is. .tar.gz inherits both problems." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/gzip-tar/#article",
+      "url": "https://veraqis.tech/formats/gzip-tar/",
+      "headline": "gzip and tar — two formats with opposite blind spots, and what happens when you stack them",
+      "name": "gzip and tar — opposite blind spots | VERAQIS",
+      "description": "tar is highly recoverable and cannot detect a corrupted file. gzip detects corruption but never says where. .tar.gz keeps the weakness of both.",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-08-08",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Intermediate",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "gzip"
+        },
+        {
+          "@type": "Thing",
+          "name": "tar"
+        },
+        {
+          "@type": "Thing",
+          "name": "archive format"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/gzip-tar/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "gzip & tar",
+          "item": "https://veraqis.tech/formats/gzip-tar/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>gzip and tar — two formats with opposite blind spots, and what happens when you stack them</h1>
+    <p class="lead">A plain <code>.tar</code> is one of the easiest damaged archives there is to salvage: every member carries its own header, so a reader that has lost its place can find the next one by scanning. A <code>.gz</code> is one of the hardest: it is a single compressed stream with one checksum at the very end. <code>.tar.gz</code> is the second one wrapped around the first, and the wrapper decides.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-08-08">8 August 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <div class="cap-card"><h3>gzip and tar — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — gzip by magic at offset 0, tar by the <code>ustar</code> stamp 257 bytes in</dd></div><div class="cap-row"><dt>Browser structural analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine analysis</dt><dd>Yes — 9 gzip rules and 15 tar rules in the classifier</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>gzip: one CRC-32 for the whole stream. <strong>tar: none at all</strong></dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>tar: yes, by rescanning for the next header. gzip: no resync point exists</dd></div></dl><p class="note">The row that matters is the fourth. A tar has no checksum over file contents anywhere in the format — see <a href="#blind">what tar cannot see</a> below.</p></div>
+      <h2 id="layout">Layout — one of these is scannable and one is not</h2>
+      <p>A tar is a flat sequence of 512-byte blocks. Each member begins with a header block naming the file and its length, followed by its content padded to a block boundary. Nothing indexes it: there is no table of contents, and there does not need to be, because every member announces itself.</p>
+      <div class="terminal"><pre>tar — every member is self-describing
+┌──────────────────────────────────────────────────────────────┐
+│ header  name, mode, size(octal), checksum, "ustar" @ 257     │
+│ data    padded up to a 512-byte boundary                     │
+│ header  …the next one, findable by scanning for "ustar"      │
+│ data                                                         │
+│ 1024 zero bytes  ← end of archive                            │
+└──────────────────────────────────────────────────────────────┘
+
+gzip — one stream, one checksum, at the end
+┌──────────────────────────────────────────────────────────────┐
+│ 1F 8B 08  header (10 bytes + optional name, comment, HCRC)   │
+│ ───────────── one continuous DEFLATE stream ───────────────  │
+│ CRC32  ISIZE   ← 8 bytes. The only integrity check there is  │
+└──────────────────────────────────────────────────────────────┘</pre></div>
+      <p>That difference is the whole story. Lose a kilobyte from the middle of a <code>.tar</code> and a reader can skip forward, find the next <code>ustar</code> stamp, and carry on: every member after the damage is still recoverable, and you can say exactly which one was hit. Lose a single <strong>bit</strong> from the middle of a <code>.gz</code> and the DEFLATE decoder loses synchronisation — from that point the output is garbage, and there is no later landmark to recover at.</p>
+      <h2 id="blind">What tar cannot see</h2>
+      <p>tar has a checksum. It covers the <strong>header</strong> — the name, the mode, the size — and nothing else. No part of the format verifies the bytes of the file it just stored.</p>
+      <div class="claim" id="undefined"><p class="claim-text">In this engine, <code>TAR_FLIP_001</code> — a single bit flipped inside a stored file — is classified <strong>Minor</strong>. That rating is not a judgement about how much your data was damaged. It is a statement about what the format can detect, and the answer is nothing.</p><p class="claim-src">undefined</p></div>
+      <p>The same blindness covers reordering: <code>TAR_BLOCK_001</code> (two data blocks swapped) is rated Major only because the resulting sizes stop lining up, not because tar noticed the contents changed. A tar extracted after either of those faults reports complete success, and every tool in the chain agrees with it.</p>
+      <div class="callout">This is why "the archive extracted without errors" is a much weaker statement for a <code>.tar</code> than for a <code>.zip</code>. A ZIP stores a CRC-32 per entry and checks it; a tar has nothing to check. Both will say they are fine.</div>
+      <h3 id="checksum-ambiguity">The checksum tar does have is ambiguous by history</h3>
+      <p>The header checksum is computed by treating the checksum field itself as spaces and summing the header bytes. The standard says unsigned arithmetic — but many early implementations used signed, which changes the result whenever a header contains a byte above 127, as any non-ASCII filename will. The consequence survives to this day: a robust reader computes the sum <strong>both ways</strong> and accepts the header if either matches.</p>
+      <p class="note">Sourced from <a href="https://man.archlinux.org/man/tar.5.en">tar(5)</a>, not measured here. It matters for recovery because a header that fails one arithmetic and passes the other is a valid header, and a tool that only implements the modern rule will call an intact archive damaged.</p>
+      <h2 id="gzip-blind">What gzip cannot tell you</h2>
+      <p>gzip has the verifier tar lacks: a CRC-32 over the uncompressed data. It has exactly one, in the last eight bytes, and it covers everything. So gzip can tell you the stream is wrong, but only after decompressing all of it, and it can never tell you <strong>where</strong> — which is the question that decides whether anything is salvageable.</p>
+      <p>Alongside it sits <code>ISIZE</code>, the uncompressed length — stored modulo 2³². A 5 GB file records its size as 1 GB, and a reader comparing the two disagrees with a healthy archive. That is why <code>GZ_ISIZE_001</code> is rated Minor here: on a large file a mismatch is expected behaviour of the format rather than evidence of damage.</p>
+      <p class="note"><code>ISIZE</code> is specified as "the size of the original input data modulo 2^32" in <a href="https://www.rfc-editor.org/rfc/rfc1952.html">RFC 1952</a>, published in 1996. It is a limitation of the format, not of any implementation.</p>
+      <h3 id="crc-not-proof">And a passing CRC-32 is not proof</h3>
+      <p>The single check gzip does carry is strong evidence against accidental damage and no evidence at all against deliberate modification. We built the counterexample rather than asserting it: files whose contents differ from the original, whose CRC-32 matches anyway, and which <code>gzip -t</code> declares healthy.</p>
+      <ul class="source-list"><li><a href="/research/crc32-collisions-that-pass-gzip-t/">CRC-32 collisions that pass gzip -t and unzip -t</a></li></ul>
+      <h2 id="stacking">Stacking them keeps the wrong half</h2>
+      <p>A <code>.tar.gz</code> is a tar compressed as one gzip stream. Every property that makes a tar salvageable — self-describing members, a scannable stamp every few kilobytes, damage confined to the member that took it — exists only in the <em>decompressed</em> bytes. From the outside there is one DEFLATE stream, and damage early in it destroys everything after.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">damage</th><th scope="col">plain .tar</th><th scope="col">plain .gz</th><th scope="col">.tar.gz</th></tr></thead><tbody><tr><td>one bit flipped, 10% in</td><td>that file is silently wrong; everything else is fine</td><td>CRC fails; output diverges from the flip onward</td><td>CRC fails; the remaining 90% is lost</td></tr><tr><td>1 KB missing from the middle</td><td>one member damaged; the rest recovered by rescanning</td><td>no resync point; the remainder is unreadable</td><td>no resync point; the remainder is unreadable</td></tr><tr><td>truncated at 50%</td><td>first half fully recovered, member by member</td><td>first half decompresses, then stops</td><td>first half decompresses, then stops</td></tr><tr><td>where is the damage?</td><td>named, to the member</td><td>unknown — one checksum, at the end</td><td>unknown</td></tr></tbody></table></div>
+      <div class="callout">This is the same shape as the finding we measured on solid 7-Zip archives: when a format couples everything into one stream, recovery stops at the damage rather than stepping over it. The remedy is the same too — recover the <strong>prefix</strong>, and be honest that the rest is gone.</div>
+      <ul class="source-list"><li><a href="/research/7z-solid-archive-bit-flip/">A single bit flip in a solid 7z archive</a></li><li><a href="/research/recovering-past-corruption-xz-bzip2/">Recovering past corruption in xz and bzip2 — where per-block checksums do let you resync</a></li></ul>
+      <p>The comparison with xz and bzip2 is the useful one. Both compress in independent blocks with a checksum per block, so a reader can skip a damaged block and resume at the next — measured at 9 of 10 blocks recovered in the headline case. gzip has no such boundary. Nothing about DEFLATE prevents one; gzip simply does not define it.</p>
+      <h2 id="practice">What to do with a damaged one</h2>
+      <ul><li><strong>A plain <code>.tar</code>:</strong> treat it as recoverable until proven otherwise. Members after the damage are reachable by scanning for the next header, and a reader that gives up at the first bad block is under-reporting what survived.</li><li><strong>A <code>.tar.gz</code> truncated at the end:</strong> everything up to the cut decompresses normally. This is the common case and the good one — the missing CRC-32 at the end means nothing can be <em>verified</em>, but the recovered prefix is real.</li><li><strong>A <code>.tar.gz</code> damaged in the middle:</strong> expect the prefix and nothing after it. A tool promising full recovery here is promising something the format cannot deliver.</li><li><strong>Any tar that extracted cleanly:</strong> that is not evidence the files are intact. It is evidence that nothing checked them.</li></ul>
+      <h2 id="rules">Every fault the engine names</h2>
+      <p>These are the rules themselves, from the classifier registry — not a description of them. Severity describes what the format allows to be <em>established</em>, which is why a bit flip inside a tar member sits at the bottom of the list.</p>
+      <div class="rule-filter"><a href="#fmt-tar">TAR (15)</a><a href="#fmt-gzip">GZIP (9)</a></div><h3 id="fmt-tar">TAR — 15 rules</h3><div class="rule" id="tar_ust_001"><h3>TAR_UST_001</h3><p>UStar checksum invalid.</p><dl><dt>field</dt><dd>UStarHeader.checksum</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="tar_ust_002"><h3>TAR_UST_002</h3><p>UStar magic missing.</p><dl><dt>field</dt><dd>UStarHeader.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="tar_term_001"><h3>TAR_TERM_001</h3><p>Missing zero-block terminator.</p><dl><dt>field</dt><dd>Archive.terminator</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="tar_term_002"><h3>TAR_TERM_002</h3><p>Extra garbage after terminator.</p><dl><dt>field</dt><dd>Archive.terminator</dd><dt>category</dt><dd>Padding Mismatch</dd><dt>severity</dt><dd class="sev-Benign">Benign</dd><dt>evidence</dt><dd>Padding Violation</dd></dl></div><div class="rule" id="tar_size_001"><h3>TAR_SIZE_001</h3><p>Size field larger than remaining data.</p><dl><dt>field</dt><dd>UStarHeader.size</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Overflow</dd></dl></div><div class="rule" id="tar_size_002"><h3>TAR_SIZE_002</h3><p>File data shorter than declared size.</p><dl><dt>field</dt><dd>UStarHeader.size</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_block_001"><h3>TAR_BLOCK_001</h3><p>Two data blocks swapped.</p><dl><dt>field</dt><dd>block.order</dd><dt>category</dt><dd>Block Reorder</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Block Reorder</dd></dl></div><div class="rule" id="tar_trunc_001"><h3>TAR_TRUNC_001</h3><p>Truncated last 1%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_trunc_002"><h3>TAR_TRUNC_002</h3><p>Truncated last 10%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_trunc_003"><h3>TAR_TRUNC_003</h3><p>Truncated first block.</p><dl><dt>field</dt><dd>stream.header</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="tar_flip_001"><h3>TAR_FLIP_001</h3><p>Single bit flip in file content.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="tar_flip_002"><h3>TAR_FLIP_002</h3><p>Multiple bit flips in header area.</p><dl><dt>field</dt><dd>header.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="tar_gnu_001"><h3>TAR_GNU_001</h3><p>GNU LongName block corrupted.</p><dl><dt>field</dt><dd>GnuLongName.block</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="tar_sparse_001"><h3>TAR_SPARSE_001</h3><p>Sparse file map invalid.</p><dl><dt>field</dt><dd>SparseMap</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="tar_comp_001"><h3>TAR_COMP_001</h3><p>Compound: checksum + truncated.</p><dl><dt>field</dt><dd>UStarHeader.checksum</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+<h3 id="fmt-gzip">GZIP — 9 rules</h3><div class="rule" id="gz_magic_001"><h3>GZ_MAGIC_001</h3><p>Magic bytes replaced.</p><dl><dt>field</dt><dd>gzip.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="gz_cm_001"><h3>GZ_CM_001</h3><p>Compression method invalid (not 8).</p><dl><dt>field</dt><dd>gzip.cm</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="gz_hcrc_001"><h3>GZ_HCRC_001</h3><p>Header CRC16 mismatch.</p><dl><dt>field</dt><dd>gzip.hcrc</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="gz_icrc_001"><h3>GZ_ICRC_001</h3><p>Content CRC32 mismatch.</p><dl><dt>field</dt><dd>gzip.crc32</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="gz_isize_001"><h3>GZ_ISIZE_001</h3><p>ISIZE wrong.</p><dl><dt>field</dt><dd>gzip.isize</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="gz_trunc_001"><h3>GZ_TRUNC_001</h3><p>Truncated in compressed data.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="gz_trunc_002"><h3>GZ_TRUNC_002</h3><p>Truncated before header end.</p><dl><dt>field</dt><dd>stream.header</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="gz_flip_001"><h3>GZ_FLIP_001</h3><p>Bit flip in compressed data.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="gz_extra_001"><h3>GZ_EXTRA_001</h3><p>Extra field length overflow.</p><dl><dt>field</dt><dd>gzip.extra_len</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Length Overflow</dd></dl></div>
+      <h2 id="limits">Honest limits</h2>
+      <ul><li>The browser check on this site does not read gzip or tar. It <strong>names</strong> them and declines — see <a href="/formats/identification/">identification</a>.</li><li>The salvage numbers quoted for xz and bzip2 are from that experiment and its corpus, not a universal guarantee. gzip has no equivalent measurement because it has no equivalent mechanism.</li><li>Nothing here recovers the contents of a tar member that was silently corrupted. No tool can: the information needed to detect it was never stored.</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
