@@ -27,6 +27,9 @@ export const SIGNATURES = [
   { format: 'lz4', offset: 0, minLen: 4, magic: [0x04, 0x22, 0x4d, 0x18] },
   { format: '7z', offset: 0, minLen: 6, magic: [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c] },
   { format: 'rar', offset: 0, minLen: 7, magic: [0x52, 0x61, 0x72, 0x21, 0x1a, 0x07] },
+  { format: 'cab', offset: 0, minLen: 4, magic: [0x4d, 0x53, 0x43, 0x46] },
+  { format: 'wim', offset: 0, minLen: 8, magic: [0x4d, 0x53, 0x57, 0x49, 0x4d, 0x00, 0x00, 0x00] },
+  { format: 'qcow2', offset: 0, minLen: 4, magic: [0x51, 0x46, 0x49, 0xfb] },
   { format: 'tar', offset: 257, minLen: 263, magic: [0x75, 0x73, 0x74, 0x61, 0x72] },
   { format: 'iso9660', offset: 32769, minLen: 32775, magic: [0x43, 0x44, 0x30, 0x30, 0x31] },
 ];
@@ -45,6 +48,9 @@ export const FORMATS = {
   xz: { label: 'xz stream', multiMember: false, extensions: ['.xz'] },
   zstd: { label: 'Zstandard stream', multiMember: false, extensions: ['.zst', '.zstd'] },
   lz4: { label: 'LZ4 stream', multiMember: false, extensions: ['.lz4'] },
+  cab: { label: 'Microsoft Cabinet archive', multiMember: true, extensions: ['.cab'] },
+  wim: { label: 'Windows image (WIM)', multiMember: true, extensions: ['.wim'] },
+  qcow2: { label: 'QCOW2 disk image', multiMember: false, extensions: ['.qcow2', '.qcow'] },
 };
 
 /** What the bytes say. `null` when nothing matched — a real answer, not a failure. */
