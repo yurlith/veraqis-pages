@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>PDF — the index is rebuildable, the objects are not | VERAQIS</title>
+<meta name="description" content="A PDF that will not open has usually lost its cross-reference table, not its content. The objects are still there, each announcing itself." />
+<link rel="canonical" href="https://veraqis.tech/formats/pdf/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="PDF — the index is rebuildable, the objects are not" />
+<meta property="og:description" content="The same bit flip is Minor in a page and Major in the cross-reference stream. One is data; the other is how the data is found." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/pdf/" />
+<meta property="article:published_time" content="2026-08-08" />
+<meta property="article:modified_time" content="2026-08-08" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="PDF — the index is rebuildable, the objects are not" />
+<meta name="twitter:description" content="The same bit flip is Minor in a page and Major in the cross-reference stream. One is data; the other is how the data is found." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/pdf/#article",
+      "url": "https://veraqis.tech/formats/pdf/",
+      "headline": "PDF — why a broken document is usually a broken index",
+      "name": "PDF — the index is rebuildable, the objects are not | VERAQIS",
+      "description": "A PDF that will not open has usually lost its cross-reference table, not its content. The objects are still there, each announcing itself.",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-08-08",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Intermediate",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "PDF"
+        },
+        {
+          "@type": "Thing",
+          "name": "document recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/pdf/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PDF",
+          "item": "https://veraqis.tech/formats/pdf/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>PDF — why a broken document is usually a broken index</h1>
+    <p class="lead">A PDF is a bag of numbered objects plus a table saying where each one starts. When a reader says the file is damaged, the table is usually what is damaged — and the table is the one part of a PDF that can be rebuilt from the file itself, because every object announces its own number a few bytes before its content.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-08-08">8 August 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <div class="cap-card"><h3>PDF — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — <code>%PDF-</code> at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>14 — the third-largest family after ZIP and TAR</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None. A PDF stores no checksum over its own content</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>The object structure is scannable, so a lost index is recoverable; a lost object is not</dd></div></dl><p class="note">PDF and TAR share a blind spot: neither stores a checksum over the bytes it holds. A PDF that opens is not a PDF that is intact.</p></div>
+      <h2 id="asymmetry">The same flip, twice</h2>
+      <p>Two rules in the registry describe one bit flipped in two places, and they are rated differently:</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">rule</th><th scope="col">where the bit flipped</th><th scope="col">severity</th></tr></thead><tbody><tr><td><code>PDF_FLIP_001</code></td><td>a page content stream</td><td>Minor</td></tr><tr><td><code>PDF_FLIP_002</code></td><td>a cross-reference stream</td><td>Major</td></tr></tbody></table></div>
+      <p>The damage is identical. What differs is what depends on it. A flip in page content corrupts that page — a glyph, a curve, one image — and nothing else; a PDF has no checksum to notice, so the file opens and the page is quietly wrong. A flip in the cross-reference stream corrupts the map, and a wrong map can make an entire document unopenable while every object in it is perfectly intact.</p>
+      <div class="claim" id="undefined"><p class="claim-text">That is the single most useful thing to know about a damaged PDF: <strong>"will not open" and "content destroyed" are almost unrelated conditions</strong>, and the first is far more common than the second.</p><p class="claim-src">undefined</p></div>
+      <h2 id="rebuild">Why the index can be rebuilt</h2>
+      <p>Every indirect object in a PDF is introduced by a line of the form <code>12 0 obj</code>, and ended by <code>endobj</code>. Those markers are in the file, next to the data, not in the table. So a reader that has lost <code>startxref</code>, or found it pointing at nonsense, can scan the file for object headers and reconstruct the table from what it finds — the same move as recovering a ZIP by scanning for local file headers when the central directory is gone.</p>
+      <div class="terminal"><pre>%PDF-1.7                        ← PDF_HDR_001 if this is gone
+12 0 obj  &lt;&lt; /Type /Page … &gt;&gt;   ← the object says its own number
+stream … endstream
+endobj
+…
+xref                            ← PDF_XREF_002 if this is gone
+0000000017 00000 n              …but the objects above still name themselves
+trailer &lt;&lt; /Root 1 0 R &gt;&gt;
+startxref
+   1234                         ← PDF_XREF_001 if this points at nothing
+%%EOF                           ← PDF_EOF_001 if this is gone</pre></div>
+      <p>This is why <code>PDF_XREF_001</code>, <code>PDF_XREF_002</code> and <code>PDF_EOF_001</code> are rated Major rather than Catastrophic. They stop every ordinary reader and they destroy nothing. <code>PDF_COMP_001</code> — a missing xref <strong>and</strong> a missing object — is Catastrophic, and the difference between the two ratings is exactly whether the thing the index pointed at is still there.</p>
+      <div class="callout">Incremental updates make this more likely to work than it sounds. A PDF edited several times contains several xref sections chained backwards, so an older, intact table often survives further up the file even when the newest one is damaged — at the cost of reverting to an earlier revision of the document.</div>
+      <h2 id="truncation">Truncation, and where the useful part is</h2>
+      <p>Three truncation rules span the range: losing the last 1% is Minor, the last 15% is Major, and half the file is Catastrophic. The gradient is unusual — for most formats truncation is binary, because the index is at the end and losing any of it loses everything.</p>
+      <p>A PDF degrades instead, because its objects come first and its table comes last. Cut the tail and you lose the map plus whatever objects were in the cut; the objects before it remain individually valid and individually findable. That is the same property that makes the index rebuildable, seen from the other side.</p>
+      <h2 id="rules">Every fault the engine names</h2>
+      <div class="rule-filter"><a href="#fmt-pdf">PDF (14)</a></div><h3 id="fmt-pdf">PDF — 14 rules</h3><div class="rule" id="pdf_hdr_001"><h3>PDF_HDR_001</h3><p>%PDF- header missing.</p><dl><dt>field</dt><dd>pdf.header</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="pdf_hdr_002"><h3>PDF_HDR_002</h3><p>Version marker malformed.</p><dl><dt>field</dt><dd>pdf.version</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="pdf_eof_001"><h3>PDF_EOF_001</h3><p>%%EOF marker missing.</p><dl><dt>field</dt><dd>pdf.eof</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_xref_001"><h3>PDF_XREF_001</h3><p>startxref offset wrong.</p><dl><dt>field</dt><dd>pdf.startxref</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="pdf_xref_002"><h3>PDF_XREF_002</h3><p>xref table missing entirely.</p><dl><dt>field</dt><dd>pdf.xref</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_xref_003"><h3>PDF_XREF_003</h3><p>xref entry format invalid.</p><dl><dt>field</dt><dd>pdf.xref.entry</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="pdf_obj_001"><h3>PDF_OBJ_001</h3><p>Object stream header corrupt.</p><dl><dt>field</dt><dd>pdf.objstm</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_obj_002"><h3>PDF_OBJ_002</h3><p>Indirect object missing.</p><dl><dt>field</dt><dd>pdf.object</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="pdf_trunc_001"><h3>PDF_TRUNC_001</h3><p>Truncated last 1%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="pdf_trunc_002"><h3>PDF_TRUNC_002</h3><p>Truncated last 15%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="pdf_trunc_003"><h3>PDF_TRUNC_003</h3><p>Truncated at 50%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="pdf_flip_001"><h3>PDF_FLIP_001</h3><p>Bit flip in page content stream.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="pdf_flip_002"><h3>PDF_FLIP_002</h3><p>Bit flip in cross-reference stream.</p><dl><dt>field</dt><dd>pdf.xref.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="pdf_comp_001"><h3>PDF_COMP_001</h3><p>Missing xref + object missing.</p><dl><dt>field</dt><dd>pdf.xref</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div>
+      <h2 id="limits">Honest limits</h2>
+      <ul><li>Rebuilding an index recovers <strong>access</strong>, not correctness. A PDF with a reconstructed xref opens; nothing about that says the page content is what the author wrote, because no checksum in the format could tell you.</li><li>Object streams (<code>/ObjStm</code>) pack many objects into one compressed stream. Damage there behaves like the solid-archive case rather than the scannable one — the objects inside stop announcing themselves individually.</li><li>Encrypted PDFs are detected and left alone. Nothing here guesses, derives or bypasses a password.</li><li>The browser check names PDFs and declines to read them. Everything above comes from the desktop engine.</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

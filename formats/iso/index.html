@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>ISO 9660 — one sector decides the whole image | VERAQIS</title>
+<meta name="description" content="An ISO has no signature in its first 32 KB and no checksum over its files. It may, however, carry a complete spare directory tree." />
+<link rel="canonical" href="https://veraqis.tech/formats/iso/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="ISO 9660 — one sector decides the whole image" />
+<meta property="og:description" content="No identity in the first 32 KB, no checksum over file data — and a Joliet image carries a second, redundant directory hierarchy." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/iso/" />
+<meta property="article:published_time" content="2026-08-08" />
+<meta property="article:modified_time" content="2026-08-08" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="ISO 9660 — one sector decides the whole image" />
+<meta name="twitter:description" content="No identity in the first 32 KB, no checksum over file data — and a Joliet image carries a second, redundant directory hierarchy." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/iso/#article",
+      "url": "https://veraqis.tech/formats/iso/",
+      "headline": "ISO 9660 — everything hinges on sector 16, and there may be a spare tree",
+      "name": "ISO 9660 — one sector decides the whole image | VERAQIS",
+      "description": "An ISO has no signature in its first 32 KB and no checksum over its files. It may, however, carry a complete spare directory tree.",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-08-08",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Intermediate",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "ISO 9660"
+        },
+        {
+          "@type": "Thing",
+          "name": "disc image"
+        },
+        {
+          "@type": "Thing",
+          "name": "Joliet"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/iso/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "ISO 9660",
+          "item": "https://veraqis.tech/formats/iso/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>ISO 9660 — everything hinges on sector 16, and there may be a spare tree</h1>
+    <p class="lead">An ISO 9660 image begins with 32 KB reserved for a boot sector that is usually empty, and does not identify itself as an ISO until byte 32769. Everything a reader needs — the volume size, the root directory, the path table — hangs off that one sector. Lose it and the image is unrecognisable while every file in it is still exactly where it was.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-08-08">8 August 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <div class="cap-card"><h3>ISO 9660 — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — <code>CD001</code> at offset 32769, which is why identification reads a 32 KB prefix</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>12</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None. ISO 9660 stores no checksum over file contents</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Good — fixed 2048-byte sectors and self-describing directory records make a rescan practical</dd></div></dl></div>
+      <h2 id="sector-16">Sector 16</h2>
+      <p>The first sixteen sectors — 32,768 bytes — are the system area, reserved for boot code and ignored by the filesystem. The primary volume descriptor starts immediately after, and it is the first thing in the file that says "this is an ISO 9660 image". The stamp <code>CD001</code> sits one byte into it, at 32769, which is exactly why <a href="/formats/identification/">identification</a> reads a 32 KB prefix rather than a handful of bytes.</p>
+      <div class="terminal"><pre>byte 0      ┌──────────────────────────────┐
+            │ system area — 16 sectors     │  usually zeros, or boot code
+            │ nothing here identifies the  │
+            │ file as an ISO at all        │
+byte 32768  ├──────────────────────────────┤
+            │ Primary Volume Descriptor    │  "CD001" at 32769
+            │  → volume size, root dir,    │  ISO_PVD_001 / ISO_TRUNC_003
+            │    path table location       │
+            ├──────────────────────────────┤
+            │ Supplementary VD (Joliet)    │  a SECOND directory tree
+            ├──────────────────────────────┤  ISO_SVD_001
+            │ path table, directories,     │
+            │ file data — 2048-byte sectors│
+            └──────────────────────────────┘</pre></div>
+      <p>Three rules key on that one sector. <code>ISO_PVD_001</code> — its magic is gone — is Catastrophic and <strong>recoverable</strong>: the descriptor is a fixed-layout structure at a known offset, and the data it describes is untouched. <code>ISO_TRUNC_003</code> — the file is truncated at sector 16 — is Catastrophic and not recoverable, because there the descriptor is not damaged but absent, along with everything after it.</p>
+      <div class="claim" id="undefined"><p class="claim-text">A file that is 700 MB of intact ISO with 32 KB of damage at the front is, to every operating system, not an ISO. The gap between "unmountable" and "lost" is wider for this format than for almost any other.</p><p class="claim-src">undefined</p></div>
+      <h2 id="joliet">The spare tree</h2>
+      <p>ISO 9660 restricted filenames severely — uppercase, 8.3, a shallow hierarchy. Joliet works around it by using the format's Supplementary Volume Descriptor to record a <strong>separate tree of directory records</strong>, in UCS-2, rooted in its own descriptor with its own path table. The point was long Unicode filenames. The side effect is redundancy: a Joliet image describes its contents twice, in two independent structures, pointing at the same file extents.</p>
+      <p class="note">Cited, not measured here: the <a href="https://pismotec.com/cfs/jolspec.html">Joliet specification</a> and the <a href="https://wiki.osdev.org/ISO_9660">OSDev ISO 9660 reference</a>. The redundancy is a consequence of the design, not a feature it advertises.</p>
+      <p>That is why <code>ISO_SVD_001</code> is one of only two ISO rules marked recoverable. A damaged supplementary descriptor costs the long filenames and nothing else — the primary tree still finds every file. And the reverse holds: a damaged <em>primary</em> tree on a Joliet disc may leave the supplementary one intact, which is a second complete route to the same data.</p>
+      <div class="callout">Redundancy like this is rare among the formats on this site. ZIP repeats each entry's metadata twice and that is the reason its index is rebuildable; ISO with Joliet repeats the entire directory hierarchy. Most other formats describe their contents exactly once.</div>
+      <h2 id="blind">What ISO cannot see</h2>
+      <p><code>ISO_SECTOR_001</code> — a single sector bit flip — is rated <strong>Minor</strong>, for the same reason <code>TAR_FLIP_001</code> is: nothing in ISO 9660 verifies file contents. The format was designed for read-only optical media, where error correction lived in the <em>physical</em> layer — CIRC on the disc itself, below the filesystem. Copy that disc to a file on a hard drive and you keep the filesystem and leave the error correction behind.</p>
+      <p>That is worth stating plainly, because a <code>.iso</code> on a NAS feels like an archive and is not one. <code>ISO_SECTOR_002</code> — several consecutive sectors zeroed — is Major only because directory records notice; file data zeroed the same way is silent.</p>
+      <h2 id="rescan">Why a rescan works well here</h2>
+      <p>Everything in an ISO is 2048-byte aligned, directory records carry their own length as their first byte, and file extents are addressed as sector numbers. So a reader that has lost the path table can walk sectors, recognise directory records by shape, and rebuild the tree — the same family of move as scanning a ZIP for local headers or a PDF for object markers.</p>
+      <p><code>ISO_DIR_001</code> is the rule for where that breaks: a directory record whose length field is zero. Length zero means "no more records in this sector", so a corrupted length terminates the directory early and hides every entry after it — the records are intact and the walk stops.</p>
+      <h2 id="rules">Every fault the engine names</h2>
+      <div class="rule-filter"><a href="#fmt-iso">ISO (12)</a></div><h3 id="fmt-iso">ISO — 12 rules</h3><div class="rule" id="iso_pvd_001"><h3>ISO_PVD_001</h3><p>Primary volume descriptor magic missing.</p><dl><dt>field</dt><dd>PrimaryVolumeDescriptor.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="iso_pvd_002"><h3>ISO_PVD_002</h3><p>PVD volume space size wrong.</p><dl><dt>field</dt><dd>PrimaryVolumeDescriptor.volume_space</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="iso_svd_001"><h3>ISO_SVD_001</h3><p>Supplementary VD (Joliet) corrupt.</p><dl><dt>field</dt><dd>SupplementaryVolumeDescriptor.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="iso_pt_001"><h3>ISO_PT_001</h3><p>Path table offset beyond EOF.</p><dl><dt>field</dt><dd>PrimaryVolumeDescriptor.path_table_location</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="iso_pt_002"><h3>ISO_PT_002</h3><p>Path table entry length invalid.</p><dl><dt>field</dt><dd>PathTable.entry_length</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Underflow</dd></dl></div><div class="rule" id="iso_dir_001"><h3>ISO_DIR_001</h3><p>Directory record length field zero.</p><dl><dt>field</dt><dd>DirectoryRecord.length</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Length Underflow</dd></dl></div><div class="rule" id="iso_dir_002"><h3>ISO_DIR_002</h3><p>Directory record points to missing extent.</p><dl><dt>field</dt><dd>DirectoryRecord.extent</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="iso_sector_001"><h3>ISO_SECTOR_001</h3><p>Single sector data bitflip.</p><dl><dt>field</dt><dd>sector.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="iso_sector_002"><h3>ISO_SECTOR_002</h3><p>Multiple consecutive sectors zeroed.</p><dl><dt>field</dt><dd>sector.data</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div><div class="rule" id="iso_trunc_001"><h3>ISO_TRUNC_001</h3><p>Truncated 5%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="iso_trunc_002"><h3>ISO_TRUNC_002</h3><p>Truncated 20%.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="iso_trunc_003"><h3>ISO_TRUNC_003</h3><p>Truncated at PVD (sector 16).</p><dl><dt>field</dt><dd>stream.header</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div>
+      <h2 id="limits">Honest limits</h2>
+      <ul><li>UDF is a different filesystem and is not covered here. Many <code>.iso</code> files — most DVD and Blu-ray images — are UDF, or both, and this page does not describe them.</li><li>Nothing here recovers a silently altered sector. As with tar and PDF, the format stores nothing that could detect it.</li><li>The corpus behind these rules is a sparse clean ISO set; the calibration notes record that as a known limit on what the ISO figures can support.</li><li>The browser check names ISO images and declines to read them.</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

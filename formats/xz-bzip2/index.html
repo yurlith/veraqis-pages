@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>xz and bzip2 — small formats that recover well | VERAQIS</title>
+<meta name="description" content="Two rules each, the same as 7z, and the opposite recoverability. Per-block checksums are what let a reader skip damage and resume." />
+<link rel="canonical" href="https://veraqis.tech/formats/xz-bzip2/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="xz and bzip2 — small formats that recover well" />
+<meta property="og:description" content="Same rule count as 7z, opposite outcome. A checksum per block is the difference between salvage and a prefix." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/xz-bzip2/" />
+<meta property="article:published_time" content="2026-08-08" />
+<meta property="article:modified_time" content="2026-08-08" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="xz and bzip2 — small formats that recover well" />
+<meta name="twitter:description" content="Same rule count as 7z, opposite outcome. A checksum per block is the difference between salvage and a prefix." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/xz-bzip2/#article",
+      "url": "https://veraqis.tech/formats/xz-bzip2/",
+      "headline": "xz and bzip2 — why two rules can mean excellent recovery",
+      "name": "xz and bzip2 — small formats that recover well | VERAQIS",
+      "description": "Two rules each, the same as 7z, and the opposite recoverability. Per-block checksums are what let a reader skip damage and resume.",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-08-08",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Intermediate",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "xz"
+        },
+        {
+          "@type": "Thing",
+          "name": "bzip2"
+        },
+        {
+          "@type": "Thing",
+          "name": "compression"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/xz-bzip2/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "xz & bzip2",
+          "item": "https://veraqis.tech/formats/xz-bzip2/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>xz and bzip2 — why two rules can mean excellent recovery</h1>
+    <p class="lead">xz has two classifier rules. bzip2 has two. So does nothing much, on the face of it — 7-Zip also has three, and 7-Zip is the format where damage costs you everything after it. Rule count measures how much structure can be <em>wrong</em>, not how much can be <em>recovered</em>, and these two formats are the clearest demonstration of the difference.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-08-08">8 August 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <div class="cap-card"><h3>xz and bzip2 — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — both by magic at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>Two each — a damaged stream magic, and a failed check</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>xz: CRC-32 or CRC-64 per block. bzip2: CRC-32 per block</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Yes — measured at 9 of 10 blocks in the headline xz case; bzip2 reaches the safe optimum</dd></div></dl></div>
+      <h2 id="the-word">The word that carries the difference</h2>
+      <p>The engine's rule for a failed bzip2 checksum reads: <em>"BZIP2 <strong>block</strong> CRC mismatch"</em>. gzip's equivalent reads <em>"Content CRC32 mismatch"</em>, singular, because a gzip has exactly one checksum covering the whole stream. That is the entire structural difference between a format you can salvage and one you cannot.</p>
+      <p>Both formats compress in independent blocks and store a check value for each. A reader that hits a bad block knows <em>which</em> block is bad, can skip its length, and can resume decoding at the next boundary. Nothing similar exists in gzip or in a solid 7z folder — not because their designers were careless, but because neither format defines a boundary to resume at.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">format</th><th scope="col">checksum granularity</th><th scope="col">after damage</th></tr></thead><tbody><tr><td><strong>bzip2</strong></td><td>per block</td><td>skip the block, resume — reaches the safe optimum</td></tr><tr><td><strong>xz</strong></td><td>per block (CRC-32, CRC-64 or SHA-256)</td><td>9 of 10 blocks recovered in the headline case</td></tr><tr><td>gzip</td><td>one, for the whole stream</td><td>no resync point — the remainder is lost</td></tr><tr><td>7z (solid)</td><td>per file, but the stream is continuous</td><td>prefix only</td></tr></tbody></table></div>
+      <ul class="source-list"><li><a href="/research/recovering-past-corruption-xz-bzip2/">Recovering past corruption in xz and bzip2</a></li><li><a href="/research/7z-solid-archive-bit-flip/">The opposite case, measured: a single bit flip in a solid 7z archive</a></li></ul>
+      <h2 id="optimum">"Safe optimum" is a real limit, not a hedge</h2>
+      <p>Skipping a damaged block recovers the blocks around it. It does not recover the damaged block, and no amount of engineering will: the compressed bytes for that block are gone or wrong, and the check value proves it. So the ceiling for this kind of salvage is "everything except what was hit", and reaching that ceiling is the best an honest tool can do.</p>
+      <div class="callout">This is why the recoverability matrix on this site says <em>yes</em> for xz and bzip2 and <em>prefix only</em> for solid 7z. Both are statements about the format. Neither is a claim that our implementation is cleverer than someone else's.</div>
+      <p>One practical consequence: block size is a recovery decision. A bzip2 compressed with <code>-9</code> uses 900 KB blocks, so one damaged block costs up to 900 KB of output. <code>-1</code> uses 100 KB blocks and costs proportionally less per hit, at some ratio. Nobody chooses that setting for recovery reasons, but it is what the choice does.</p>
+      <h2 id="rules">What the two rules actually are</h2>
+      <p>Both formats get a magic rule and a check rule. In both, only the magic rule is marked recoverable — a damaged stream header over intact compressed data is repairable; a failed check is a statement about the data itself.</p>
+      <div class="rule-filter"><a href="#fmt-bzip2">BZIP2 (2)</a><a href="#fmt-xz">XZ (2)</a></div><h3 id="fmt-bzip2">BZIP2 — 2 rules</h3><div class="rule" id="bz2_magic_001"><h3>BZ2_MAGIC_001</h3><p>BZh stream magic corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="bz2_crc_001"><h3>BZ2_CRC_001</h3><p>BZIP2 block CRC mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+<h3 id="fmt-xz">XZ — 2 rules</h3><div class="rule" id="xz_magic_001"><h3>XZ_MAGIC_001</h3><p>XZ stream header magic corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="xz_crc_001"><h3>XZ_CRC_001</h3><p>XZ check mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div>
+      <p class="note">Plus the fourteen rules that apply to any container. Note also <code>LZ4</code> and <code>ZSTD</code>, which have two rules each for a different reason: there is very little in their frames that can be independently verified, which is <a href="/reference/rule-ids/">why we abstain on them</a>.</p>
+      <h2 id="limits">Honest limits</h2>
+      <ul><li>"9 of 10 blocks" is the headline figure from that experiment and its corpus, not a universal rate. How much survives depends on where the damage lands and how large the blocks are.</li><li>A <code>.tar.xz</code> or <code>.tar.bz2</code> inherits this good behaviour, unlike <code>.tar.gz</code> — but the recovered blocks still contain a partial tar, which then needs <a href="/formats/gzip-tar/">tar-level salvage</a>.</li><li>xz supports SHA-256 as a check as well as CRC-32/64. The engine treats a failed check the same way whichever it is; a stronger check makes the <em>detection</em> stronger, not the recovery.</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

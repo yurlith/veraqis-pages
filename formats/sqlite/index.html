@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>SQLite — the checksums are in the other file | VERAQIS</title>
+<meta name="description" content="A SQLite database has no page checksums. The write-ahead log does — and a failed one is handled by dropping frames, quietly." />
+<link rel="canonical" href="https://veraqis.tech/formats/sqlite/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="SQLite — the checksums are in the other file" />
+<meta property="og:description" content="The main database file stores no checksum over its pages. PRAGMA integrity_check verifies structure, not content." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/sqlite/" />
+<meta property="article:published_time" content="2026-08-08" />
+<meta property="article:modified_time" content="2026-08-08" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="SQLite — the checksums are in the other file" />
+<meta name="twitter:description" content="The main database file stores no checksum over its pages. PRAGMA integrity_check verifies structure, not content." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/sqlite/#article",
+      "url": "https://veraqis.tech/formats/sqlite/",
+      "headline": "SQLite — where the integrity checks are, and where they are not",
+      "name": "SQLite — the checksums are in the other file | VERAQIS",
+      "description": "A SQLite database has no page checksums. The write-ahead log does — and a failed one is handled by dropping frames, quietly.",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-08-08",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Intermediate",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "database corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "WAL"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/sqlite/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "SQLite",
+          "item": "https://veraqis.tech/formats/sqlite/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>SQLite — where the integrity checks are, and where they are not</h1>
+    <p class="lead">SQLite is the most widely deployed database in the world and it does not checksum its own pages. <code>PRAGMA integrity_check</code> walks the B-trees and confirms they are structurally sound — which is a real and useful check, and is not a check that your rows still say what they said. A flipped bit inside a row passes it.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-08-08">8 August 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <div class="cap-card"><h3>SQLite — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — the 16-byte header string at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>16 — the second-largest family after ZIP</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None in the database file. The WAL has one per frame</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Page-level. Intact pages remain readable; a damaged interior B-tree node costs the subtree under it</dd></div></dl><p class="note">These 16 rules were missing from this site's public reference until 2026-08-08 — the extractor dropped them. <a href="/reference/rule-ids/#coverage">What happened</a>.</p></div>
+      <h2 id="asymmetry">The same flip, twice</h2>
+      <div class="table-scroll"><table><thead><tr><th scope="col">rule</th><th scope="col">where the bit flipped</th><th scope="col">severity</th></tr></thead><tbody><tr><td><code>SQ_FLIP_001</code></td><td>row data on a leaf page</td><td>Minor</td></tr><tr><td><code>SQ_FLIP_002</code></td><td>a B-tree <strong>interior</strong> key</td><td>Major</td></tr></tbody></table></div>
+      <p>A flip in row data changes one value and nothing notices — there is no checksum over it, and the B-tree above it is untouched, so every structural check still passes. A flip in an interior key changes the <em>routing</em>: searches take the wrong branch, and rows that are physically present become unreachable. The second is rated worse because more is affected, not because more bytes were damaged.</p>
+      <div class="claim" id="undefined"><p class="claim-text">A SQLite database that passes <code>PRAGMA integrity_check</code> is a database whose structure is consistent. It is not a database whose contents are proven, and the format stores nothing that could make it one.</p><p class="claim-src">undefined</p></div>
+      <h2 id="wal">The checksums are in the write-ahead log</h2>
+      <p>In WAL mode a database is not one file. Alongside <code>db</code> sit <code>db-wal</code> and <code>db-shm</code>, and recently committed transactions live in the WAL until a checkpoint folds them back. Each WAL frame carries a header with a rolling checksum over every prior frame plus itself — so the log is checksummed even though the database it protects is not.</p>
+      <div class="callout">What happens when one of those checksums fails is the part worth knowing: SQLite does not raise an error. It treats the first bad frame as the end of the log and <strong>discards it and every frame after it</strong>, including frames that are perfectly intact — and the database then passes <code>integrity_check</code>. Committed transactions can disappear without anything reporting a fault.</div>
+      <p class="note">Cited, not measured here: <a href="https://avi.im/blag/2024/sqlite-bit-flip/">SQLite does not do checksums</a> and <a href="https://avi.im/blag/2025/sqlite-wal-checksum/">SQLite WAL checksums fail silently and may lose data</a>, with the behaviour discussed on the <a href="https://www.sqlite.org/forum/forumpost/dcf5ba42db">SQLite forum</a>. This is documented behaviour of a deliberate design, not a bug report — a torn write at the tail of a log is the common case, and truncating there is the safe response. The cost is that a checksum failure earlier in the log looks identical.</p>
+      <p>Two rules cover this directly. <code>SQ_WAL_001</code> — a missing WAL header magic — is Minor <strong>and</strong> the only WAL fault marked recoverable, because a database with an unreadable log is still a valid database at its last checkpoint. <code>SQ_WAL_002</code>, a salt mismatch, is Major: the salt is how a WAL is bound to its database, and a mismatch means the log belongs to a different file or a different generation of it.</p>
+      <div class="callout info">Practical consequence for backups: copying <code>db</code> without <code>db-wal</code> copies the database as of its last checkpoint and silently loses everything committed since. This is the most common way a SQLite backup ends up missing data that the application definitely wrote.</div>
+      <h2 id="rigid">Where the format is rigid, and why that helps</h2>
+      <p>Several rules are Catastrophic for reasons that sound trivial. <code>SQ_PGSIZE_001</code> — page size not a power of two — is one: the page size is read from the header, every offset in the file is a multiple of it, and an impossible value makes the entire file unaddressable. <code>SQ_TRUNC_002</code>, truncated before page 2, is another: page 1 holds the header and the schema, and without the schema the rest is pages of unlabelled cells.</p>
+      <p>The flip side is that this rigidity makes recovery tractable. Pages are fixed-size and self-typed — the first byte of a page says what kind of B-tree node it is — so a reader can walk the file page by page without trusting any index, identify which pages are intact, and extract the records on them. That is the standard approach to a corrupt SQLite file, and it works because the format repeats its structure everywhere rather than describing it once.</p>
+      <h2 id="rules">Every fault the engine names</h2>
+      <div class="rule-filter"><a href="#fmt-sqlite">SQLite (16)</a></div><h3 id="fmt-sqlite">SQLite — 16 rules</h3><div class="rule" id="sq_magic_001"><h3>SQ_MAGIC_001</h3><p>Header magic missing.</p><dl><dt>field</dt><dd>sqlite.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="sq_pgsize_001"><h3>SQ_PGSIZE_001</h3><p>Page size not a power of two.</p><dl><dt>field</dt><dd>sqlite.page_size</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_pgsize_002"><h3>SQ_PGSIZE_002</h3><p>Page size mismatch with actual pages.</p><dl><dt>field</dt><dd>sqlite.page_size</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_fc_001"><h3>SQ_FC_001</h3><p>File change counter mismatch.</p><dl><dt>field</dt><dd>sqlite.change_counter</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_btree_001"><h3>SQ_BTREE_001</h3><p>B-tree page type byte invalid.</p><dl><dt>field</dt><dd>sqlite.btree.page_type</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_btree_002"><h3>SQ_BTREE_002</h3><p>B-tree cell count exceeds capacity.</p><dl><dt>field</dt><dd>sqlite.btree.cell_count</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_btree_003"><h3>SQ_BTREE_003</h3><p>Cell pointer references missing offset.</p><dl><dt>field</dt><dd>sqlite.btree.cell_ptr</dd><dt>category</dt><dd>Missing Data</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Offset Out Of Bounds</dd></dl></div><div class="rule" id="sq_free_001"><h3>SQ_FREE_001</h3><p>Freelist trunk page number invalid.</p><dl><dt>field</dt><dd>sqlite.freelist_trunk</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_free_002"><h3>SQ_FREE_002</h3><p>Freelist count exceeds actual pages.</p><dl><dt>field</dt><dd>sqlite.freelist_count</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_wal_001"><h3>SQ_WAL_001</h3><p>WAL header magic missing.</p><dl><dt>field</dt><dd>wal.magic</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="sq_wal_002"><h3>SQ_WAL_002</h3><p>WAL salt mismatch.</p><dl><dt>field</dt><dd>wal.salt</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Value Out Of Range</dd></dl></div><div class="rule" id="sq_trunc_001"><h3>SQ_TRUNC_001</h3><p>Truncated mid-page.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="sq_trunc_002"><h3>SQ_TRUNC_002</h3><p>Truncated before page 2.</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div><div class="rule" id="sq_flip_001"><h3>SQ_FLIP_001</h3><p>Bit flip in row data.</p><dl><dt>field</dt><dd>payload.bits</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Minor">Minor</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="sq_flip_002"><h3>SQ_FLIP_002</h3><p>Bit flip in B-tree interior key.</p><dl><dt>field</dt><dd>sqlite.btree.key</dd><dt>category</dt><dd>Bit Flip</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="sq_comp_001"><h3>SQ_COMP_001</h3><p>Corrupt B-tree + bit flip.</p><dl><dt>field</dt><dd>sqlite.btree</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Structure Missing</dd></dl></div>
+      <h2 id="limits">Honest limits</h2>
+      <ul><li>The SQLite rules in this engine are declared and classified; the dedicated parser behind them is a later phase. Treat this page as a description of the format and of what the classifier can key on, not as a claim of a shipped SQLite recovery path.</li><li>Nothing here recovers a row whose bytes were silently altered. As with tar, the information needed to detect it was never stored.</li><li>The WAL behaviour above is cited from third-party analysis and the SQLite forum, not reproduced in our corpus.</li><li>The browser check names SQLite databases and declines to read them.</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>7-Zip — what solid compression costs you | VERAQIS</title>
+<meta name="description" content="7z has three classifier rules where ZIP has 24, and the reason is the format itself: solid compression leaves almost nothing to check independently." />
+<link rel="canonical" href="https://veraqis.tech/formats/7z/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="7-Zip — what solid compression costs you" />
+<meta property="og:description" content="Three rules where ZIP has 24. Solid blocks compress better and couple every file to the one before it." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/7z/" />
+<meta property="article:published_time" content="2026-08-08" />
+<meta property="article:modified_time" content="2026-08-08" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="7-Zip — what solid compression costs you" />
+<meta name="twitter:description" content="Three rules where ZIP has 24. Solid blocks compress better and couple every file to the one before it." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/7z/#article",
+      "url": "https://veraqis.tech/formats/7z/",
+      "headline": "7-Zip — excellent compression, and the recovery bill that comes with it",
+      "name": "7-Zip — what solid compression costs you | VERAQIS",
+      "description": "7z has three classifier rules where ZIP has 24, and the reason is the format itself: solid compression leaves almost nothing to check independently.",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-08-08",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Intermediate",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "7z"
+        },
+        {
+          "@type": "Thing",
+          "name": "7-Zip"
+        },
+        {
+          "@type": "Thing",
+          "name": "solid compression"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/7z/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "7-Zip",
+          "item": "https://veraqis.tech/formats/7z/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>7-Zip — excellent compression, and the recovery bill that comes with it</h1>
+    <p class="lead">A solid 7z archive compresses several files as one continuous stream, so a repeated string in file 40 can be encoded as a reference back into file 3. That is why 7z beats ZIP on ratio. It is also why a single flipped bit stops recovery at the damage instead of stepping over it — and why this engine has three rules for 7z and twenty-four for ZIP.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-08-08">8 August 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <div class="cap-card"><h3>7z — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — by magic at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>Three. That number is a property of the format, not of the effort spent</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>CRC-32 per file, stored in the end header</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>No. Prefix only — files stored before the damage, measured, with false recoveries at zero</dd></div></dl><p class="note">The prefix salvage is a shipped path, not a plan. What it does <strong>not</strong> do is recover anything after the damage in a solid block, because nothing in the format makes that possible.</p></div>
+      <h2 id="three-rules">Why only three rules</h2>
+      <p>Rule count tracks how much of a format can be checked against itself. A ZIP states every entry twice — once in a local header, once in the central directory — and ends with a record saying where that index begins. Those copies can disagree, and each disagreement is a finding with a name.</p>
+      <p>A 7z states things once. There is a signature header at the front, one end header at the back describing everything, and between them a compressed stream. There is no second opinion to compare against, so there are three things that can be said: the signature is wrong, the end header is unreachable, or a CRC failed.</p>
+      <div class="claim" id="undefined"><p class="claim-text">Two of those three carry <code>recoverable_hint: false</code>. Only <code>7Z_MAGIC_001</code> — a damaged signature over an otherwise intact archive — is marked recoverable, because it is the one fault where the data was never touched.</p><p class="claim-src">undefined</p></div>
+      <h2 id="solid">What a solid block does to damage</h2>
+      <p>We measured this rather than reasoned about it: one bit flipped inside a solid archive, and the question of how much survives.</p>
+      <ul class="source-list"><li><a href="/research/7z-solid-archive-bit-flip/">A single bit flip in a solid 7z archive</a></li></ul>
+      <p>The finding that matters for recovery is negative and worth stating as such: <strong>self-healing past the flip does not work</strong>, at any reset level we tried. LZMA2 decoding is all-or-nothing in the library we use, and there is no resync point in a solid folder to restart from. What <em>did</em> work is narrower and real — re-terminating the LZMA2 chunk at a boundary before the damage, which recovers the files stored up to that point and nothing beyond.</p>
+      <div class="callout">That is the honest shape of 7z recovery: a prefix, measured, with no false recoveries — not a repaired archive. A tool promising the files after the damage in a solid block is promising something the encoding does not permit.</div>
+      <p>Non-solid 7z archives behave differently, and better: each file compressed independently is each file recoverable independently. The ratio is worse. That trade is the whole decision, and it is made at compression time, long before anyone needs to recover anything.</p>
+      <h2 id="crc">Where the CRCs live, and why it matters</h2>
+      <p>7z does store a CRC-32 per file — in the <strong>end header</strong>, along with the file names, sizes and the description of how the stream is laid out. So the checksums that would tell you which files survived are in the part of the file most likely to be lost to truncation.</p>
+      <p>That is what <code>7Z_TRUNC_001</code> is: the end header points beyond the end of the file. It is rated Catastrophic not because much data is gone — a 1% truncation can do it — but because losing that header costs the inventory, the checksums and the layout at once. A ZIP truncated the same way loses its index too, but its local headers survive scattered through the file and can be found by scanning. A 7z has no equivalent.</p>
+      <h2 id="rules">Every fault the engine names</h2>
+      <div class="rule-filter"><a href="#fmt-7z">7Z (3)</a></div><h3 id="fmt-7z">7Z — 3 rules</h3><div class="rule" id="7z_magic_001"><h3>7Z_MAGIC_001</h3><p>7z signature header corrupted.</p><dl><dt>field</dt><dd>signature</dd><dt>category</dt><dd>Structural Corruption</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Signature Mismatch</dd></dl></div><div class="rule" id="7z_crc_001"><h3>7Z_CRC_001</h3><p>7z CRC mismatch.</p><dl><dt>field</dt><dd>trailer.checksum</dd><dt>category</dt><dd>Checksum Mismatch</dd><dt>severity</dt><dd class="sev-Major">Major</dd><dt>evidence</dt><dd>Checksum Mismatch</dd></dl></div><div class="rule" id="7z_trunc_001"><h3>7Z_TRUNC_001</h3><p>7z end header beyond EOF (truncated).</p><dl><dt>field</dt><dd>stream.tail</dd><dt>category</dt><dd>Truncation</dd><dt>severity</dt><dd class="sev-Catastrophic">Catastrophic</dd><dt>evidence</dt><dd>Truncation Marker</dd></dl></div>
+      <p class="note">Three format rules, plus the fourteen that apply to any container — generic truncation and bit-flip findings, and the security set. See the <a href="/reference/rule-ids/">rule ID reference</a>.</p>
+      <h2 id="limits">Honest limits</h2>
+      <ul><li>The browser check names 7z and declines to read it. Everything here comes from the desktop engine.</li><li>The bit-flip result is from that experiment and its corpus. It is a strong negative — self-healing did not work at any reset level tested — not a proof that no method could ever exist.</li><li>Prefix salvage is scoped to LZMA2 solid folders. Other codecs inside a 7z container were not measured.</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
