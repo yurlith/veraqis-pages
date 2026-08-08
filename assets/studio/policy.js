@@ -92,7 +92,7 @@ export function extractionPolicy(caps = {}) {
     slowOperationWarnMs: 30000,
 
     /* --- output naming ---------------------------------------------------- */
-    maxFilenameLength: 100,       // conservative across Windows/macOS/Linux + browser download UI
+    maxFilenameLength: 100,       // conservative across supported desktop filesystems + browser download UI
     fallbackFilename: 'veraqis-extracted-file.bin',
     // A single-file download is always flattened to a basename: a browser
     // download must never be able to address a directory.

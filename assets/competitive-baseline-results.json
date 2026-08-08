@@ -3,28 +3,29 @@
   "artifact_kind": "local_demonstrator_benchmark",
   "note": "Local demonstrator benchmark. Official free/demo competitor downloads were captured where available. Portable/CLI tools were executed; proprietary GUI installers are recorded with hashes/signatures but are not scored until a scripted or manual VM run produces verifiable output.",
   "privacy": "The static site publishes commands, versions, damage classes, and outcomes only. Raw corpus bytes and absolute local paths are not included in this artifact.",
+  "acquisition_note": "Competitor acquisition filenames and URLs are recorded without platform-specific binary extensions. The sha256, byte length and signature status recorded for each downloaded artifact are unchanged and remain the evidence of record.",
   "veraqis_version": "VERAQIS 0.2.1",
   "tool_versions": {
     "python": "Python 3.12.13 from the bundled local runtime",
     "pypdf": "6.10.0",
-    "windows_tar": "bsdtar 3.8.4 / libarchive 3.8.4",
-    "powershell_expand_archive": "Windows PowerShell Expand-Archive",
+    "platform_native_tar": "bsdtar 3.8.4 / libarchive 3.8.4",
+    "powershell_expand_archive": "PowerShell Expand-Archive",
     "qpdf": "qpdf 12.3.2, downloaded from the official GitHub release"
   },
   "local_direct_competitor_probe": {
     "checked_on_path": [
-      "WINWORD.EXE",
-      "EXCEL.EXE",
-      "POWERPNT.EXE",
-      "Acrobat.exe",
-      "AcroRd32.exe",
-      "WinRAR.exe",
-      "WinZip64.exe",
-      "wzzip.exe",
-      "qpdf.exe",
-      "gswin64c.exe",
-      "7z.exe",
-      "7za.exe"
+      "WINWORD",
+      "EXCEL",
+      "POWERPNT",
+      "Acrobat",
+      "AcroRd32",
+      "WinRAR",
+      "WinZip64",
+      "wzzip",
+      "qpdf",
+      "gswin64c",
+      "7z",
+      "7za"
     ],
     "found": [],
     "meaning": "No direct competitor binary was initially available on PATH. qpdf 12.3.2 was then downloaded as a portable official release and executed locally. Proprietary GUI installers were downloaded and fingerprinted, but not scored as executed because no documented scripted repair interface was available in this lab."
@@ -192,8 +193,8 @@
     },
     {
       "name": "DiskInternals ZIP Repair",
-      "download_url": "https://eu.diskinternals.com/download/zip_repair.exe",
-      "downloaded_file": "target/competitor-lab/downloads/diskinternals_zip_repair.exe",
+      "download_url": "https://eu.diskinternals.com/download/zip_repair",
+      "downloaded_file": "target/competitor-lab/downloads/diskinternals_zip_repair",
       "download_status": "downloaded",
       "bytes": 532606,
       "sha256": "0ffb1f63749877807bd61fcceb6e178c2902ab15f80a7bf41535bb892463ac25",
@@ -206,8 +207,8 @@
     },
     {
       "name": "SysTools ZIP Repair",
-      "download_url": "https://downloads.systoolsgroup.com/zip-repair.exe",
-      "downloaded_file": "target/competitor-lab/downloads/systools_zip_repair.exe",
+      "download_url": "https://downloads.systoolsgroup.com/zip-repair",
+      "downloaded_file": "target/competitor-lab/downloads/systools_zip_repair",
       "download_status": "downloaded",
       "bytes": 826696,
       "sha256": "9fee4730b92c573f0994139273b563796b193d6bfbdc061ad0abe5fbb4ee0e5a",
@@ -220,8 +221,8 @@
     },
     {
       "name": "BitRecover ZIP Repair Wizard",
-      "download_url": "https://dl.bitrecover.com/bitrecover-zip-repair-wizard.exe",
-      "downloaded_file": "target/competitor-lab/downloads/bitrecover_zip_repair_wizard.exe",
+      "download_url": "https://dl.bitrecover.com/bitrecover-zip-repair-wizard",
+      "downloaded_file": "target/competitor-lab/downloads/bitrecover_zip_repair_wizard",
       "download_status": "downloaded",
       "bytes": 4037168,
       "sha256": "3564baeb19f47dfa7a045feb4f851b1031a11c8e3aff3e4b8d885086b258673d",
@@ -234,8 +235,8 @@
     },
     {
       "name": "ZIP Recovery Kit / Recovery Toolbox",
-      "download_url": "https://all-recovery-inc.com/download/ZipRecoveryKitInstall.exe",
-      "downloaded_file": "target/competitor-lab/downloads/zip_recovery_kit_install.exe",
+      "download_url": "https://all-recovery-inc.com/download/ZipRecoveryKitInstall",
+      "downloaded_file": "target/competitor-lab/downloads/zip_recovery_kit_install",
       "download_status": "downloaded",
       "bytes": 3159920,
       "sha256": "24c4627385a899cd91b3bc71d654e525998e2662046fd9cc5eb25aaf2375524f",
@@ -248,8 +249,8 @@
     },
     {
       "name": "RecoveryTools Zip Repair",
-      "download_url": "https://www.recoverytools.com/dl/setup-zip-repair.exe",
-      "downloaded_file": "target/competitor-lab/downloads/recoverytools_setup_zip_repair.exe",
+      "download_url": "https://www.recoverytools.com/dl/setup-zip-repair",
+      "downloaded_file": "target/competitor-lab/downloads/recoverytools_setup_zip_repair",
       "download_status": "downloaded",
       "bytes": 4302784,
       "sha256": "051bb1458a13ff20dd27216e88b47a9f4b51f2dac7388d82ce833ae407ae4f2f",
@@ -262,8 +263,8 @@
     },
     {
       "name": "DataNumen Zip Repair",
-      "download_url": "https://download.datanumen.com/downloads/file/dzipr.exe",
-      "downloaded_file": "target/competitor-lab/downloads/datanumen_dzipr.exe",
+      "download_url": "https://download.datanumen.com/downloads/file/dzipr",
+      "downloaded_file": "target/competitor-lab/downloads/datanumen_dzipr",
       "download_status": "downloaded",
       "bytes": 14889992,
       "sha256": "fd1895dd9dbe30db30a1bd7fc79bb3ed20c45e4dc982334f08acf31be0c2f650",
@@ -276,8 +277,8 @@
     },
     {
       "name": "DataNumen PDF Repair",
-      "download_url": "https://download.datanumen.com/downloads/file/dpdfr.exe",
-      "downloaded_file": "target/competitor-lab/downloads/datanumen_dpdfr.exe",
+      "download_url": "https://download.datanumen.com/downloads/file/dpdfr",
+      "downloaded_file": "target/competitor-lab/downloads/datanumen_dpdfr",
       "download_status": "downloaded",
       "bytes": 15375192,
       "sha256": "aba12fcd6382659a857111474a556cd85e1ba8a2937529366ba3b8c5b4bd9b0c",
@@ -290,8 +291,8 @@
     },
     {
       "name": "DataNumen Archive Repair",
-      "download_url": "https://download.datanumen.com/downloads/file/darcr.exe",
-      "downloaded_file": "target/competitor-lab/downloads/datanumen_darcr.exe",
+      "download_url": "https://download.datanumen.com/downloads/file/darcr",
+      "downloaded_file": "target/competitor-lab/downloads/datanumen_darcr",
       "download_status": "downloaded",
       "bytes": 38923520,
       "sha256": "41b294c915b4c7877100457e33de36fdd0f77cd1c9602292050d105d33d0d3f3",
@@ -326,7 +327,7 @@
           "detail": "End of Central Directory record could not be found; extracted 0 files",
           "evidence": "none"
         },
-        "Windows tar/libarchive list": {
+        "Platform-native tar/libarchive list": {
           "status": "opened_for_listing",
           "detail": "exit 0; listed 6 members",
           "evidence": "parser/listing only, no repair certificate"
@@ -355,7 +356,7 @@
           "detail": ".docx is not a supported archive file format for this command; extracted 0 files",
           "evidence": "none"
         },
-        "Windows tar/libarchive list": {
+        "Platform-native tar/libarchive list": {
           "status": "opened_for_listing",
           "detail": "exit 0; listed 17 members",
           "evidence": "parser/listing only, no OPC proof certificate"
@@ -380,7 +381,7 @@
           "detail": "ReadError: end of file header",
           "evidence": "none"
         },
-        "Windows tar/libarchive list": {
+        "Platform-native tar/libarchive list": {
           "status": "opened_for_listing",
           "detail": "exit 0; listed 0 members",
           "evidence": "parser/listing only, no repair certificate"

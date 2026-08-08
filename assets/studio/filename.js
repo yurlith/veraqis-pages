@@ -18,16 +18,16 @@
 
 import { DEFAULT_EXTRACTION_POLICY } from './policy.js';
 
-// Windows reserves these regardless of extension, and a reserved name can behave
+// These are reserved regardless of extension, and a reserved name can behave
 // as a device rather than a file. They are refused on every platform so a
-// project exported on Linux cannot produce a name that misbehaves on Windows.
+// project exported anywhere cannot produce a name that misbehaves elsewhere.
 const RESERVED = new Set([
   'con', 'prn', 'aux', 'nul',
   'com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7', 'com8', 'com9',
   'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9',
 ]);
 
-// Punctuation that Windows refuses outright and that several browsers rewrite
+// Punctuation that common filesystems refuse outright and that several browsers rewrite
 // silently in a download name. `/` and `\` never reach here — the split removes
 // them — but they are listed so the predicate is complete on its own terms.
 const RESERVED_PUNCT = new Set(['<', '>', ':', '"', '/', '\\', '|', '?', '*']);
@@ -90,7 +90,7 @@ export function sanitizeDownloadFilename(originalEntryName, policy = DEFAULT_EXT
     s = s.replace(/^[\\/]+/, '');
   }
 
-  // 2. Take the leaf. Both separators count: a ZIP written on Windows may use
+  // 2. Take the leaf. Both separators count: a ZIP written on any platform may use
   //    backslashes even though APPNOTE 4.4.17.1 says forward slashes.
   const segments = s.split(/[\\/]+/).filter((x) => x.length > 0);
   const hadDirectories = /[\\/]/.test(s);
@@ -120,7 +120,7 @@ export function sanitizeDownloadFilename(originalEntryName, policy = DEFAULT_EXT
   if (replacedIllegal) reasons.push('characters not permitted in a filename replaced with "_"');
   leaf = stripped;
 
-  // 5. Trailing dots and spaces are dropped by Windows *after* any check we did,
+  // 5. Trailing dots and spaces are dropped by some filesystems *after* any check we did,
   //    which turns "report.txt." into "report.txt" behind our back. Do it here so
   //    the name we show is the name the filesystem will hold.
   const beforeTrim = leaf;
@@ -130,7 +130,7 @@ export function sanitizeDownloadFilename(originalEntryName, policy = DEFAULT_EXT
   // 6. Reserved device names, with or without an extension.
   const stem = leaf.replace(/\.[^.]*$/, '');
   if (RESERVED.has(stem.toLowerCase())) {
-    reasons.push(`"${stem}" is a reserved device name on Windows`);
+    reasons.push(`"${stem}" is a reserved device name on some filesystems`);
     leaf = `_${leaf}`;
   }
 

@@ -207,11 +207,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/" class="active">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -304,7 +304,7 @@ phx recover damaged.7z --semantic 7z --output out/
       <p>If you archive with solid compression, damage position is not a detail — it decides your loss. Damage near the end of a solid folder costs almost nothing; damage near the start costs almost everything. If the archive matters, either turn solid mode off for the parts you cannot lose, or add parity so position stops mattering.</p>
       <p>And if you are holding a damaged solid 7z right now: it is very likely <strong>not</strong> a total loss. The correct first step is to find out how much of it is provable, which costs nothing.</p>
       <h2 id="reproduce">Reproduce it</h2>
-      <div class="terminal"><pre>$env:PATH = "$env:LOCALAPPDATA\Microsoft\WindowsApps;" + $env:PATH
+      <div class="terminal"><pre># ensure the python launcher is on PATH for your shell
 cargo build --release -p phx
 python -m pip install py7zr
 python scripts/exp_7z_prefix_salvage_gate.py     # the gate table above
@@ -357,9 +357,9 @@ Engine: VERAQIS 0.2.1 · Measured: 25 July 2026 · Experiment: EXP-7Z-PREFIX-SAL
     <h2>Find out how much of your archive is provable</h2>
     <p class="sub">Analysis is free and runs locally: VERAQIS opens the file read-only and reports which entries are verified, which are damaged, and which are unknown. Nothing is uploaded, and there is no telemetry.</p>
     <div class="chips">
-      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
-      <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
   </div>
 </section>
@@ -386,9 +386,8 @@ Engine: VERAQIS 0.2.1 · Measured: 25 July 2026 · Experiment: EXP-7Z-PREFIX-SAL
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -406,6 +405,7 @@ Engine: VERAQIS 0.2.1 · Measured: 25 July 2026 · Experiment: EXP-7Z-PREFIX-SAL
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

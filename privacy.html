@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-08-06",
       "inLanguage": "en"
     },
     {
@@ -102,11 +102,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -119,27 +119,42 @@
   <div class="wrap">
     <div class="crumb"><a href="/">VERAQIS</a> / Privacy Policy</div>
     <h1>Privacy Policy</h1>
-    <p class="note">Last updated: 26 June 2026 · applies to the VERAQIS beta</p>
+    <p class="note">Last updated: 6 August 2026 · applies to the VERAQIS beta</p>
   </div>
 </div>
 
 <section>
   <div class="wrap prose">
     <div class="callout ok mt-0">
-      <strong>The short version:</strong> the VERAQIS tools run on your device, process your files
-      locally, and send no telemetry. This website is fully static — no cookies, no analytics, no
-      trackers.
+      <strong>The short version:</strong> the shipped VERAQIS Archiver and the browser-based tools on
+      this site run on your device, process your files locally, and send no telemetry. Recovery Pro
+      has no build yet; it is being designed around the same local-first, no-telemetry model. This
+      website is fully static — no cookies, no analytics, no trackers.
     </div>
 
     <h2>1. Your files</h2>
-    <p>VERAQIS tools open the files you point them at <strong>read-only</strong> and process them
-      <strong>locally on your device</strong>. Your file contents are not transmitted to us or to any
-      third party. The tools make no network calls in the course of analysis, recovery or
-      verification.</p>
+    <p>The shipped VERAQIS Archiver and the browser-based analysis tools on this site open the files
+      you point them at <strong>read-only</strong> and process them <strong>locally on your
+      device</strong>. Your file contents are not transmitted to us or to any third party, and these
+      tools make no network calls in the course of analysis or extraction. Recovery Pro is being
+      designed around the same local-first model, but does not exist as a testable build yet — this
+      cannot be independently verified for Recovery Pro until one does.</p>
+    <p>VERAQIS Archiver requests the Android <code>MANAGE_EXTERNAL_STORAGE</code> ("All files
+      access") permission for its built-in whole-device file manager. This is a broad permission
+      and we do not describe it as harmless: it is requested from the storage-connection flow
+      (not at install), and declining it does not block the app — it falls back to Android's
+      Storage Access Framework with a per-session, single-folder picker. See
+      <a href="/android/archiver/">the Archiver page</a> for the full disclosure. Whichever mode
+      is active, file contents stay on the device; granting storage access lets the app read
+      files, it is not by itself a guarantee that nothing leaves the device — that separate claim
+      rests on the absence of the <code>INTERNET</code> permission in the shipped Archiver APK, and
+      says nothing about a future Recovery Pro APK, which does not exist yet.</p>
 
     <h2>2. Telemetry &amp; analytics</h2>
-    <p>There is <strong>no telemetry</strong>. The applications do not collect usage statistics, crash
-      pings, device identifiers, or behavioural data. We do not run analytics or advertising scripts.</p>
+    <p>There is <strong>no telemetry</strong>. VERAQIS Archiver, the only shipped application, does
+      not collect usage statistics, crash pings, device identifiers, or behavioural data. We do not
+      run analytics or advertising scripts. Recovery Pro is being designed to the same no-telemetry
+      standard, once it exists as a testable build.</p>
 
     <h2>3. This website</h2>
     <p>This site is a set of static pages. It sets <strong>no cookies</strong>, runs no third-party
@@ -147,9 +162,9 @@
       whoever hosts the site and are outside the scope of the applications.</p>
 
     <h2>4. Licensing</h2>
-    <p>No license file is required during public beta. Future Recovery and Fleet license validation is
-      designed to run <strong>offline</strong> against a signed file; it will not contact a server,
-      create an account or transmit information about you.</p>
+    <p>VERAQIS Recovery Pro is in development; no license file exists yet. Its planned license
+      validation is designed to run <strong>offline</strong> against a signed file; it will not
+      contact a server, create an account or transmit information about you.</p>
 
     <h2>5. Reports &amp; diagnostics</h2>
     <p>Reports you generate are written to locations you choose and stay on your device unless you share
@@ -193,9 +208,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -213,6 +227,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

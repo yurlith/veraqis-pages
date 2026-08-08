@@ -172,11 +172,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/" class="active">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -203,7 +203,7 @@
       <div class="terminal"><pre>7-Zip:      CRC failed in &lt;name&gt;. The file is corrupt
 unzip:      bad CRC 1a2b3c4d  (should be 5e6f7a8b)
 Python:     BadZipFile: Bad CRC-32 for file '&lt;name&gt;'
-Windows:    The compressed (zipped) folder is invalid</pre></div>
+File manager: The compressed (zipped) folder is invalid</pre></div>
       <p>When an archive is created, each entry gets a CRC-32 of its <strong>uncompressed</strong> contents stored alongside it. When you extract, the tool decompresses the entry and recomputes that value. A mismatch means the bytes changed between then and now.</p>
       <p>That is a genuinely strong statement. A random corruption has roughly a one-in-four-billion chance of landing on a value that still matches, so a CRC error is close to certain evidence that something really did change. It is also <strong>scoped</strong>: the check covers one entry, so it convicts one entry.</p>
       <div class="grid g2"><div class="card"><h3>ZIP_CRC_001</h3><p>Checksum mismatch on a <strong>single</strong> entry. Severity Minor — the archive is structurally fine and one file is damaged.</p></div><div class="card"><h3>ZIP_CRC_002</h3><p>Mismatch on <strong>multiple</strong> entries. Severity Major — usually points at storage or transfer damage across a range rather than one bad file.</p></div></div>
@@ -278,9 +278,9 @@ phx recover archive.zip --output recovered/</pre></div>
     <h2>Check your own file — analysis is free</h2>
     <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
     <div class="chips">
-      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
-      <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
   </div>
 </section>
@@ -307,9 +307,8 @@ phx recover archive.zip --output recovered/</pre></div>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -327,6 +326,7 @@ phx recover archive.zip --output recovered/</pre></div>
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

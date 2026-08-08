@@ -93,7 +93,7 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Why does Windows say a ZIP is invalid when the files are clearly inside it?",
+          "name": "Why does the built-in archive tool say a ZIP is invalid when the files are clearly inside it?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries."
@@ -172,11 +172,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -199,6 +199,7 @@
 <section>
   <div class="wrap">
     <div class="prose">
+      <div class="cap-card"><h3>ZIP — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes</dd></div><div class="cap-row"><dt>Browser structural analysis</dt><dd>Yes — local headers, central directory and EOCD</dd></div><div class="cap-row"><dt>Browser integrity verification</dt><dd>Yes — CRC-32 per entry, in a Web Worker</dd></div><div class="cap-row"><dt>Pro engine analysis</dt><dd>Yes (closed Android test) — full 24-rule classifier plus recovery strategies</dd></div><div class="cap-row"><dt>Recovery maturity</dt><dd>Production engine, closed Android test</dd></div><div class="cap-row"><dt>Independent verification</dt><dd>CRC-32 per entry, when present</dd></div><div class="cap-row"><dt>Encryption handling</dt><dd>Detected and abstained — never guessed or brute-forced</dd></div></dl><p class="note">"Production" is benchmark-verified for the documented, controlled corpus behind <a href="/reference/rule-ids/#fmt-zip">ZIP_EOCD_001 and the other safety findings</a> — not a universal guarantee against every possible ZIP writer or damage pattern.</p></div>
       <h2 id="layout">Layout</h2>
       <p>A ZIP is a sequence of entries followed by an index. Each entry appears twice in the file: once as a <strong>local file header</strong> immediately before its compressed data, and once as an entry in the <strong>central directory</strong> at the end. The <strong>end of central directory</strong> record closes the file and says where that index starts.</p>
       <div class="terminal"><pre>┌─────────────────────────────────────────────────────────────┐
@@ -252,7 +253,7 @@
   <div class="wrap">
     <h2 id="faq">Questions about the ZIP format</h2>
     <div class="faq">
-      <div class="qa"><h3>Why does Windows say a ZIP is invalid when the files are clearly inside it?</h3><p>ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries.</p></div>
+      <div class="qa"><h3>Why does the built-in archive tool say a ZIP is invalid when the files are clearly inside it?</h3><p>ZIP tools read an index at the very end of the file — the central directory, located via the end-of-central-directory record. If that index is damaged or missing, every tool reports the whole archive as invalid, even though the compressed entries earlier in the file are intact. The index can usually be rebuilt from those entries.</p></div>
       <div class="qa"><h3>Why is the ZIP index stored at the end of the file?</h3><p>ZIP was designed to be written as a stream, before the writer knows how well each file will compress. Writing entries first and the index last makes that possible, and it makes appending cheap. The cost is that damage to the last few hundred bytes makes the entire archive unreadable to normal tools.</p></div>
       <div class="qa"><h3>Can every corrupted ZIP be repaired?</h3><p>No, and the answer depends on which bytes survived. Losing the index usually costs no data. Losing an entry's compressed bytes destroys that entry. Encrypted archives are not opened without the password at all. VERAQIS reports what surviving bytes can prove and marks the rest unknown.</p></div>
       <div class="qa"><h3>Is a DOCX file really a ZIP?</h3><p>Yes. DOCX, XLSX, PPTX, JAR, APK and EPUB are all ZIP containers with a required internal layout. They can therefore fail in two independent ways: as a damaged ZIP, or as a valid ZIP whose internal package graph no longer resolves.</p></div>
@@ -279,9 +280,9 @@
     <h2>Check your own file — analysis is free</h2>
     <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
     <div class="chips">
-      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
-      <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
   </div>
 </section>
@@ -308,9 +309,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -328,6 +328,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

@@ -109,10 +109,10 @@
         },
         {
           "@type": "Question",
-          "name": "Why does Windows say the compressed folder is invalid when the files are clearly inside?",
+          "name": "Why does the built-in file manager say the compressed folder is invalid when the files are clearly inside?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Because Windows, like every other ZIP tool, reads the index at the end of the file before showing you anything. A damaged index makes the whole archive read as invalid even though the compressed entries earlier in the file are untouched and recoverable."
+            "text": "Because the built-in file manager, like every other ZIP tool, reads the index at the end of the file before showing you anything. A damaged index makes the whole archive read as invalid even though the compressed entries earlier in the file are untouched and recoverable."
           }
         },
         {
@@ -172,11 +172,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/" class="active">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -205,7 +205,7 @@
 Python:     zipfile.BadZipFile: File is not a zip file
 PowerShell: End of Central Directory record could not be found
 7-Zip:      Cannot open file as archive
-Windows:    The compressed (zipped) folder is invalid</pre></div>
+File manager: The compressed (zipped) folder is invalid</pre></div>
       <p>All five mean the same thing. A ZIP keeps its index — the <strong>central directory</strong> — at the end of the file, and finds it through a small record in the last few hundred bytes called the <strong>end of central directory</strong>, or EOCD. Tools scan backwards from the end of the file looking for that record. If they cannot find it, they stop, because without it they do not know what is in the archive or where.</p>
       <div class="callout info">They do <strong>not</strong> mean your files are gone. Each entry in a ZIP also carries its own header — the local file header — immediately before its compressed data, repeating the name, the sizes and the CRC-32. The index is a convenience. The archive can be read without it.</div>
       <h2 id="causes">How the index gets lost</h2>
@@ -219,7 +219,7 @@ Windows:    The compressed (zipped) folder is invalid</pre></div>
     <div class="prose">
       <h2 id="measured">What we measured</h2>
       <p>We took a real archive with its EOCD truncated away and ran it through the tools most people actually have, plus VERAQIS. This is a single archive, not a corpus — treat the <em>pattern</em> as the finding and the exact byte count as belonging to this file.</p>
-      <div class="table-scroll"><table><thead><tr><th scope="col">tool</th><th scope="col">result</th><th scope="col">what came out</th></tr></thead><tbody><tr><td>Python 3.12.13 <code>zipfile</code></td><td>failed</td><td><code>BadZipFile: File is not a zip file</code> — 0 files</td></tr><tr><td>PowerShell <code>Expand-Archive</code></td><td>failed</td><td>"End of Central Directory record could not be found" — <strong>0 files extracted</strong></td></tr><tr><td>Windows <code>tar</code> / libarchive 3.8.4</td><td>listed only</td><td>exit 0, <strong>listed 6 members</strong> — it could see them, but this is a listing, not an extraction</td></tr><tr><td>VERAQIS 0.2.1</td><td>recovered</td><td><strong>336,414 bytes, 0 lost</strong> — central directory rebuilt for 6 members from their local headers, manifest emitted</td></tr></tbody></table></div><p class="note">Measured 2026-07-04, damage class "ZIP central directory / EOCD loss". Tool versions as shown; the full artifact is published as <a href="/assets/competitive-baseline-results.json">competitive-baseline-results.json</a>.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">tool</th><th scope="col">result</th><th scope="col">what came out</th></tr></thead><tbody><tr><td>Python 3.12.13 <code>zipfile</code></td><td>failed</td><td><code>BadZipFile: File is not a zip file</code> — 0 files</td></tr><tr><td>PowerShell <code>Expand-Archive</code></td><td>failed</td><td>"End of Central Directory record could not be found" — <strong>0 files extracted</strong></td></tr><tr><td>Platform-native <code>tar</code> / libarchive 3.8.4</td><td>listed only</td><td>exit 0, <strong>listed 6 members</strong> — it could see them, but this is a listing, not an extraction</td></tr><tr><td>VERAQIS 0.2.1</td><td>recovered</td><td><strong>336,414 bytes, 0 lost</strong> — central directory rebuilt for 6 members from their local headers, manifest emitted</td></tr></tbody></table></div><p class="note">Measured 2026-07-04, damage class "ZIP central directory / EOCD loss". Tool versions as shown; the full artifact is published as <a href="/assets/competitive-baseline-results.json">competitive-baseline-results.json</a>.</p>
       <div class="claim" id="claim-eocd-case"><p class="claim-text">In a real ZIP with its end-of-central-directory record truncated away, VERAQIS rebuilt the index from the surviving local file headers and recovered 336,414 bytes across 6 members with 0 bytes lost. Python zipfile and PowerShell Expand-Archive each extracted 0 files from the same input; libarchive could list the 6 members but not extract them.</p><p class="claim-src">Local demonstrator benchmark, 2026-07-04 · Python 3.12.13, bsdtar 3.8.4 / libarchive 3.8.4, PowerShell Expand-Archive · VERAQIS 0.2.1 · <a href="/assets/competitive-baseline-results.json">raw artifact</a></p></div>
       <p>The libarchive row is the interesting one. It shows the entries were never in doubt — a tool willing to walk forward through the file could see all six. What was missing was the map, and a map can be redrawn from the territory.</p>
     </div>
@@ -253,7 +253,7 @@ phx recover broken.zip --output recovered/</pre></div>
     <div class="faq">
       <div class="qa"><h3>What does "End of central directory signature not found" mean?</h3><p>It means the small record at the end of the ZIP that points to the archive index is missing or unreadable. Tools scan backwards from the end of the file to find it, and refuse to continue without it. It says nothing about the compressed files themselves, which sit earlier in the file and are usually intact.</p></div>
       <div class="qa"><h3>Can a ZIP be opened without its central directory?</h3><p>Yes. Every entry also carries a local file header immediately before its data, so the archive can be read by scanning forward and the index rebuilt from what is found. In a measured case this recovered 336,414 bytes across 6 members with nothing lost, where Python and PowerShell each extracted 0 files.</p></div>
-      <div class="qa"><h3>Why does Windows say the compressed folder is invalid when the files are clearly inside?</h3><p>Because Windows, like every other ZIP tool, reads the index at the end of the file before showing you anything. A damaged index makes the whole archive read as invalid even though the compressed entries earlier in the file are untouched and recoverable.</p></div>
+      <div class="qa"><h3>Why does the built-in file manager say the compressed folder is invalid when the files are clearly inside?</h3><p>Because the built-in file manager, like every other ZIP tool, reads the index at the end of the file before showing you anything. A damaged index makes the whole archive read as invalid even though the compressed entries earlier in the file are untouched and recoverable.</p></div>
       <div class="qa"><h3>Is recovering the index safe, or does it risk corrupting the file?</h3><p>Reading is safe as long as the tool does not write to the original. VERAQIS opens the source read-only and writes recovered output to a separate location. Tools that repair in place carry a real risk: a failed in-place repair can destroy what was recoverable.</p></div>
       <div class="qa"><h3>How do I know the recovered files are correct?</h3><p>Each ZIP entry stores a CRC-32 of its own uncompressed contents, written when the archive was created. Rebuilding the index does not touch that value, so it works as an independent check on the result: entries that verify are reported verified, entries that do not are reported damaged.</p></div>
     </div>
@@ -279,9 +279,9 @@ phx recover broken.zip --output recovered/</pre></div>
     <h2>Check your own file — analysis is free</h2>
     <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
     <div class="chips">
-      <a class="btn primary" href="/desktop.html">See what's recoverable</a>
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
-      <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
   </div>
 </section>
@@ -308,9 +308,8 @@ phx recover broken.zip --output recovered/</pre></div>
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -328,6 +327,7 @@ phx recover broken.zip --output recovered/</pre></div>
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

@@ -87,7 +87,7 @@ const CAPABILITY_REGISTRY = {
   [CAPABILITY.WASM_ZIP_CORE]: {
     enabled: true,
     label: 'Rust/WASM analysis core',
-    scope: 'Single-source-of-truth ZIP structure walk, shared with the desktop recovery engine. Verified against the JavaScript reference core across 23 fixtures, in Node and in Chrome/Edge/Firefox.',
+    scope: 'Single-source-of-truth ZIP structure walk, shared with the core recovery engine. Verified against the JavaScript reference core across 23 fixtures, in Node and in Chrome/Edge/Firefox.',
   },
 };
 
@@ -238,7 +238,7 @@ export function featureMatrix(c) {
     fingerprintSha256: need(c.webCrypto,
       'SHA-256 fingerprints need the Web Crypto API.'),
     offline: need(c.serviceWorker,
-      'Offline use needs Service Workers, which some browsers disable in private windows.'),
+      'Offline use needs Service Workers, which some browsers disable in private browsing mode.'),
     directoryExport: c.directoryPicker
       ? { level: LEVEL.SUPPORTED, why: '' }
       : { level: LEVEL.UNSUPPORTED, why: 'This browser has no File System Access API. Exports fall back to ordinary downloads — no feature is lost, only the folder picker.' },

@@ -6,14 +6,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Contact and support — join the beta | VERAQIS</title>
-<meta name="description" content="Get beta access, report a bug, send feedback, or ask about OEM use. VERAQIS support runs by email during beta — there is no account system and no telemetry." />
+<meta name="description" content="Get Android beta access, report a bug, or send feedback. VERAQIS support runs by email during beta — there is no account system and no telemetry." />
 <link rel="canonical" href="https://veraqis.tech/contact.html" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="Contact / Support | VERAQIS" />
-<meta property="og:description" content="Get beta access, report a bug, send feedback, or ask about OEM use. Support by email during beta." />
+<meta property="og:description" content="Get Android beta access, report a bug, or send feedback. Support by email during beta." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -22,7 +22,7 @@
 <meta property="og:url" content="https://veraqis.tech/contact.html" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Contact / Support | VERAQIS" />
-<meta name="twitter:description" content="Get beta access, report a bug, send feedback, or ask about OEM use." />
+<meta name="twitter:description" content="Get Android beta access, report a bug, or send feedback." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -51,7 +51,7 @@
       "@id": "https://veraqis.tech/contact.html#webpage",
       "url": "https://veraqis.tech/contact.html",
       "name": "Contact / Support",
-      "description": "Get beta access, report a bug, send feedback, or ask about OEM use. VERAQIS support runs by email during beta — there is no account system and no telemetry.",
+      "description": "Get Android beta access, report a bug, or send feedback. VERAQIS support runs by email during beta — there is no account system and no telemetry.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-08-06",
       "inLanguage": "en"
     },
     {
@@ -102,11 +102,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -128,16 +128,17 @@
   <div class="wrap">
     <div class="grid g2">
       <div class="card">
-        <h3>📨 Email us</h3>
+        <h2>📨 Email us</h2>
         <p class="my-10"><a href="mailto:support@veraqis.tech">support@veraqis.tech</a></p>
         <p>One address during beta, for every kind of message below. No license is required during
           public beta.</p>
       </div>
       <div class="card">
-        <h3>What to include</h3>
+        <h2>What to include</h2>
         <ul class="checks mt-8">
           <li>What you were doing and what happened</li>
-          <li>The product (Android / desktop) and version</li>
+          <li>For Archiver support: the Archiver version. For Recovery Pro interest: your
+            intended use case — no Recovery Pro build or version exists yet</li>
           <li>The file format, if relevant (never send sensitive data)</li>
           <li>Your OS / device</li>
         </ul>
@@ -147,20 +148,51 @@
     <h2 class="mt-36">Types of enquiry</h2>
     <div class="grid g4">
       <div class="card"><h3 class="fs-17">Product support</h3><p>Questions about installing or
-        using the Android Archiver, or about a Recovery capability.</p></div>
-      <div class="card"><h3 class="fs-17">Beta feedback</h3><p>Recovery-result reports, bug
-        reports and suggestions from using the beta.</p></div>
-      <a class="card link-card" href="security.html"><h3 class="fs-17">Security report</h3><p>Disclose
-        security issues privately. Until a dedicated security mailbox is set up, use
-        <a href="mailto:support@veraqis.tech">support@veraqis.tech</a>.</p></a>
-      <a class="card link-card" href="pricing.html"><h3 class="fs-17">OEM / white-label</h3><p>Discuss
-        embedding the engine or future Fleet and white-label terms.</p></a>
+        using the free VERAQIS Archiver, or about its limited recovery preview.</p></div>
+      <div class="card"><h3 class="fs-17">Beta feedback</h3><p>Archiver bug reports,
+        extraction-result reports and suggestions from the current public beta.</p></div>
+      <div class="card">
+        <h3 class="fs-17">Security report</h3>
+        <p>Disclose security issues privately.</p>
+        <a href="/security.html">Security reporting guidance</a>
+        <span aria-hidden="true"> · </span>
+        <a href="mailto:support@veraqis.tech">support@veraqis.tech</a>
+      </div>
+      <div class="card">
+        <h3 class="fs-17">Recovery Pro interest</h3>
+        <p>Recovery Pro is in development — product-development and future-testing interest only.</p>
+        <a href="#recovery-pro-interest">Register interest</a>
+        <span aria-hidden="true"> · </span>
+        <a href="/android/recovery-pro/">Product details</a>
+      </div>
     </div>
 
     <div class="callout info">
       Please don't email us irreplaceable files. For a bug, a small non-sensitive sample or a
       description is enough to get started.
     </div>
+
+    <section id="recovery-pro-interest" class="mt-36">
+      <span id="recovery-pro-testing" aria-hidden="true"></span>
+      <h2>Recovery Pro interest</h2>
+      <p class="sub">Recovery Pro is in development. No testable Android build is currently
+        available. You may register interest in future testing and product updates — emailing us
+        does not enrol you in a test and is not a guarantee of access, because no test programme
+        currently exists.</p>
+      <div class="cta">
+        <a class="btn primary" href="mailto:support@veraqis.tech?subject=VERAQIS%20Recovery%20Pro%20interest">Register interest</a>
+      </div>
+      <p class="note mt-14">Please include:</p>
+      <ul class="checks mw-780">
+        <li>Your Android version</li>
+        <li>Your device model</li>
+        <li>Your intended ZIP-recovery use case</li>
+        <li>Whether you'd be willing to test a future build once one exists</li>
+        <li>Confirmation you will <strong>not</strong> email us a sensitive or irreplaceable
+          archive, and will not send passwords — describe the damage instead; we will not ask you
+          to attach one</li>
+      </ul>
+    </section>
   </div>
 </section>
 </main>
@@ -184,9 +216,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -204,6 +235,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

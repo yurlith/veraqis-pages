@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-08-06",
       "inLanguage": "en"
     },
     {
@@ -94,7 +94,7 @@
           "name": "Does VERAQIS modify the original file?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. VERAQIS opens the source read-only and writes recovered output to staging and then to a destination chosen by the user."
+            "text": "No. The VERAQIS engine opens the source read-only and writes recovered output to staging and then to a destination — already proven in engine-level testing. VERAQIS Archiver's shipped recovery preview does not save the full recovered output; writing verified recovered output to a destination you choose is planned for Recovery Pro, once it exists as a testable build."
           }
         },
         {
@@ -102,7 +102,7 @@
           "name": "Does VERAQIS use telemetry?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. The beta tools and static site are designed without telemetry, analytics or call-home behavior."
+            "text": "No. VERAQIS Archiver and the browser-based tools on this site are designed without telemetry, analytics or call-home behavior. Recovery Pro is being designed to the same standard, once it exists as a testable build."
           }
         },
         {
@@ -135,11 +135,11 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
         <a href="/download.html">Download</a>
       </div>
     </nav>
@@ -181,7 +181,9 @@
   <div class="wrap">
     <h2>Privacy &amp; trust by design</h2>
     <ul class="checks mw-780">
-      <li><strong>No telemetry.</strong> The tools make no network calls and phone nothing home.</li>
+      <li><strong>No telemetry.</strong> VERAQIS Archiver and the browser-based tools on this site
+        make no network calls and phone nothing home; Recovery Pro is being designed to the same
+        standard.</li>
       <li><strong>Encryption → abstain.</strong> Encrypted archives and documents are detected and
         reported. VERAQIS never decrypts, recovers passwords, or bypasses restrictions.</li>
       <li><strong>Offline licensing.</strong> When licensing applies, it is validated offline with a
@@ -190,6 +192,12 @@
         format metadata and quality metrics — not your raw data.</li>
       <li><strong>Published-format implementation.</strong> Format support is implemented from published
         specifications and reviewed against the documented safety gates.</li>
+      <li><strong>Android storage permission, disclosed honestly.</strong> VERAQIS Archiver
+        requests <code>MANAGE_EXTERNAL_STORAGE</code> for its built-in whole-device file manager;
+        it is requested contextually (not at install) and declining it falls back to a
+        per-session Storage Access Framework picker rather than blocking the app. See the
+        <a href="/android/archiver/">Archiver page</a> for the full disclosure. No
+        <code>INTERNET</code> permission is declared.</li>
     </ul>
   </div>
 </section>
@@ -201,11 +209,10 @@
       awkward details.</p>
     <div class="grid g3">
       <div class="card"><h3>Published artifact + checksum</h3><p>The currently published Android APK is
-        paired with a SHA-256 checksum on the download page and in the checksum file. Windows Recovery,
-        Linux Recovery and ColdPass artifacts are not currently distributed.</p></div>
+        paired with a SHA-256 checksum on the download page and in the checksum file. VERAQIS Recovery
+        Pro has no public artifact yet — it is in development, with no test build available.</p></div>
       <div class="card"><h3>Signing vs checksum</h3><p>The Android APK is release-key signed. A SHA-256
-        proves file integrity but is not a publisher signature; Windows Authenticode signing is not yet
-        in place for a desktop release.</p></div>
+        proves file integrity but is not a publisher signature.</p></div>
       <div class="card"><h3>Pages before binaries</h3><p>Public pages are open for indexing; the binary
         download path is kept out of crawler targets so people see context and warnings first.</p></div>
     </div>
@@ -238,11 +245,17 @@
     <div class="faq">
       <div class="qa">
         <h3>Does VERAQIS modify the original file?</h3>
-        <p>No. VERAQIS opens the source read-only and writes recovered output to staging and then to a destination chosen by the user.</p>
+        <p>No. The VERAQIS engine opens the source read-only and writes recovered output to staging
+          and then to a destination — already proven in engine-level testing. VERAQIS Archiver's
+          shipped recovery preview does not save the full recovered output; writing verified
+          recovered output to a destination you choose is planned for Recovery Pro, once it exists
+          as a testable build.</p>
       </div>
       <div class="qa">
         <h3>Does VERAQIS use telemetry?</h3>
-        <p>No. The beta tools and static site are designed without telemetry, analytics or call-home behavior.</p>
+        <p>No. VERAQIS Archiver and the browser-based tools on this site are designed without
+          telemetry, analytics or call-home behavior. Recovery Pro is being designed to the same
+          standard, once it exists as a testable build.</p>
       </div>
       <div class="qa">
         <h3>How should vulnerabilities be reported?</h3>
@@ -272,9 +285,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -292,6 +304,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>

@@ -1,5 +1,5 @@
 # VERAQIS public-beta release artifact checksums
-# Windows Recovery and ColdPass artifacts were withdrawn on 2026-07-19 pending clean rebuilds.
+# VERAQIS is Android-only: VERAQIS Archiver (free) and VERAQIS Recovery Pro (in development).
 # Verify from this directory:
 #   sha256sum -c SHA256SUMS.txt
 #   CertUtil -hashfile VERAQIS-Archiver-Android-1.7.0-rc1.apk SHA256

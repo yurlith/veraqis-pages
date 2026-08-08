@@ -6,14 +6,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Download VERAQIS — signed Android APK + checksum</title>
-<meta name="description" content="Download the signed VERAQIS Archiver Android APK. Windows Recovery and ColdPass packages are temporarily withdrawn pending clean rebuilds." />
+<meta name="description" content="Download the signed VERAQIS Archiver Android APK, free. VERAQIS Recovery Pro is in development — not yet publicly downloadable, no test build available." />
 <link rel="canonical" href="https://veraqis.tech/download.html" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="Download / Beta Access | VERAQIS" />
-<meta property="og:description" content="Download the signed VERAQIS Archiver APK. Windows packages are temporarily withdrawn for clean rebuilds." />
+<meta property="og:title" content="Download / Android Access | VERAQIS" />
+<meta property="og:description" content="Download the signed VERAQIS Archiver APK, free. Recovery Pro is in development, no test build available." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -21,8 +21,8 @@
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
 <meta property="og:url" content="https://veraqis.tech/download.html" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Download / Beta Access | VERAQIS" />
-<meta name="twitter:description" content="Download the signed VERAQIS Archiver APK. Windows packages are temporarily withdrawn for clean rebuilds." />
+<meta name="twitter:title" content="Download / Android Access | VERAQIS" />
+<meta name="twitter:description" content="Download the signed VERAQIS Archiver APK, free. Recovery Pro is in development, no test build available." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -34,7 +34,7 @@
       "name": "VERAQIS",
       "url": "https://veraqis.tech/",
       "logo": "https://veraqis.tech/assets/favicon.svg",
-      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+      "description": "VERAQIS builds proof-first, offline-first Android archive tools."
     },
     {
       "@type": "WebSite",
@@ -50,8 +50,8 @@
       "@type": "WebPage",
       "@id": "https://veraqis.tech/download.html#webpage",
       "url": "https://veraqis.tech/download.html",
-      "name": "Download / Beta Access",
-      "description": "Download the signed VERAQIS Archiver Android APK. Windows Recovery and ColdPass packages are temporarily withdrawn pending clean rebuilds.",
+      "name": "Download / Android Access",
+      "description": "Download the signed VERAQIS Archiver Android APK, free. VERAQIS Recovery Pro is in development — not yet publicly downloadable, no test build available.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-08-06",
       "inLanguage": "en"
     },
     {
@@ -80,7 +80,7 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "Download and Beta Access",
+          "name": "Download",
           "item": "https://veraqis.tech/download.html"
         }
       ]
@@ -115,31 +115,23 @@
           "name": "What can be downloaded today?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The current public-beta download set contains only the release-key-signed VERAQIS Archiver APK. VERAQIS Recovery for Windows is not publicly downloadable yet (signed store release pending; no unsigned build is published). The Linux CLI is in private beta and ColdPass is an archived project."
+            "text": "Only the release-key-signed VERAQIS Archiver APK. VERAQIS Recovery Pro is in development — no public APK, no test build and no Google Play listing exist yet."
           }
         },
         {
           "@type": "Question",
-          "name": "Are these production-signed releases?",
+          "name": "Is this a production-signed release?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The available Android APK is signed with the permanent VERAQIS Archiver release key. No Windows artifact is currently offered."
+            "text": "The available Android APK is signed with the permanent VERAQIS Archiver release key."
           }
         },
         {
           "@type": "Question",
-          "name": "Is a macOS CLI download included?",
+          "name": "Is VERAQIS available for any platform other than Android?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No macOS CLI artifact is produced by the current Windows and WSL local-only release process."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Are Android builds included here?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. The release-key-signed VERAQIS Archiver APK can be downloaded directly from this page."
+            "text": "No. VERAQIS is Android-only. There is no active desktop, CLI or other-platform download on this site."
           }
         }
       ],
@@ -164,12 +156,12 @@
       </a>
       <span class="pill beta">beta</span>
       <div class="links">
-        <a href="/recovery.html">Recovery</a>
-        <a href="/mobile.html">Android</a>
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
         <a href="/guides/">Guides</a>
-        <a href="/research/">Research</a>
-        <a href="/docs.html">Docs</a>
-        <a href="/download.html">Download</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/">Formats</a>
+        <a href="/download.html" class="active">Download</a>
       </div>
     </nav>
   </div>
@@ -181,14 +173,14 @@
   <div class="wrap">
     <div class="crumb"><a href="/">VERAQIS</a> / Download</div>
     <h1>Downloads &amp; release status</h1>
-    <p class="lead">The single source of truth for what you can install today. The only public download is
-      the signed Android Archiver APK. VERAQIS Recovery for Windows is not publicly downloadable yet — a
-      signed release (Microsoft Store) is pending, and no unsigned Windows build is published. The Linux
-      CLI is in private beta and ColdPass is archived.</p>
+    <p class="lead">The single source of truth for what you can install today. VERAQIS is
+      Android-only: the only public download is the signed VERAQIS Archiver APK. VERAQIS Recovery
+      Pro is in development — no public package, no test build, no Play listing yet.</p>
     <p class="note mt-14">Looking for help with a damaged file rather than an installer? Read
-      <a href="/recovery.html">how verified ZIP recovery works</a>, or go straight to the guide for
-      <a href="/guides/central-directory-not-found/">end of central directory not found</a> or
-      <a href="/guides/zip-crc-error/">CRC failed</a>. No install is needed to diagnose.</p>
+      <a href="/android/recovery-pro/">how VERAQIS Recovery Pro works</a>, or go straight to the
+      guide for <a href="/guides/central-directory-not-found/">end of central directory not
+      found</a> or <a href="/guides/zip-crc-error/">CRC failed</a>. No install is needed to
+      diagnose.</p>
   </div>
 </div>
 
@@ -196,91 +188,48 @@
 <section>
   <div class="wrap">
     <h2 class="mt-0">Available now</h2>
-    <p class="sub">One public download: the signed VERAQIS Archiver for Android. No Windows binary is
-      offered — VERAQIS deliberately does not publish an unsigned Windows build.</p>
+    <p class="sub">One public download: the signed VERAQIS Archiver for Android.</p>
     <div class="card">
       <p class="mb-10"><span class="status status--available">Available — release-key signed</span></p>
       <h3 class="mb-6">VERAQIS Archiver <span class="mut fw-400">· Android APK</span></h3>
-      <p>Scan an archive before opening it, then list and extract safely into a folder you choose.
-        Android 8.0+ · version <span class="mono">1.7.0-rc1</span> · free · offline · no telemetry.</p>
+      <p>Open, inspect and extract archives safely. Android 8.0+ · version
+        <span class="mono">1.7.0-rc1</span> · free · offline · no telemetry.</p>
       <div class="cta cta-start">
         <a class="btn primary" href="downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk" download>Download signed Android APK (.apk)</a>
         <a class="btn ghost" href="downloads/SHA256SUMS.txt" download>Checksums (SHA-256)</a>
       </div>
     </div>
     <p class="note mt-12">Android may ask you to allow installation from your browser
-      or file manager. The APK package name is <code>tech.veraqis.archiver</code>.</p>
+      or file manager. The APK package name is <code>tech.veraqis.archiver</code>. The release is
+      <span class="mono">1.7.0-rc1</span>; the APK's embedded Android build identifier is
+      <span class="mono">1.7.0-veraqis-rc1</span> — a different string by design, not a
+      mismatch.</p>
   </div>
 </section>
 
-<!-- 2 · TEMPORARILY WITHDRAWN -->
+<!-- 2 · RECOVERY PRO: IN DEVELOPMENT -->
 <section class="band">
   <div class="wrap">
-    <h2>Not publicly downloadable yet</h2>
-    <p class="sub">These are not offered as public downloads right now. VERAQIS Recovery for Windows will
-      return only as a properly signed release; the Linux CLI is in private beta; ColdPass is an archived
-      project. Do not install or redistribute previously downloaded copies as a current VERAQIS release.</p>
-    <div class="grid g3">
-      <div class="card">
-        <p class="mb-10"><span class="status status--experimental">Store release pending</span></p>
-        <h3 class="mb-6">VERAQIS Recovery — Windows (Desktop + CLI)</h3>
-        <p>The commercial recovery product. It will be published only as a signed package (Microsoft
-          Store or an approved signing workflow) — never as an unsigned download. Analysis will be free;
-          you pay only to save the recovered result.</p>
-        <p class="note">No public Windows binary is distributed today.</p>
-        <div class="cta mt-8">
-          <a class="btn ghost" href="desktop.html">View release status</a>
-          <a class="btn ghost" href="contact.html">Join beta</a>
-        </div>
-      </div>
-      <div class="card">
-        <p class="mb-10"><span class="status status--pending">Private beta</span></p>
-        <h3 class="mb-6">VERAQIS Recovery CLI — Linux</h3>
-        <p>The Linux x86_64 build is a Technician-tier capability, rebuilt from the exact tagged commit
-          and kept in private beta until a signed release process is ready.</p>
-        <p class="note">Not publicly distributed.</p>
-        <div class="cta mt-8"><a class="btn ghost" href="docs.html">Read CLI documentation</a></div>
-      </div>
-      <div class="card">
-        <p class="mb-10"><span class="status status--withdrawn">Archived</span></p>
-        <h3 class="mb-6">ColdPass</h3>
-        <p>Archived experimental project. No active public release or development; source and history are
-          preserved.</p>
-        <p class="note">No download.</p>
-        <div class="cta mt-8"><a class="btn ghost" href="coldpass.html">View archived project</a></div>
-      </div>
+    <h2>Recovery Pro — in development</h2>
+    <p class="sub">VERAQIS Recovery Pro is not offered as a public download. There is no APK, no
+      test build and no Google Play listing to install today.</p>
+    <div class="card">
+      <p class="mb-10"><span class="status status--in-development">In development</span></p>
+      <h3 class="mb-6">VERAQIS Recovery Pro <span class="mut fw-400">· Android, planned</span></h3>
+      <p>A specialised Android recovery app being built for ZIP archives that no longer open or
+        extract correctly. Planned recovery scope: missing EOCD, damaged central directory, CRC-32
+        verification and more — see the <a href="/android/recovery-pro/">Recovery Pro page</a> for
+        the full, honest scope and what is already proven at the engine level today.</p>
+      <p class="note">Planned launch price: &euro;9.99 one-time (hypothesis, not a live offer). No
+        checkout or test build is available.</p>
+      <p class="mt-8"><a href="/android/recovery-pro/">Learn about Recovery Pro</a> ·
+        <a href="/contact.html#recovery-pro-interest">Register interest</a></p>
     </div>
   </div>
 </section>
 
-<!-- 3 · PLANNED PLATFORMS -->
+<!-- 3 · VERIFY THE ANDROID DOWNLOAD -->
 <section>
-  <div class="wrap">
-    <h2>Planned platforms</h2>
-    <div class="card table-scroll">
-      <table>
-        <thead><tr><th scope="col">Target</th><th scope="col">Platform</th><th scope="col">Status</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="f">VERAQIS Recovery CLI</td>
-            <td>macOS</td>
-            <td><span class="status status--unavailable">CI build target — not a release</span></td>
-          </tr>
-          <tr>
-            <td class="f">Production-signed desktop releases</td>
-            <td>Windows / macOS / Linux</td>
-            <td><span class="status status--pending">Planned after signing review</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note mt-12">A CI build target is not a release. Public packages are
-      published only after clean builds, functional tests, release-content inspection and signing review.</p>
-  </div>
-</section>
-
-<!-- 4 · VERIFY THE ANDROID DOWNLOAD -->
-<section class="band">
   <div class="wrap">
     <h2>Verify the Android download</h2>
     <p class="sub">Check the APK against its published SHA-256 before you install it.</p>
@@ -294,17 +243,6 @@
   </div>
 </section>
 
-<!-- 5 · WHY PACKAGES MAY BE WITHDRAWN -->
-<section>
-  <div class="wrap">
-    <h2>Why packages may be withheld</h2>
-    <p class="sub">VERAQIS Recovery will return only as a fresh, signed, reviewed artifact; ColdPass is
-      archived and will not return as a new binary. Withholding a package is a safety step, not a claim
-      that a previous file was harmful.</p>
-    <p class="note">Product source and development repositories are not distributed through this website.</p>
-  </div>
-</section>
-
 <section>
   <div class="wrap">
     <h2>Download questions</h2>
@@ -312,23 +250,17 @@
     <div class="faq">
       <div class="qa">
         <h3>What can be downloaded today?</h3>
-        <p>The current public-beta download set contains only the release-key-signed VERAQIS Archiver
-          APK. VERAQIS Recovery for Windows is not publicly downloadable yet (a signed store release is
-          pending; no unsigned build is published). The Linux CLI is in private beta and ColdPass is an
-          archived project.</p>
+        <p>Only the release-key-signed VERAQIS Archiver APK. VERAQIS Recovery Pro is in
+          development — no public APK, no test build and no Google Play listing exist yet.</p>
       </div>
       <div class="qa">
-        <h3>Are these production-signed releases?</h3>
-        <p>The available Android APK is signed with the permanent VERAQIS Archiver release key. No
-          Windows artifact is currently offered.</p>
+        <h3>Is this a production-signed release?</h3>
+        <p>The available Android APK is signed with the permanent VERAQIS Archiver release key.</p>
       </div>
       <div class="qa">
-        <h3>Is a macOS CLI download included?</h3>
-        <p>No macOS CLI artifact is produced by the current Windows and WSL local-only release process.</p>
-      </div>
-      <div class="qa">
-        <h3>Are Android builds included here?</h3>
-        <p>Yes. Download the release-key-signed VERAQIS Archiver APK directly from this page.</p>
+        <h3>Is VERAQIS available for any platform other than Android?</h3>
+        <p>No. VERAQIS is Android-only. There is no active desktop, CLI or other-platform download
+          on this site.</p>
       </div>
     </div>
   </div>
@@ -337,7 +269,8 @@
 <section>
   <div class="wrap">
     <h2>Beta feedback</h2>
-    <p class="sub">Want access details, support, or to report a security issue? Reach out privately.</p>
+    <p class="sub">Want support, to report a security issue, or to register interest in Recovery
+      Pro? Reach out privately.</p>
     <div class="cta">
       <a class="btn primary" href="contact.html">Contact support</a>
       <a class="btn ghost" href="docs.html">Read the docs</a>
@@ -365,9 +298,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
-        <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
-        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
         <a href="/download.html">Downloads &amp; release status</a>
         <a href="/pricing.html">Pricing</a>
       </div>
@@ -385,6 +317,7 @@
         <a href="/about.html">About VERAQIS</a>
         <a href="/contact.html">Contact / Support</a>
         <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
         <a href="/changelog.html">Changelog</a>
       </div>
     </div>
