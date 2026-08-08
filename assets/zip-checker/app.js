@@ -223,6 +223,11 @@ const DIAGNOSIS_TEXT = {
     what: 'The structure is consistent and every entry that could be checked matched its stored checksum.',
     next: 'No action needed.',
   },
+  SELF_EXTRACTING: {
+    title: 'A self-extracting archive, assembled correctly',
+    what: 'The file does not start with a ZIP signature because a program is attached in front of the archive — and every offset in the index already accounts for it. That is how a self-extracting archive is supposed to be built, and it is what tells this file apart from one that had bytes glued on afterwards.',
+    next: 'Nothing to fix. Treat the verdict below as the answer about the archive itself; the leading program is not part of what was checked and was not run.',
+  },
   CONTENT_CORRUPT: {
     title: 'The stored data is corrupted',
     what: 'The archive structure is readable, but the bytes of one or more entries no longer match the checksum recorded for them. Something altered the contents after the archive was written.',
@@ -232,6 +237,11 @@ const DIAGNOSIS_TEXT = {
     title: 'The file is incomplete',
     what: 'Entries declare more data than the file actually contains — the archive was cut short, most often by an interrupted download, copy or disk write.',
     next: 'Re-download or re-copy the file if you can; a complete copy will simply work. Entries that lie entirely within the surviving bytes are still readable.',
+  },
+  HEAD_TRUNCATED: {
+    title: 'The beginning of the file is missing',
+    what: 'The index survived and proves how many bytes are gone from the front: every offset it records is exactly that much further along than where the data now sits. Entries that lived entirely in the lost region are gone with it.',
+    next: 'Re-download or re-copy the file if a complete one exists. Failing that, entries whose data starts after the cut are still present and readable by a tool that rescans rather than trusting the index.',
   },
   INDEX_MISSING: {
     title: 'The index is missing — the data is not',
@@ -244,9 +254,14 @@ const DIAGNOSIS_TEXT = {
     next: 'Entries were cross-checked against the local headers found in the file itself. Treat anything verified below as sound regardless of the index.',
   },
   PREPENDED_DATA: {
+    title: 'Bytes were added in front of a finished archive',
+    what: 'The file does not start with a ZIP signature, and its index still describes where the entries were before those bytes arrived. Every offset inside is now short by the same amount, which is why tools follow them and land on the wrong data.',
+    next: 'The evidence below gives the exact number of bytes. Removing that many from the front, or opening the file with a tool that rescans instead of trusting the index, restores normal access — the entries themselves were not touched.',
+  },
+  UNIDENTIFIED_HEADER: {
     title: 'Something is attached before the archive',
-    what: 'The file does not start with a ZIP signature. That is normal for self-extracting archives, and it is also what a corrupted or wrongly-joined header looks like.',
-    next: 'If this was meant to be a self-extracting archive, it is probably fine. Otherwise the leading bytes may be junk that a tool prepended by mistake.',
+    what: 'The file does not start with a ZIP signature, and what the leading bytes are could not be established: they match neither a stub the archive was built around nor a clean shift of every offset by the same amount.',
+    next: 'If this was meant to be a self-extracting archive it may still work in the tool that made it. Otherwise treat the leading bytes as junk — the entries below were read from the archive structure itself and are unaffected by whatever precedes it.',
   },
   ENCRYPTED: {
     title: 'Some entries are encrypted',

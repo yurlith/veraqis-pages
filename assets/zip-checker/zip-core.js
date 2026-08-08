@@ -57,17 +57,56 @@ export const LIMITS = {
  */
 export const DIAGNOSIS = {
   INTACT: 'INTACT',
+  SELF_EXTRACTING: 'SELF_EXTRACTING',
   CONTENT_CORRUPT: 'CONTENT_CORRUPT',
   TRUNCATED: 'TRUNCATED',
+  HEAD_TRUNCATED: 'HEAD_TRUNCATED',
   INDEX_DAMAGED: 'INDEX_DAMAGED',
   INDEX_MISSING: 'INDEX_MISSING',
   PREPENDED_DATA: 'PREPENDED_DATA',
+  UNIDENTIFIED_HEADER: 'UNIDENTIFIED_HEADER',
   ENCRYPTED: 'ENCRYPTED',
   UNSUPPORTED_METHOD: 'UNSUPPORTED_METHOD',
   ZIP64_UNUSABLE: 'ZIP64_UNUSABLE',
   NOT_A_ZIP: 'NOT_A_ZIP',
   EMPTY: 'EMPTY',
 };
+
+/**
+ * What the leading bytes of a file that does not start with a ZIP signature actually are.
+ *
+ * The signature check alone cannot tell, and for years this tool did not claim to: a
+ * self-extracting archive and a corrupted header both fail it. The distinction is
+ * structural — every surviving central-directory record either agrees on ONE offset shift
+ * or it does not, because a stub moves the whole archive by its own length while damage is
+ * not a translation.
+ *
+ * `prepend` is that measurement, taken by the Rust engine (see prepend-probe.js). There are
+ * four outcomes, not two, and each calls for a different sentence:
+ *
+ *  - `SFX`         shift 0 — the offsets already point where the data is. The stub was
+ *                  accounted for when the archive was built. Not a fault.
+ *  - `PREPENDED`   shift > 0 — bytes were added to an archive that was already finished,
+ *                  so its index was never rewritten. This is the state worth reporting.
+ *  - `HEAD_LOST`   shift < 0 — bytes are missing from the front; the index survived them.
+ *  - `UNEXPLAINED` no single shift fits, or the probe could not run. Says so, claims nothing.
+ */
+const LEADING = { SFX: 'SFX', PREPENDED: 'PREPENDED', HEAD_LOST: 'HEAD_LOST', UNEXPLAINED: 'UNEXPLAINED' };
+
+function leadingBytesState(prepend, warnings) {
+  // A proven non-zero shift stands on its own evidence and needs no help from the
+  // signature check. It has to: bytes removed from the head can land exactly on a local
+  // header, leaving a file that *does* start with a ZIP signature and still has every
+  // offset in its index wrong by the same amount.
+  if (prepend && prepend.attempted === true && prepend.proven && prepend.shiftBytes !== 0) {
+    return prepend.shiftBytes > 0 ? LEADING.PREPENDED : LEADING.HEAD_LOST;
+  }
+  // Everything else here is about a file whose first bytes are not a ZIP signature. With
+  // the signature where it belongs and no shift proven, there is nothing to explain.
+  if (!warnings.some((w) => /prepended|does not begin with a ZIP signature/.test(w))) return null;
+  if (!prepend || prepend.attempted !== true || !prepend.proven) return LEADING.UNEXPLAINED;
+  return LEADING.SFX;
+}
 
 export const METHOD_NAMES = {
   0: 'Stored', 1: 'Shrunk', 6: 'Imploded', 8: 'Deflate', 9: 'Deflate64',
@@ -85,8 +124,10 @@ export const METHOD_NAMES = {
  * because corrupted content is a worse fact about the data than a missing table of
  * contents, even though the missing index looks more alarming in a file manager.
  */
-export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64 }) {
+export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64, prepend }) {
   const evidence = [];
+  const leading = leadingBytesState(prepend, warnings);
+  const plural = (n) => (n === 1 ? 'y' : 'ies');
   const truncatedEntries = entries.filter((e) =>
     (e.reasons || []).some((r) => /past the end of the file|is truncated/.test(r)));
   const encrypted = entries.filter((e) => e.encrypted);
@@ -99,12 +140,41 @@ export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings
   const unsupported = entries.filter((e) =>
     !e.encrypted && e.crcChecked === false && !DECODABLE.has(e.method));
 
+  // A checksum that failed on data actually read is the one fact a proven offset shift
+  // cannot explain away, so it is what separates the two branches below.
+  const crcFailures = entries.filter((e) => e.crcChecked && !e.crcOk);
+  const shiftProven = leading === LEADING.PREPENDED || leading === LEADING.HEAD_LOST;
+
   let code;
   if (entries.length === 0) {
     code = eocd.found && eocd.entriesTotal === 0 ? DIAGNOSIS.EMPTY : DIAGNOSIS.NOT_A_ZIP;
+  } else if (shiftProven && crcFailures.length === 0) {
+    // A measured shift outranks everything below that the shift itself accounts for: an
+    // entry whose local header is not at the declared offset, an index that looks damaged,
+    // an offset that points past the end of the file. Those are one fact — the archive
+    // moved and its index did not — and reporting them as content damage is exactly how a
+    // self-extracting archive used to be called corrupt here.
+    if (leading === LEADING.PREPENDED) {
+      code = DIAGNOSIS.PREPENDED_DATA;
+      evidence.push(`${prepend.shiftBytes} bytes sit in front of an archive that was already finished`);
+      evidence.push('every entry moved by exactly that much, and the index was never rewritten to match');
+      evidence.push(`${prepend.supported} of ${prepend.records} directory record${prepend.records === 1 ? '' : 's'} confirmed against the local header it points to`);
+    } else {
+      code = DIAGNOSIS.HEAD_TRUNCATED;
+      evidence.push(`${-prepend.shiftBytes} bytes are missing from the start of the file`);
+      evidence.push(`the index survived and still describes ${prepend.records} entr${plural(prepend.records)}`);
+    }
   } else if (counts.damaged > 0 && truncatedEntries.length === 0) {
     code = DIAGNOSIS.CONTENT_CORRUPT;
-    evidence.push(`${counts.damaged} entr${counts.damaged === 1 ? 'y' : 'ies'} failed a CRC-32 check`);
+    // `counts.damaged` also holds entries that could not be located at all, which never
+    // reached a checksum. Saying they "failed a CRC-32 check" would be a claim the tool
+    // never made a measurement for.
+    if (crcFailures.length === counts.damaged) {
+      evidence.push(`${counts.damaged} entr${plural(counts.damaged)} failed a CRC-32 check`);
+    } else {
+      evidence.push(`${counts.damaged} entr${plural(counts.damaged)} could not be confirmed intact`);
+      if (crcFailures.length) evidence.push(`${crcFailures.length} of them failed a CRC-32 check`);
+    }
   } else if (truncatedEntries.length > 0) {
     code = DIAGNOSIS.TRUNCATED;
     evidence.push(`${truncatedEntries.length} entr${truncatedEntries.length === 1 ? 'y' : 'ies'} declare data past the end of the file`);
@@ -132,21 +202,37 @@ export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings
     const methods = [...new Set(unsupported.map((e) => e.methodName).filter(Boolean))];
     evidence.push(`${unsupported.length} entr${unsupported.length === 1 ? 'y' : 'ies'} use a method this check does not decode`);
     if (methods.length) evidence.push(methods.join(', '));
-  } else if (warnings.some((w) => /prepended|does not begin with a ZIP signature/.test(w))) {
-    code = DIAGNOSIS.PREPENDED_DATA;
+  } else if (leading === LEADING.SFX) {
+    code = DIAGNOSIS.SELF_EXTRACTING;
     evidence.push('the file does not begin with a ZIP signature');
+    evidence.push('every central-directory offset already points where its data actually is, so the leading bytes were part of the archive when it was built');
+    const first = entries.find((e) => typeof e.localHeaderOffset === 'number' && e.localHeaderOffset > 0);
+    if (first) evidence.push(`the archive body starts ${first.localHeaderOffset} bytes into the file`);
+  } else if (leading === LEADING.UNEXPLAINED) {
+    code = DIAGNOSIS.UNIDENTIFIED_HEADER;
+    evidence.push('the file does not begin with a ZIP signature');
+    if (!prepend || prepend.attempted !== true) {
+      evidence.push(`what the leading bytes are was not measured${prepend && prepend.reason ? ` — ${prepend.reason}` : ''}`);
+    } else {
+      evidence.push('no single offset shift explains the surviving directory records, so the leading bytes are not a stub the archive was built around');
+      if (prepend.rejection) evidence.push(prepend.rejection);
+    }
   } else {
     code = DIAGNOSIS.INTACT;
   }
 
   // Whether the DATA is believed intact, independently of the structure. This is the
   // distinction the whole feature exists to make.
+  // SELF_EXTRACTING belongs here and HEAD_TRUNCATED does not: a stub the archive was built
+  // around costs nothing, while bytes missing from the front are bytes that are gone.
   const dataLooksIntact = code === DIAGNOSIS.INTACT
+    || code === DIAGNOSIS.SELF_EXTRACTING
     || code === DIAGNOSIS.ENCRYPTED
     || code === DIAGNOSIS.UNSUPPORTED_METHOD
     || code === DIAGNOSIS.INDEX_MISSING
     || code === DIAGNOSIS.INDEX_DAMAGED
-    || code === DIAGNOSIS.PREPENDED_DATA;
+    || code === DIAGNOSIS.PREPENDED_DATA
+    || code === DIAGNOSIS.UNIDENTIFIED_HEADER;
 
   return { code, evidence, dataLooksIntact, verifiedEntries: counts.verified, totalEntries: entries.length };
 }
@@ -555,6 +641,7 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
   let cdStatus = 'MISSING';
   let scan = { found: [], capped: false };
   let entries = [];
+  let prepend = null;
   let counts = { total: 0, verified: 0, structurallyValid: 0, potentiallyRecoverable: 0, damaged: 0, unknown: 0 };
   let recoverableBytes = 0;
   let crcCoverage = 0;
@@ -820,7 +907,31 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
   // must not read as a claim about the product as a whole.
   limitations.push('This analysis does not extract, repair or modify the archive. Extraction, where offered, is a separate action you choose.');
 
-  return finish({ verdict, diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64 }) });
+  /* ---- what the leading bytes are ---- */
+  // Two situations are worth the whole-file read this costs, and no others. A file that
+  // does not begin with a ZIP signature: something is in front of the archive and only a
+  // shift measurement says what. And an index that would not resolve: "the central
+  // directory could not be read" is what a shifted archive looks like from the inside, so
+  // the probe is what turns that into a cause. An ordinary archive that parses cleanly
+  // never gets here, and never loads the engine.
+  //
+  // The core stays plain JavaScript with no engine of its own: `options.probePrepended` is
+  // how the worker hands the Rust measurement in, and without it the analysis is exactly
+  // what it was before.
+  const indexUnresolved = cdStatus !== 'OK' || (cd && cd.truncated);
+  if (eocd.found && (!looksZip || indexUnresolved) && typeof options.probePrepended === 'function') {
+    throwIfAborted(signal);
+    onProgress({ phase: 'leading-bytes', done: 0, total: 1 });
+    try {
+      prepend = await options.probePrepended(reader);
+    } catch (e) {
+      if (e && e.name === 'AbortError') throw e;
+      // A probe that fails must not fail the analysis it was meant to sharpen.
+      prepend = { attempted: false, reason: String((e && e.message) || e).slice(0, 200) };
+    }
+  }
+
+  return finish({ verdict, diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64, prepend }) });
 
   function finish(extra) {
     return {
@@ -847,6 +958,11 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
         errors: cd.errors,
       },
       localHeaderScan: { candidatesFound: scan ? scan.found.length : 0, capped: scan ? scan.capped : false },
+      // null when nothing was measured — no probe was supplied, or the archive parsed
+      // cleanly from a proper ZIP signature and there was nothing to explain. Always
+      // present as a field, so a reader can tell "never asked" from "asked and found
+      // nothing" (`attempted: true` with no proven shift).
+      prepend,
       counts,
       recoverableBytes,
       crcCoverage: Number(crcCoverage.toFixed(4)),
