@@ -11,6 +11,14 @@
 // Reader contract:
 //   { size: number, read(offset, length) -> Promise<Uint8Array> }
 //   `read` must clamp to the file end and may return fewer bytes than requested.
+//
+// The one import is `format-id.js` — pure data and pure functions, no DOM, no network,
+// nothing to instantiate — and it is GENERATED from the recovery engine's own magic-byte
+// table (crates/phx_format_id). It is imported rather than embedded so that "this is not a
+// ZIP, it is a RAR" is the same judgement the engine would make, not a second opinion this
+// file invented.
+
+import { identification, REQUIRED_PREFIX, FORMATS } from './format-id.js';
 
 /* ---------------------------------------------------------------- constants */
 
@@ -57,6 +65,7 @@ export const LIMITS = {
  */
 export const DIAGNOSIS = {
   INTACT: 'INTACT',
+  OTHER_FORMAT: 'OTHER_FORMAT',
   SELF_EXTRACTING: 'SELF_EXTRACTING',
   CONTENT_CORRUPT: 'CONTENT_CORRUPT',
   TRUNCATED: 'TRUNCATED',
@@ -124,7 +133,7 @@ export const METHOD_NAMES = {
  * because corrupted content is a worse fact about the data than a missing table of
  * contents, even though the missing index looks more alarming in a file manager.
  */
-export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64, prepend }) {
+export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64, prepend, format }) {
   const evidence = [];
   const leading = leadingBytesState(prepend, warnings);
   const plural = (n) => (n === 1 ? 'y' : 'ies');
@@ -145,9 +154,33 @@ export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings
   const crcFailures = entries.filter((e) => e.crcChecked && !e.crcOk);
   const shiftProven = leading === LEADING.PREPENDED || leading === LEADING.HEAD_LOST;
 
+  const label = (id) => (FORMATS[id] && FORMATS[id].label) || id;
+
   let code;
   if (entries.length === 0) {
-    code = eocd.found && eocd.entriesTotal === 0 ? DIAGNOSIS.EMPTY : DIAGNOSIS.NOT_A_ZIP;
+    if (eocd.found && eocd.entriesTotal === 0) {
+      code = DIAGNOSIS.EMPTY;
+    } else if (format && format.byContent && format.byContent !== 'zip') {
+      // The file is not broken, it is something else. Saying "no ZIP structure was found"
+      // here is true and useless; naming what the bytes actually are is the whole answer,
+      // and it is why the format table is consulted for every file rather than only for
+      // the ones that fail.
+      code = DIAGNOSIS.OTHER_FORMAT;
+      evidence.push(`the file's own signature identifies it as a ${label(format.byContent)}`);
+      if (format.agreement === 'mismatch') {
+        evidence.push(`its name claims a ${label(format.byName)} — the name is wrong, the bytes are not`);
+      }
+    } else {
+      code = DIAGNOSIS.NOT_A_ZIP;
+      if (format && format.agreement === 'name-only') {
+        // The most informative shape there is: named like an archive, with nothing at the
+        // start to confirm it. That is what a destroyed header looks like.
+        evidence.push(`named like a ${label(format.byName)}, but no signature of that format is present`);
+        evidence.push('a destroyed or overwritten header looks exactly like this');
+      } else {
+        evidence.push('the first bytes match no format this tool can name');
+      }
+    }
   } else if (shiftProven && crcFailures.length === 0) {
     // A measured shift outranks everything below that the shift itself accounts for: an
     // entry whose local header is not at the declared offset, an index that looks damaged,
@@ -629,9 +662,16 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
   throwIfAborted(signal);
   onProgress({ phase: 'start', done: 0, total: 1 });
 
-  const head = await reader.read(0, 4);
+  // One bounded prefix read serves both questions: the ZIP signature at offset 0, and the
+  // format table, whose furthest rule is ISO 9660's descriptor at 32769.
+  const head = await reader.read(0, Math.min(REQUIRED_PREFIX, reader.size));
   const headSig = head.length >= 4 ? u32(head, 0) : 0;
   const looksZip = headSig === SIG.LFH || headSig === SIG.EOCD || headSig === SIG.CDH || headSig === 0x08074b50;
+
+  // What the file is, and separately what its name claims. Never merged: a RAR named .zip
+  // and a .zip whose header was destroyed both fail every ZIP check, and the advice for
+  // them is opposite.
+  const format = identification(head, options.fileName || '');
 
   // All state `finish()` reads is declared before the first early return, so an
   // early exit cannot hit a temporal dead zone.
@@ -659,6 +699,7 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
     return finish({
       verdict: 'NOT_A_ZIP',
       reason: 'no ZIP signature at the start of the file and no end-of-central-directory record',
+      diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64, prepend, format }),
     });
   }
   if (!looksZip && eocd.found) {
@@ -931,7 +972,7 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
     }
   }
 
-  return finish({ verdict, diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64, prepend }) });
+  return finish({ verdict, diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64, prepend, format }) });
 
   function finish(extra) {
     return {
@@ -942,6 +983,9 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
         name: options.fileName || null,
         size: reader.size,
         startsWithZipSignature: looksZip,
+        // What the bytes say and what the name claims, never merged. `agreement` is one of
+        // match / mismatch / content-only / name-only / unknown — see format-id.js.
+        format,
       },
       eocd: eocd.found
         ? {

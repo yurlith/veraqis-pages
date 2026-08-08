@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>How to tell what a file actually is | VERAQIS</title>
+<meta name="description" content="The magic-byte signatures of twelve archive and document formats, where each sits, and why a file extension is a claim rather than an answer." />
+<link rel="canonical" href="https://veraqis.tech/formats/identification/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="How to tell what a file actually is" />
+<meta property="og:description" content="Twelve formats, their signatures and offsets, and the difference between a renamed file and a damaged one." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/formats/identification/" />
+<meta property="article:published_time" content="2026-08-08" />
+<meta property="article:modified_time" content="2026-08-08" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="How to tell what a file actually is" />
+<meta name="twitter:description" content="Twelve formats, their signatures and offsets, and the difference between a renamed file and a damaged one." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/formats/identification/#article",
+      "url": "https://veraqis.tech/formats/identification/",
+      "headline": "Identifying a file: what its bytes say, and what its name claims",
+      "name": "How to tell what a file actually is | VERAQIS",
+      "description": "The magic-byte signatures of twelve archive and document formats, where each sits, and why a file extension is a claim rather than an answer.",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-08-08",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Beginner",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "file format"
+        },
+        {
+          "@type": "Thing",
+          "name": "magic bytes"
+        },
+        {
+          "@type": "Thing",
+          "name": "file signature"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/formats/identification/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Formats",
+          "item": "https://veraqis.tech/formats/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Identification",
+          "item": "https://veraqis.tech/formats/identification/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/android/archiver/">Archiver</a>
+        <a href="/android/recovery-pro/">Recovery Pro</a>
+        <a href="/guides/">Guides</a>
+        <a href="/tools/">Tools</a>
+        <a href="/formats/" class="active">Formats</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/formats/">Formats</a></p>
+    <p class="kicker">Format reference</p>
+    <h1>Identifying a file: what its bytes say, and what its name claims</h1>
+    <p class="lead">A file extension is metadata a person can type. The bytes are what every program actually reads. When those two disagree — and they disagree constantly — the difference between "this was renamed" and "this is damaged" is the whole diagnosis, and no amount of looking at the name will produce it.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-08-08">8 August 2026</time></span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="two-questions">Two questions, never one</h2>
+      <p>Most tools answer "what is this file?" with a single value, folding the extension in as a fallback when the content is unreadable. That is the right thing to do when the answer feeds <em>recovery</em>: a <code>.zip</code> whose header was destroyed must still be routed to ZIP recovery, or its damage disappears behind a cheerful "unknown file, nothing wrong here".</p>
+      <p>It is the wrong thing to do when the answer is shown to a person. Folded together, a RAR someone renamed and a ZIP whose first bytes were overwritten produce the same sentence — and they need opposite advice. So the two questions are kept apart everywhere in this project, and reported as a pair.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">bytes say</th><th scope="col">name says</th><th scope="col">what that means</th><th scope="col">what to do</th></tr></thead><tbody><tr><td>a format</td><td>the same format</td><td>ordinary agreement</td><td>nothing</td></tr><tr><td>a format</td><td>a different one</td><td>the file was renamed — the <em>name</em> is wrong, the file is fine</td><td>open it with a tool for what the bytes say</td></tr><tr><td>a format</td><td>nothing recognisable</td><td>no extension, or an unfamiliar one</td><td>nothing — the bytes are enough</td></tr><tr><td>nothing</td><td>a format</td><td>the most informative case: named like an archive with no signature to confirm it. <strong>This is what a destroyed header looks like.</strong></td><td>treat it as damaged, not as a wrong extension</td></tr><tr><td>nothing</td><td>nothing</td><td>genuinely unidentified</td><td>check the file is what you think it is</td></tr></tbody></table></div>
+      <div class="callout">Content always wins. A guess taken from a file name is never reported as a fact about the bytes — if the signature is absent, the page and the tool both say so in those words.</div>
+      <h2 id="signatures">The signatures</h2>
+      <p>Each format stamps a fixed byte sequence at a fixed place. Most sit at offset 0; two do not, which is why identification needs a prefix of the file rather than a handful of bytes. The table below is generated from the same rules the tools run, so it cannot drift from them.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">format</th><th scope="col">signature (hex)</th><th scope="col">as text</th><th scope="col">offset</th><th scope="col">usual extensions</th></tr></thead><tbody><tr><td><strong>ZIP archive</strong></td><td>50 4B 03&lt;br&gt;50 4B 05&lt;br&gt;50 4B 07</td><td>PK·&lt;br&gt;PK·&lt;br&gt;PK·</td><td>0</td><td>.zip .jar .apk .docx .xlsx .pptx .epub .odt .ods</td></tr><tr><td><strong>TAR archive</strong></td><td>75 73 74 61 72</td><td><code>ustar</code></td><td>257</td><td>.tar</td></tr><tr><td><strong>ISO 9660 disc image</strong></td><td>43 44 30 30 31</td><td><code>CD001</code></td><td>32769</td><td>.iso</td></tr><tr><td><strong>gzip stream</strong></td><td>1F 8B</td><td>··</td><td>0</td><td>.gz .tgz</td></tr><tr><td><strong>SQLite database</strong></td><td>53 51 4C 69 74 65 20 66 6F 72 6D 61 74 20 33 00</td><td>SQLite format 3·</td><td>0</td><td>.db .sqlite .sqlite3</td></tr><tr><td><strong>7-Zip archive</strong></td><td>37 7A BC AF 27 1C</td><td>7z··'·</td><td>0</td><td>.7z</td></tr><tr><td><strong>RAR archive</strong></td><td>52 61 72 21 1A 07</td><td>Rar!··</td><td>0</td><td>.rar</td></tr><tr><td><strong>PDF document</strong></td><td>25 50 44 46 2D</td><td><code>%PDF-</code></td><td>0</td><td>.pdf</td></tr><tr><td><strong>bzip2 stream</strong></td><td>42 5A 68</td><td><code>BZh</code></td><td>0</td><td>.bz2</td></tr><tr><td><strong>xz stream</strong></td><td>FD 37 7A 58 5A 00</td><td>·7zXZ·</td><td>0</td><td>.xz</td></tr><tr><td><strong>Zstandard stream</strong></td><td>28 B5 2F FD</td><td>(·/·</td><td>0</td><td>.zst .zstd</td></tr><tr><td><strong>LZ4 stream</strong></td><td>04 22 4D 18</td><td>·"M·</td><td>0</td><td>.lz4</td></tr></tbody></table></div>
+      <p class="note">The two entries not at offset 0 are the interesting ones. TAR stamps <code>ustar</code> <strong>257 bytes in</strong>, inside its first header block — a TAR has no signature at the very start at all. ISO 9660 puts <code>CD001</code> at <strong>32769</strong>, at its primary volume descriptor, which is why a disc image cannot be identified from its first sector.</p>
+      <p>Order matters and is not alphabetical: the rules are tried in the sequence above, and the first match wins. A file that could satisfy two rules must resolve the same way in every tool that reads this table, which is the reason the order is fixed rather than sorted.</p>
+      <h2 id="capability">What this project does with each</h2>
+      <div class="cap-card"><h3>Identification vs. analysis — they are not the same claim</h3><dl class="cap-list"><div class="cap-row"><dt>Named in the browser</dt><dd>All twelve — the table above runs in the tab, on a bounded prefix</dd></div><div class="cap-row"><dt>Read in the browser</dt><dd>ZIP only — structure and CRC-32 per entry</dd></div><div class="cap-row"><dt>Everything else in the browser</dt><dd>Named, and honestly declined</dd></div><div class="cap-row"><dt>Cost of identification</dt><dd>One prefix read that the ZIP check already performs — no WebAssembly is loaded</dd></div></dl><p class="note">Naming a format is not reading it. The <a href="/formats/zip/">ZIP reference</a> is the only format this browser check opens; for what is <em>provably recoverable</em> from each of the others, the measurements are in the <a href="/formats/#matrix">recoverability matrix</a>.</p></div>
+      <p>A signature is also not a health check. <code>%PDF-</code> at offset 0 proves the first five bytes survived and nothing else — a file can carry a perfect signature and be unreadable one byte later. Identification narrows the question; it never answers it.</p>
+      <h2 id="try">Try it</h2>
+      <p>The <a href="/tools/zip-checker/">browser ZIP check</a> applies exactly this table to whatever you give it. A renamed RAR comes back named, with the mismatch stated; a file named <code>.zip</code> with nothing at the start comes back as a destroyed header rather than as "not a ZIP". Nothing is uploaded — the bytes are read in your own tab.</p>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check your own file — analysis is free</h2>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <div class="chips">
+      <a class="btn primary" href="/android/archiver/">Open with the free Android Archiver</a>
+      <a class="btn ghost" href="/android/recovery-pro/">Explore Recovery Pro</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/android/archiver/">VERAQIS Archiver (free)</a>
+        <a href="/android/recovery-pro/">VERAQIS Recovery Pro</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

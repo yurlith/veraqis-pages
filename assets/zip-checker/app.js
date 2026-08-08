@@ -278,10 +278,15 @@ const DIAGNOSIS_TEXT = {
     what: 'This archive uses ZIP64, the extension that lets archives exceed 4 GiB, and those extended records could not be read. True sizes and offsets are therefore unknown.',
     next: 'Sizes reported below may be wrong or truncated to 32 bits. Treat them as unreliable rather than as evidence about the data itself.',
   },
+  OTHER_FORMAT: {
+    title: 'This is not a ZIP archive — and it is not damaged either',
+    what: 'The file\'s own signature identifies it as a different format, named in the evidence below. This check reads ZIP archives, so it can say what the file is but not what is inside it.',
+    next: 'Open it with a tool made for that format. If you expected a ZIP, the file was renamed rather than converted — changing an extension changes the name and nothing else.',
+  },
   NOT_A_ZIP: {
     title: 'No ZIP structure was found',
-    what: 'Nothing in this file looks like a ZIP archive.',
-    next: 'Check that the file is what you think it is. A wrong extension is far more common than a destroyed archive.',
+    what: 'Nothing at the start of this file matches a format this check can name — including ZIP.',
+    next: 'Check that the file is what you think it is. A wrong extension is far more common than a destroyed archive; but if the name was right, a destroyed header looks exactly like this, and the evidence below says which case this is.',
   },
   EMPTY: {
     title: 'The archive is empty',
