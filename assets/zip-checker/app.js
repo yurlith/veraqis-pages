@@ -248,10 +248,20 @@ const DIAGNOSIS_TEXT = {
     what: 'The file does not start with a ZIP signature. That is normal for self-extracting archives, and it is also what a corrupted or wrongly-joined header looks like.',
     next: 'If this was meant to be a self-extracting archive, it is probably fine. Otherwise the leading bytes may be junk that a tool prepended by mistake.',
   },
-  ENCRYPTED_OR_UNSUPPORTED: {
-    title: 'Some entries could not be read here',
-    what: 'One or more entries are encrypted, or use a compression method this browser check does not implement. That is not evidence of damage — it means this tool cannot answer the question.',
-    next: 'Unreadable is not the same as broken. Use the tool that created the archive, or supply the password, to establish these entries.',
+  ENCRYPTED: {
+    title: 'Some entries are encrypted',
+    what: 'One or more entries are password-protected. This check reads the archive structure around them, but it does not and will not attempt to bypass encryption — so the contents of those entries cannot be established here.',
+    next: 'Open the archive with its password in the tool that created it. Encryption is not damage: everything reported below about structure still holds.',
+  },
+  UNSUPPORTED_METHOD: {
+    title: 'Some entries use a compression method this check cannot read',
+    what: 'The archive is structurally fine, but one or more entries were compressed with a method this browser check does not implement. That is a limit of this tool, not a fault in your file.',
+    next: 'Use the tool that created the archive. The entries below that could be decoded were still verified normally.',
+  },
+  ZIP64_UNUSABLE: {
+    title: 'The 64-bit size records are damaged',
+    what: 'This archive uses ZIP64, the extension that lets archives exceed 4 GiB, and those extended records could not be read. True sizes and offsets are therefore unknown.',
+    next: 'Sizes reported below may be wrong or truncated to 32 bits. Treat them as unreliable rather than as evidence about the data itself.',
   },
   NOT_A_ZIP: {
     title: 'No ZIP structure was found',

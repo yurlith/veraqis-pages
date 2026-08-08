@@ -62,7 +62,9 @@ export const DIAGNOSIS = {
   INDEX_DAMAGED: 'INDEX_DAMAGED',
   INDEX_MISSING: 'INDEX_MISSING',
   PREPENDED_DATA: 'PREPENDED_DATA',
-  ENCRYPTED_OR_UNSUPPORTED: 'ENCRYPTED_OR_UNSUPPORTED',
+  ENCRYPTED: 'ENCRYPTED',
+  UNSUPPORTED_METHOD: 'UNSUPPORTED_METHOD',
+  ZIP64_UNUSABLE: 'ZIP64_UNUSABLE',
   NOT_A_ZIP: 'NOT_A_ZIP',
   EMPTY: 'EMPTY',
 };
@@ -83,10 +85,19 @@ export const METHOD_NAMES = {
  * because corrupted content is a worse fact about the data than a missing table of
  * contents, even though the missing index looks more alarming in a file manager.
  */
-export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings }) {
+export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64 }) {
   const evidence = [];
   const truncatedEntries = entries.filter((e) =>
     (e.reasons || []).some((r) => /past the end of the file|is truncated/.test(r)));
+  const encrypted = entries.filter((e) => e.encrypted);
+  // A method this build does not decode is a gap in the tool, not damage in the file —
+  // reported separately from encryption because the remedy is different.
+  // Undecodable entries keep STRUCTURALLY_VALID — their structure is fine, only the CRC
+  // could not be recomputed. Detect them by the missing CRC plus a codec this build has
+  // no decoder for, so an entry skipped merely for being huge is not misreported.
+  const DECODABLE = new Set([0, 8]);
+  const unsupported = entries.filter((e) =>
+    !e.encrypted && e.crcChecked === false && !DECODABLE.has(e.method));
 
   let code;
   if (entries.length === 0) {
@@ -106,9 +117,21 @@ export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings
     code = DIAGNOSIS.INDEX_DAMAGED;
     evidence.push('the central directory could not be read completely');
     if (cd && cd.errors && cd.errors.length) evidence.push(cd.errors[0]);
-  } else if (counts.unknown > 0 && counts.damaged === 0) {
-    code = DIAGNOSIS.ENCRYPTED_OR_UNSUPPORTED;
-    evidence.push(`${counts.unknown} entr${counts.unknown === 1 ? 'y' : 'ies'} could not be decoded here`);
+  } else if (zip64 && zip64.present && zip64.usable === false) {
+    // ZIP64 is how archives exceed 4 GiB. Present-but-unusable means the 64-bit records
+    // are damaged, which is a structural fault and not a statement about the payload.
+    code = DIAGNOSIS.ZIP64_UNUSABLE;
+    evidence.push('ZIP64 records are present but could not be read');
+  } else if (encrypted.length > 0 && counts.damaged === 0) {
+    code = DIAGNOSIS.ENCRYPTED;
+    const kinds = [...new Set(encrypted.map((e) => e.encryptionKind).filter((k) => k && k !== 'none'))];
+    evidence.push(`${encrypted.length} encrypted entr${encrypted.length === 1 ? 'y' : 'ies'}`);
+    if (kinds.length) evidence.push(`scheme: ${kinds.join(', ')}`);
+  } else if (unsupported.length > 0 && counts.damaged === 0) {
+    code = DIAGNOSIS.UNSUPPORTED_METHOD;
+    const methods = [...new Set(unsupported.map((e) => e.methodName).filter(Boolean))];
+    evidence.push(`${unsupported.length} entr${unsupported.length === 1 ? 'y' : 'ies'} use a method this check does not decode`);
+    if (methods.length) evidence.push(methods.join(', '));
   } else if (warnings.some((w) => /prepended|does not begin with a ZIP signature/.test(w))) {
     code = DIAGNOSIS.PREPENDED_DATA;
     evidence.push('the file does not begin with a ZIP signature');
@@ -119,6 +142,8 @@ export function diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings
   // Whether the DATA is believed intact, independently of the structure. This is the
   // distinction the whole feature exists to make.
   const dataLooksIntact = code === DIAGNOSIS.INTACT
+    || code === DIAGNOSIS.ENCRYPTED
+    || code === DIAGNOSIS.UNSUPPORTED_METHOD
     || code === DIAGNOSIS.INDEX_MISSING
     || code === DIAGNOSIS.INDEX_DAMAGED
     || code === DIAGNOSIS.PREPENDED_DATA;
@@ -302,6 +327,12 @@ async function parseCentralDirectory(reader, cdOffset, cdSize, signal, onProgres
       localHeaderOffset: u32(buf, p + 42),
       hasDataDescriptor: (flags & 0x08) !== 0,
       encrypted: (flags & 0x01) !== 0 || (flags & 0x40) !== 0,
+      // Which scheme, not just "encrypted". These differ in what a user can do next:
+      // traditional PKWARE is weak and widely supported, strong/AES needs the original
+      // tool. Method 99 is WinZip AES, which also sets bit 0 — so it is checked first.
+      encryptionKind: u16(buf, p + 10) === 99 ? 'aes'
+        : (flags & 0x40) !== 0 ? 'strong'
+          : (flags & 0x01) !== 0 ? 'traditional' : 'none',
       zip64Sentinel: u32(buf, p + 20) === 0xffffffff || u32(buf, p + 24) === 0xffffffff
         || u32(buf, p + 42) === 0xffffffff,
     });
@@ -789,7 +820,7 @@ export async function analyzeArchive(reader, options = {}, onProgress = () => {}
   // must not read as a claim about the product as a whole.
   limitations.push('This analysis does not extract, repair or modify the archive. Extraction, where offered, is a separate action you choose.');
 
-  return finish({ verdict, diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings }) });
+  return finish({ verdict, diagnosis: diagnose({ eocd, cdStatus, cd, entries, counts, reader, warnings, zip64 }) });
 
   function finish(extra) {
     return {
