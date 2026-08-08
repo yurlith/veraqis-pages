@@ -472,8 +472,8 @@ main>article{display:block}
 .zc-diagnosis{border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:8px;
   padding:16px 18px;margin:14px 0 18px;background:var(--panel,#fff)}
 .zc-diagnosis.zc-dx-data-ok{border-left-color:var(--good)}
-.zc-dx-content-corrupt,.zc-dx-truncated{border-left-color:var(--bad)}
-.zc-dx-encrypted-or-unsupported,.zc-dx-prepended-data{border-left-color:var(--warn)}
+.zc-dx-content-corrupt,.zc-dx-truncated,.zc-dx-head-truncated{border-left-color:var(--bad)}
+.zc-dx-encrypted-or-unsupported,.zc-dx-prepended-data,.zc-dx-unidentified-header{border-left-color:var(--warn)}
 .zc-dx-title{margin:0 0 8px;font-size:17px;font-weight:700}
 .zc-dx-what{margin:0 0 10px;max-width:78ch}
 .zc-dx-evidence{margin:0 0 10px;font-family:var(--mono,ui-monospace,Consolas,monospace);

@@ -8,6 +8,7 @@
 // on disk, not a copy, and nothing here sends it anywhere.
 
 import { analyzeArchive, readerFromBlob } from './zip-core.js';
+import { probePrepended } from './prepend-probe.js';
 
 let controller = null;
 
@@ -37,7 +38,15 @@ self.onmessage = async (ev) => {
   try {
     const result = await analyzeArchive(
       readerFromBlob(file),
-      { fileName: file.name, verifyCrc: msg.verifyCrc !== false },
+      {
+        fileName: file.name,
+        verifyCrc: msg.verifyCrc !== false,
+        // The Rust offset-shift measurement, handed in rather than imported by the core.
+        // The core calls it only for a file that does not begin with a ZIP signature, so
+        // the WebAssembly module is fetched and compiled on that path alone — an ordinary
+        // archive never loads it.
+        probePrepended,
+      },
       onProgress,
       controller.signal
     );

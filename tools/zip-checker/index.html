@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
 <title>ZIP integrity check that runs in your browser | VERAQIS</title>
@@ -71,7 +71,7 @@
           "name": "Is my archive uploaded anywhere?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. The file is read by JavaScript running in your own browser tab. There is no application backend, no account and no storage. This page's Content-Security-Policy permits same-origin requests only, and the analysis code contains no network call at all. Closing or reloading the tab discards everything."
+            "text": "No. The file is read by code running in your own browser tab. There is no application backend, no account and no storage. This page's Content-Security-Policy permits same-origin requests only, and no request made by this page carries any part of your archive — the one request that can occur downloads this site's own analysis module to you. Closing or reloading the tab discards everything."
           }
         },
         {
@@ -313,17 +313,24 @@
         files on a CDN, which is what serves this page. No endpoint exists on the other side of
         that connection that could receive an archive.</li>
       <li><strong>The page's security policy blocks it.</strong> Every VERAQIS page ships
-        <code>default-src 'none'</code>; this one adds only <code>script-src 'self'</code> and
-        <code>connect-src 'self'</code>. No third-party origin can be contacted at all, and the
-        browser enforces that, not us.</li>
-      <li><strong>The analysis code contains no network call.</strong> No <code>fetch</code>, no
-        <code>XMLHttpRequest</code>, no <code>WebSocket</code>, no <code>navigator.sendBeacon</code>.
-        An automated test asserts their absence on every run.</li>
+        <code>default-src 'none'</code>; this one adds only
+        <code>script-src 'self' 'wasm-unsafe-eval'</code> and <code>connect-src 'self'</code>.
+        That second token permits compiling WebAssembly — the one Rust component described
+        below — and grants nothing else: no <code>eval</code>, no inline script, no origin.
+        No third-party origin can be contacted at all, and the browser enforces that, not us.</li>
+      <li><strong>The analysis code makes no request that carries your file.</strong> No
+        <code>fetch</code>, no <code>XMLHttpRequest</code>, no <code>WebSocket</code>, no
+        <code>navigator.sendBeacon</code> anywhere in the analysis core, and an automated test
+        asserts their absence on every run. One same-origin request is possible: a file that
+        does not begin with a ZIP signature makes the browser load this site's own compiled
+        probe, which works out whether the leading bytes are a self-extracting stub or damage.
+        That request downloads code to you and sends nothing.</li>
       <li><strong>Nothing is stored.</strong> No cookies, no <code>localStorage</code>, no
         <code>IndexedDB</code>. Reloading the page discards the file and the result.</li>
     </ul>
     <p>You can confirm it directly: open your browser's developer tools, switch to the Network tab,
-      and analyse a file. No request is made.</p>
+      and analyse a file. The only request that can appear is this site fetching its own probe
+      module, and only for a file whose first bytes are not a ZIP signature. Nothing is sent.</p>
 
     <h2 id="limits">Limits — what this check will not tell you</h2>
     <ul class="checks">
@@ -375,10 +382,11 @@
     <div class="faq">
       <div class="qa">
         <h3>Is my archive uploaded anywhere?</h3>
-        <p>No. The file is read by JavaScript running in your own browser tab. There is no application
+        <p>No. The file is read by code running in your own browser tab. There is no application
           backend, no account and no storage. This page's Content-Security-Policy permits
-          same-origin requests only, and the analysis code contains no network call at all. Closing
-          or reloading the tab discards everything.</p>
+          same-origin requests only, and no request this page makes carries any part of your
+          archive — the one that can occur downloads this site's own analysis module to you.
+          Closing or reloading the tab discards everything.</p>
       </div>
       <div class="qa">
         <h3>Does this repair my ZIP file?</h3>
