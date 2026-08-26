@@ -8,7 +8,7 @@
 # separate, owner-gated decision that does NOT affect search/answer-engine visibility.
 User-agent: *
 Allow: /
-Disallow: /downloads/VERAQIS-Archiver-Android-1.7.0-rc1.apk
+Disallow: /downloads/VERAQIS-Archiver-Pro-Android-1.8.0.apk
 
 # --- Explicit welcome for search + AI answer-engine (retrieval) crawlers ---
 User-agent: Googlebot
