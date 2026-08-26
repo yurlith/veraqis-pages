@@ -62,10 +62,29 @@ const CAPABILITY_REGISTRY = {
     label: 'Rebuilt archive',
     scope: 'Repairing the source archive itself. Not implemented.',
   },
+  // `enabled: false` here means "no SEPARATE recovery mode is wired", not "an
+  // archive without a usable index yields nothing". The latter would be wrong,
+  // and this entry used to say it.
+  //
+  // What already happens, with no switch involved: `zip-core.js` always scans
+  // for local file headers, so an archive whose central directory is damaged or
+  // truncated away still produces entries (`source: 'local-header-scan'`). When
+  // analysis recomputes an entry's CRC-32 and it matches the value in that
+  // entry's own local header, the entry reaches VERIFIED like any other and the
+  // ordinary single-entry extraction path applies to it unchanged. That is a
+  // real, shipped, free recovery of content the index no longer describes, and
+  // `tests/studio/recovery-tests.mjs` pins it end to end.
+  //
+  // What is genuinely absent is a distinct recovery MODE: producing bytes for an
+  // entry whose CRC could not be checked (an entry that defers its checksum to a
+  // trailing data descriptor stays POTENTIALLY_RECOVERABLE and is refused), and
+  // rebuilding a repaired archive. Those need their own evidence vocabulary
+  // rather than a reuse of EXTRACTED_VERIFIED, which is why neither is inferred
+  // from what already works.
   [CAPABILITY.LOCAL_HEADER_RECOVERY]: {
     enabled: false,
-    label: 'Local-header recovery',
-    scope: 'Recovering entries the index does not describe. Not implemented.',
+    label: 'Local-header recovery mode',
+    scope: 'Entries the index does not describe are already found and, when their CRC-32 verifies against their own local header, extracted by the ordinary verified path. What is not implemented is a separate mode for entries whose checksum cannot be checked at all.',
   },
   [CAPABILITY.EXPERIMENTAL_RECOVERY]: {
     enabled: false,
