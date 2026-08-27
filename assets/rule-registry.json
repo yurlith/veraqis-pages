@@ -1,7 +1,7 @@
 {
   "generated_from": "crates/phx_analyze_engine/src/corruption/rules.rs",
   "note": "Compile-time classifier registry of VERAQIS Recovery. Every rule ID that can appear in an analysis report is listed here with the format field it is keyed to. Generated, not hand-written.",
-  "rule_count": 117,
+  "rule_count": 118,
   "format_count": 13,
   "rules": [
     {
@@ -843,6 +843,16 @@
       "field": "wal.salt",
       "evidence_type": "Value Out Of Range",
       "recoverable_hint": false
+    },
+    {
+      "id": "SQ_WAL_003",
+      "format": "SQLite",
+      "category": "Structural Corruption",
+      "severity": "Major",
+      "description": "WAL frame checksum mismatch",
+      "field": "wal.frame.checksum",
+      "evidence_type": "Checksum Mismatch",
+      "recoverable_hint": true
     },
     {
       "id": "SQ_TRUNC_001",
