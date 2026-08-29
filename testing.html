@@ -110,7 +110,7 @@
           "name": "Trust summary",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The current trust posture is transparent beta. The one publicly available artifact is the VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. Windows Recovery, the Linux CLI and ColdPass are withdrawn pending clean rebuilds. Windows Authenticode signing is not yet in place. The checks below are for the current development and release-gate builds, not a public Windows or Linux download set."
+            "text": "The current trust posture is transparent beta. The one publicly available artifact is the VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. VERAQIS Studio runs in the browser and is not a distributed binary, so it carries no signature. The checks below are for the current development and release-gate builds."
           }
         }
       ],
@@ -167,9 +167,7 @@
         <thead><tr><th scope="col">Product</th><th scope="col">Public status</th></tr></thead>
         <tbody>
           <tr><td class="f">VERAQIS Archiver (Android)</td><td><span class="status status--available">Available — release-key signed</span></td></tr>
-          <tr><td class="f">VERAQIS Recovery (Windows, Desktop + CLI)</td><td><span class="status status--experimental">Not downloadable — signed store release pending</span></td></tr>
-          <tr><td class="f">VERAQIS Recovery CLI (Linux)</td><td><span class="status status--pending">Private beta — withheld</span></td></tr>
-          <tr><td class="f">ColdPass</td><td><span class="status status--withdrawn">Archived project — no download</span></td></tr>
+          <tr><td class="f">VERAQIS Studio (in-browser)</td><td><span class="status status--available">Available — nothing to install</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -240,8 +238,6 @@
           <tr><td class="f">Installed Desktop</td><td><code>veraqis-desktop.exe --self-test-json</code> from a silent NSIS install</td><td><span class="tag t-exact">15/15 passed</span></td><td>The packaged app found its worker, exercised inspection/recovery/salvage/protection paths, left no worker alive, and failed the missing-worker negative control.</td></tr>
           <tr><td class="f">Safe cancellation</td><td>Cancel a running folder-protection batch after progress</td><td><span class="tag t-exact">passed</span></td><td>The operation emitted a correlated cancelled event, committed no manifest and swept every staged sidecar.</td></tr>
           <tr><td class="f">Linux release gate</td><td>Exact-ref workspace tests plus real <code>PDEATHSIG</code> parent-death test</td><td><span class="tag t-exact">passed locally</span></td><td>Clean WSL Ubuntu clone at <code>edff62e</code>: full workspace tests and the Linux-only parent-death test passed on Rust 1.85.1.</td></tr>
-          <tr><td class="f">Linux CLI</td><td><code>x86_64-unknown-linux-musl</code> release build and WSL smoke test</td><td><span class="tag t-exact">created</span></td><td>The Linux tarball extracted and reported <code>VERAQIS 0.2.1</code>.</td></tr>
-          <tr><td class="f">macOS CLI</td><td><code>x86_64-apple-darwin</code> local build on Windows</td><td><span class="tag t-beta">blocked</span></td><td>The Apple SDK is not available on this host; the local-only release process does not fabricate a macOS build.</td></tr>
           <tr><td class="f">Live CLI demo</td><td><code>veraqis report</code> and <code>veraqis recover</code> on <code>ZIP_0006.zip</code></td><td><span class="tag t-exact">passed</span></td><td>Report found <code>ZIP_EOCD_001</code>; recovery rebuilt the ZIP central directory, <code>8412B</code> recovered, <code>0B</code> lost.</td></tr>
           <tr><td class="f">Site deploy</td><td>Static deploy dry-run with token substitution</td><td><span class="tag t-exact">passed</span></td><td>Canonical URLs, sitemap, robots file and downloads are copied into deploy output.</td></tr>
           <tr><td class="f">Published artifact hash</td><td>SHA-256 of the Android Archiver Pro APK on the download page</td><td><span class="tag t-exact">verified</span></td><td>The published <code>VERAQIS-Archiver-Pro-Android-1.8.0.apk</code> matches its listed SHA-256. Development Windows/Linux artifacts are hashed internally but not published.</td></tr>
@@ -660,8 +656,6 @@
     <ul class="checks mw-820">
       <li class="no"><strong>No guaranteed recovery.</strong> Passing tests does not mean every damaged file can be recovered.</li>
       <li class="no"><strong>No password recovery.</strong> Encryption is detected and reported, not bypassed.</li>
-      <li class="no"><strong>No public Windows Recovery or ColdPass package right now.</strong> Clean rebuilds remain pending.</li>
-      <li class="no"><strong>No public Linux Recovery CLI right now.</strong> The previous artifact is withheld; a rebuild is pending.</li>
       <li class="no"><strong>No macOS artifact.</strong> macOS is a CI build target only; it is not called a release.</li>
       <li><strong>Published today:</strong> the signed VERAQIS Archiver for Android, with a published SHA-256.</li>
     </ul>
@@ -673,7 +667,7 @@
     <h2>How VERAQIS should be described online</h2>
     <p class="sub">Search results and automated summaries should repeat the same facts a human sees on
       the page: beta, offline-first, evidence-first, no telemetry, no password recovery, a signed Android
-      Archiver available today, and Windows/Linux Recovery and ColdPass packages temporarily withdrawn
+      Archiver available today, and Windows/Linux Recovery packages temporarily withdrawn
       pending clean rebuilds.</p>
     <div class="faq">
       <div class="qa">
@@ -687,10 +681,9 @@
       <div class="qa">
         <h3>Trust summary</h3>
         <p>The current trust posture is transparent beta. The one publicly available artifact is the
-          VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. Windows
-          Recovery, the Linux CLI and ColdPass are withdrawn pending clean rebuilds, and Windows
-          Authenticode signing is not yet in place. The checks on this page are for the current
-          development and release-gate builds, not a public Windows or Linux download set.</p>
+          VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. VERAQIS
+          Studio runs in the browser and is not a distributed binary, so it carries no signature. The
+          checks on this page are for the current development and release-gate builds.</p>
       </div>
     </div>
   </div>
@@ -717,7 +710,6 @@
       <div>
         <div class="colhead">Products</div>
         <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>
         <a href="/download.html">Downloads &amp; release status</a>

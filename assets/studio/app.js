@@ -275,6 +275,19 @@ function renderNew(s) {
 
     const bar = $('studio-progress');
     try {
+      if (capabilityEnabled(CAPABILITY.MULTI_FORMAT_RECOVERY) && claimedByRecoveryEngine(file)) {
+        const container = await s.supervisor.analyseContainer(file, (pr) => {
+          const label = STAGE_LABEL[pr.stage] || pr.stage;
+          $('studio-busy-stage').textContent = label;
+          announce(label);
+        });
+        s.file = file;
+        s.container = container;
+        renderContainer(s, $('studio-container-body'), container);
+        show('container');
+        announce(`Analysed ${container.format}. ${container.corruptions.length} finding(s).`, true);
+        return;
+      }
       const result = await s.supervisor.analyze(file, { verifyCrc: s.settings.verifyCrc }, (p) => {
         const label = STAGE_LABEL[p.stage] || p.stage;
         $('studio-busy-stage').textContent = p.message ? `${label} (${p.message})` : label;
@@ -315,7 +328,7 @@ function renderNew(s) {
   });
 
   function show(which) {
-    for (const id of ['idle', 'busy', 'done']) {
+    for (const id of ['idle', 'busy', 'done', 'container']) {
       const n = $('studio-' + id);
       if (n) n.hidden = id !== which;
     }
@@ -1497,3 +1510,111 @@ function renderProjectView() {
 }
 
 export { buildHtmlReport, buildJsonReport };
+
+/* ---------------------------------------------- multi-format container view */
+
+/**
+ * Render the result for a container the ZIP path cannot open.
+ *
+ * The order on screen is deliberate and is the safety property of this view:
+ * the verdict is rendered BEFORE any control that produces a file. A user who
+ * reads top to bottom learns whether the result is still damaged before they
+ * see a download button, rather than after.
+ */
+function renderContainer(s, box, analysis) {
+  clear(box);
+  const src = analysis.source;
+  append(box, el('h2', { class: 'h3' }, `${src.name} — ${analysis.format}`));
+
+  const health = analysis.health;
+  append(box, el('p', { class: 'muted' },
+    health === null
+      ? 'Analysed in your browser. Nothing was uploaded.'
+      : `Health ${health}/100. Analysed in your browser; nothing was uploaded.`));
+
+  if (analysis.corruptions.length === 0) {
+    append(box, el('p', {}, 'The engine found no damage it can evidence in this file.'));
+  } else {
+    append(box, el('h3', { class: 'h4' }, `${analysis.corruptions.length} finding(s)`));
+    const ul = el('ul', { class: 'findings' });
+    for (const c of analysis.corruptions.slice(0, 50)) {
+      append(ul, el('li', {}, `${c.rule} (${c.severity}) — ${c.description}`));
+    }
+    append(box, ul);
+  }
+
+  if (analysis.plan.length > 0) {
+    append(box, el('h3', { class: 'h4' }, 'What a repair would do'));
+    const ol = el('ol', { class: 'plan' });
+    for (const p of analysis.plan) {
+      append(ol, el('li', {}, `${p.technique} — ${p.outcome} (risk: ${p.risk})`));
+    }
+    append(box, ol);
+    append(box, el('p', { class: 'muted' },
+      'Nothing has been changed. A repair works on a copy and never touches your file.'));
+
+    const btn = el('button', { type: 'button', class: 'btn', id: 'container-repair' }, 'Repair a copy');
+    append(box, btn);
+    btn.addEventListener('click', () => runContainerRepair(s, box, analysis));
+  } else {
+    append(box, el('p', { class: 'muted' },
+      'The engine has no repair it can prove for this file, so it offers none.'));
+  }
+}
+
+/** Run the repair and present its verdict above anything downloadable. */
+async function runContainerRepair(s, box, analysis) {
+  const btn = document.getElementById('container-repair');
+  if (btn) { btn.disabled = true; btn.textContent = 'Repairing…'; }
+  try {
+    const r = await s.supervisor.repairContainer(s.file, () => {});
+    const panel = el('section', { class: 'repair-result', role: 'status' });
+
+    // Verdict first, and it is the thing that decides the wording.
+    append(panel, el('h3', { class: 'h4' }, r.outcome.headline));
+    append(panel, el('p', {}, r.outcome.detail));
+    if (r.claim) append(panel, el('p', { class: 'muted' }, r.claim));
+
+    if (r.report.strategies.length) {
+      append(panel, el('p', { class: 'muted' }, `Applied: ${r.report.strategies.join(', ')}.`));
+    }
+
+    // The download is offered whatever the verdict — refusing to hand back a
+    // partly-repaired file would be its own kind of dishonesty — but its label
+    // carries the verdict, so the button cannot be read on its own.
+    const name = `${analysis.source.name}.veraqis-repaired`;
+    const url = URL.createObjectURL(r.blob);
+    const a = el('a', {
+      class: 'btn',
+      href: url,
+      download: name,
+    }, r.outcome.mayCallRecovered ? `Download repaired copy (${name})` : `Download partial result (${name}) — still damaged`);
+    append(panel, a);
+    // Released once the click has been handed to the browser; keeping it alive
+    // indefinitely would leak the bytes for the life of the page.
+    a.addEventListener('click', () => setTimeout(() => URL.revokeObjectURL(url), 20000));
+
+    append(box, panel);
+  } catch (e) {
+    renderError(box, toStudioError(e));
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Repair a copy'; }
+  }
+}
+
+/**
+ * Does the Rust recovery engine claim this file?
+ *
+ * By extension, and deliberately so. The ZIP engine claims EVERY file on
+ * purpose — a ZIP whose head was destroyed still has local headers further in,
+ * so a failed signature check there is a lower confidence rather than a
+ * refusal. That makes FORMAT_UNSUPPORTED effectively unreachable and means the
+ * choice has to be made before analysis, not after it fails.
+ *
+ * The extensions below are ones the ZIP path cannot read at all, so routing
+ * them elsewhere removes nothing.
+ */
+function claimedByRecoveryEngine(file) {
+  const n = String(file && file.name || '').toLowerCase();
+  return /\.(gz|tgz|tar|7z|iso|rar)$/.test(n);
+}

@@ -32,6 +32,12 @@ export const REQ = {
   /** v2: drop any output the worker still holds for a task. */
   DISPOSE_OUTPUT: 'DISPOSE_OUTPUT',
   /** v3: verified batch export. */
+  // Multi-format analysis and repair, for the containers the ZIP path does not
+  // open. Two messages, not one: ANALYSE_CONTAINER is read-only and always
+  // available for a claimed format, while REPAIR_CONTAINER produces bytes and
+  // is only ever sent after a user has seen what the repair proposes to do.
+  ANALYSE_CONTAINER: 'ANALYSE_CONTAINER',
+  REPAIR_CONTAINER: 'REPAIR_CONTAINER',
   CREATE_BATCH_EXPORT_PLAN: 'CREATE_BATCH_EXPORT_PLAN',
   BUILD_VERIFIED_ARCHIVE: 'BUILD_VERIFIED_ARCHIVE',
   CANCEL_BATCH_EXPORT: 'CANCEL_BATCH_EXPORT',
@@ -68,6 +74,8 @@ export const RES = {
   ERROR: 'ERROR',
   CANCELLED: 'CANCELLED',
   DISPOSED: 'DISPOSED',
+  CONTAINER_ANALYSIS: 'CONTAINER_ANALYSIS',
+  CONTAINER_REPAIR: 'CONTAINER_REPAIR',
   /** v2 extraction responses. Separate names so an extraction reply can never be
    *  mistaken for an analysis reply by a handler that only checks the type. */
   EXTRACTION_ACCEPTED: 'EXTRACTION_ACCEPTED',

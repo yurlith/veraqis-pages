@@ -163,6 +163,15 @@
         </div>
       </div>
 
+      <!-- Results for a container the ZIP path cannot open: gzip, tar, 7-Zip,
+           ISO 9660, RAR. A separate view rather than a branch inside the ZIP
+           one, because the two describe different things: that view lists
+           entries with per-entry checksums, and these formats have none to
+           list. Populated by app.js renderContainer(). -->
+      <section id="studio-container" hidden aria-labelledby="studio-container-h">
+        <h2 id="studio-container-h" class="visually-hidden">Container analysis</h2>
+        <div id="studio-container-body"></div>
+      </section>
       <div id="studio-done" hidden>
         <p id="studio-verdict" class="zc-verdict"></p>
         <p class="sub" id="studio-format"></p>
@@ -325,7 +334,6 @@
         <a href="/studio/">Local Recovery Studio</a>
         <a href="/desktop.html">VERAQIS Recovery for Windows</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
-        <a href="/studio/">VERAQIS Studio (in-browser)</a>
         <a href="/download.html">Downloads &amp; release status</a>
       </div>
       <div>

@@ -210,6 +210,11 @@
         <p class="note"><strong>“Safe” means structurally safe to extract.</strong> File contents were
           not checked for malware — VERAQIS Archiver is a structural safety inspector, not an antivirus.</p>
         <figure class="evidence-shot mw-320">
+          <img src="assets/mobile-safety-scan.png" width="320" height="640"
+            alt="VERAQIS Archiver Pro listing the three files inside veraqis-demo-safe.zip, with each entry's size" loading="lazy" decoding="async" />
+          <figcaption>An archive that scans clean: the contents are listed with sizes, and nothing is withheld.</figcaption>
+        </figure>
+        <figure class="evidence-shot mw-320">
           <img src="assets/mobile-safety-scan-suspicious.png" width="320" height="640"
             alt="VERAQIS Archiver Pro's VERAQIS report dialog showing a Suspicious verdict, with the risk count and a recommendation to extract only trusted entries" loading="lazy"  decoding="async" />
           <figcaption>Current Pro build: a bundled native-library entry (.so) is enough to flag an archive Suspicious — high-risk entries are refused by default.</figcaption>
@@ -403,7 +408,6 @@
       <div>
         <div class="colhead">Products</div>
         <a href="/recovery.html">Verified ZIP recovery</a>
-        <a href="/desktop.html">VERAQIS Recovery for Windows</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>
         <a href="/download.html">Downloads &amp; release status</a>

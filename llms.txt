@@ -74,7 +74,6 @@ from an experiment in our own repository and the page names the experiment and l
 - [VERAQIS Recovery for Windows](https://veraqis.tech/desktop.html): damaged-ZIP analysis and
   verified recovery. Status: store release pending — there is no public Windows binary and no
   Microsoft Store URL yet. No unsigned .exe is published.
-- [ColdPass](https://veraqis.tech/coldpass.html): archived experimental project. No active
   development and no download.
 
 ## Verification and process
