@@ -89,17 +89,6 @@ export class WorkerSupervisor {
       if (m.type === RES.PROGRESS) { a.onProgress(m); return; }
 
       if (m.type === RES.RESULT) { this._finish(); a.resolve(m.result); return; }
-      if (m.type === RES.CONTAINER_ANALYSIS) { this._finish(); a.resolve(m.result); return; }
-      // The repair reply carries a Blob and its verdict as siblings; both are
-      // handed on together so no caller can hold one without the other.
-      if (m.type === RES.CONTAINER_REPAIR) {
-        this._finish();
-        a.resolve({
-          blob: m.blob, outcome: m.outcome, payloadEvidence: m.payloadEvidence,
-          claim: m.claim, report: m.report, source: m.source,
-        });
-        return;
-      }
       if (m.type === RES.CANCELLED) { this._finish(); a.reject(new StudioError(ERR.CANCELLED)); return; }
       if (m.type === RES.ERROR) { this._finish(); a.reject(errorFromJSON(m.error)); return; }
 
@@ -184,36 +173,6 @@ export class WorkerSupervisor {
    * result.
    * @returns {Promise<object>}
    */
-  async analyseContainer(file, onProgress = () => {}) {
-    return this._containerTask(REQ.ANALYSE_CONTAINER, file, onProgress);
-  }
-
-  async repairContainer(file, onProgress = () => {}) {
-    return this._containerTask(REQ.REPAIR_CONTAINER, file, onProgress);
-  }
-
-  async _containerTask(reqType, file, onProgress) {
-    if (this.active) {
-      throw new StudioError(ERR.INTERNAL_ERROR, { detail: "another task is already running" });
-    }
-    await this._spawn();
-    if (this._idleTimer) clearTimeout(this._idleTimer);
-    const taskId = newTaskId();
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        this._handleCrash("the container task did not report progress within the timeout");
-      }, TASK_TIMEOUT_MS);
-      this.active = { taskId, resolve, reject, onProgress, timer };
-      this._status("running");
-      try {
-        this.worker.postMessage({ type: reqType, taskId, file });
-      } catch (e) {
-        this._finish();
-        reject(new StudioError(ERR.INTERNAL_ERROR, { detail: "could not hand the file to the worker: " + (e && e.message) }));
-      }
-    });
-  }
-
   async analyze(file, options, onProgress = () => {}) {
     if (this.active) {
       throw new StudioError(ERR.INTERNAL_ERROR, { detail: 'another analysis is already running' });
