@@ -14,6 +14,11 @@
 // v3 adds verified batch export. Bumped rather than extended in place for the
 // same reason v2 was: a page that speaks v3 must not drive a v2 worker served
 // from a stale cache, because it would ask for an archive and get silence.
+// The shape every ArchiveEngine returns from analyze(). Declared here rather
+// than in engine.js so wasm-engine.js can name it without importing the
+// module that imports it.
+export const ENGINE_RESULT_SCHEMA = 'veraqis-studio-analysis/1';
+
 export const PROTOCOL_VERSION = 3;
 
 /** main thread -> worker */

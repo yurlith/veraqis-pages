@@ -18,6 +18,8 @@
 
 import { CAPABILITY, capabilityEnabled, detectSync, sizePolicy } from './capabilities.js';
 import { StudioError, ERR } from './errors.js';
+import { ENGINE_RESULT_SCHEMA } from './protocol.js';
+import { classifyZipFamily, nestedArchivesOf } from './zip-family.js';
 import { mapWasmAnalysisToStudio } from './wasm-verdict.js';
 
 let modulePromise = null;
@@ -134,10 +136,21 @@ export const wasmZipEngine = {
     } catch (e) {
       throw toWasmStudioError(e, ERR.STRUCTURE_INVALID);
     }
-    const result = mapWasmAnalysisToStudio(raw, bytes);
+    const analysis = mapWasmAnalysisToStudio(raw, bytes);
     onProgress({ phase: 'done', done: 1, total: 1 });
+    // Same envelope as engine.js's zipEngine, and for the same reason: the UI
+    // and createProject() read the analysis from .analysis and the detected
+    // format from .format. Returning the mapped analysis flat — as this engine
+    // did from the moment it went first in the REGISTRY — left createProject()
+    // with nothing to read, so a fully verified archive rendered as zero
+    // entries under a missing verdict. The mapped result is unchanged below.
+    const family = classifyZipFamily(file.name, analysis.entries || []);
     return {
-      ...result,
+      schema: ENGINE_RESULT_SCHEMA,
+      engine: { id: this.id, version: this.version, kind: 'wasm', mapping: 'wasm-verdict.js' },
+      format: { id: family.id, label: family.label, evidence: family.evidence, container: 'zip' },
+      nestedArchives: nestedArchivesOf(analysis.entries),
+      analysis,
       file: { name: file.name || null, size: bytes.length },
     };
   },

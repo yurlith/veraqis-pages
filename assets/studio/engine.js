@@ -9,12 +9,13 @@
 
 import { analyzeArchive, readerFromBlob, STATUS } from '../zip-checker/zip-core.js';
 import { StudioError, ERR, toStudioError } from './errors.js';
-import { STAGE } from './protocol.js';
+import { STAGE, ENGINE_RESULT_SCHEMA } from './protocol.js';
 import { extractVerifiedEntry as runExtraction, EXTRACT_ENGINE_VERSION, probeDeflateRaw } from './extract.js';
+import { classifyZipFamily, nestedArchivesOf, extOf } from './zip-family.js';
 import { wasmZipEngine } from './wasm-engine.js';
 export { wasmZipEngine };
 
-export const ENGINE_RESULT_SCHEMA = 'veraqis-studio-analysis/1';
+export { ENGINE_RESULT_SCHEMA };
 
 /**
  * @typedef {Object} ArchiveEngine
@@ -27,47 +28,6 @@ export const ENGINE_RESULT_SCHEMA = 'veraqis-studio-analysis/1';
  * @property {object} capabilities
  * @property {string[]} limitations
  */
-
-/* ------------------------------------------------------- ZIP-family detection */
-
-// ZIP-derived containers are classified by extension AND by what is inside them.
-// This is a naming/classification aid only — it never implies semantic recovery
-// of the Office/APK layer, which is not implemented.
-const ZIP_DERIVED = [
-  { ext: 'docx', label: 'Word document (OOXML)', marker: 'word/' },
-  { ext: 'xlsx', label: 'Excel workbook (OOXML)', marker: 'xl/' },
-  { ext: 'pptx', label: 'PowerPoint presentation (OOXML)', marker: 'ppt/' },
-  { ext: 'apk', label: 'Android package', marker: 'AndroidManifest.xml' },
-  { ext: 'jar', label: 'Java archive', marker: 'META-INF/' },
-  { ext: 'epub', label: 'EPUB book', marker: 'META-INF/container.xml' },
-  { ext: 'odt', label: 'OpenDocument text', marker: 'content.xml' },
-  { ext: 'ods', label: 'OpenDocument spreadsheet', marker: 'content.xml' },
-];
-
-const extOf = (name) => {
-  const i = String(name || '').lastIndexOf('.');
-  return i < 0 ? '' : name.slice(i + 1).toLowerCase();
-};
-
-/** Classify a ZIP by the names it contains. Detection only — no semantic claim. */
-function classifyZipFamily(fileName, entries) {
-  const ext = extOf(fileName);
-  const names = entries.map((e) => e.name || '');
-  for (const d of ZIP_DERIVED) {
-    const byMarker = names.some((n) => n.startsWith(d.marker) || n === d.marker);
-    if (d.ext === ext && byMarker) return { id: d.ext, label: d.label, evidence: 'extension and contents agree' };
-    if (byMarker && !ext) return { id: d.ext, label: d.label, evidence: 'contents match this layout' };
-  }
-  for (const d of ZIP_DERIVED) {
-    if (d.ext === ext) {
-      return {
-        id: d.ext, label: d.label,
-        evidence: 'extension only — the expected internal layout was not found, which is itself a finding',
-      };
-    }
-  }
-  return { id: 'zip', label: 'ZIP archive', evidence: 'ZIP container' };
-}
 
 /* ------------------------------------------------------------- the ZIP engine */
 
@@ -141,13 +101,12 @@ export const zipEngine = {
     }
 
     const family = classifyZipFamily(file.name, raw.entries || []);
-    const nested = (raw.entries || []).filter((e) => /\.(zip|jar|apk|docx|xlsx|pptx|epub|7z|rar|tar|gz)$/i.test(e.name || ''));
-
+    
     return {
       schema: ENGINE_RESULT_SCHEMA,
       engine: { id: this.id, version: this.version, kind: 'javascript' },
       format: { id: family.id, label: family.label, evidence: family.evidence, container: 'zip' },
-      nestedArchives: nested.map((e) => ({ name: e.name, size: e.compressedSize, status: e.status })),
+      nestedArchives: nestedArchivesOf(raw.entries),
       // The underlying result is carried through unchanged so the report schema
       // stays the one the ZIP checker already emits and its tests already cover.
       analysis: raw,

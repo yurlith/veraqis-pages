@@ -175,9 +175,9 @@
       </div>
     </div>
     <figure class="hero-visual">
-      <img src="assets/desktop-protect-2026-07.png" alt="VERAQIS Recovery development build: the Protect screen with folder protection, checking, repair and signing controls" width="1600" height="1000" decoding="async" fetchpriority="high" />
-      <figcaption>Development build shown (VERAQIS Recovery v0.2.1). No public Windows package is
-        currently available.</figcaption>
+      <img src="assets/studio-analysis-2026-09.png" alt="VERAQIS Studio after analysing an archive in the browser: the verdict Archive intact, with 169 entries found and 169 verified" width="2064" height="400" decoding="async" fetchpriority="high" />
+      <figcaption>VERAQIS Studio, running in a browser tab. The archive shown is this site's own
+        published Android APK; the counts are the ones Studio produced from it.</figcaption>
     </figure>
   </div>
 </div>
@@ -217,10 +217,10 @@
         <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
         <p>Analyze damaged ZIP archives and recover only what can be verified. Free analysis and preview;
           you pay only to save the recovered result.</p>
-        <p class="my-12"><span class="status status--experimental">Windows — store release pending</span></p>
+        <p class="my-12"><span class="status status--available">Available — runs in your browser</span></p>
         <div class="cta mt-8">
           <a class="btn ghost" href="/studio/new/">Open Studio</a>
-          <a class="btn ghost" href="contact.html">Join beta</a>
+          <a class="btn ghost" href="recovery.html">How recovery is judged</a>
         </div>
       </div>
       <div class="card">
@@ -402,12 +402,12 @@
     <div class="grid g4">
       <div class="card metric"><div class="n">PASS</div><div class="l"><code>cargo test --workspace --all-targets</code></div></div>
       <div class="card metric"><div class="n">PASS</div><div class="l">Rust fmt and clippy with warnings denied</div></div>
-      <div class="card metric"><div class="n">0</div><div class="l">moderate-or-higher vulnerabilities in the Desktop UI npm audit</div></div>
+      <div class="card metric"><div class="n">278</div><div class="l">Studio tests passing, 0 failing</div></div>
       <div class="card metric"><div class="n">1</div><div class="l">reviewed public beta artifact currently published: the signed Android APK</div></div>
     </div>
     <div class="callout warn mt-22">
-      <strong>Release limit:</strong> the Android APK is release-key signed. Previous Windows artifacts
-      were withdrawn; Recovery is being rebuilt and reviewed before republishing.
+      <strong>Release limit:</strong> the Android APK is release-key signed. Studio ships as part of
+      this site and carries no installer, so there is no separate package to verify for it.
     </div>
     <div class="cta">
       <a class="btn primary" href="testing.html">Read the full test record</a>

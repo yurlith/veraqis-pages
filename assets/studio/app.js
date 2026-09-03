@@ -324,6 +324,9 @@ function renderNew(s) {
 
 /* ------------------------------------------------------------------ results */
 
+// What an engine does not measure is reported as unmeasured. Never as zero.
+const NOT_REPORTED = 'not reported by this engine';
+
 function renderResult(s) {
   const p = s.project;
   const a = p.analysis;
@@ -348,16 +351,20 @@ function renderResult(s) {
   const cd = a.centralDirectory || {};
   const rows = [
     ['Detected format', a.format ? `${a.format.label} — ${a.format.evidence}` : '—'],
-    ['End-of-central-directory', a.eocd && a.eocd.found ? `found at offset ${a.eocd.offset}` : `not found — ${a.eocd ? a.eocd.reason : 'unknown'}`],
-    ['Central directory', cd.status === 'OK' ? `read, ${cd.recordsRead} record(s)`
-      : cd.status === 'PARTIAL' ? `partially read, ${cd.recordsRead} record(s)`
+    ['End-of-central-directory', a.eocd && a.eocd.found
+      ? (a.eocd.offset == null ? 'found' : `found at offset ${a.eocd.offset}`)
+      : `not found — ${(a.eocd && a.eocd.reason) || 'unknown'}`],
+    ['Central directory', cd.status === 'OK' ? (cd.recordsRead == null ? 'read' : `read, ${cd.recordsRead} record(s)`)
+      : cd.status === 'PARTIAL' ? (cd.recordsRead == null ? 'partially read' : `partially read, ${cd.recordsRead} record(s)`)
         : cd.status === 'DAMAGED' ? 'present but unreadable' : 'missing'],
-    ['Local file headers found', String((a.localHeaderScan || {}).candidatesFound ?? 0)],
-    ['CRC coverage', `${Math.round((a.crcCoverage || 0) * 100)}% of entries had their CRC-32 recomputed`],
+    ['Local file headers found', a.localHeaderScan && a.localHeaderScan.candidatesFound != null
+      ? String(a.localHeaderScan.candidatesFound) : NOT_REPORTED],
+    ['CRC coverage', a.crcCoverage == null ? NOT_REPORTED
+      : `${Math.round(a.crcCoverage * 100)}% of entries had their CRC-32 recomputed`],
     ['Potentially recoverable data', fmtBytes(a.recoverableBytes)],
     ['ZIP64', a.zip64 && a.zip64.present ? (a.zip64.usable ? 'present' : 'present but unusable') : 'not used'],
     ['Engine', a.engine ? `${a.engine.id} ${a.engine.version} (${a.engine.kind})` : '—'],
-    ['Analysis time', `${a.elapsedMs} ms`],
+    ['Analysis time', a.elapsedMs == null ? NOT_REPORTED : `${a.elapsedMs} ms`],
     ['Source fingerprint', p.source.fingerprint ? p.source.fingerprint.mode : 'none'],
   ];
   if (a.nestedArchives && a.nestedArchives.length) {
