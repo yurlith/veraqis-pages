@@ -38,7 +38,6 @@ export const CAPABILITY = {
   LOCAL_HEADER_RECOVERY: 'local_header_recovery',
   EXPERIMENTAL_RECOVERY: 'experimental_recovery',
   WASM_ZIP_CORE: 'wasm_zip_core',
-  MULTI_FORMAT_RECOVERY: 'multi_format_recovery',
 };
 
 const CAPABILITY_REGISTRY = {
@@ -104,43 +103,6 @@ const CAPABILITY_REGISTRY = {
   // above the device's recommended size bound (no chunked/streamed parse) or
   // if the capability were ever disabled. `wasmEngine` in `featureMatrix`
   // below now reflects this instead of a hardcoded CSP-blocked refusal.
-  // The Rust recovery engine for the formats ZIP tooling cannot open: gzip,
-  // tar, 7-Zip, ISO 9660 and RAR. Until this shipped, those files produced
-  // "not a format VERAQIS Studio can analyse" and nothing else.
-  //
-  // `enabled: true` because the evidence is in: crates/phx_recovery_wasm is the
-  // same open-core engine the desktop product runs, graded against the NATIVE
-  // build over 177 fixtures x 4 modes with false successes 0, unbacked claims 0
-  // and overclaimed bytes 0 (tools/wasm-recovery-core/recover-parity.mjs), and
-  // byte-identical to Node in Chrome, Edge, Firefox and WebKit
-  // (tools/wasm-recovery-core/browser-parity.mjs).
-  //
-  // It offers repaired output, which the other capabilities here do not, and
-  // that is why recovery-engine.js returns the bytes and the verdict together:
-  // `success` means a repair was kept, NOT that the file opens. Measured over
-  // the corpus, 40 runs returned success over output no reader could open, so
-  // only a result whose own re-analysis comes back clean is allowed to use the
-  // word recovered.
-  [CAPABILITY.MULTI_FORMAT_RECOVERY]: {
-    // Disabled on purpose, and not because the engine is unproven: it is graded
-    // against the native Rust build over 177 fixtures x 4 modes and byte-identical
-    // to Node in Chrome, Edge, Firefox and WebKit. What is unresolved is the
-    // wiring. On production the analysis ran and resolved, and the result never
-    // reached the screen; the same code on the same bytes renders correctly on a
-    // local server, over HTTPS, and from the built dist. Service Worker, HTTPS
-    // and directory URLs were each ruled out by measurement.
-    //
-    // Shipping it enabled would put a feature in front of users that completes
-    // for nobody. Shipping it disabled puts the code where the failure actually
-    // happens, which is the only place left to diagnose it. Flipping this flag
-    // is a separate, deliberate step once that is understood.
-    enabled: false,
-    label: 'Analyse and repair gzip, tar, 7-Zip, ISO and RAR',
-    scope:
-      'Identifies the format, reports what is damaged, shows what a repair would do, and can '
-      + 'produce a repaired copy — always with the engine’s own verdict on whether that copy '
-      + 'is still damaged. Runs in your browser; nothing is uploaded.',
-  },
   [CAPABILITY.WASM_ZIP_CORE]: {
     enabled: true,
     label: 'Rust/WASM analysis core',

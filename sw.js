@@ -18,18 +18,7 @@
 // A visitor still holding the v3 cache has those files installed for offline
 // use; bumping the version is what deletes that cache on activate, rather than
 // leaving paid implementation bytes resident on a free user's device.
-// v5: the multi-format recovery engine joined the shell. recovery-engine.js is
-// precached with the rest of the application code; the 534 KB WebAssembly
-// artifact it loads is deliberately NOT, because it is larger than everything
-// else here combined and an offline user of the ZIP tool should not carry it.
-// Those formats therefore need the network on first use, which the module says
-// out loud rather than discovering silently.
-//
-// Bumping the version is the point: without it a returning visitor keeps the v4
-// cache, `activate` never deletes it, and they go on running the previous shell
-// with none of this in it. Measured on production before the bump — the page was
-// controlled by v4 and served the old module graph.
-const VERSION = 'v5';
+const VERSION = 'v4';
 const CACHE = `veraqis-studio-${VERSION}`;
 
 // The complete application shell. Every entry is same-origin and static.
@@ -60,7 +49,6 @@ const PRECACHE = [
   '/assets/studio/store.js',
   '/assets/studio/ui.js',
   '/assets/studio/register-sw.js',
-  '/assets/studio/recovery-engine.js',
   // Single-entry verified extraction. Static application code, same-origin, and
   // on the allowlist for exactly the same reason as the rest of the shell:
   // extraction must keep working offline. No user data is added by their

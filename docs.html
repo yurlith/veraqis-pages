@@ -6,14 +6,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Documentation — recovery commands and concepts | VERAQIS</title>
-<meta name="description" content="VERAQIS Recovery documentation: safe workflow, CLI commands, supported formats, recovery modes, reports, verification and the current v0.2.1 limits." />
+<meta name="description" content="VERAQIS Recovery documentation: safe workflow, supported formats, recovery modes, reports, verification and the current v0.2.1 limits." />
 <link rel="canonical" href="https://veraqis.tech/docs.html" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="Documentation | VERAQIS" />
-<meta property="og:description" content="Build, CLI surface, recovery modes, evidence model, and where the deep-dive docs live." />
+<meta property="og:description" content="Recovery modes, evidence model, and where the deep-dive docs live." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -22,7 +22,7 @@
 <meta property="og:url" content="https://veraqis.tech/docs.html" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Documentation | VERAQIS" />
-<meta name="twitter:description" content="Build, CLI surface, recovery modes, evidence model, and where the deep-dive docs live." />
+<meta name="twitter:description" content="Recovery modes, evidence model, and where the deep-dive docs live." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -51,7 +51,7 @@
       "@id": "https://veraqis.tech/docs.html#webpage",
       "url": "https://veraqis.tech/docs.html",
       "name": "Documentation",
-      "description": "VERAQIS Recovery documentation: installation, safe workflow, CLI commands, supported formats, recovery modes, reports, verification and current limitations for v0.2.1 beta.",
+      "description": "VERAQIS Recovery documentation: safe workflow, supported formats, recovery modes, reports, verification and current limitations for v0.2.1 beta.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -157,31 +157,6 @@
   </div>
 </div>
 
-<section>
-  <div class="wrap">
-    <div class="callout warn mt-0">
-      <strong>Public Windows and Linux Recovery packages are currently unavailable.</strong> The commands
-      below document the current <span class="mono">v0.2.1</span> command surface and are intended for
-      reviewed development builds until clean public packages return. The signed
-      <a href="mobile.html">Android Archiver</a> is the only public download today; it focuses on safe
-      inspection and extraction, not the desktop CLI recovery commands.
-    </div>
-    <h2 class="mt-26">Recovery command reference</h2>
-    <p class="sub">Always analyze before recovery. These commands describe the development-build CLI
-      surface; they are not an install path for a package you can download today.</p>
-    <div class="terminal">
-      <div class="bar"><i></i><i></i><i></i></div>
-<pre><span class="c"># audit first — read-only, never changes the source</span>
-<span class="p">veraqis</span> analyze damaged.zip <span class="a">--format</span> json
-
-<span class="c"># preview the rule-keyed repair plan without writing output</span>
-<span class="p">veraqis</span> recover damaged.zip <span class="a">--plan</span>
-
-<span class="c"># recover into a new folder; never overwrite the source</span>
-<span class="p">veraqis</span> recover damaged.zip <span class="a">--output</span> out/</pre>
-    </div>
-  </div>
-</section>
 
 <section class="band">
   <div class="wrap">
@@ -315,23 +290,6 @@
   </div>
 </section>
 
-<section>
-  <div class="wrap">
-    <h2>Installation status</h2>
-    <p class="sub">Product source and development repositories are private. The only public download is
-      the signed Android Archiver; verify it before installing.</p>
-    <div class="terminal">
-      <div class="bar"><i></i><i></i><i></i></div>
-<pre><span class="c"># verify the published Android APK before installing</span>
-<span class="p">CertUtil</span> -hashfile VERAQIS-Archiver-Pro-Android-1.8.0.apk SHA256</pre>
-    </div>
-    <div class="callout info mt-18"><strong>Future public installation:</strong> clean
-      Windows and Linux Recovery packages will return only after fresh builds, functional tests,
-      release-content inspection and signing review. Every current Recovery capability is free during
-      public beta; the offline entitlement implementation remains in the source for later development,
-      and no license file is required.</div>
-  </div>
-</section>
 
 <section>
   <div class="wrap">
