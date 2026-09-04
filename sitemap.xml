@@ -6,7 +6,7 @@
   <url><loc>https://veraqis.tech/formats/</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/guides/</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/reference/</loc><lastmod>2026-08-26</lastmod></url>
-  <url><loc>https://veraqis.tech/research/</loc><lastmod>2026-08-26</lastmod></url>
+  <url><loc>https://veraqis.tech/research/</loc><lastmod>2026-09-04</lastmod></url>
   <url><loc>https://veraqis.tech/studio/</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/tools/</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/about.html</loc><lastmod>2026-08-26</lastmod></url>
@@ -14,7 +14,6 @@
   <url><loc>https://veraqis.tech/android/recovery-pro/</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/changelog.html</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/contact.html</loc><lastmod>2026-08-26</lastmod></url>
-  <url><loc>https://veraqis.tech/desktop.html</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/docs.html</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/download.html</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/formats/7z/</loc><lastmod>2026-08-27</lastmod></url>
@@ -41,8 +40,13 @@
   <url><loc>https://veraqis.tech/reports.html</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/research/7z-solid-archive-bit-flip/</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/research/crc32-collisions-that-pass-gzip-t/</loc><lastmod>2026-08-26</lastmod></url>
+  <url><loc>https://veraqis.tech/research/experiments/</loc><lastmod>2026-09-04</lastmod></url>
   <url><loc>https://veraqis.tech/research/joint-verifier-surface-is-empty/</loc><lastmod>2026-08-26</lastmod></url>
+  <url><loc>https://veraqis.tech/research/nist-cftt-sqlite-validation/</loc><lastmod>2026-09-04</lastmod></url>
+  <url><loc>https://veraqis.tech/research/phantom-files-in-zip-recovery/</loc><lastmod>2026-09-04</lastmod></url>
   <url><loc>https://veraqis.tech/research/recovering-past-corruption-xz-bzip2/</loc><lastmod>2026-08-26</lastmod></url>
+  <url><loc>https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/</loc><lastmod>2026-09-04</lastmod></url>
+  <url><loc>https://veraqis.tech/research/zip-recovery-head-to-head/</loc><lastmod>2026-09-04</lastmod></url>
   <url><loc>https://veraqis.tech/security.html</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/studio/new/</loc><lastmod>2026-08-26</lastmod></url>
   <url><loc>https://veraqis.tech/studio/reports/</loc><lastmod>2026-08-26</lastmod></url>

@@ -1,0 +1,76 @@
+{
+  "schema": "veraqis-research-data/1",
+  "experiment": "EXP-HEAD-TO-HEAD-PHANTOM",
+  "measured": "2026-08-28",
+  "seed": 20260725,
+  "cases": 1676,
+  "runs": 10056,
+  "total_false_recovery_records": 447,
+  "by_status": {
+    "Phantom": 220,
+    "EmptyPlaceholder": 85,
+    "ContentMismatch": 86,
+    "PartialPrefix": 56
+  },
+  "by_tool_mode": {
+    "7-Zip/best_effort": {
+      "total": 131,
+      "phantom": 28,
+      "empty_placeholder": 35,
+      "unflagged": 131
+    },
+    "7-Zip/default": {
+      "total": 128,
+      "phantom": 21,
+      "empty_placeholder": 39,
+      "unflagged": 128
+    },
+    "WinRAR/best_effort": {
+      "total": 58,
+      "phantom": 56,
+      "empty_placeholder": 2,
+      "unflagged": 58
+    },
+    "WinRAR/default": {
+      "total": 130,
+      "phantom": 115,
+      "empty_placeholder": 9,
+      "unflagged": 130
+    },
+    "VERAQIS/default": {
+      "total": 0,
+      "phantom": 0,
+      "empty_placeholder": 0,
+      "unflagged": 0
+    },
+    "VERAQIS/best_effort": {
+      "total": 0,
+      "phantom": 0,
+      "empty_placeholder": 0,
+      "unflagged": 0
+    }
+  },
+  "phantom_names": {
+    "ghost.txt": 25,
+    "ð¥ÐéÐçÐæÐé-µùÑµ£¼Þ¬×-caf├®.txt": 14,
+    "files/item-000_.png": 2,
+    "inner/data.json": 71,
+    "inner/notes.txt": 62,
+    "inner/level.zip": 46
+  },
+  "status_definitions": {
+    "Phantom": "a file written that no original archive contained",
+    "EmptyPlaceholder": "a real entry written as a zero-length file, with content that was recoverable",
+    "WrongContent": "a real entry written with bytes that are not the original ones"
+  },
+  "derived_from": [
+    {
+      "path": "reports/phase-4-headtohead/report/false-recoveries.json",
+      "sha256": "7f1930ee44dfbd7d4b83f43f6f087775d7bf44f30effdb276d81b85715bb0c39"
+    },
+    {
+      "path": "reports/phase-4-headtohead/report/summary.json",
+      "sha256": "429f4a90072771b1eab7d59d58ddded0ff7bed02fb3a5d230fe2dff5357c9eb2"
+    }
+  ]
+}

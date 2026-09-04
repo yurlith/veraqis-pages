@@ -6,9 +6,41 @@
   <link href="https://veraqis.tech/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://veraqis.tech/research/" rel="alternate" type="text/html" />
   <id>https://veraqis.tech/research/</id>
-  <updated>2026-07-28T00:00:00Z</updated>
+  <updated>2026-09-04T00:00:00Z</updated>
   <author><name>VERAQIS</name><uri>https://veraqis.tech/</uri></author>
   <rights>CC BY 4.0</rights>
+  <entry>
+    <title>1,676 damaged ZIPs: VERAQIS vs 7-Zip vs WinRAR</title>
+    <link href="https://veraqis.tech/research/zip-recovery-head-to-head/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/research/zip-recovery-head-to-head/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">Same corpus, same host, three tools. VERAQIS 97.1% of recoverable entries at 0.0% false recovery; 7-Zip 79.9% at 5.9%; WinRAR 63.0% at 1.0%.</summary>
+  </entry>
+  <entry>
+    <title>A deleted row's identity, from b-tree shape alone</title>
+    <link href="https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">On a fixture where the key is never derivable from the content, 100 of 100 deleted rowids were reconstructed exactly — using only cell ordering and separator keys.</summary>
+  </entry>
+  <entry>
+    <title>The ZIP entries that were never there</title>
+    <link href="https://veraqis.tech/research/phantom-files-in-zip-recovery/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/research/phantom-files-in-zip-recovery/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">220 files recovered from damaged archives that no archive ever contained. What produces them, how to reproduce one in four commands, and what a tool should do instead.</summary>
+  </entry>
+  <entry>
+    <title>We ran the federal SQLite forensics spec on ourselves</title>
+    <link href="https://veraqis.tech/research/nist-cftt-sqlite-validation/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/research/nist-cftt-sqlite-validation/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">Six fixtures, 13 core assertions, 126 results — including the two we fail and the 23 we do not answer. What the specification measures, and what it cannot ask.</summary>
+  </entry>
   <entry>
     <title>Bit flip in a solid 7z archive: what survives</title>
     <link href="https://veraqis.tech/research/7z-solid-archive-bit-flip/" rel="alternate" type="text/html" />

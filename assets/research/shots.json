@@ -1,0 +1,57 @@
+{
+  "schema": "veraqis-figure-manifest/1",
+  "captured": "2026-09-04",
+  "engine": "veraqis 0.2.1",
+  "browser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "note": "Every figure is a screenshot of an artifact produced by the command recorded beside it.",
+  "figures": [
+    {
+      "file": "phantom-entries/veraqis-report-ghost.png",
+      "w": 2000,
+      "h": 1800,
+      "command": "phx report damaged.zip --output ghost-report.html --format html",
+      "input": {
+        "name": "damaged.zip",
+        "bytes": 331,
+        "sha256": "8e4b2dfdc6a4bc1174ccc2216dfb2911698635ac3a78c7030a1f4022d72d9d67"
+      },
+      "engine": "veraqis 0.2.1"
+    },
+    {
+      "file": "zip-head-to-head/veraqis-report-crc.png",
+      "w": 2000,
+      "h": 1800,
+      "command": "phx report testdata/zip/bad_crc/ZIP_0090.zip --output crc-report.html --format html",
+      "input": {
+        "name": "testdata/zip/bad_crc/ZIP_0090.zip",
+        "bytes": 12614,
+        "sha256": "96cc7eab453724a396cdb548124c4b9f79d3aeae6d0f677fc5bb1ee949f77df7"
+      },
+      "engine": "veraqis 0.2.1"
+    },
+    {
+      "file": "nist-sqlite/veraqis-report-btree.png",
+      "w": 2000,
+      "h": 1720,
+      "command": "phx report testdata/sqlite/btree_page_corrupt/SQ_0008.db --output sqlite-report.html --format html",
+      "input": {
+        "name": "testdata/sqlite/btree_page_corrupt/SQ_0008.db",
+        "bytes": 16384,
+        "sha256": "e22062475808d76d8676a37b310a462e8c91e385a4d4b5538d6cf6b720f93b1c"
+      },
+      "engine": "veraqis 0.2.1"
+    },
+    {
+      "file": "zip-head-to-head/benchmark-report.png",
+      "w": 2400,
+      "h": 1880,
+      "command": "recovery-report --input <runs> --output reports/phase-4-headtohead/report",
+      "input": {
+        "name": "reports/phase-4-headtohead/report/archive-recovery-benchmark.html",
+        "bytes": 14718,
+        "sha256": "ee17f90d3aa0cf70742f015507a44497b932278727c819f5ae5c77140215c66f"
+      },
+      "engine": "veraqis 0.2.1"
+    }
+  ]
+}

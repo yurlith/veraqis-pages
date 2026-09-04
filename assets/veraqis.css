@@ -200,6 +200,10 @@ pre .c{color:#9aa8a4} pre .p{color:#a78bfa} pre .o{color:#5fd39a} pre .a{color:#
 .evidence-shot{margin:22px 0 0}
 .evidence-shot img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--line);box-shadow:0 14px 35px rgba(20,34,30,.12);background:#0b0f15}
 .evidence-shot figcaption{margin-top:10px;color:var(--dim);font-size:13px}
+/* Provenance under a screenshot: the command, build and input hash that produced
+   it. Kept visually quiet but always present — a figure without it is a claim. */
+.evidence-shot .fig-prov{display:block;margin-top:6px;font-family:var(--mono);font-size:11.5px;color:var(--mut);word-break:break-word}
+figure.evidence-shot{margin:22px 0 4px}
 .source-list{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 22px}
 .source-list code{border:1px solid var(--line);border-radius:6px;background:#fff;padding:4px 8px;color:var(--amber2);font-size:12px}
 
