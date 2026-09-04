@@ -1,0 +1,11 @@
+{
+  "note": "Written by tools/wasm-zip-core/build.mjs. Checked by site/scripts/wasm-freshness.mjs. Do not edit by hand — rebuild instead.",
+  "builtFrom": [
+    "crates/phx_zip_core/src",
+    "crates/phx_zip_core/Cargo.toml",
+    "crates/phx_zip_wasm/src",
+    "crates/phx_zip_wasm/Cargo.toml"
+  ],
+  "sourceFingerprint": "c084b62f687ee8fbbdf40dc3b3990c1fb59882bbfb4f870163fa0b8591c5c0cd",
+  "builtAt": "2026-09-03"
+}

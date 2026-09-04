@@ -21,6 +21,38 @@ export function analyze_zip(bytes) {
         wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
     }
 }
+
+/**
+ * Decide whether leading bytes are a coherent prepended stub or incoherent damage.
+ *
+ * This is the distinction a byte-signature check cannot make. "Does not start with PK"
+ * is true of a self-extracting archive and of a corrupted file alike; what separates
+ * them is whether the surviving directory records all agree on ONE offset shift. They
+ * do for an SFX stub, because the stub moved everything by its own length. They do not
+ * for damage, because damage is not a translation.
+ *
+ * The shift is measured against the buffer it is given, so `bytes` must be the file from
+ * byte zero: the directory records at the end are compared with the local headers earlier
+ * in the same buffer, and a window that starts anywhere else moves every offset by the
+ * window's own start. A caller that cannot afford the whole file must not pass a slice —
+ * it must decline to probe.
+ * @param {Uint8Array} bytes
+ * @returns {string}
+ */
+export function probe_prepended(bytes) {
+    let deferred2_0;
+    let deferred2_1;
+    try {
+        const ptr0 = passArray8ToWasm0(bytes, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ret = wasm.probe_prepended(ptr0, len0);
+        deferred2_0 = ret[0];
+        deferred2_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred2_0, deferred2_1, 1);
+    }
+}
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,

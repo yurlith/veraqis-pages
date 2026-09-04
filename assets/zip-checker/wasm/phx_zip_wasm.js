@@ -1,3 +1,5 @@
+/* @ts-self-types="./phx_zip_wasm.d.ts" */
+
 /**
  * Analyze `bytes` as a ZIP-family container. Returns a JSON string (not a
  * `JsValue` object) so this crate needs no `serde-wasm-bindgen` dependency —
