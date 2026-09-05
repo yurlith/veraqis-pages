@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>The database that cannot prove it is current | VERAQIS</title>
+<meta name="description" content="Copy a SQLite file without its -wal and the rows still read perfectly — they are just not necessarily the latest. When currency is provable, and when it is not." />
+<link rel="canonical" href="https://veraqis.tech/sqlite/database-without-its-wal/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="When a SQLite database cannot prove it is current" />
+<meta property="og:description" content="A WAL-mode database handed over without its WAL is not damaged and not obviously stale. It is undecidable — and a recovery tool should say so rather than pick." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/database-without-its-wal.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS card: the database that cannot prove it is current — the freshness verdict for a WAL-mode database supplied without its WAL is Unprovable" />
+<meta property="og:url" content="https://veraqis.tech/sqlite/database-without-its-wal/" />
+<meta property="article:published_time" content="2026-09-04" />
+<meta property="article:modified_time" content="2026-09-04" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="When a SQLite database cannot prove it is current" />
+<meta name="twitter:description" content="A WAL-mode database handed over without its WAL is not damaged and not obviously stale. It is undecidable — and a recovery tool should say so rather than pick." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/database-without-its-wal.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/sqlite/database-without-its-wal/#article",
+      "url": "https://veraqis.tech/sqlite/database-without-its-wal/",
+      "headline": "The database that cannot prove it is current",
+      "name": "The database that cannot prove it is current | VERAQIS",
+      "description": "Copy a SQLite file without its -wal and the rows still read perfectly — they are just not necessarily the latest. When currency is provable, and when it is not.",
+      "datePublished": "2026-09-04",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "write-ahead log"
+        },
+        {
+          "@type": "Thing",
+          "name": "digital forensics"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "database integrity"
+        }
+      ],
+      "citation": [
+        {
+          "@type": "CreativeWork",
+          "name": "Write-Ahead Logging",
+          "publisher": "SQLite",
+          "url": "https://www.sqlite.org/wal.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/sqlite/database-without-its-wal/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What happens if you copy a SQLite database without the -wal file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You get the database as of its last checkpoint. Every transaction committed after that checkpoint lives in the WAL, so it is missing — and nothing signals this. The file opens, the schema is intact and integrity checks pass, because the file is not damaged. It is simply older than you think."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a tool tell whether a WAL file was missing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, and this is provable rather than a limitation. When SQLite checkpoints cleanly the WAL is emptied and the database file legitimately becomes the committed state. That end state is byte-indistinguishable from a stale copy whose WAL was left behind, so no examination of the database file can separate them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is a database missing its WAL corrupted?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It is intact and internally consistent. The question it cannot answer is not \"am I damaged\" but \"am I current\" — a different axis, and the one that usually matters when a database is being recovered or examined."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about rollback-journal mode instead of WAL?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In rollback mode the database file is the committed state after a clean commit, so currency is normally provable without any companion. The cases that break it are a journal that is present but undecodable — a transaction may have been in flight — and modes that keep no journal at all, where a torn commit can leave every page well formed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which files should be collected for SQLite recovery?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The database plus every companion: `-wal`, `-journal`, and `-shm` if present. The `-shm` file is a rebuildable cache, but the other two carry state that cannot be reconstructed from the database alone. Recording that a companion did not exist is also worth doing, because absence and non-collection look the same later."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/sqlite/database-without-its-wal/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "SQLite",
+          "item": "https://veraqis.tech/sqlite/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Without its WAL",
+          "item": "https://veraqis.tech/sqlite/database-without-its-wal/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/" class="active">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/sqlite/">SQLite</a></p>
+    <p class="kicker">Experiment EXP-SQL-012</p>
+    <h1>The database that cannot prove it is current</h1>
+    <p class="lead">Most database recovery questions are about damage. This one is not. A perfectly intact SQLite file, opened by any tool, will hand you rows that look complete and are internally consistent — and may still be missing every change made in the last month. Nothing inside the file says which case you are in. That is the measurement here, and the design consequence: when currency cannot be decided, the honest output says <em>undecidable</em> rather than guessing.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-09-04">4 September 2026</time></span> · <span class="mono">EXP-SQL-012</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="mistake">The acquisition mistake that leaves no trace</h2>
+      <p>A SQLite database in WAL mode is two files. <code>app.db</code> holds the pages as of the last checkpoint; <code>app.db-wal</code> holds every transaction committed since. A reader that opens both sees the current state. A reader given only the first sees the state as of the checkpoint — which may be seconds old, or months.</p>
+      <p>The failure mode is that <strong>both look identical</strong>. There is no error, no warning, no missing-file marker. The database opens, the schema is right, the row counts are plausible, and every integrity check passes, because nothing is corrupt. You are simply reading an older version of the truth.</p>
+      <div class="callout warn">This is the most common acquisition mistake we see in SQLite work, and it is invisible by construction: copying <code>app.db</code> out of a phone backup, a container, or a live directory — without <code>app.db-wal</code> — silently substitutes a checkpoint for the present.</div>
+      <h2 id="why">Why the file cannot tell you</h2>
+      <p>It is tempting to assume a database could detect this — surely a WAL-mode file knows whether it had a WAL? It does not, and the reason is precise. When SQLite checkpoints cleanly and closes, the WAL is emptied or removed and the database file <em>becomes</em> the committed state. That is a normal, healthy end state.</p>
+      <p>So a WAL-mode database with no WAL beside it has two readings, and the bytes are the same in both:</p>
+      <div class="compare"><div class="side veraqis"><h3>Reading A — nothing is missing</h3><ul><li>The writer checkpointed and shut down cleanly.</li><li>The WAL was emptied because it had nothing left to hold.</li><li>This file <em>is</em> the latest committed state.</li></ul></div><div class="side"><h3>Reading B — a month is missing</h3><ul><li>The WAL existed and was not copied.</li><li>It held every transaction since the last checkpoint.</li><li>This file is a stale snapshot, and reads as a healthy one.</li></ul></div></div>
+      <figure class="diagram"><svg viewBox="0 0 720 212" width="100%" height="auto" role="img" aria-labelledby="sqlite-artifacts-t" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<title id="sqlite-artifacts-t">Which SQLite file holds which state</title><desc>Two columns showing the same database file. On the left it is collected together with its write-ahead log, and the latest committed state is provable. On the right the log is absent, and whether the database is current is undecidable — the database file itself is byte-identical in both cases.</desc>
+<text x="8" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">collected together</text><rect x="8" y="34" width="340" height="40" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="51" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">app.db</text><text x="20" y="66" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">pages as of the last checkpoint</text><rect x="8" y="84" width="340" height="40" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="101" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">app.db-wal</text><text x="20" y="116" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">every commit since then</text><rect x="8" y="146" width="340" height="44" rx="4" fill="transparent" stroke="var(--recovery-accent)" stroke-width="1" stroke-dasharray="3 3"/><text x="20" y="173" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--recovery-accent)" font-weight="700">latest state: PROVABLE</text><text x="372" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">database copied alone</text><rect x="372" y="34" width="340" height="40" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="384" y="51" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">app.db</text><text x="384" y="66" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">pages as of the last checkpoint</text><rect x="372" y="84" width="340" height="40" rx="4" fill="transparent" stroke="var(--bad)" stroke-width="1" stroke-dasharray="4 3"/><text x="384" y="101" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--bad)" font-weight="600">app.db-wal</text><text x="384" y="116" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">not collected — or never existed</text><rect x="372" y="146" width="340" height="44" rx="4" fill="transparent" stroke="var(--bad)" stroke-width="1" stroke-dasharray="3 3"/><text x="384" y="173" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--bad)" font-weight="700">latest state: UNDECIDABLE</text><text x="8" y="204" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the database file is byte-identical in both columns</text>
+</svg><figcaption>The database file is the same object on both sides. What changes is whether the log that holds everything since the last checkpoint came with it — and that difference is not recorded anywhere inside the database.</figcaption></figure>
+      <p>No field in the header distinguishes them. This is not a gap in SQLite; it is what a write-ahead log <em>is</em>. Which means it is not a gap a recovery tool can close either — and a tool that reports "current" here is asserting something it cannot know.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cases">The complete case table</h2>
+      <p>Rather than special-case the WAL question, the engine derives one verdict — <em>is the latest committed state provable from the artifacts I was given?</em> — over every combination of journal mode and supplied companion. The derivation is exhaustive: these are all the cases there are.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">journal mode</th><th scope="col">companion supplied</th><th scope="col">is the latest state provable?</th><th scope="col">why</th></tr></thead><tbody><tr><td>WAL</td><td>valid WAL</td><td><strong>yes</strong> — latest snapshot</td><td>the newest committed snapshot in the supplied set</td></tr><tr><td>WAL</td><td>WAL present but unreadable</td><td><strong>no</strong> — companion unreadable</td><td>positive evidence that companion state existed and cannot be read; strictly worse than absence</td></tr><tr><td>WAL</td><td><strong>no WAL at all</strong></td><td><strong>no</strong> — undecidable</td><td>cleanly checkpointed and stale are indistinguishable</td></tr><tr><td>rollback</td><td>no journal</td><td><strong>yes</strong> — the database is the committed state</td><td>in rollback mode the file is the committed state after a clean commit</td></tr><tr><td>rollback</td><td>hot journal, valid</td><td><strong>yes</strong> — after the rollback is applied</td><td>the committed state is the database with the journal applied</td></tr><tr><td>rollback</td><td>journal present, header zeroed or empty</td><td><strong>yes</strong> — the database is the committed state</td><td>PERSIST and TRUNCATE leave a non-hot journal behind at commit</td></tr><tr><td>rollback</td><td>journal present, undecodable</td><td><strong>no</strong> — companion unreadable</td><td>a transaction may have been in flight and its rollback state is lost</td></tr><tr><td>unknown / header unreadable</td><td>any</td><td><strong>no</strong> — the question cannot be named</td><td>without the mode there is no case to select</td></tr></tbody></table></div><p class="note">Two of the "no" rows are deliberately kept apart. <em>Undecidable</em> means no evidence a companion was omitted and none that it was not. <em>Unreadable</em> means we know companion state existed and cannot read it — decidable, and worse. Collapsing them into one "unknown" would throw away the difference between a doubt and a known loss.</p>
+      <p>One residual rides along with the rollback-mode "yes" rows, and it is not a hedge for its own sake: the file cannot say whether the writer was using a journal-less mode (<code>OFF</code> or <code>MEMORY</code>) when it stopped. A torn commit in those modes can leave every individual page well formed. So the claim is "the database is the committed state <strong>if</strong> the writer was not journal-less", and the engine states the condition rather than dropping it.</p>
+      <div class="claim" id="claim-undecidable"><p class="claim-text">For a WAL-mode database supplied without its WAL, whether the latest committed state is present is not merely unknown to this tool — it is undecidable from the artifacts. A cleanly checkpointed database and a stale copy are byte-indistinguishable, so no analysis of those bytes can separate them.</p><p class="claim-src">EXP-SQL-012 · derivation §7.3, exhaustive over journal mode × companion supplied · fixture <code>wal_mode_without_its_wal</code>, latest-state-provable = no</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="behaviour">What the engine does with that</h2>
+      <p>The verdict is reported before the rows, not buried beside them, because it changes what the rows mean. In the benchmark this is a claim the gates can falsify, not a code path: a WAL-mode database supplied without its WAL must refuse to call its rows current.</p>
+      <figure class="evidence-shot"><img src="/assets/research/sqlite/freshness-pair.png" alt="Two terminal panes side by side. Left, run with app.db and app.db-wal: LATEST COMMITTED STATE PROVABLE, the latest committed state is the last commit in the supplied WAL, 1 table and 3 current rows. Right, the same database alone: LATEST COMMITTED STATE NOT PROVABLE, a WAL-mode database was supplied without its WAL, 0 tables and 0 current rows" width="2240" height="800" loading="lazy" decoding="async" /><figcaption>The same database file, run twice. With its log beside it the state is provable and three rows come back. Without it, the verdict flips and the run returns nothing — on this database every row lived in the log that was not collected.<span class="fig-prov">phx recover app.db --semantic sqlite --output out — run once in a directory holding app.db and app.db-wal, once in a directory holding app.db alone · fixture testdata/sqlite/wal_real/SQ_R001.db · VERAQIS 0.2.1</span></figcaption></figure>
+      <div class="table-scroll"><table><thead><tr><th scope="col">fixture</th><th scope="col">rows verified</th><th scope="col">where the rows came from</th><th scope="col">latest state provable</th></tr></thead><tbody><tr><td><code>wal_mode_without_its_wal</code></td><td>3</td><td>the database file</td><td><strong>no</strong></td></tr><tr><td><code>rollback_mode_is_current</code></td><td>3</td><td>the database file</td><td>yes</td></tr><tr><td><code>wal_committed_only</code></td><td>0 from the database, <strong>4 from the WAL</strong></td><td>the write-ahead log</td><td>yes</td></tr><tr><td><code>negative_control_random</code></td><td>0</td><td>— (random bytes)</td><td><strong>no</strong></td></tr></tbody></table></div><p class="note">The <code>wal_committed_only</code> row is the same mechanism seen from the other side: with the WAL supplied, every one of the four rows comes out of the log rather than the database, and the state is provable. Without it, those four rows are exactly what a reader would silently not see.</p>
+      <p>Note what the first row does <strong>not</strong> say. Three rows are recovered and verified — they are physically and structurally valid, and the tool says so. What it withholds is any claim about currency, in either direction. Those rows are not labelled stale, because they might not be. They are labelled <em>not provably current</em>, which is the only true statement available.</p>
+      <div class="callout info"><strong>Freshness is a property of the artifact set, not of a row.</strong> Whether a WAL was supplied is the same fact for every row in the file. A tool that marked individual rows current or stale here would be inventing a distinction the evidence does not support.</div>
+      <h2 id="practice">What to do about it</h2>
+      <ol><li><strong>Copy the whole set, always.</strong> <code>name.db</code>, <code>name.db-wal</code>, <code>name.db-journal</code> and <code>name.db-shm</code> if present. The <code>-shm</code> file is only a cache and can be regenerated, but the other two carry state.</li><li><strong>Prefer the application closing the database</strong> to copying it live. A clean shutdown checkpoints the WAL, which turns Reading B into Reading A honestly rather than by assumption.</li><li><strong>Record what you collected</strong>, including the absence of a companion. "There was no <code>-wal</code>" and "I did not copy the <code>-wal</code>" are different facts, and only the collector can tell them apart afterwards.</li><li><strong>Distrust any tool that reports a WAL-less database as current.</strong> It is not reading a field you missed; there is no such field.</li></ol>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>Completeness of acquisition can never be proven from inside.</strong> Even with a valid WAL, "the latest committed state in the supplied set" is not the same as "the latest state that ever existed". A newer copy may exist elsewhere, and no analysis of these bytes can exclude it.</li><li><strong>Freshness here is artifact-set level.</strong> The engine does not yet mark individual rows current, historical or superseded from this verdict alone.</li><li><strong>The derivation is over journal mode and companion presence.</strong> It says nothing about whether the companion you supplied belongs to the database you supplied — a separate check.</li></ul>
+      <ul class="source-list"><li><a href="/sqlite/">SQLite recovery</a> — the rest of the section</li><li><a href="/sqlite/without-rowid-tables/">The table a tool looks past</a> — a different way to be confidently wrong about a database</li><li><a href="/formats/sqlite/">SQLite format reference</a> — the header fields this verdict is derived from</li><li><a href="/research/nist-cftt-sqlite-validation/">The federal SQLite spec, run on ourselves</a> — where this verdict has no assertion to be scored against</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about WAL files and currency</h2>
+    <div class="faq">
+      <div class="qa"><h3>What happens if you copy a SQLite database without the -wal file?</h3><p>You get the database as of its last checkpoint. Every transaction committed after that checkpoint lives in the WAL, so it is missing — and nothing signals this. The file opens, the schema is intact and integrity checks pass, because the file is not damaged. It is simply older than you think.</p></div>
+      <div class="qa"><h3>Can a tool tell whether a WAL file was missing?</h3><p>No, and this is provable rather than a limitation. When SQLite checkpoints cleanly the WAL is emptied and the database file legitimately becomes the committed state. That end state is byte-indistinguishable from a stale copy whose WAL was left behind, so no examination of the database file can separate them.</p></div>
+      <div class="qa"><h3>Is a database missing its WAL corrupted?</h3><p>No. It is intact and internally consistent. The question it cannot answer is not "am I damaged" but "am I current" — a different axis, and the one that usually matters when a database is being recovered or examined.</p></div>
+      <div class="qa"><h3>What about rollback-journal mode instead of WAL?</h3><p>In rollback mode the database file is the committed state after a clean commit, so currency is normally provable without any companion. The cases that break it are a journal that is present but undecodable — a transaction may have been in flight — and modes that keep no journal at all, where a torn commit can leave every page well formed.</p></div>
+      <div class="qa"><h3>Which files should be collected for SQLite recovery?</h3><p>The database plus every companion: <code>-wal</code>, <code>-journal</code>, and <code>-shm</code> if present. The <code>-shm</code> file is a rebuildable cache, but the other two carry state that cannot be reconstructed from the database alone. Recording that a companion did not exist is also worth doing, because absence and non-collection look the same later.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). The database that cannot prove it is current.
+VERAQIS Research. https://veraqis.tech/sqlite/database-without-its-wal/
+Engine: VERAQIS 0.2.1 · Measured: 4 September 2026 · Experiment: EXP-SQL-012</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/sqlite/without-rowid-tables/"><h3>The table a recovery tool looks past</h3><p>Another silent failure: rows that are present, readable, and never reported.</p></a>
+      <a class="card link-card" href="/research/nist-cftt-sqlite-validation/"><h3>The federal SQLite spec, run on ourselves</h3><p>A methodology with no assertion for this question at all — which is why passing it proves less than it appears to.</p></a>
+      <a class="card link-card" href="/reference/evidence-model/"><h3>The evidence model</h3><p>Why "not provable" is a result rather than a failure to produce one.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Ask a database what it can prove</h2>
+    <p class="sub">VERAQIS opens the file read-only, reports whether the latest committed state is provable from the artifacts you supply, and says so plainly when it is not. Nothing is uploaded.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

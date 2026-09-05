@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>A deleted row's identity, from b-tree shape alone | VERAQIS</title>
+<meta name="description" content="On a fixture where the key is never derivable from the content, 100 of 100 deleted rowids were reconstructed exactly — using only cell ordering and separator keys." />
+<link rel="canonical" href="https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Recovering a deleted row's identity from b-tree geometry" />
+<meta property="og:description" content="Content recovery without identity is half an answer. 100 of 100 deleted rowids reconstructed exactly from structural constraints alone — and the measured limit where the method stops." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/sqlite-rowid-from-btree-geometry.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS research card: a deleted row's identity from shape alone — 100 of 100 deleted rowids reconstructed exactly from b-tree ordering, without reading payload" />
+<meta property="og:url" content="https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/" />
+<meta property="article:published_time" content="2026-09-04" />
+<meta property="article:modified_time" content="2026-09-04" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Recovering a deleted row's identity from b-tree geometry" />
+<meta name="twitter:description" content="Content recovery without identity is half an answer. 100 of 100 deleted rowids reconstructed exactly from structural constraints alone — and the measured limit where the method stops." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/sqlite-rowid-from-btree-geometry.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/#article",
+      "url": "https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/",
+      "headline": "Recovering the identity of a deleted row without reading its content",
+      "name": "A deleted row's identity, from b-tree shape alone | VERAQIS",
+      "description": "On a fixture where the key is never derivable from the content, 100 of 100 deleted rowids were reconstructed exactly — using only cell ordering and separator keys.",
+      "datePublished": "2026-09-04",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "b-tree"
+        },
+        {
+          "@type": "Thing",
+          "name": "digital forensics"
+        },
+        {
+          "@type": "Thing",
+          "name": "deleted data"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery research"
+        }
+      ],
+      "citation": [
+        {
+          "@type": "CreativeWork",
+          "name": "Database File Format",
+          "publisher": "SQLite",
+          "url": "https://www.sqlite.org/fileformat2.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a deleted SQLite row be identified after its rowid is overwritten?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Often, yes — and without reading its content. SQLite orders a table's cell pointer array by ascending rowid, so the surviving neighbours of a deleted cell bound the missing key. When the bounds coincide the identity is determined exactly. In this measurement that resolved 99 of 100 cases, with the hundredth recovered from a varint that physically survived."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the rowid lost when the row data survives?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because SQLite writes the freeblock header over the start of the deleted cell, which is where the record length and the rowid varint live. The payload further into the cell is usually untouched, so content commonly outlives identity."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens when several adjacent rows are deleted?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SQLite merges the freed space into one freeblock with a single header, so the internal cell boundaries are gone. Structure still determines the set of missing rowids exactly, but not which byte range holds which — unless every cell in the group is the same size, which is a property of the data rather than of SQLite."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does VERAQIS recover deleted rows?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not by default. Recovery ignores the freelist, and resurrecting deleted content is a separate explicit mode marked as risky. Rows are recovered through the transactional record instead — from a write-ahead log, for example — where there is evidence of when a row was live and whether it was committed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this method reliable enough to use as evidence?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The identity part is deterministic where the bounds coincide: one integer is consistent with the surviving structure and no other is. The parts that are not deterministic are named here rather than smoothed over — a coalesced group yields a set, not an assignment, and a row deleted from the end of a page has no upper bound at all."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Research",
+          "item": "https://veraqis.tech/research/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Rowid from b-tree shape",
+          "item": "https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/" class="active">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/research/">Research</a></p>
+    <p class="kicker">Research measurement · 2026-08-23</p>
+    <h1>Recovering the identity of a deleted row without reading its content</h1>
+    <p class="lead">Recovering the <em>content</em> of a deleted database row is the well-known problem. Recovering its <strong>identity</strong> — which row it was — is the one that decides whether the content is usable, because a value with no key belongs to no record. This measurement asked whether identity can be reconstructed from the shape of the b-tree alone, on a fixture deliberately built so the key can never be read from the content. It can: 100 of 100, exactly. The same experiment found where the method stops.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-09-04">4 September 2026</time></span> · <span class="mono">EXP-SQL-IDENTITY-2026-08-23</span> · <span class="mono">VERAQIS research prototype</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <div class="callout warn"><strong>This is a research measurement, not a shipped feature.</strong> Recovering deleted rows from free space is off by default in VERAQIS and sits behind an explicit, risk-marked forensic mode; the default recovery path ignores the freelist entirely. Nothing here changes that, and the prototype below is a research script, not the product.</div>
+      <h2 id="why-identity">Why identity is the harder half</h2>
+      <p>When a row is deleted from a SQLite table, its bytes usually stay on the page. The space is marked free, and the record's payload often survives untouched until something else is written over it. Carving that payload back out is comparatively easy.</p>
+      <p>What does not survive is the front of the cell. SQLite's freeblock header is written <strong>over the beginning of the deleted cell</strong> — which is exactly where the record's length and its rowid varint were. So the usual outcome is content without a key: a row of values that cannot be placed in the table, cannot be ordered against its neighbours, and cannot be tied to a foreign key in another table.</p>
+      <p>The common workaround is to read the identity back out of the content — an <code>id</code> that also appears inside a text column, an application-level reference. That works, and it is worth nothing as a general result: it depends on the schema being redundant. So the fixture for this experiment was built to remove that possibility entirely.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col"></th><th scope="col">value</th></tr></thead><tbody><tr><th scope="row">Schema</th><td><code>t1(id INTEGER PRIMARY KEY, a TEXT, b BLOB)</code></td></tr><tr><th scope="row">Rows</th><td>2,000, of which 100 deleted at a fixed stride</td></tr><tr><th scope="row">Payload</th><td><code>a</code> and <code>b</code> are SHA3-derived from the id through multiplier constants — deterministic, reproducible, and carrying no readable trace of the id</td></tr><tr><th scope="row">Leakage check</th><td>46 of 2,000 rows (2.3%) coincidentally contain their own decimal id somewhere in the hex payload — birthday-paradox noise, and explicitly unused by the method</td></tr><tr><th scope="row">Inputs to reconstruction</th><td>the post-delete file only, plus the page shape any surviving page discloses about itself</td></tr></tbody></table></div><p class="note">The reconstruction never reads payload content for identity, never reads the pre-delete file's rowid values, and never consults the ground truth. Those are inputs an analyst does not have.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="method">The method: bounds, not guesses</h2>
+      <p>A rowid table's cell pointer array is ordered by ascending rowid. That single fact turns the surviving neighbours of a deleted cell into an interval that must contain the missing key.</p>
+      <div class="terminal"><pre>page 12, cell pointer array after the delete
+  ordinal 0   rowid 4113   ← surviving left neighbour
+  ordinal 1   [ freeblock — cell deleted, rowid varint overwritten ]
+  ordinal 2   rowid 4115   ← surviving right neighbour
+
+  lower bound = left neighbour + 1 = 4114
+  upper bound = right neighbour - 1 = 4114
+  bounds coincide  ⇒  rowid = 4114, deterministically
+
+when the deleted cell was first on its page there is no left
+neighbour, so the bound comes from one level up:
+
+  parent interior page separator keys
+    ... | sep 4096 | child page 12 | sep 4230 | ...
+  previous sibling's maximum rowid = 4096
+  lower bound = 4097</pre></div>
+      <figure class="diagram"><svg viewBox="0 0 720 330" width="100%" height="auto" role="img" aria-labelledby="btree-bounds-t" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<title id="btree-bounds-t">How the surviving neighbours of a deleted cell bound its rowid</title><desc>A leaf page whose middle cell has been deleted, between two surviving cells with rowids 4113 and 4115. Because the cell pointer array is ordered by ascending rowid, the missing key must be greater than 4113 and less than 4115, leaving exactly 4114. Above the leaf, the parent interior page supplies the same bound from its separator keys when the deleted cell had no left neighbour.</desc>
+<text x="8" y="18" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">interior page — separator keys</text><rect x="8" y="30" width="150" height="44" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="83" y="57" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600" text-anchor="middle">… sep 4096</text><rect x="172" y="30" width="150" height="44" rx="4" fill="var(--recovery-accent)" stroke="var(--line)" stroke-width="1"/><text x="247" y="57" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#ffffff" font-weight="600" text-anchor="middle">child page 12</text><rect x="336" y="30" width="150" height="44" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="411" y="57" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600" text-anchor="middle">sep 4230 …</text><path d="M 247 74 L 247 128" stroke="var(--line)" stroke-width="1.4"/><text x="8" y="138" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">leaf page 12 — cell pointer array, ordered by ascending rowid</text><rect x="8" y="150" width="150" height="56" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="83" y="172" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)" text-anchor="middle">ordinal 0</text><text x="83" y="192" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600" text-anchor="middle">rowid 4113</text><rect x="172" y="150" width="150" height="56" rx="4" fill="transparent" stroke="var(--bad)" stroke-width="1" stroke-dasharray="4 3"/><text x="247" y="172" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)" text-anchor="middle">ordinal 1</text><text x="247" y="192" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--bad)" font-weight="600" text-anchor="middle">freeblock</text><rect x="336" y="150" width="150" height="56" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="411" y="172" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)" text-anchor="middle">ordinal 2</text><text x="411" y="192" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600" text-anchor="middle">rowid 4115</text><text x="247" y="226" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)" text-anchor="middle">rowid varint overwritten by the freeblock header</text><rect x="8" y="250" width="704" height="66" rx="4" fill="transparent" stroke="var(--line)" stroke-width="1"/><text x="24" y="274" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)">lower bound = left neighbour + 1 = 4114</text><text x="24" y="294" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)">upper bound = right neighbour − 1 = 4114</text><text x="696" y="284" font-size="13" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--recovery-accent)" font-weight="700" text-anchor="end">one integer remains: rowid 4114</text>
+</svg><figcaption>The bound comes from the order, not from the content. When the deleted cell has a surviving neighbour on each side the interval can hold only one integer; when it was first on its page, the parent's separator keys supply the lower bound instead.</figcaption></figure>
+      <ol><li>Confirm the deleted cell's freeblock, or the region reclaimed by the content area advancing.</li><li>Walk the surviving cell pointer array on the same page and take the immediate neighbours <strong>by ordinal position</strong>, not by byte offset.</li><li>Lower bound: left neighbour + 1. If there is no left neighbour, look up the parent interior page and take the previous sibling's maximum rowid, +1.</li><li>Upper bound: right neighbour − 1.</li><li>If the two bounds coincide, the identity is determined — not estimated.</li></ol>
+      <p>Step 3's second half is not a detail. Before the parent separator keys were consulted, two of the hundred targets were unbounded — both were the first cell on their page, with no left neighbour to bound them. Adding one level of the tree closed both to exact bounds.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="result">Result</h2>
+      <figure class="chart">
+<svg viewBox="0 0 720 105" width="100%" height="auto" role="img" aria-labelledby="cg-1w4dady" preserveAspectRatio="xMinYMin meet"><title id="cg-1w4dady">Identity outcome for 100 deleted rows</title><desc>How each of the 100 deleted rowids was resolved. Both categories are exact: one reads the surviving varint, the other derives the value from structural bounds that admit exactly one integer.</desc><rect x="0" y="4" width="11" height="11" rx="2" fill="var(--recovery-accent)"/><text x="17" y="14" font-size="12" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">rows</text><text x="0" y="37" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">derived from structure</text><rect x="168" y="24" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="24" width="444" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="35" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">99</text><text x="0" y="62" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">varint still intact</text><rect x="168" y="49" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="49" width="4" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="60" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">1</text><text x="0" y="87" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">unresolved</text><rect x="168" y="74" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="74" width="0" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="85" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text></svg>
+<figcaption>How each of the 100 deleted rowids was resolved. Both categories are exact: one reads the surviving varint, the other derives the value from structural bounds that admit exactly one integer.</figcaption>
+</figure>
+      <div class="claim" id="claim-identity"><p class="claim-text">On a fixture built so that no row's key is derivable from its content, all 100 deleted rows had their rowid recovered exactly: 99 derived from b-tree ordering constraints without reading any payload, and 1 read directly from a varint that physically survived. No row was left unresolved and none was reconstructed incorrectly.</p><p class="claim-src">Identity-recovery measurement, 2026-08-23 · fixtures noid_s0/noid_s1.sqlite, 2,000 rows, 100 stride-19 deletions · reconstruction reads the post-delete file only</p></div>
+      <p>The single surviving varint belongs to a physical class worth naming: sometimes a deleted cell is reclaimed by the page's content area advancing rather than by freeblocking, and then nothing is written over the record's head at all. It is rare and it is real — 1 of 100 here, 2 of 100 in an earlier fixture.</p>
+      <p>The evidence label matters as much as the count. A rowid derived this way is not <em>observed</em>, and it is not <em>guessed</em>: it is the only integer consistent with the surviving structure. That is a different class of claim from carving a value out of free space and hoping, and it is the reason the result is worth having.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="limit">Where the method stops</h2>
+      <p>The stride-spaced deletions above are the easy geometry: every deleted cell keeps a surviving neighbour on each side. So a second fixture deleted <strong>adjacent</strong> rows — seven consecutive, then a pair, then a single — to force SQLite to merge the freed space.</p>
+      <p>It does merge. Each cluster produced exactly one freeblock, with one header, at the start of the merged region — 330 bytes for the seven-row cluster, matching seven cells of 55 bytes exactly. SQLite does not preserve or re-insert headers at the original cell boundaries, so the internal divisions are gone.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">what the method gives</th><th scope="col">on the coalesced cluster</th></tr></thead><tbody><tr><th scope="row">The set of missing identities</th><td><strong>Exact.</strong> Bounds from the previous sibling's separator key and the next surviving cell give the interval [501, 506] — six integers, exactly the six deleted rowids.</td></tr><tr><th scope="row">Which byte range belongs to which identity</th><td><strong>Not determined by structure.</strong> Any assignment of the six rowids to the six sub-ranges is equally consistent with b-tree ordering evidence alone.</td></tr></tbody></table></div><p class="note">On this fixture the sub-division happens to work — 330 / 55 = 6 exactly — but only because every cell has the same payload size. That is a property of a uniform hash-based schema, not a SQLite guarantee.</p>
+      <div class="callout info"><strong>This is the finding that keeps the result honest.</strong> A solver that assumed uniform sub-division would emit assignments on a table with variable-length text as if they were determined, when in fact several permutations fit the evidence equally well. The set is exact; the assignment needs a signal the b-tree does not carry.</div>
+      <div class="claim" id="claim-coalesced"><p class="claim-text">When adjacent rows are deleted, SQLite merges their freed space into a single freeblock with one header. Structural evidence then determines the <em>set</em> of missing rowids exactly — six integers for six deleted rows — but not which byte range holds which, unless every cell in the group happens to be the same size.</p><p class="claim-src">Identity-recovery measurement, 2026-08-23 · fixtures noid_adj_s0/noid_adj_s1.sqlite · clusters 500-506, 1000, 1500-1501 · 330-byte merged freeblock measured</p></div>
+      <p>One more boundary is known and untested: the method needs a surviving right neighbour. A row deleted from the end of a page, or the last row of a table, has no upper bound from this evidence, and no claim is made about it here.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="shipping">What this would and would not justify shipping</h2>
+      <div class="grid g2"><div class="card"><h3>Emittable, in principle</h3><p>An identity whose bounds coincide is determined by the surviving structure — one integer, no alternatives. It is the kind of result the evidence model admits: unique under stated structural constraints, and falsifiable if the constraints are wrong.</p></div><div class="card"><h3>Not emittable</h3><p>An assignment inside a coalesced group where several permutations fit. Publishing one of them as <em>the</em> answer would be exactly the over-claim the gates exist to prevent — the result is a set, and it must be reported as a set.</p></div></div>
+      <p>And it stays behind the deleted-content gate regardless. A row recovered from free space carries no evidence of when it was live or whether it was ever committed, and an exactly-known identity does not change that. The identity result makes such a row <em>placeable</em>; it does not make it <em>current</em>.</p>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>Research prototype, not the shipped engine.</strong> The reconstruction ran as a research script; no product path was changed.</li><li><strong>Single-table fixtures.</strong> Table attribution is unambiguous here by construction. A multi-table adversarial fixture was designed and not built, so nothing is claimed about attribution in general.</li><li><strong>Deletions were never the last cell on a page</strong>, so the no-right-neighbour case is untested rather than solved.</li><li><strong>Uniform payload sizes</strong> in the coalesced fixture. That is what made the sub-division arithmetic work, and it is why the sub-division is reported as fixture-specific rather than as a result.</li><li><strong>Two fixtures, 2,000 rows each.</strong> A measurement of a mechanism, not a survey of real databases.</li></ul>
+      <ul class="source-list"><li><a href="/research/nist-cftt-sqlite-validation/">The CFTT validation</a> — why the shipped tool returns nothing from free space at all</li><li><a href="/formats/sqlite/">SQLite format reference</a> — pages, cells, freeblocks and what each attests</li><li><a href="/reference/evidence-model/">The evidence model</a> — the difference between observed, derived and guessed</li><li><a href="/research/experiments/">Experiment ledger</a> — every measurement behind this site</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about deleted rows and identity</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can a deleted SQLite row be identified after its rowid is overwritten?</h3><p>Often, yes — and without reading its content. SQLite orders a table's cell pointer array by ascending rowid, so the surviving neighbours of a deleted cell bound the missing key. When the bounds coincide the identity is determined exactly. In this measurement that resolved 99 of 100 cases, with the hundredth recovered from a varint that physically survived.</p></div>
+      <div class="qa"><h3>Why is the rowid lost when the row data survives?</h3><p>Because SQLite writes the freeblock header over the start of the deleted cell, which is where the record length and the rowid varint live. The payload further into the cell is usually untouched, so content commonly outlives identity.</p></div>
+      <div class="qa"><h3>What happens when several adjacent rows are deleted?</h3><p>SQLite merges the freed space into one freeblock with a single header, so the internal cell boundaries are gone. Structure still determines the set of missing rowids exactly, but not which byte range holds which — unless every cell in the group is the same size, which is a property of the data rather than of SQLite.</p></div>
+      <div class="qa"><h3>Does VERAQIS recover deleted rows?</h3><p>Not by default. Recovery ignores the freelist, and resurrecting deleted content is a separate explicit mode marked as risky. Rows are recovered through the transactional record instead — from a write-ahead log, for example — where there is evidence of when a row was live and whether it was committed.</p></div>
+      <div class="qa"><h3>Is this method reliable enough to use as evidence?</h3><p>The identity part is deterministic where the bounds coincide: one integer is consistent with the surviving structure and no other is. The parts that are not deterministic are named here rather than smoothed over — a coalesced group yields a set, not an assignment, and a row deleted from the end of a page has no upper bound at all.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). Recovering the identity of a deleted row without reading its content.
+VERAQIS Research. https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/
+Engine: VERAQIS research prototype · Measured: 4 September 2026 · Experiment: EXP-SQL-IDENTITY-2026-08-23</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/research/nist-cftt-sqlite-validation/"><h3>The federal SQLite spec, run on ourselves</h3><p>Including the two assertions we fail because the shipped tool does not scavenge free space.</p></a>
+      <a class="card link-card" href="/formats/sqlite/"><h3>SQLite recovery reference</h3><p>The structures this method reads, and the rules the analyzer fires on a damaged database.</p></a>
+      <a class="card link-card" href="/research/experiments/"><h3>The experiment ledger</h3><p>Every measurement behind this site, with its verdict.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check a database read-only, before anything else</h2>
+    <p class="sub">VERAQIS opens the file without writing to it and reports what is provable from the artifacts you supply — including saying so when the latest committed state cannot be proven at all.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

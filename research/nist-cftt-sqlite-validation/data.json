@@ -1,0 +1,986 @@
+{
+  "schema": "veraqis-research-data/1",
+  "experiment": "VERAQIS-SQL-VAL-001",
+  "measured": "2026-08-14",
+  "remeasured": "2026-08-15",
+  "specification": {
+    "source": "SQLite Data Recovery Specification, Test Assertions, and Test Cases, NIST/DHS CFTT, Version 1.0, April 2021",
+    "local_copy_sha256": "f9d7ce83b70987805dac531302d8474fde69c7a589cb72128abbe0fe07b804c0",
+    "core_requirements": {
+      "SFT-CR-01": "The tool shall not modify the files being analyzed.",
+      "SFT-CR-02": "The tool shall report the database configuration parameters pertinent to data recovery.",
+      "SFT-CR-03": "The tool shall report the schema structure of the database tables.",
+      "SFT-CR-04": "The tool shall report the data content of all recovered rows of any table in the database.",
+      "SFT-CR-05": "The tool shall report the source for all recovered data elements."
+    }
+  },
+  "scope_note": "An internal run of the published CFTT methodology against one tool. VERAQIS is not NIST certified, approved, validated or compliant, and has not been submitted to the programme. No other product was run or is reported on here.",
+  "tool_under_test": {
+    "version": "0.2.1",
+    "binary_sha256": "104400b984169c7d619faf5c4e8091ad64867af712c0419e5ce9bced51ef85e7"
+  },
+  "source_mutations_detected": {
+    "licensed": 0,
+    "unlicensed": 0
+  },
+  "per_assertion_tally": {
+    "licensed": {
+      "SFT-AO-01": {
+        "PASS": 6
+      },
+      "SFT-AO-02": {
+        "NOT_EXPOSED": 6
+      },
+      "SFT-AO-03": {
+        "AMBIGUOUS": 1,
+        "NOT_EXPOSED": 5
+      },
+      "SFT-AO-04": {
+        "FAIL": 2,
+        "NOT_APPLICABLE": 4
+      },
+      "SFT-AO-05": {
+        "FAIL": 2,
+        "NOT_APPLICABLE": 4
+      },
+      "SFT-AO-06": {
+        "PASS": 6
+      },
+      "SFT-AO-07": {
+        "PASS": 6
+      },
+      "SFT-AO-08": {
+        "NOT_APPLICABLE": 5,
+        "PASS": 1
+      },
+      "SFT-CA-01": {
+        "PASS": 6
+      },
+      "SFT-CA-02": {
+        "PASS": 6
+      },
+      "SFT-CA-03": {
+        "PASS": 6
+      },
+      "SFT-CA-04": {
+        "PASS": 6
+      },
+      "SFT-CA-05": {
+        "PASS": 6
+      },
+      "SFT-CA-06": {
+        "PASS": 6
+      },
+      "SFT-CA-07": {
+        "PASS": 6
+      },
+      "SFT-CA-08": {
+        "PASS": 6
+      },
+      "SFT-CA-09": {
+        "PASS": 6
+      },
+      "SFT-CA-10": {
+        "PASS": 6
+      },
+      "SFT-CA-11": {
+        "FAIL": 1,
+        "NOT_APPLICABLE": 5
+      },
+      "SFT-CA-12": {
+        "FAIL": 1,
+        "NOT_APPLICABLE": 4,
+        "PASS": 1
+      },
+      "SFT-CA-13": {
+        "PASS": 6
+      }
+    },
+    "unlicensed": {
+      "SFT-AO-01": {
+        "PASS": 6
+      },
+      "SFT-AO-02": {
+        "NOT_EXPOSED": 6
+      },
+      "SFT-AO-03": {
+        "AMBIGUOUS": 1,
+        "NOT_EXPOSED": 5
+      },
+      "SFT-AO-04": {
+        "FAIL": 2,
+        "NOT_APPLICABLE": 4
+      },
+      "SFT-AO-05": {
+        "FAIL": 2,
+        "NOT_APPLICABLE": 4
+      },
+      "SFT-AO-06": {
+        "PASS": 6
+      },
+      "SFT-AO-07": {
+        "PASS": 6
+      },
+      "SFT-AO-08": {
+        "NOT_APPLICABLE": 5,
+        "PASS": 1
+      },
+      "SFT-CA-01": {
+        "PASS": 6
+      },
+      "SFT-CA-02": {
+        "PASS": 6
+      },
+      "SFT-CA-03": {
+        "PASS": 6
+      },
+      "SFT-CA-04": {
+        "NOT_EXPOSED": 6
+      },
+      "SFT-CA-05": {
+        "NOT_EXPOSED": 6
+      },
+      "SFT-CA-06": {
+        "PASS": 6
+      },
+      "SFT-CA-07": {
+        "PASS": 6
+      },
+      "SFT-CA-08": {
+        "PASS": 6
+      },
+      "SFT-CA-09": {
+        "PASS": 6
+      },
+      "SFT-CA-10": {
+        "PASS": 6
+      },
+      "SFT-CA-11": {
+        "FAIL": 1,
+        "NOT_APPLICABLE": 5
+      },
+      "SFT-CA-12": {
+        "FAIL": 1,
+        "NOT_APPLICABLE": 4,
+        "PASS": 1
+      },
+      "SFT-CA-13": {
+        "PASS": 6
+      }
+    }
+  },
+  "fixtures": [
+    {
+      "fixture": "SFT-01-UTF8-WAL",
+      "artifacts": 1,
+      "unaltered": true,
+      "assertions": [
+        {
+          "assertion": "SFT-CA-01",
+          "result": "PASS",
+          "expected": "hash of database and journal-mode files identical before and after analysis",
+          "observed": "1 artifact(s) byte-identical"
+        },
+        {
+          "assertion": "SFT-CA-02",
+          "result": "PASS",
+          "expected": "journal-mode file still present after analysis",
+          "observed": "all companions present"
+        },
+        {
+          "assertion": "SFT-CA-03",
+          "result": "PASS",
+          "expected": "page_size 4096",
+          "observed": "db_meta.page_size = 4096"
+        },
+        {
+          "assertion": "SFT-CA-04",
+          "result": "PASS",
+          "expected": "SQLite journal mode write version = 2",
+          "observed": "db_meta.file_format_write_version = 2"
+        },
+        {
+          "assertion": "SFT-CA-05",
+          "result": "PASS",
+          "expected": "SQLite journal mode read version = 2",
+          "observed": "db_meta.file_format_read_version = 2"
+        },
+        {
+          "assertion": "SFT-CA-06",
+          "result": "PASS",
+          "expected": "page count 2",
+          "observed": "declared_pages=2 actual_pages=2"
+        },
+        {
+          "assertion": "SFT-CA-07",
+          "result": "PASS",
+          "expected": "encoding UTF-8",
+          "observed": "db_meta.text_encoding = UTF-8"
+        },
+        {
+          "assertion": "SFT-CA-08",
+          "result": "PASS",
+          "expected": "tables [\"t1\"]",
+          "observed": "reported [\"t1\"]"
+        },
+        {
+          "assertion": "SFT-CA-09",
+          "result": "PASS",
+          "expected": "column names for each table",
+          "observed": "t1:[\"id\", \"name\", \"note\"]"
+        },
+        {
+          "assertion": "SFT-CA-10",
+          "result": "PASS",
+          "expected": "row count for each table",
+          "observed": "reported/expected t1:100/100"
+        },
+        {
+          "assertion": "SFT-CA-11",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-12",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-13",
+          "result": "PASS",
+          "expected": "source file name for each recovered data element",
+          "observed": "100 of 100 rows carry per-value artifact attribution; artifact_set.json maps each artifact to its file name"
+        },
+        {
+          "assertion": "SFT-AO-01",
+          "result": "PASS",
+          "expected": "CREATE TABLE statement for each table",
+          "observed": "schema[].sql carries the verbatim CREATE TABLE"
+        },
+        {
+          "assertion": "SFT-AO-02",
+          "result": "NOT_EXPOSED",
+          "expected": "data type for each column",
+          "observed": "tables[].columns holds names only; types appear only inside the raw CREATE SQL string"
+        },
+        {
+          "assertion": "SFT-AO-03",
+          "result": "NOT_EXPOSED",
+          "expected": "which column is the primary key",
+          "observed": "no primary-key field in the report"
+        },
+        {
+          "assertion": "SFT-AO-04",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-05",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-06",
+          "result": "PASS",
+          "expected": "file offset for each recovered data element",
+          "observed": "100 of 100 rows carry byte spans; 200 spans total, each with artifact, offset and length"
+        },
+        {
+          "assertion": "SFT-AO-07",
+          "result": "PASS",
+          "expected": "table name for each recovered data element",
+          "observed": "100 of 100 rows carry a table name"
+        },
+        {
+          "assertion": "SFT-AO-08",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "no -wal companion present in this fixture"
+        }
+      ]
+    },
+    {
+      "fixture": "SFT-01-UTF16BE-PERSIST",
+      "artifacts": 2,
+      "unaltered": true,
+      "assertions": [
+        {
+          "assertion": "SFT-CA-01",
+          "result": "PASS",
+          "expected": "hash of database and journal-mode files identical before and after analysis",
+          "observed": "2 artifact(s) byte-identical"
+        },
+        {
+          "assertion": "SFT-CA-02",
+          "result": "PASS",
+          "expected": "journal-mode file still present after analysis",
+          "observed": "all companions present"
+        },
+        {
+          "assertion": "SFT-CA-03",
+          "result": "PASS",
+          "expected": "page_size 1024",
+          "observed": "db_meta.page_size = 1024"
+        },
+        {
+          "assertion": "SFT-CA-04",
+          "result": "PASS",
+          "expected": "SQLite journal mode write version = 1",
+          "observed": "db_meta.file_format_write_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-05",
+          "result": "PASS",
+          "expected": "SQLite journal mode read version = 1",
+          "observed": "db_meta.file_format_read_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-06",
+          "result": "PASS",
+          "expected": "page count 6",
+          "observed": "declared_pages=6 actual_pages=6"
+        },
+        {
+          "assertion": "SFT-CA-07",
+          "result": "PASS",
+          "expected": "encoding UTF-16be",
+          "observed": "db_meta.text_encoding = UTF-16be"
+        },
+        {
+          "assertion": "SFT-CA-08",
+          "result": "PASS",
+          "expected": "tables [\"t1\"]",
+          "observed": "reported [\"t1\"]"
+        },
+        {
+          "assertion": "SFT-CA-09",
+          "result": "PASS",
+          "expected": "column names for each table",
+          "observed": "t1:[\"id\", \"name\", \"note\"]"
+        },
+        {
+          "assertion": "SFT-CA-10",
+          "result": "PASS",
+          "expected": "row count for each table",
+          "observed": "reported/expected t1:100/100"
+        },
+        {
+          "assertion": "SFT-CA-11",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-12",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-13",
+          "result": "PASS",
+          "expected": "source file name for each recovered data element",
+          "observed": "100 of 100 rows carry per-value artifact attribution; artifact_set.json maps each artifact to its file name"
+        },
+        {
+          "assertion": "SFT-AO-01",
+          "result": "PASS",
+          "expected": "CREATE TABLE statement for each table",
+          "observed": "schema[].sql carries the verbatim CREATE TABLE"
+        },
+        {
+          "assertion": "SFT-AO-02",
+          "result": "NOT_EXPOSED",
+          "expected": "data type for each column",
+          "observed": "tables[].columns holds names only; types appear only inside the raw CREATE SQL string"
+        },
+        {
+          "assertion": "SFT-AO-03",
+          "result": "NOT_EXPOSED",
+          "expected": "which column is the primary key",
+          "observed": "no primary-key field in the report"
+        },
+        {
+          "assertion": "SFT-AO-04",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-05",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-06",
+          "result": "PASS",
+          "expected": "file offset for each recovered data element",
+          "observed": "100 of 100 rows carry byte spans; 200 spans total, each with artifact, offset and length"
+        },
+        {
+          "assertion": "SFT-AO-07",
+          "result": "PASS",
+          "expected": "table name for each recovered data element",
+          "observed": "100 of 100 rows carry a table name"
+        },
+        {
+          "assertion": "SFT-AO-08",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "no -wal companion present in this fixture"
+        }
+      ]
+    },
+    {
+      "fixture": "SFT-01-UTF16LE-OFF",
+      "artifacts": 1,
+      "unaltered": true,
+      "assertions": [
+        {
+          "assertion": "SFT-CA-01",
+          "result": "PASS",
+          "expected": "hash of database and journal-mode files identical before and after analysis",
+          "observed": "1 artifact(s) byte-identical"
+        },
+        {
+          "assertion": "SFT-CA-02",
+          "result": "PASS",
+          "expected": "journal-mode file still present after analysis",
+          "observed": "all companions present"
+        },
+        {
+          "assertion": "SFT-CA-03",
+          "result": "PASS",
+          "expected": "page_size 8192",
+          "observed": "db_meta.page_size = 8192"
+        },
+        {
+          "assertion": "SFT-CA-04",
+          "result": "PASS",
+          "expected": "SQLite journal mode write version = 1",
+          "observed": "db_meta.file_format_write_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-05",
+          "result": "PASS",
+          "expected": "SQLite journal mode read version = 1",
+          "observed": "db_meta.file_format_read_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-06",
+          "result": "PASS",
+          "expected": "page count 2",
+          "observed": "declared_pages=2 actual_pages=2"
+        },
+        {
+          "assertion": "SFT-CA-07",
+          "result": "PASS",
+          "expected": "encoding UTF-16le",
+          "observed": "db_meta.text_encoding = UTF-16le"
+        },
+        {
+          "assertion": "SFT-CA-08",
+          "result": "PASS",
+          "expected": "tables [\"t1\"]",
+          "observed": "reported [\"t1\"]"
+        },
+        {
+          "assertion": "SFT-CA-09",
+          "result": "PASS",
+          "expected": "column names for each table",
+          "observed": "t1:[\"id\", \"name\", \"note\"]"
+        },
+        {
+          "assertion": "SFT-CA-10",
+          "result": "PASS",
+          "expected": "row count for each table",
+          "observed": "reported/expected t1:100/100"
+        },
+        {
+          "assertion": "SFT-CA-11",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-12",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-13",
+          "result": "PASS",
+          "expected": "source file name for each recovered data element",
+          "observed": "100 of 100 rows carry per-value artifact attribution; artifact_set.json maps each artifact to its file name"
+        },
+        {
+          "assertion": "SFT-AO-01",
+          "result": "PASS",
+          "expected": "CREATE TABLE statement for each table",
+          "observed": "schema[].sql carries the verbatim CREATE TABLE"
+        },
+        {
+          "assertion": "SFT-AO-02",
+          "result": "NOT_EXPOSED",
+          "expected": "data type for each column",
+          "observed": "tables[].columns holds names only; types appear only inside the raw CREATE SQL string"
+        },
+        {
+          "assertion": "SFT-AO-03",
+          "result": "NOT_EXPOSED",
+          "expected": "which column is the primary key",
+          "observed": "no primary-key field in the report"
+        },
+        {
+          "assertion": "SFT-AO-04",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-05",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-06",
+          "result": "PASS",
+          "expected": "file offset for each recovered data element",
+          "observed": "100 of 100 rows carry byte spans; 200 spans total, each with artifact, offset and length"
+        },
+        {
+          "assertion": "SFT-AO-07",
+          "result": "PASS",
+          "expected": "table name for each recovered data element",
+          "observed": "100 of 100 rows carry a table name"
+        },
+        {
+          "assertion": "SFT-AO-08",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "no -wal companion present in this fixture"
+        }
+      ]
+    },
+    {
+      "fixture": "SFT-03-PERSIST",
+      "artifacts": 2,
+      "unaltered": true,
+      "assertions": [
+        {
+          "assertion": "SFT-CA-01",
+          "result": "PASS",
+          "expected": "hash of database and journal-mode files identical before and after analysis",
+          "observed": "2 artifact(s) byte-identical"
+        },
+        {
+          "assertion": "SFT-CA-02",
+          "result": "PASS",
+          "expected": "journal-mode file still present after analysis",
+          "observed": "all companions present"
+        },
+        {
+          "assertion": "SFT-CA-03",
+          "result": "PASS",
+          "expected": "page_size 4096",
+          "observed": "db_meta.page_size = 4096"
+        },
+        {
+          "assertion": "SFT-CA-04",
+          "result": "PASS",
+          "expected": "SQLite journal mode write version = 1",
+          "observed": "db_meta.file_format_write_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-05",
+          "result": "PASS",
+          "expected": "SQLite journal mode read version = 1",
+          "observed": "db_meta.file_format_read_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-06",
+          "result": "PASS",
+          "expected": "page count 20",
+          "observed": "declared_pages=20 actual_pages=20"
+        },
+        {
+          "assertion": "SFT-CA-07",
+          "result": "PASS",
+          "expected": "encoding UTF-8",
+          "observed": "db_meta.text_encoding = UTF-8"
+        },
+        {
+          "assertion": "SFT-CA-08",
+          "result": "PASS",
+          "expected": "tables [\"t1\"]",
+          "observed": "reported [\"t1\"]"
+        },
+        {
+          "assertion": "SFT-CA-09",
+          "result": "PASS",
+          "expected": "column names for each table",
+          "observed": "t1:[\"id\", \"name\", \"note\"]"
+        },
+        {
+          "assertion": "SFT-CA-10",
+          "result": "PASS",
+          "expected": "row count for each table",
+          "observed": "reported/expected t1:1900/1900"
+        },
+        {
+          "assertion": "SFT-CA-11",
+          "result": "FAIL",
+          "expected": "111 recoverable rows physically present in the database file",
+          "observed": "0 of 111 recovered from the database file"
+        },
+        {
+          "assertion": "SFT-CA-12",
+          "result": "FAIL",
+          "expected": "200 recoverable rows within the associated journal-mode file (100 deleted + 100 modified)",
+          "observed": "0 of 100 deleted originals and 0 of 100 modified prior values recovered; 0 attributed to the companion"
+        },
+        {
+          "assertion": "SFT-CA-13",
+          "result": "PASS",
+          "expected": "source file name for each recovered data element",
+          "observed": "1900 of 1900 rows carry per-value artifact attribution; artifact_set.json maps each artifact to its file name"
+        },
+        {
+          "assertion": "SFT-AO-01",
+          "result": "PASS",
+          "expected": "CREATE TABLE statement for each table",
+          "observed": "schema[].sql carries the verbatim CREATE TABLE"
+        },
+        {
+          "assertion": "SFT-AO-02",
+          "result": "NOT_EXPOSED",
+          "expected": "data type for each column",
+          "observed": "tables[].columns holds names only; types appear only inside the raw CREATE SQL string"
+        },
+        {
+          "assertion": "SFT-AO-03",
+          "result": "NOT_EXPOSED",
+          "expected": "which column is the primary key",
+          "observed": "no primary-key field in the report"
+        },
+        {
+          "assertion": "SFT-AO-04",
+          "result": "FAIL",
+          "expected": "origin (deletion vs update) for each recovered row within the database",
+          "observed": "no product output distinguishes a deleted row from a superseded one"
+        },
+        {
+          "assertion": "SFT-AO-05",
+          "result": "FAIL",
+          "expected": "origin (deletion vs update) for each recovered row in the associated journal-mode file",
+          "observed": "no product output distinguishes a deleted row from a superseded one"
+        },
+        {
+          "assertion": "SFT-AO-06",
+          "result": "PASS",
+          "expected": "file offset for each recovered data element",
+          "observed": "1900 of 1900 rows carry byte spans; 3800 spans total, each with artifact, offset and length"
+        },
+        {
+          "assertion": "SFT-AO-07",
+          "result": "PASS",
+          "expected": "table name for each recovered data element",
+          "observed": "1900 of 1900 rows carry a table name"
+        },
+        {
+          "assertion": "SFT-AO-08",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "no -wal companion present in this fixture"
+        }
+      ]
+    },
+    {
+      "fixture": "SFT-03-WAL",
+      "artifacts": 2,
+      "unaltered": true,
+      "assertions": [
+        {
+          "assertion": "SFT-CA-01",
+          "result": "PASS",
+          "expected": "hash of database and journal-mode files identical before and after analysis",
+          "observed": "2 artifact(s) byte-identical"
+        },
+        {
+          "assertion": "SFT-CA-02",
+          "result": "PASS",
+          "expected": "journal-mode file still present after analysis",
+          "observed": "all companions present"
+        },
+        {
+          "assertion": "SFT-CA-03",
+          "result": "PASS",
+          "expected": "page_size 4096",
+          "observed": "db_meta.page_size = 4096"
+        },
+        {
+          "assertion": "SFT-CA-04",
+          "result": "PASS",
+          "expected": "SQLite journal mode write version = 2",
+          "observed": "db_meta.file_format_write_version = 2"
+        },
+        {
+          "assertion": "SFT-CA-05",
+          "result": "PASS",
+          "expected": "SQLite journal mode read version = 2",
+          "observed": "db_meta.file_format_read_version = 2"
+        },
+        {
+          "assertion": "SFT-CA-06",
+          "result": "PASS",
+          "expected": "page count 1",
+          "observed": "declared_pages=1 actual_pages=1"
+        },
+        {
+          "assertion": "SFT-CA-07",
+          "result": "PASS",
+          "expected": "encoding UTF-8",
+          "observed": "db_meta.text_encoding = UTF-8"
+        },
+        {
+          "assertion": "SFT-CA-08",
+          "result": "PASS",
+          "expected": "tables [\"t1\"]",
+          "observed": "reported [\"t1\"]"
+        },
+        {
+          "assertion": "SFT-CA-09",
+          "result": "PASS",
+          "expected": "column names for each table",
+          "observed": "t1:[\"id\", \"name\", \"note\"]"
+        },
+        {
+          "assertion": "SFT-CA-10",
+          "result": "PASS",
+          "expected": "row count for each table",
+          "observed": "reported/expected t1:1900/1900"
+        },
+        {
+          "assertion": "SFT-CA-11",
+          "result": "NOT_APPLICABLE",
+          "expected": "recoverable rows within the database file",
+          "observed": "the database file physically contains none — all changes are in the companion"
+        },
+        {
+          "assertion": "SFT-CA-12",
+          "result": "PASS",
+          "expected": "200 recoverable rows within the associated journal-mode file (100 deleted + 100 modified)",
+          "observed": "100 of 100 deleted originals and 100 of 100 modified prior values recovered; 200 attributed to the companion"
+        },
+        {
+          "assertion": "SFT-CA-13",
+          "result": "PASS",
+          "expected": "source file name for each recovered data element",
+          "observed": "1900 of 1900 rows carry per-value artifact attribution; artifact_set.json maps each artifact to its file name"
+        },
+        {
+          "assertion": "SFT-AO-01",
+          "result": "PASS",
+          "expected": "CREATE TABLE statement for each table",
+          "observed": "schema[].sql carries the verbatim CREATE TABLE"
+        },
+        {
+          "assertion": "SFT-AO-02",
+          "result": "NOT_EXPOSED",
+          "expected": "data type for each column",
+          "observed": "tables[].columns holds names only; types appear only inside the raw CREATE SQL string"
+        },
+        {
+          "assertion": "SFT-AO-03",
+          "result": "NOT_EXPOSED",
+          "expected": "which column is the primary key",
+          "observed": "no primary-key field in the report"
+        },
+        {
+          "assertion": "SFT-AO-04",
+          "result": "FAIL",
+          "expected": "origin (deletion vs update) for each recovered row within the database",
+          "observed": "no product output distinguishes a deleted row from a superseded one"
+        },
+        {
+          "assertion": "SFT-AO-05",
+          "result": "FAIL",
+          "expected": "origin (deletion vs update) for each recovered row in the associated journal-mode file",
+          "observed": "no product output distinguishes a deleted row from a superseded one"
+        },
+        {
+          "assertion": "SFT-AO-06",
+          "result": "PASS",
+          "expected": "file offset for each recovered data element",
+          "observed": "1900 of 1900 rows carry byte spans; 3800 spans total, each with artifact, offset and length"
+        },
+        {
+          "assertion": "SFT-AO-07",
+          "result": "PASS",
+          "expected": "table name for each recovered data element",
+          "observed": "1900 of 1900 rows carry a table name"
+        },
+        {
+          "assertion": "SFT-AO-08",
+          "result": "PASS",
+          "expected": "the sequence of transactions in the associated -wal file",
+          "observed": "2 distinct committed transaction id(s) [2, 4]; 1900 rows carry a snapshot id"
+        }
+      ]
+    },
+    {
+      "fixture": "SFT-05",
+      "artifacts": 1,
+      "unaltered": true,
+      "assertions": [
+        {
+          "assertion": "SFT-CA-01",
+          "result": "PASS",
+          "expected": "hash of database and journal-mode files identical before and after analysis",
+          "observed": "1 artifact(s) byte-identical"
+        },
+        {
+          "assertion": "SFT-CA-02",
+          "result": "PASS",
+          "expected": "journal-mode file still present after analysis",
+          "observed": "all companions present"
+        },
+        {
+          "assertion": "SFT-CA-03",
+          "result": "PASS",
+          "expected": "page_size 4096",
+          "observed": "db_meta.page_size = 4096"
+        },
+        {
+          "assertion": "SFT-CA-04",
+          "result": "PASS",
+          "expected": "SQLite journal mode write version = 1",
+          "observed": "db_meta.file_format_write_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-05",
+          "result": "PASS",
+          "expected": "SQLite journal mode read version = 1",
+          "observed": "db_meta.file_format_read_version = 1"
+        },
+        {
+          "assertion": "SFT-CA-06",
+          "result": "PASS",
+          "expected": "page count 2",
+          "observed": "declared_pages=2 actual_pages=2"
+        },
+        {
+          "assertion": "SFT-CA-07",
+          "result": "PASS",
+          "expected": "encoding UTF-8",
+          "observed": "db_meta.text_encoding = UTF-8"
+        },
+        {
+          "assertion": "SFT-CA-08",
+          "result": "PASS",
+          "expected": "tables [\"t1\"]",
+          "observed": "reported [\"t1\"]"
+        },
+        {
+          "assertion": "SFT-CA-09",
+          "result": "PASS",
+          "expected": "column names for each table",
+          "observed": "t1:[\"pk\", \"i\", \"f\", \"t\", \"b\", \"bool\"]"
+        },
+        {
+          "assertion": "SFT-CA-10",
+          "result": "PASS",
+          "expected": "row count for each table",
+          "observed": "reported/expected t1:100/100"
+        },
+        {
+          "assertion": "SFT-CA-11",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-12",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-CA-13",
+          "result": "PASS",
+          "expected": "source file name for each recovered data element",
+          "observed": "100 of 100 rows carry per-value artifact attribution; artifact_set.json maps each artifact to its file name"
+        },
+        {
+          "assertion": "SFT-AO-01",
+          "result": "PASS",
+          "expected": "CREATE TABLE statement for each table",
+          "observed": "schema[].sql carries the verbatim CREATE TABLE"
+        },
+        {
+          "assertion": "SFT-AO-02",
+          "result": "NOT_EXPOSED",
+          "expected": "data type for each column",
+          "observed": "tables[].columns holds names only; types appear only inside the raw CREATE SQL string"
+        },
+        {
+          "assertion": "SFT-AO-03",
+          "result": "AMBIGUOUS",
+          "expected": "which column is the primary key",
+          "observed": "rowid_alias_col = 0 (positional index, not a name)"
+        },
+        {
+          "assertion": "SFT-AO-04",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-05",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "fixture creates no recoverable rows"
+        },
+        {
+          "assertion": "SFT-AO-06",
+          "result": "PASS",
+          "expected": "file offset for each recovered data element",
+          "observed": "100 of 100 rows carry byte spans; 399 spans total, each with artifact, offset and length"
+        },
+        {
+          "assertion": "SFT-AO-07",
+          "result": "PASS",
+          "expected": "table name for each recovered data element",
+          "observed": "100 of 100 rows carry a table name"
+        },
+        {
+          "assertion": "SFT-AO-08",
+          "result": "NOT_APPLICABLE",
+          "expected": "—",
+          "observed": "no -wal companion present in this fixture"
+        }
+      ]
+    }
+  ],
+  "derived_from": [
+    {
+      "path": "docs/validation/nist-sqlite/veraqis-results.json",
+      "sha256": "ec17664b3d4d3b6f91aaacda82be92a943b729788c612058de3b38f855af576d"
+    },
+    {
+      "path": "docs/validation/nist-sqlite/veraqis-results-free.json",
+      "sha256": "c1813fbfd1aa9160fa2a4177bb8549323b035423049ee692b134642919acb716"
+    },
+    {
+      "path": "docs/validation/nist-sqlite/assertions.json",
+      "sha256": "a1e711bf27fa9e796d4b8203c1a363ecc1a8839b82e39db2a305fc887a8fb32f"
+    }
+  ]
+}

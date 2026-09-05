@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>Archive recovery — ZIP, 7z and what survives | VERAQIS</title>
+<meta name="description" content="What can be recovered from a damaged archive, and what cannot: ZIP directory loss, nested archives, solid 7z after a bit flip, and salvage past a destroyed block." />
+<link rel="canonical" href="https://veraqis.tech/archives/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Archive recovery, measured" />
+<meta property="og:description" content="ZIP and 7z under real damage: where the format keeps a second copy that can rebuild the first, and where a measurement told us to stop building." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/archives-section.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS section card: archive recovery — what a damaged ZIP still describes about itself, measured" />
+<meta property="og:url" content="https://veraqis.tech/archives/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Archive recovery, measured" />
+<meta name="twitter:description" content="ZIP and 7z under real damage: where the format keeps a second copy that can rebuild the first, and where a measurement told us to stop building." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/archives-section.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://veraqis.tech/archives/#webpage",
+      "url": "https://veraqis.tech/archives/",
+      "name": "Archive recovery — ZIP, 7z and what survives | VERAQIS",
+      "description": "What can be recovered from a damaged archive, and what cannot: ZIP directory loss, nested archives, solid 7z after a bit flip, and salvage past a destroyed block.",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/archives/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Archives",
+          "item": "https://veraqis.tech/archives/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/" class="active">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+
+<div class="page-head">
+  <div class="wrap">
+    
+    <p class="kicker">Archives</p>
+    <h1>Archive recovery</h1>
+    <p class="lead">An archive is a container with a table of contents, and almost every recovery question about one reduces to a single thing: which of its two descriptions of itself survived. This section collects what we have measured about reading damaged archives — including the case where the same measurement told us a solver was not worth writing.</p>
+    
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="">
+      <h2 id="reports">Reports</h2>
+      <div class="grid g2"><div class="card"><img class="card-thumb" src="/assets/research/cards/nested-archive-anchor.png" alt="Section card: 8 cases where the engine anchored on an embedded archive’s own end record, and two candidate fixes falsified before any code was written" width="1200" height="630" loading="lazy" decoding="async" /><h3>An end record that belongs to a different archive</h3><p>A ZIP inside a ZIP carries its own end-of-directory record. Destroy the outer one and a reader can anchor on the inner archive’s, then list two files from the wrong archive. Eight cases, two candidate fixes falsified before writing code, and the interaction that blocked them measured rather than assumed.</p><p class="note"><a href="/archives/nested-archive-anchor/">Read the measurement →</a> · EXP-0-NESTED-ANCHOR · 4 September 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/7z-solid-archive-bit-flip.png" alt="Research card: 87 to 501 files recovered byte-exact from a solid 7z archive" width="1200" height="630" loading="lazy" decoding="async" /><h3>One bit flip in a solid 7z archive</h3><p>A solid archive is not all-or-nothing. Six damage depths on a real 541-file archive: 87 to 501 files recovered byte-exact, <code>false_files = 0</code> in every cell. Plus the measurement showing why nothing after the flip is recoverable.</p><p class="note"><a href="/research/7z-solid-archive-bit-flip/">Read the measurement →</a> · EXP-7Z-PREFIX-SALVAGE · 25 July 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/recovering-past-corruption-xz-bzip2.png" alt="Research card: 9 of 10 blocks recovered after the destroyed one" width="1200" height="630" loading="lazy" decoding="async" /><h3>Recovering past a corrupted block</h3><p>Stock <code>xz -d</code> abandons a whole stream on one bad block. Block-independent salvage recovers 9 of 10, each re-verified by its own CRC — and abstains outright on lz4 and zstd, where no independent verifier exists.</p><p class="note"><a href="/research/recovering-past-corruption-xz-bzip2/">Read the measurement →</a> · EXP-PDS · 18 July 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/crc32-collisions-that-pass-gzip-t.png" alt="Research card: five formats where different bytes carry a matching CRC-32" width="1200" height="630" loading="lazy" decoding="async" /><h3>A passing CRC-32 is not proof</h3><p>Archives lean on CRC-32 everywhere. We built files whose contents differ from the original but whose CRC-32 matches, and the native tools call them healthy — five formats, two independent verifiers.</p><p class="note"><a href="/research/crc32-collisions-that-pass-gzip-t/">Read the measurement →</a> · EXP-ADV-PCC · 5 July 2026</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="two-descriptions">Why a ZIP is recoverable at all</h2>
+      <p>A ZIP describes its contents twice. Each entry carries a <strong>local file header</strong> immediately before its data, and the archive ends with a <strong>central directory</strong> listing every entry again — name, sizes, checksum and where its data begins. The two are written at different times to different places.</p>
+      <p>That redundancy is the whole basis of ZIP recovery, and it decides what each kind of damage costs:</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">what is destroyed</th><th scope="col">what remains</th><th scope="col">what it costs</th></tr></thead><tbody><tr><td>the central directory</td><td>every local header</td><td>the index — entries must be found by scanning, and nothing independently attests which of them belonged to the archive</td></tr><tr><td>one local header</td><td>the directory record for it</td><td>the payload can still be located, because the directory says where it starts and how long it is</td></tr><tr><td>both, for one entry</td><td>—</td><td>that entry, unless its bytes can be bounded by its neighbours</td></tr><tr><td>the end record</td><td>the directory itself, usually intact just before it</td><td>the anchor — and a reader may find some <em>other</em> archive’s end record instead</td></tr></tbody></table></div><p class="note">The last row is the subject of the first report above. The others are why an archive with a destroyed directory is usually recoverable, and why an archive whose data is destroyed is usually not.</p>
+      <div class="callout info"><strong>A second copy is evidence; a self-consistent record is not.</strong> A local header carries its own checksum, so a header and its payload can agree with each other while nothing attests that either belonged to this archive. The directory record is what turns a found entry into an attested one.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="rule">The rule this section runs on</h2>
+      <ul><li><strong>Nothing is emitted that a checksum did not verify</strong>, and an entry found only by scanning is labelled as exactly that rather than mixed in with attested ones.</li><li><strong>Surface before solver.</strong> Each measurement counts what is addressable before anything is built, and two of the reports here exist because that count said stop.</li><li><strong>Candidate rules are falsified against the whole corpus</strong> before code is written — a fix that recovers eight cases and mis-fires on three hundred is not a fix.</li><li><strong>Negative results are published.</strong> A method measured and abandoned is a result, and it is the cheapest one to hide.</li></ul>
+      <ul class="source-list"><li><a href="/formats/zip/">ZIP format reference</a> — headers, the directory, and the rules the analyzer fires</li><li><a href="/formats/7z/">7z format reference</a> — solid blocks and what a single flip reaches</li><li><a href="/guides/repair-corrupted-zip/">Repairing a corrupted ZIP</a> — the practical guide</li><li><a href="/research/experiments/">Experiment ledger</a> — every measurement behind this site, with its verdict</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

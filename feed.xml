@@ -6,9 +6,73 @@
   <link href="https://veraqis.tech/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://veraqis.tech/research/" rel="alternate" type="text/html" />
   <id>https://veraqis.tech/research/</id>
-  <updated>2026-07-28T00:00:00Z</updated>
+  <updated>2026-09-04T00:00:00Z</updated>
   <author><name>VERAQIS</name><uri>https://veraqis.tech/</uri></author>
   <rights>CC BY 4.0</rights>
+  <entry>
+    <title>A deleted row's identity, from b-tree shape alone</title>
+    <link href="https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/research/sqlite-rowid-from-btree-geometry/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">On a fixture where the key is never derivable from the content, 100 of 100 deleted rowids were reconstructed exactly — using only cell ordering and separator keys.</summary>
+  </entry>
+  <entry>
+    <title>An end record that belongs to a different archive</title>
+    <link href="https://veraqis.tech/archives/nested-archive-anchor/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/archives/nested-archive-anchor/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">A ZIP inside a ZIP carries its own end record. Destroy the outer one and a reader can anchor on the inner archive, then list two files from the wrong container.</summary>
+  </entry>
+  <entry>
+    <title>The database that cannot prove it is current</title>
+    <link href="https://veraqis.tech/sqlite/database-without-its-wal/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/sqlite/database-without-its-wal/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">Copy a SQLite file without its -wal and the rows still read perfectly — they are just not necessarily the latest. When currency is provable, and when it is not.</summary>
+  </entry>
+  <entry>
+    <title>The table a recovery tool looks straight past</title>
+    <link href="https://veraqis.tech/sqlite/without-rowid-tables/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/sqlite/without-rowid-tables/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">A WITHOUT ROWID table is stored as an index b-tree. Our own recovery returned 0 of its 4 rows and reported no error. What that costs, and how it was found.</summary>
+  </entry>
+  <entry>
+    <title>We ran the federal SQLite forensics spec on ourselves</title>
+    <link href="https://veraqis.tech/research/nist-cftt-sqlite-validation/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/research/nist-cftt-sqlite-validation/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">Six fixtures, 13 core assertions, 126 results — including the two we fail and the 23 we do not answer. What the specification measures, and what it cannot ask.</summary>
+  </entry>
+  <entry>
+    <title>What an index proves when the table is gone</title>
+    <link href="https://veraqis.tech/sqlite/what-an-index-proves/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/sqlite/what-an-index-proves/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">An index is a second copy of part of your data. It can prove a row existed and what its key was — and it must never be allowed to supply the rest of the row.</summary>
+  </entry>
+  <entry>
+    <title>When &quot;provable&quot; does not mean &quot;current&quot;</title>
+    <link href="https://veraqis.tech/sqlite/provable-is-not-current/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/sqlite/provable-is-not-current/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">A hot rollback journal makes the committed state provable — and the rows sitting in the database file are the uncommitted ones. Why the obvious rule is wrong.</summary>
+  </entry>
+  <entry>
+    <title>Why we refuse to follow a chain we can see</title>
+    <link href="https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/" rel="alternate" type="text/html" />
+    <id>https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/</id>
+    <published>2026-09-04T00:00:00Z</published>
+    <updated>2026-09-04T00:00:00Z</updated>
+    <summary type="text">A disconnected page points at the rest of its record. Following that pointer needs a second, independent witness — and without one the engine abstains.</summary>
+  </entry>
   <entry>
     <title>Bit flip in a solid 7z archive: what survives</title>
     <link href="https://veraqis.tech/research/7z-solid-archive-bit-flip/" rel="alternate" type="text/html" />

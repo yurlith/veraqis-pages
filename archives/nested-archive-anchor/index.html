@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>An end record that belongs to a different archive | VERAQIS</title>
+<meta name="description" content="A ZIP inside a ZIP carries its own end record. Destroy the outer one and a reader can anchor on the inner archive, then list two files from the wrong container." />
+<link rel="canonical" href="https://veraqis.tech/archives/nested-archive-anchor/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="When a ZIP reader anchors on the wrong archive" />
+<meta property="og:description" content="Eight cases, forty-eight entries, and two candidate fixes falsified against the corpus before a line of code was written." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/nested-archive-anchor.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS card: an end record that belongs to a different archive — 8 cases, 48 entries, and two candidate fixes falsified before writing code" />
+<meta property="og:url" content="https://veraqis.tech/archives/nested-archive-anchor/" />
+<meta property="article:published_time" content="2026-09-04" />
+<meta property="article:modified_time" content="2026-09-04" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="When a ZIP reader anchors on the wrong archive" />
+<meta name="twitter:description" content="Eight cases, forty-eight entries, and two candidate fixes falsified against the corpus before a line of code was written." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/nested-archive-anchor.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/archives/nested-archive-anchor/#article",
+      "url": "https://veraqis.tech/archives/nested-archive-anchor/",
+      "headline": "The end record that belonged to a different archive",
+      "name": "An end record that belongs to a different archive | VERAQIS",
+      "description": "A ZIP inside a ZIP carries its own end record. Destroy the outer one and a reader can anchor on the inner archive, then list two files from the wrong container.",
+      "datePublished": "2026-09-04",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "ZIP"
+        },
+        {
+          "@type": "Thing",
+          "name": "archive recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "file formats"
+        },
+        {
+          "@type": "Thing",
+          "name": "software testing"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/archives/nested-archive-anchor/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does a ZIP inside a ZIP break recovery?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the inner archive carries its own complete structure, including an end-of-central-directory record. A reader finds the archive by scanning backwards for that signature, so when the outer record is destroyed the scan lands on the inner archive’s and reads the whole file through the wrong container’s index."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens when a reader anchors on the wrong archive?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It reports a directory found and lists entries that belong to the embedded archive. The offsets in that directory are relative to the inner archive, so read as absolute they point at unrelated parts of the outer file. Extraction then fails on checksum or header checks — the last line of defence, after the file has already been misread."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How was the problem found?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By counting it. Across 1,676 damaged archives the mechanism affected exactly 8 cases and 48 entries, and the same binary in its repair mode recovered all 48 — which proved the data was reachable and the reader was at fault, before any fix was designed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why were the first two fixes rejected?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Both were checked against the whole corpus before being written. Rejecting an end record whose offsets imply the archive starts after byte zero also fires on files with bytes inserted at the front — 294 cases. Adding a second condition still left 142. A fix for eight cases that mis-handles hundreds is not a fix."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the final rule a heuristic?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It skips an end-record candidate when its offset is exactly a validated embedded archive’s own end record, and continues scanning. There is no threshold, no score and no search — the offset either is that or it is not, decided by the same container map the engine already uses to refuse promoting nested local headers."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/archives/nested-archive-anchor/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Archives",
+          "item": "https://veraqis.tech/archives/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "A nested archive’s end record",
+          "item": "https://veraqis.tech/archives/nested-archive-anchor/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/" class="active">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/archives/">Archives</a></p>
+    <p class="kicker">Experiments EXP-0-NESTED-ANCHOR and EXP-NESTED-ANCHOR</p>
+    <h1>The end record that belonged to a different archive</h1>
+    <p class="lead">A ZIP reader finds the archive by searching backwards for the end-of-central-directory record. That works because there is normally one. Put an archive inside an archive and there are two — and if the outer one is destroyed, the search finds the <em>inner</em> archive’s and reads the file through the wrong lens. This is the measurement of how often that happened to us, and of two plausible fixes that the corpus destroyed before either reached code.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-09-04">4 September 2026</time></span> · <span class="mono">EXP-0-NESTED-ANCHOR</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="anchor">How a reader finds a ZIP</h2>
+      <p>The central directory of a ZIP sits at the end, and the very last thing in the file is a small <strong>end-of-central-directory record</strong> saying how many entries there are, how large the directory is and where it starts. Every reader begins by scanning backwards for that record's signature.</p>
+      <p>The assumption underneath is that the last such signature in the file belongs to this file. An embedded archive breaks it: a <code>.zip</code> stored inside another <code>.zip</code> carries its own complete structure, end record included. While the outer record exists it is later in the file and wins. Destroy it, and the backward scan keeps going and lands on an inner archive's.</p>
+      <div class="terminal"><pre>ci-nested-one-level-nested-outer_cd_removed_inner_clean.zip
+file length 82586 · outer central directory and end record removed
+
+  end-record signatures at 27499, 55002, 82564
+    all three belong to embedded .zip members
+
+  anchored on 82564:  count=2  cd_size=122  cd_off=19833
+  directory relocated to 82564 - 122 = 82442, and real records are there:
+    "inner/notes.txt"   local header offset 0
+    "inner/data.json"   local header offset 2852</pre></div>
+      <p>Every value read there is correct — for the inner archive. Those local-header offsets are relative to the embedded archive, which begins at byte 62609 of the outer file. Read as absolute, offset 0 points at the outer archive's first entry and 2852 points into the middle of its payload.</p>
+      <p>So the engine reported a directory found and two entries seen, listing two names from a different archive, while the six genuine outer local headers — at 0, 7571, 10423, 35083, 62609 and 65461 — were crowded out of the reconciliation.</p>
+      <div class="callout warn"><strong>What stopped this becoming a wrong file on disk was the checksum.</strong> Extraction failed on both entries, with a CRC mismatch and a bad local header. That is the last line of defence working, not the first — the reader had already accepted a false description of the archive, and only the byte-level check caught it.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="surface">How much of the corpus this reached</h2>
+      <p>Before deciding what to do, the surface was counted: over all 1,676 damaged archives, how many are affected, and is anything actually lost that another configuration recovers?</p>
+      <figure class="chart">
+<svg viewBox="0 0 720 114" width="100%" height="auto" role="img" aria-labelledby="cg-i4sy28" preserveAspectRatio="xMinYMin meet"><title id="cg-i4sy28">The eight affected cases, before the fix</title><desc>Entries recovered from the affected cases in the default configuration, beside what the same binary recovered in its repair mode. The data was never unreachable — the reader was reading the wrong container.</desc><rect x="0" y="4" width="11" height="11" rx="2" fill="var(--bad)"/><text x="17" y="14" font-size="12" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">default mode</text><rect x="190" y="4" width="11" height="11" rx="2" fill="var(--recovery-accent)"/><text x="207" y="14" font-size="12" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">repair mode, same binary</text><text x="0" y="37" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">entries recovered</text><rect x="168" y="24" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="24" width="0" height="13" rx="2" fill="var(--bad)"/><text x="625" y="35" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text><rect x="168" y="41" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="41" width="448" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="52" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">48</text><text x="0" y="79" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">entries affected</text><rect x="168" y="66" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="66" width="448" height="13" rx="2" fill="var(--bad)"/><text x="625" y="77" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">48</text><rect x="168" y="83" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="83" width="448" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="94" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">48</text></svg>
+<figcaption>Entries recovered from the affected cases in the default configuration, beside what the same binary recovered in its repair mode. The data was never unreachable — the reader was reading the wrong container.</figcaption>
+</figure>
+      <p>Eight cases, forty-eight entries, none recovered — and all forty-eight recovered by the same binary in its repair mode, which rebuilds the outer directory from the local headers and gets every entry every time. The trigger is one specific condition rather than a family: the outer directory <strong>and</strong> its end record are both gone <strong>and</strong> the archive contains an embedded ZIP.</p>
+      <div class="claim" id="claim-surface"><p class="claim-text">Across 1,676 damaged archives the mechanism affected exactly 8 cases and 48 entries, none of which were recovered in the default configuration, and all 48 of which the same binary recovered in its repair mode. The data was never unreachable; the reader was anchored on the wrong container.</p><p class="claim-src">EXP-0-NESTED-ANCHOR · surface measured 2026-08-28 over the full ci corpus, one repetition · no code was changed by this measurement</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="falsified">Two fixes that did not survive the corpus</h2>
+      <p>The obvious fix is to notice that the directory's offsets do not fit the file. Both attempts to turn that into a rule were checked against every case in the corpus before anything was implemented, and both failed the same way — by firing on a completely different kind of damage.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">candidate rule</th><th scope="col">what falsified it</th><th scope="col">cases it would fire on</th></tr></thead><tbody><tr><td>Reject an end record whose rebasing implies the archive starts after byte 0.</td><td>Inserting bytes at the front of a file shifts every offset and produces exactly the same arithmetic.</td><td><strong>294</strong> — 181 of them plain insertions where the archive is the only one present and is already handled correctly</td></tr><tr><td>…and additionally require undescribed local headers before that start.</td><td>Inserting bytes <em>before the directory</em> leaves the local headers where they were, so they read as undescribed relative to the shifted start.</td><td><strong>142</strong> — 53 of them insertions</td></tr></tbody></table></div><p class="note">Neither rule was written into the engine. A fix that recovers 48 entries by mis-handling 294 unrelated cases is not a fix, and the only way to know that in advance is to run the candidate against the corpus rather than against intuition.</p>
+      <p>That left a genuine blocker rather than a solved problem, and the surface measurement said so: the interaction between the container map and the insertion family was <strong>not settled</strong>, and settling it was the precondition for any solver. The measurement stopped there deliberately, with no code changed.</p>
+      <h3 id="interaction">Then the feared interaction was measured</h3>
+      <p>The blocker was a concern, not an observation — so instead of designing around it, the engine's own container map was asked directly: across all 1,676 archives, which files anchor on an end record that is precisely a <em>validated</em> embedded archive's own?</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col"></th><th scope="col">cases</th></tr></thead><tbody><tr><th scope="row">Anchored on a validated embedded archive’s own end record</th><td><strong>38</strong></td></tr><tr><th scope="row">…of which belong to the insertion family</th><td><strong>0</strong></td></tr><tr><th scope="row">…with real local headers in front of that archive</th><td>38 — all of them</td></tr></tbody></table></div><p class="note">The interaction that blocked the rule did not exist: validation already declines a wholly shifted archive, so no insertion case is flagged at all. The second refinement separates nothing here — 38 of 38 — so it was left out rather than kept as insurance. Unjustified complexity is a cost, not a safety margin.</p>
+      <p>With that measured, the rule that shipped is one sentence and carries no threshold, no score and no search: when scanning backwards for the end record, <strong>skip any candidate whose offset is exactly a validated embedded archive's own end record</strong> and keep scanning. If every candidate is foreign, the parse proceeds exactly as it already does when no end record is found at all — by enumerating the outer entries from their local headers.</p>
+      <div class="callout info"><strong>This is not a heuristic, and the distinction matters.</strong> The engine already refuses to promote a nested archive's <em>local headers</em> into outer entries, using the same validated container map. This closes the identical hole for its <em>directory</em>, with the same oracle. Nothing about it estimates or prefers — an offset either is a validated embedded archive's end record or it is not.</div>
+      <div class="claim" id="claim-fix"><p class="claim-text">Skipping end-record candidates that are a validated embedded archive’s own took the nested damage class from 79.3% to 100.0% of recoverable entries — 116 of 116 — adding 48 entries with none lost and all 48 byte-exact. The rule adds no threshold, no scoring and no search.</p><p class="claim-src">EXP-NESTED-ANCHOR · pre-registered before the change and frozen · measured on the same corpus, 2026-08-28</p></div>
+      <h2 id="method">What the sequence was worth</h2>
+      <p>The fix is four lines of behaviour. What produced it took three separate measurements, and skipping any of them would have shipped something worse.</p>
+      <div class="grid g3"><div class="card"><h3>Count the surface first</h3><p>Eight cases and 48 entries — small. Knowing that before starting is what kept the response proportionate instead of a redesign of directory location.</p></div><div class="card"><h3>Falsify before coding</h3><p>Two reasonable rules, 294 and 142 mis-fires. Both would have looked correct on the eight cases they were designed for, and both would have broken a class nobody was thinking about.</p></div><div class="card"><h3>Measure the blocker</h3><p>The interaction that stopped the work turned out not to exist. Designing around a fear would have added a condition that separates nothing — 38 of 38.</p></div></div>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>A generated corpus of eleven damage classes.</strong> It measures behaviour under those damages, not how often archives contain embedded archives in the field.</li><li><strong>One repetition.</strong> Recall is deterministic here; timing and repeatability are not measured by this run.</li><li><strong>The rule is exact, so its reach is exact.</strong> It skips end records belonging to archives the container map validates. An embedded archive too damaged to validate is not recognised, and that case is unchanged.</li><li><strong>ZIP only.</strong> Nothing here transfers to 7z or RAR containers.</li></ul>
+      <ul class="source-list"><li><a href="/archives/">Archive recovery</a> — the rest of the section</li><li><a href="/formats/zip/">ZIP format reference</a> — the structures this damage class attacks</li><li><a href="/research/experiments/">Experiment ledger</a> — both experiments, with their verdicts</li><li><a href="/guides/central-directory-not-found/">End of central directory not found</a> — the error a reader shows when the anchor is gone</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about nested archives</h2>
+    <div class="faq">
+      <div class="qa"><h3>Why does a ZIP inside a ZIP break recovery?</h3><p>Because the inner archive carries its own complete structure, including an end-of-central-directory record. A reader finds the archive by scanning backwards for that signature, so when the outer record is destroyed the scan lands on the inner archive’s and reads the whole file through the wrong container’s index.</p></div>
+      <div class="qa"><h3>What happens when a reader anchors on the wrong archive?</h3><p>It reports a directory found and lists entries that belong to the embedded archive. The offsets in that directory are relative to the inner archive, so read as absolute they point at unrelated parts of the outer file. Extraction then fails on checksum or header checks — the last line of defence, after the file has already been misread.</p></div>
+      <div class="qa"><h3>How was the problem found?</h3><p>By counting it. Across 1,676 damaged archives the mechanism affected exactly 8 cases and 48 entries, and the same binary in its repair mode recovered all 48 — which proved the data was reachable and the reader was at fault, before any fix was designed.</p></div>
+      <div class="qa"><h3>Why were the first two fixes rejected?</h3><p>Both were checked against the whole corpus before being written. Rejecting an end record whose offsets imply the archive starts after byte zero also fires on files with bytes inserted at the front — 294 cases. Adding a second condition still left 142. A fix for eight cases that mis-handles hundreds is not a fix.</p></div>
+      <div class="qa"><h3>Is the final rule a heuristic?</h3><p>No. It skips an end-record candidate when its offset is exactly a validated embedded archive’s own end record, and continues scanning. There is no threshold, no score and no search — the offset either is that or it is not, decided by the same container map the engine already uses to refuse promoting nested local headers.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). The end record that belonged to a different archive.
+VERAQIS Research. https://veraqis.tech/archives/nested-archive-anchor/
+Engine: VERAQIS 0.2.1 · Measured: 4 September 2026 · Experiment: EXP-0-NESTED-ANCHOR</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/research/7z-solid-archive-bit-flip/"><h3>One bit flip in a solid 7z archive</h3><p>The other end of the archive question: what survives when the damage is inside the compressed stream.</p></a>
+      <a class="card link-card" href="/formats/zip/"><h3>ZIP format reference</h3><p>Local headers, the central directory, and what each one attests.</p></a>
+      <a class="card link-card" href="/research/experiments/"><h3>The experiment ledger</h3><p>Every measurement behind this site, including the ones that stopped work.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check what your archive still describes</h2>
+    <p class="sub">VERAQIS reports each entry as verified, damaged or unknown, and says which of the archive’s own descriptions of itself survived. Nothing is uploaded.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
