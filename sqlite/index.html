@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>SQLite database recovery — measurements and method | VERAQIS</title>
+<meta name="description" content="Recovering rows from a damaged SQLite database: what the file can prove, what its WAL and journal add, and where recovery has to abstain. Measured, not asserted." />
+<link rel="canonical" href="https://veraqis.tech/sqlite/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="SQLite database recovery, measured" />
+<meta property="og:description" content="What a damaged .db file can and cannot prove — freshness, WITHOUT ROWID tables, index evidence, deleted rows — with every claim tied to a measurement." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/sqlite-section.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS section card: SQLite recovery — 16 fixtures, 0 false rows, 0 over-claim, and the cases where currency cannot be decided" />
+<meta property="og:url" content="https://veraqis.tech/sqlite/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="SQLite database recovery, measured" />
+<meta name="twitter:description" content="What a damaged .db file can and cannot prove — freshness, WITHOUT ROWID tables, index evidence, deleted rows — with every claim tied to a measurement." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/sqlite-section.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://veraqis.tech/sqlite/#webpage",
+      "url": "https://veraqis.tech/sqlite/",
+      "name": "SQLite database recovery — measurements and method | VERAQIS",
+      "description": "Recovering rows from a damaged SQLite database: what the file can prove, what its WAL and journal add, and where recovery has to abstain. Measured, not asserted.",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/sqlite/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "SQLite",
+          "item": "https://veraqis.tech/sqlite/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/" class="active">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+
+<div class="page-head">
+  <div class="wrap">
+    
+    <p class="kicker">SQLite</p>
+    <h1>SQLite recovery</h1>
+    <p class="lead">A database is not an archive. An archive tells you whether a file came back intact; a database has to tell you something harder — whether the rows you are reading are the <em>current</em> ones. This section collects everything we have measured about recovering SQLite, including the cases where the honest answer is that the question cannot be decided from the bytes you were given.</p>
+    
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="">
+      <h2 id="reports">Reports</h2>
+      <div class="grid g2"><div class="card"><img class="card-thumb" src="/assets/research/cards/database-without-its-wal.png" alt="Section card: a WAL-mode database supplied without its WAL cannot prove its latest state" width="1200" height="630" loading="lazy" decoding="async" /><h3>The database that cannot prove it is current</h3><p>Copy <code>app.db</code> and leave <code>app.db-wal</code> behind and the rows still read perfectly — they are simply not necessarily the current ones. Nothing in the file says which. The full case table for when currency is provable, and when it is not.</p><p class="note"><a href="/sqlite/database-without-its-wal/">Read the measurement →</a> · EXP-SQL-012 · 4 September 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/provable-is-not-current.png" alt="Section card: a hot journal makes the committed state provable while the database file holds uncommitted rows" width="1200" height="630" loading="lazy" decoding="async" /><h3>The rows in the file were never committed</h3><p>The mirror of the case above, and the more dangerous one. A hot journal makes the committed state provable — and every row read out of the file is a change that was never committed. One rule applied a step too early turns that into a confident false claim.</p><p class="note"><a href="/sqlite/provable-is-not-current/">Read the measurement →</a> · EXP-SQL-021 · 4 September 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/without-rowid-tables.png" alt="Section card: a WITHOUT ROWID table recovered 0 of 4 rows until the walker was chosen by the root page type byte" width="1200" height="630" loading="lazy" decoding="async" /><h3>The tables a recovery tool can look straight past</h3><p>A table declared <code>WITHOUT ROWID</code> is stored as an index b-tree. Our own recovery returned 0 of its 4 rows and reported no error, because the code looked for the wrong byte. What that costs, and how it was found.</p><p class="note"><a href="/sqlite/without-rowid-tables/">Read the measurement →</a> · EXP-SQL-016 · 4 September 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/what-an-index-proves.png" alt="Section card: with the table emptied, the index proved five rows had existed and supplied no payloads" width="1200" height="630" loading="lazy" decoding="async" /><h3>What an index proves when the table is gone</h3><p>An index is a second copy of part of your data, and the most tempting thing in a damaged file. With the table emptied it proved all five rows had existed and gave their timestamps — and supplied nothing else. Plus two format traps that fail silently.</p><p class="note"><a href="/sqlite/what-an-index-proves/">Read the measurement →</a> · EXP-SQL-015 · 4 September 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/orphan-pages-and-ptrmap.png" alt="Section card: an orphan overflow chain is followed only when the pointer map independently confirms ownership" width="1200" height="630" loading="lazy" decoding="async" /><h3>Why we refuse to follow a chain we can see</h3><p>A measurement about not recovering something. A disconnected page points at the rest of its record, and following that pointer usually works — which is not evidence. Without a second structure confirming who owns those pages, the row abstains.</p><p class="note"><a href="/sqlite/orphan-pages-and-ptrmap/">Read the measurement →</a> · EXP-SQL-022 · 4 September 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/nist-cftt-sqlite-validation.png" alt="Research card: 126 assertion results against the NIST CFTT SQLite methodology" width="1200" height="630" loading="lazy" decoding="async" /><h3>The federal SQLite spec, run on ourselves</h3><p>Six fixtures built from the NIST CFTT methodology, 126 assertion results, zero source mutations — and the two core assertions we fail, because the tool does not scavenge free space.</p><p class="note"><a href="/research/nist-cftt-sqlite-validation/">Read the measurement →</a> · VERAQIS-SQL-VAL-001 · 14 August 2026</p></div><div class="card"><img class="card-thumb" src="/assets/research/cards/sqlite-rowid-from-btree-geometry.png" alt="Research card: 100 of 100 deleted rowids reconstructed from b-tree ordering" width="1200" height="630" loading="lazy" decoding="async" /><h3>A deleted row's identity, from b-tree shape alone</h3><p>Content recovery without identity is half an answer. On a fixture where the key can never be read from the content, 100 of 100 deleted rowids were reconstructed exactly — and the method's limit was measured too.</p><p class="note"><a href="/research/sqlite-rowid-from-btree-geometry/">Read the measurement →</a> · research · 23 August 2026</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="rule">The rule this section runs on</h2>
+      <p>A recovered row is emitted only when its cell, its payload bounds, its record header, its serial types and its full body all validate. Nothing partial is presented as a row, nothing inferred is labelled verified, and no rowid is ever invented for a table that does not have one.</p>
+      <div class="cap-card"><h3>The semantic benchmark, as it stands</h3><dl class="cap-list"><div class="cap-row"><dt>Fixtures</dt><dd>16</dd></div><div class="cap-row"><dt>False rows</dt><dd><strong>0</strong>, across all of them</dd></div><div class="cap-row"><dt>Over-claim rate</dt><dd><strong>0.00</strong></dd></div><div class="cap-row"><dt>Rows from the random negative control</dt><dd><strong>0</strong></dd></div></dl><p class="note">Every fixture asserts a claim the gates can falsify, not merely a code path.</p></div>
+      <p>The negative control matters as much as the rest: a run over random bytes must return <strong>nothing</strong>. A recovery engine that finds rows in noise will find them in your damaged database too.</p>
+      <div class="callout info"><strong>"SQLite", not "SQL server".</strong> Everything here is about the SQLite file format — the <code>.db</code>, <code>.sqlite</code>, <code>.sqlite3</code> files inside phones, browsers, desktop applications and embedded devices. It is not about MySQL, PostgreSQL or SQL Server, and nothing measured here transfers to them.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="anatomy">What a damaged database is made of</h2>
+      <p>Three files can carry the state of one database, and which of them you were handed decides what can be proven. This is the single most consequential thing to get right before recovery starts.</p>
+      <figure class="diagram"><svg viewBox="0 0 720 212" width="100%" height="auto" role="img" aria-labelledby="sqlite-artifacts-t" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<title id="sqlite-artifacts-t">Which SQLite file holds which state</title><desc>Two columns showing the same database file. On the left it is collected together with its write-ahead log, and the latest committed state is provable. On the right the log is absent, and whether the database is current is undecidable — the database file itself is byte-identical in both cases.</desc>
+<text x="8" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">collected together</text><rect x="8" y="34" width="340" height="40" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="51" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">app.db</text><text x="20" y="66" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">pages as of the last checkpoint</text><rect x="8" y="84" width="340" height="40" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="101" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">app.db-wal</text><text x="20" y="116" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">every commit since then</text><rect x="8" y="146" width="340" height="44" rx="4" fill="transparent" stroke="var(--recovery-accent)" stroke-width="1" stroke-dasharray="3 3"/><text x="20" y="173" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--recovery-accent)" font-weight="700">latest state: PROVABLE</text><text x="372" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">database copied alone</text><rect x="372" y="34" width="340" height="40" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="384" y="51" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">app.db</text><text x="384" y="66" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">pages as of the last checkpoint</text><rect x="372" y="84" width="340" height="40" rx="4" fill="transparent" stroke="var(--bad)" stroke-width="1" stroke-dasharray="4 3"/><text x="384" y="101" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--bad)" font-weight="600">app.db-wal</text><text x="384" y="116" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">not collected — or never existed</text><rect x="372" y="146" width="340" height="44" rx="4" fill="transparent" stroke="var(--bad)" stroke-width="1" stroke-dasharray="3 3"/><text x="384" y="173" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--bad)" font-weight="700">latest state: UNDECIDABLE</text><text x="8" y="204" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the database file is byte-identical in both columns</text>
+</svg><figcaption>The most common acquisition mistake, drawn: the same database file, collected with and without the log that holds everything since its last checkpoint.</figcaption></figure>
+      <div class="table-scroll"><table><thead><tr><th scope="col">file</th><th scope="col">what it holds</th><th scope="col">what its absence costs</th></tr></thead><tbody><tr><td><code>name.db</code></td><td>the pages of the database as of the last checkpoint</td><td>nothing to recover from at all</td></tr><tr><td><code>name.db-wal</code></td><td>committed transactions not yet folded back into the database</td><td>the latest committed state may be missing, and the file cannot say whether it is</td></tr><tr><td><code>name.db-journal</code></td><td>pre-images from a transaction that was in flight</td><td>a rollback that was owed cannot be applied or ruled out</td></tr><tr><td><code>name.db-shm</code></td><td>the shared index into the WAL — a cache, not data</td><td>nothing; it is rebuilt from the WAL</td></tr></tbody></table></div><p class="note">Copying only the <code>.db</code> is the most common acquisition mistake, and it is silent: the result opens, reads, and looks complete.</p>
+      <ul class="source-list"><li><a href="/formats/sqlite/">SQLite format reference</a> — pages, cells, b-trees, and the rules the analyzer fires</li><li><a href="/research/experiments/">Experiment ledger</a> — every measurement behind this site, with its verdict</li><li><a href="/reference/evidence-model/">The evidence model</a> — why an unwitnessed byte cannot be called verified</li></ul>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

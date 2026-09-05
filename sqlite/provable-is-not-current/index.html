@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>When "provable" does not mean "current" | VERAQIS</title>
+<meta name="description" content="A hot rollback journal makes the committed state provable — and the rows sitting in the database file are the uncommitted ones. Why the obvious rule is wrong." />
+<link rel="canonical" href="https://veraqis.tech/sqlite/provable-is-not-current/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="When a provable database still hands you uncommitted rows" />
+<meta property="og:description" content="A hot journal means the committed state is establishable and the file is not it. Deriving currency from the verdict instead of its basis produces a false claim." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/provable-is-not-current.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS card: when provable does not mean current — a hot journal makes the committed state provable while the database file holds in-flight bytes" />
+<meta property="og:url" content="https://veraqis.tech/sqlite/provable-is-not-current/" />
+<meta property="article:published_time" content="2026-09-04" />
+<meta property="article:modified_time" content="2026-09-04" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="When a provable database still hands you uncommitted rows" />
+<meta name="twitter:description" content="A hot journal means the committed state is establishable and the file is not it. Deriving currency from the verdict instead of its basis produces a false claim." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/provable-is-not-current.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/sqlite/provable-is-not-current/#article",
+      "url": "https://veraqis.tech/sqlite/provable-is-not-current/",
+      "headline": "The rows in the file were never committed",
+      "name": "When \"provable\" does not mean \"current\" | VERAQIS",
+      "description": "A hot rollback journal makes the committed state provable — and the rows sitting in the database file are the uncommitted ones. Why the obvious rule is wrong.",
+      "datePublished": "2026-09-04",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "rollback journal"
+        },
+        {
+          "@type": "Thing",
+          "name": "transactions"
+        },
+        {
+          "@type": "Thing",
+          "name": "digital forensics"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        }
+      ],
+      "citation": [
+        {
+          "@type": "CreativeWork",
+          "name": "Atomic Commit In SQLite",
+          "publisher": "SQLite",
+          "url": "https://www.sqlite.org/atomiccommit.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/sqlite/provable-is-not-current/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a hot journal in SQLite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A rollback journal left behind by a transaction that never finished, with its header intact. It holds the original contents of every page the transaction was about to change, and it is a standing instruction to put the database back. The next connection that opens the database applies it automatically."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does a recovery tool see different data than SQLite does?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because opening a database with a hot journal performs the rollback, and a recovery tool opens the source read-only and never writes to it. SQLite shows you the last committed state; reading the bytes shows you the interrupted transaction still sitting in the pages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "If the committed state is provable, are the recovered rows current?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not in this case, and that is the point. A hot journal makes the committed state provable — it is the database after the rollback — while the rows read out of the file are the in-flight ones. Currency has to be derived from the basis of the verdict, not from the fact that a verdict exists."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should a hot journal be applied before recovery?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only with a copy, and only deliberately. Applying it writes to the database and discards the in-flight state, which can be exactly what an examination needs to see. Both states are recoverable while the journal is intact; only one survives the rollback."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a -journal file always mean an interrupted transaction?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. In PERSIST and TRUNCATE modes SQLite leaves a journal file behind after every normal commit, with its header zeroed or the file emptied. Such a journal is not hot and carries no rollback obligation, so its presence alone proves nothing about how the database was last written."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/sqlite/provable-is-not-current/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "SQLite",
+          "item": "https://veraqis.tech/sqlite/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Provable is not current",
+          "item": "https://veraqis.tech/sqlite/provable-is-not-current/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/" class="active">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/sqlite/">SQLite</a></p>
+    <p class="kicker">Experiment EXP-SQL-021</p>
+    <h1>The rows in the file were never committed</h1>
+    <p class="lead">The previous measurement in this section was about a database that cannot prove it is current. This one is the mirror image, and it is the more dangerous of the two: a database that <strong>can</strong> prove what its committed state is, while every row you read out of it is a change that was never committed. One rule, applied one step too early, turns that into a confident false claim — and it was caught by checking the fixture before writing the rule rather than after.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-09-04">4 September 2026</time></span> · <span class="mono">EXP-SQL-021</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="hot-journal">What a hot journal is</h2>
+      <p>In rollback-journal mode, SQLite writes the <em>old</em> contents of every page it is about to change into a side file before touching the database. If the write completes, the journal is discarded. If the process dies mid-transaction, the journal survives with its header intact — and that is a <strong>hot journal</strong>: a standing instruction to put the database back the way it was.</p>
+      <p>The next connection to open the database performs that rollback automatically. Which means the state you get depends entirely on <em>how</em> the file reached you:</p>
+      <div class="compare"><div class="side veraqis"><h3>Opened by SQLite</h3><ul><li>The hot journal is detected and applied.</li><li>The half-finished transaction is undone.</li><li>You see the last committed state.</li></ul></div><div class="side"><h3>Read as bytes</h3><ul><li>Nothing is applied — the file is read as it lies.</li><li>The half-finished transaction is still in the pages.</li><li>You see values that were never committed.</li></ul></div></div>
+      <figure class="diagram"><svg viewBox="0 0 720 244" width="100%" height="auto" role="img" aria-labelledby="journal-inversion-t" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<title id="journal-inversion-t">How a hot journal reverses which file holds the committed state</title><desc>Two arrangements side by side. Normally the database file holds the committed state and its companion holds changes not yet folded in. With a hot rollback journal the roles reverse: the database file holds bytes from a transaction that was never committed, and the journal holds what the committed state was. So a provable freshness verdict does not by itself make the rows on disk current.</desc>
+<text x="8" y="20" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">the usual arrangement</text><rect x="8" y="46" width="340" height="62" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="71" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">the database file</text><text x="20" y="90" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">holds the committed state</text><rect x="8" y="120" width="340" height="62" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="145" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">the companion</text><text x="20" y="164" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">holds what has not been folded in yet</text><text x="372" y="20" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">with a hot journal — reversed</text><rect x="372" y="46" width="340" height="62" rx="4" fill="var(--bad)" stroke="var(--line)" stroke-width="1"/><text x="384" y="71" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#ffffff" font-weight="600">the database file</text><text x="384" y="90" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#ffffff">holds bytes that were never committed</text><rect x="372" y="120" width="340" height="62" rx="4" fill="var(--recovery-accent)" stroke="var(--line)" stroke-width="1"/><text x="384" y="145" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#ffffff" font-weight="600">the journal</text><text x="384" y="164" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#ffffff">holds what the committed state was</text><text x="8" y="236" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">so “the committed state is provable” and “these rows are current” are different claims</text>
+</svg><figcaption>Everywhere else the database file is the committed state and the companion holds the extra. A hot journal swaps them, which is why a provable verdict cannot be read as "these rows are current".</figcaption></figure>
+      <p>A recovery tool is firmly in the second column, and deliberately so: it opens the source read-only and never writes to it, which means it can never perform the rollback. So it reads the uncommitted bytes. That is correct behaviour — and it is exactly why what the tool <em>says</em> about those bytes matters so much.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="measurement">The measurement</h2>
+      <p>The fixture is a database interrupted mid-transaction, with its journal still hot. Two states can be read out of the same set of files, and they do not agree:</p>
+      <div class="terminal"><pre>SQL_GT_009 — rollback mode, hot journal present
+
+  database_alone_state             1|UNCOMMITTED-VAL-0000
+  committed_state_after_rollback   1|ORIGINAL-VALUE-00000
+
+  freshness verdict:  Provable(RolledBackJournal)
+  rows actually emitted from the file:  the uncommitted ones</pre></div>
+      <p>Read the two lines together. The committed state is <strong>provable</strong> — the journal holds the pre-images, so what the database would look like after a rollback is fully determined. And the row the engine emits, reading the database as it lies, is <code>UNCOMMITTED-VAL-0000</code>, which no transaction ever committed.</p>
+      <div class="callout warn"><strong>The obvious rule is wrong here.</strong> "Freshness is provable, therefore the rows are the current committed state" holds for every other provable case, and fails for this one. Applying it would attach a current-state claim to bytes that were explicitly abandoned — the exact class of over-claim this whole programme exists to remove.</div>
+      <div class="claim" id="claim-inversion"><p class="claim-text">With a hot journal the axis inverts: the companion file holds the committed state and the database file holds the uncommitted one. A rule deriving row currency from the freshness verdict alone would label in-flight bytes as current — a false current-state claim, and the exact mirror of reporting a database missing its WAL as up to date.</p><p class="claim-src">EXP-SQL-021 / EXP-SQL-014 refinement 3 · fixture SQL_GT_009, rollback mode with hot journal · success criterion S2, held</p></div>
+      <p>The fix is to derive currency from the <strong>basis</strong> of the verdict rather than from the verdict. "Provable" answers <em>can the committed state be established?</em> — a question about the artifact set. What a row needs is a different question: <em>are these bytes that state?</em></p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">freshness verdict</th><th scope="col">what a row gets</th><th scope="col">why</th></tr></thead><tbody><tr><td><code>Unprovable(...)</code></td><td><code>Unknown</code></td><td>currency is open in both directions — the missing-WAL case</td></tr><tr><td><code>Provable</code> — the database is the committed state</td><td><code>CurrentCommitted</code></td><td>the file is the committed state</td></tr><tr><td><code>Provable</code> — latest WAL commit</td><td><code>CurrentCommitted</code></td><td>the overlay materialises the latest commit</td></tr><tr><td><code>Provable</code> — rolled-back journal</td><td><strong><code>Uncommitted</code></strong></td><td>the file holds in-flight bytes; the committed state is post-rollback and is not what was emitted</td></tr></tbody></table></div><p class="note">Pre-registered and exhaustive. Three of the four rows are unsurprising, which is what makes the fourth worth writing down: it is the one a reasonable implementer would get wrong by generalising from the others.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="mirror">Two ways to be wrong about the same question</h2>
+      <p>Put beside the missing-WAL case, the pair covers both directions of the same error. Neither database is damaged; both are read perfectly; and a tool that reports only "recovered N rows" is silent about the difference.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col"></th><th scope="col">WAL-mode database, no WAL supplied</th><th scope="col">rollback database, hot journal present</th></tr></thead><tbody><tr><th scope="row">Is the committed state provable?</th><td>No — undecidable</td><td><strong>Yes</strong> — the journal determines it</td></tr><tr><th scope="row">Are the rows on disk that state?</th><td>Possibly; nothing can say</td><td><strong>No</strong> — they are in-flight bytes</td></tr><tr><th scope="row">What a row is labelled</th><td><code>Unknown</code></td><td><code>Uncommitted</code></td></tr><tr><th scope="row">The wrong claim to make</th><td>"current" — nothing supports it</td><td>"current" — the verdict seems to support it</td></tr></tbody></table></div><p class="note">The second column is the more dangerous one precisely because there <em>is</em> a positive verdict to point at. Over-claiming needs no dishonesty here, only one inference applied at the wrong level.</p>
+      <p>This is why the engine carries currency as its own axis per row rather than folding it into a single confidence number. A row can be physically observed, structurally valid, fully decoded — and still uncommitted. Collapsing those five facts into one score would have to pick a direction, and any direction it picked would be wrong for some real database.</p>
+      <h2 id="practice">What to do with a hot journal</h2>
+      <ol><li><strong>Collect the journal, always.</strong> Without it, the same database is merely a file with unexplained values in it, and the rollback that would explain them cannot be reconstructed.</li><li><strong>Do not "fix" the database by opening it</strong> in a tool that writes. That performs the rollback and destroys the in-flight state, which may be the very thing you needed to see — what was being written when the process died.</li><li><strong>Treat the two states as two answers</strong>, not as one answer and one error. "What was committed" and "what was in flight" are different questions, and a hot journal is the rare case where both are recoverable.</li><li><strong>Distrust a tool that reports one number.</strong> A row count says nothing about which of the two states it counted.</li></ol>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>The engine reads the database as it lies and never applies the journal.</strong> It reports what the committed state would be, and separately decodes the journal's page images; it does not rewrite the source to get there.</li><li><strong>"Provable" is still scoped to the artifacts supplied.</strong> As in the WAL case, it means the committed state is determined by what you handed over — not that no newer copy exists elsewhere.</li><li><strong>A journal whose header is zeroed is not hot</strong>, and carries no rollback obligation. <code>PERSIST</code> and <code>TRUNCATE</code> leave such a file behind at every commit, so the presence of a <code>-journal</code> file is not by itself evidence of an interrupted write.</li><li><strong>One fixture, one damage class.</strong> This measures the rule, not the frequency of interrupted transactions in the field.</li></ul>
+      <ul class="source-list"><li><a href="/sqlite/database-without-its-wal/">The database that cannot prove it is current</a> — the mirror case, where no verdict is available at all</li><li><a href="/sqlite/">SQLite recovery</a> — the rest of the section</li><li><a href="/reference/evidence-model/">The evidence model</a> — why currency is an axis rather than a score</li><li><a href="/formats/sqlite/">SQLite format reference</a> — journals, pages and what each attests</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about journals and committed state</h2>
+    <div class="faq">
+      <div class="qa"><h3>What is a hot journal in SQLite?</h3><p>A rollback journal left behind by a transaction that never finished, with its header intact. It holds the original contents of every page the transaction was about to change, and it is a standing instruction to put the database back. The next connection that opens the database applies it automatically.</p></div>
+      <div class="qa"><h3>Why does a recovery tool see different data than SQLite does?</h3><p>Because opening a database with a hot journal performs the rollback, and a recovery tool opens the source read-only and never writes to it. SQLite shows you the last committed state; reading the bytes shows you the interrupted transaction still sitting in the pages.</p></div>
+      <div class="qa"><h3>If the committed state is provable, are the recovered rows current?</h3><p>Not in this case, and that is the point. A hot journal makes the committed state provable — it is the database after the rollback — while the rows read out of the file are the in-flight ones. Currency has to be derived from the basis of the verdict, not from the fact that a verdict exists.</p></div>
+      <div class="qa"><h3>Should a hot journal be applied before recovery?</h3><p>Only with a copy, and only deliberately. Applying it writes to the database and discards the in-flight state, which can be exactly what an examination needs to see. Both states are recoverable while the journal is intact; only one survives the rollback.</p></div>
+      <div class="qa"><h3>Does a -journal file always mean an interrupted transaction?</h3><p>No. In PERSIST and TRUNCATE modes SQLite leaves a journal file behind after every normal commit, with its header zeroed or the file emptied. Such a journal is not hot and carries no rollback obligation, so its presence alone proves nothing about how the database was last written.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). The rows in the file were never committed.
+VERAQIS Research. https://veraqis.tech/sqlite/provable-is-not-current/
+Engine: VERAQIS 0.2.1 · Measured: 4 September 2026 · Experiment: EXP-SQL-021</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/sqlite/database-without-its-wal/"><h3>The database that cannot prove it is current</h3><p>The same question from the other side: no verdict available, and rows that may be a month old.</p></a>
+      <a class="card link-card" href="/sqlite/without-rowid-tables/"><h3>The table a recovery tool looks past</h3><p>A third way to get a clean report that is not the truth.</p></a>
+      <a class="card link-card" href="/research/nist-cftt-sqlite-validation/"><h3>The federal SQLite spec, run on ourselves</h3><p>A methodology with no assertion for currency at all.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Ask which state you are looking at</h2>
+    <p class="sub">VERAQIS reads the database and its companions read-only, reports whether the committed state is provable, and labels rows that were never committed as exactly that.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

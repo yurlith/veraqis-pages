@@ -6,30 +6,6 @@
   "note": "Every figure is a screenshot of an artifact produced by the command recorded beside it.",
   "figures": [
     {
-      "file": "phantom-entries/veraqis-report-ghost.png",
-      "w": 2000,
-      "h": 1800,
-      "command": "phx report damaged.zip --output ghost-report.html --format html",
-      "input": {
-        "name": "damaged.zip",
-        "bytes": 331,
-        "sha256": "8e4b2dfdc6a4bc1174ccc2216dfb2911698635ac3a78c7030a1f4022d72d9d67"
-      },
-      "engine": "veraqis 0.2.1"
-    },
-    {
-      "file": "zip-head-to-head/veraqis-report-crc.png",
-      "w": 2000,
-      "h": 1800,
-      "command": "phx report testdata/zip/bad_crc/ZIP_0090.zip --output crc-report.html --format html",
-      "input": {
-        "name": "testdata/zip/bad_crc/ZIP_0090.zip",
-        "bytes": 12614,
-        "sha256": "96cc7eab453724a396cdb548124c4b9f79d3aeae6d0f677fc5bb1ee949f77df7"
-      },
-      "engine": "veraqis 0.2.1"
-    },
-    {
       "file": "nist-sqlite/veraqis-report-btree.png",
       "w": 2000,
       "h": 1720,
@@ -42,16 +18,17 @@
       "engine": "veraqis 0.2.1"
     },
     {
-      "file": "zip-head-to-head/benchmark-report.png",
-      "w": 2400,
-      "h": 1880,
-      "command": "recovery-report --input <runs> --output reports/phase-4-headtohead/report",
+      "file": "sqlite/freshness-pair.png",
+      "w": 2240,
+      "h": 800,
+      "command": "phx recover app.db --semantic sqlite --output out  (run twice: with app.db-wal present, then without)",
       "input": {
-        "name": "reports/phase-4-headtohead/report/archive-recovery-benchmark.html",
-        "bytes": 14718,
-        "sha256": "ee17f90d3aa0cf70742f015507a44497b932278727c819f5ae5c77140215c66f"
+        "name": "testdata/sqlite/wal_real/SQ_R001.db (+ -wal)",
+        "bytes": 4096,
+        "sha256": "da63a52bdf62b3fc863995d79f497584be3ba97c1de4c55d1d301afbafab6cfc"
       },
-      "engine": "veraqis 0.2.1"
+      "engine": "veraqis 0.2.1",
+      "note": "Both panes are the verbatim stdout of a real run; the figure only places them side by side."
     }
   ]
 }

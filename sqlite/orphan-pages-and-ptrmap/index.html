@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>Why we refuse to follow a chain we can see | VERAQIS</title>
+<meta name="description" content="A disconnected page points at the rest of its record. Following that pointer needs a second, independent witness — and without one the engine abstains." />
+<link rel="canonical" href="https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="The pointer we can see and decline to follow" />
+<meta property="og:description" content="An orphan page carries pointers to the rest of its record. Nothing corroborates them, so the row abstains — unless SQLite kept a reverse map that confirms ownership." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/orphan-pages-and-ptrmap.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS card: why we refuse to follow a chain we can see — an orphan overflow chain is followed only when the pointer map independently confirms ownership" />
+<meta property="og:url" content="https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/" />
+<meta property="article:published_time" content="2026-09-04" />
+<meta property="article:modified_time" content="2026-09-04" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The pointer we can see and decline to follow" />
+<meta name="twitter:description" content="An orphan page carries pointers to the rest of its record. Nothing corroborates them, so the row abstains — unless SQLite kept a reverse map that confirms ownership." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/orphan-pages-and-ptrmap.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/#article",
+      "url": "https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/",
+      "headline": "Why we refuse to follow a chain we can see",
+      "name": "Why we refuse to follow a chain we can see | VERAQIS",
+      "description": "A disconnected page points at the rest of its record. Following that pointer needs a second, independent witness — and without one the engine abstains.",
+      "datePublished": "2026-09-04",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "digital forensics"
+        },
+        {
+          "@type": "Thing",
+          "name": "overflow pages"
+        },
+        {
+          "@type": "Thing",
+          "name": "database internals"
+        }
+      ],
+      "citation": [
+        {
+          "@type": "CreativeWork",
+          "name": "Database File Format",
+          "publisher": "SQLite",
+          "url": "https://www.sqlite.org/fileformat2.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is an orphan page in SQLite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A page still present and readable in the file, but no longer reachable from any b-tree because the pointers that led to it are gone. Orphan pages often hold intact rows, which makes them valuable in recovery — and unverifiable, because the structure that would vouch for them is what was lost."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is a SQLite pointer map?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A set of pages that record, for every page in the database, its type and which page owns it. They exist to support automatic vacuuming, and only appear in databases where that is enabled. Because they are written separately from the forward pointers, they can corroborate them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why not just follow the overflow pointer on an orphan page?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because a stale pointer left from earlier use looks exactly like a live one, and the b-tree that would normally vouch for the link is precisely what an orphan page has lost. Following it works most of the time, and \"most of the time\" cannot be distinguished from \"always\" in the output."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens when the pointer map disagrees with the chain?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The row keeps everything the other evidence established — the bytes are still observed, the structure still valid, the record still decoded — and the ownership fact is marked contradicted. A disputed witness marks one fact as disputed; it does not invalidate the row."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this mean less data is recovered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, in the cases where an uncorroborated pointer happened to be correct. The trade is that every assembled record has an independent statement behind its assembly, and a gap in the output means a gap in the evidence rather than a silent guess."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "SQLite",
+          "item": "https://veraqis.tech/sqlite/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Orphan pages and the ptrmap",
+          "item": "https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/" class="active">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/sqlite/">SQLite</a></p>
+    <p class="kicker">Experiment EXP-SQL-022</p>
+    <h1>Why we refuse to follow a chain we can see</h1>
+    <p class="lead">This is a measurement about not recovering something. When a page has lost its place in the tree, its record may continue onto further pages, and the pointer to them is sitting right there. Following it usually works. "Usually works" is not evidence, so the engine only follows the chain when a second, independent structure confirms who owns those pages — and returns nothing when it cannot.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-09-04">4 September 2026</time></span> · <span class="mono">EXP-SQL-022</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="setup">Two things that can go wrong at once</h2>
+      <p>A row too large for one page does not stay on one page. SQLite keeps as much as fits and puts the rest on <strong>overflow pages</strong>, each holding a pointer to the next — a forward chain, hanging off the end of the record.</p>
+      <p>Separately, a page can become an <strong>orphan</strong>: still present in the file, still readable, but no longer reachable from any b-tree because the pointers that led to it are gone. Orphan pages are one of the more productive things to find in a damaged database, since the rows are often intact.</p>
+      <p>Put the two together and you get the case this measurement is about: an orphan page holding the start of a long record, with a pointer to the rest. The bytes are right there. The question is whether anything justifies believing that pointer.</p>
+      <div class="callout info">For a page still connected to its tree, the answer is easy: the tree that led you there is itself the evidence that this page belongs to that row. An orphan page has, by definition, lost exactly that. Its chain pointer is a claim with no independent support — and a stale pointer left over from earlier use looks identical to a live one.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="ptrmap">The second witness, when it exists</h2>
+      <p>Some SQLite databases keep a <strong>pointer map</strong>: a set of pages recording, for every page, what kind it is and which page owns it. It exists so the file can be compacted, and it is written independently of the forward chain. That makes it exactly the witness this case needs — the same link described from the other end.</p>
+      <div class="compare"><div class="side veraqis"><h3>The forward chain says</h3><ul><li>Page 214 continues onto page 215.</li><li>Written as part of the record.</li><li>Survives whether or not it is still true.</li></ul></div><div class="side"><h3>The pointer map says</h3><ul><li>Page 215 is an overflow page owned by page 214.</li><li>Written separately, for a different purpose.</li><li>Disagrees loudly when the two do not match.</li></ul></div></div>
+      <figure class="diagram"><svg viewBox="0 0 720 260" width="100%" height="auto" role="img" aria-labelledby="orphan-ptrmap-t" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<title id="orphan-ptrmap-t">An orphan page, its forward chain, and the pointer map that can corroborate it</title><desc>An orphan page holds the start of a record and a forward pointer to the page holding the rest. Because the page has lost its place in the b-tree, nothing vouches for that pointer. A pointer map, written separately to support vacuuming, states from the other direction that the second page is an overflow page owned by the first. When it confirms, the chain is followed; with no map or a disagreeing one, the row abstains.</desc>
+<text x="8" y="20" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">a record that continues onto another page</text><text x="8" y="38" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the page has lost its place in the tree, so nothing vouches for the link</text><rect x="8" y="84" width="190" height="56" rx="4" fill="transparent" stroke="var(--bad)" stroke-width="1" stroke-dasharray="4 3"/><text x="103" y="108" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--bad)" font-weight="600" text-anchor="middle">orphan page 214</text><text x="103" y="126" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)" text-anchor="middle">start of the record</text><rect x="274" y="84" width="190" height="56" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="369" y="108" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600" text-anchor="middle">page 215</text><text x="369" y="126" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)" text-anchor="middle">the rest of it</text><path d="M 198 104 L 266 104" stroke="var(--mut)" stroke-width="1.4"/><path d="M 266 100 L 274 104 L 266 108 Z" fill="var(--mut)"/><text x="236" y="72" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)" text-anchor="middle">forward chain: “continues at 215”</text><rect x="504" y="58" width="206" height="108" rx="4" fill="transparent" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 3"/><text x="516" y="78" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">pointer map</text><text x="516" y="98" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">page 215 is an overflow page</text><text x="516" y="114" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">owned by page 214</text><text x="516" y="138" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">written separately, for vacuuming</text><path d="M 500 112 L 470 112" stroke="var(--recovery-accent)" stroke-width="1.4"/><path d="M 478 108 L 470 112 L 478 116 Z" fill="var(--recovery-accent)"/><text x="8" y="206" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--recovery-accent)" font-weight="700">map confirms the link</text><text x="8" y="224" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the chain is followed and the record assembled</text><text x="368" y="206" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--bad)" font-weight="700">no map, or the map disagrees</text><text x="368" y="224" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the row abstains — the bytes are reported, not assembled</text>
+</svg><figcaption>The forward pointer is a claim the record makes about itself. The pointer map is the same link stated from the other end, written separately and for another purpose — which is what makes it worth something here.</figcaption></figure>
+      <p>So the rule is narrow and stated in advance: an orphan record's overflow chain is followed <strong>only</strong> when the pointer map independently confirms ownership. With no pointer map in the database, or with one that contradicts the chain, the row abstains — the bytes are reported as present and the record is not assembled from them.</p>
+      <div class="claim" id="claim-abstain"><p class="claim-text">An orphan page's overflow chain is followed only when the pointer map confirms ownership of each page in it. Where the database has no pointer map, or where the map contradicts the chain, the row abstains rather than assembling a record from an uncorroborated pointer. Recall is taken where the evidence supports it and nowhere else.</p><p class="claim-src">EXP-SQL-022 / gap G-25, closed 2026-08-12 · the orphan half of G-16, split out deliberately rather than folded into the schema-record fix</p></div>
+      <p>That gate cost real recall. The same experiment's sibling had already made <em>schema</em> records follow their chains — so a long <code>CREATE TABLE</code> statement no longer loses its whole table — because a schema record reached through the tree has the tree as its witness. The orphan case was split out and left abstaining for months precisely because it did not.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="four-way">What a contradiction does and does not mean</h2>
+      <p>The corroboration result is not a boolean, and flattening it would destroy the distinction the whole design rests on. There are four outcomes, and three of them are not "no".</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">result</th><th scope="col">what it means</th></tr></thead><tbody><tr><th scope="row"><strong>Confirmed</strong></th><td>the pointer map names this page as owned by that record — the chain may be followed</td></tr><tr><th scope="row"><strong>Contradicted</strong></th><td>both structures exist and disagree about ownership</td></tr><tr><th scope="row"><strong>Unavailable</strong></th><td>the database keeps a pointer map, but not one covering this page</td></tr><tr><th scope="row"><strong>Not applicable</strong></th><td>this database has no pointer map at all — nothing was expected and nothing is missing</td></tr></tbody></table></div><p class="note">The last two are the ones usually collapsed into "unknown". They are different facts: a database without pointer maps is not withholding anything, while a missing entry in a database that has them is a gap. Reporting both as the same thing would make the report unable to say which.</p>
+      <p>A contradiction is the interesting one, because the tempting reading is wrong. It does <strong>not</strong> mean the bytes are fabricated, and it does not make the row invalid.</p>
+      <div class="terminal"><pre>ptrmap contradiction on an overflow page
+
+  physical evidence     Observed      the bytes are there
+  structural evidence   Valid         the page parses
+  content evidence      Decoded       the record reads
+  corroboration         Contradicted  ownership is disputed
+
+  the row is still reported, with its bytes and its decoded record;
+  the only thing that flips is the ownership fact</pre></div>
+      <p>This is what it means for the evidence axes to be independent. A disputed corroboration sets one fact and erases nothing else — the bytes remain observed, the structure remains valid, the record remains decoded. A design that let one contradicted witness invalidate a row would be discarding evidence it actually has, which is the same failure as over-claiming with the sign reversed.</p>
+      <div class="claim" id="claim-independence"><p class="claim-text">When the pointer map contradicts the forward chain on an overflow page, the row keeps its bytes, its spans and its decoded record; only the ownership corroboration flips to contradicted. A contradicted witness marks one fact as disputed and never erases the facts other axes established.</p><p class="claim-src">EXP-SQL-014 case 8, on a mutated GT_008 · criterion T8 · asserted across the corpus, with 60 000 mutated pointer-map inputs in the fuzzing campaign</p></div>
+      <h2 id="why-abstain">Why abstention is the product</h2>
+      <p>It is worth being plain that this decision loses data. There are databases where following an uncorroborated chain would have returned the right record, and this engine returns nothing for them. That is the trade, made deliberately.</p>
+      <div class="grid g2"><div class="card"><h3>What following it would buy</h3><p>More rows recovered, most of the time, from files where a stale pointer happens to still be correct — and no way for anyone downstream to tell those rows from the corroborated ones.</p></div><div class="card"><h3>What abstaining buys</h3><p>Every assembled record has an independent statement behind its assembly. A gap in the output is a gap in the evidence, which is a fact a reader can act on.</p></div></div>
+      <p>The same reasoning runs through this whole section. A <a href="/sqlite/database-without-its-wal/">database without its WAL</a> is not called current; an <a href="/sqlite/what-an-index-proves/">index</a> is not allowed to supply a payload; a <a href="/sqlite/provable-is-not-current/">hot journal</a> does not let a provable verdict be read as a current one. Each is a place where more output was available and the evidence did not reach.</p>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>Most databases have no pointer map.</strong> It exists only where automatic vacuuming is enabled, so for many files the orphan overflow case simply abstains and always will.</li><li><strong>Confirmation is about ownership, not content.</strong> The pointer map says which record a page belongs to. It says nothing about whether the bytes on that page are undamaged.</li><li><strong>Both structures live in the same file.</strong> They corroborate each other against accidental damage, not against a file that was altered as a whole.</li><li><strong>This is a rule, measured on fixtures.</strong> It does not estimate how often orphan pages with long records occur in real databases.</li></ul>
+      <ul class="source-list"><li><a href="/sqlite/">SQLite recovery</a> — the rest of the section</li><li><a href="/sqlite/what-an-index-proves/">What an index proves</a> — the other place a second witness changes what may be said</li><li><a href="/reference/evidence-model/">The evidence model</a> — why corroboration is a set of facts rather than a score</li><li><a href="/research/experiments/">Experiment ledger</a> — every measurement behind this site</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about orphan pages and corroboration</h2>
+    <div class="faq">
+      <div class="qa"><h3>What is an orphan page in SQLite?</h3><p>A page still present and readable in the file, but no longer reachable from any b-tree because the pointers that led to it are gone. Orphan pages often hold intact rows, which makes them valuable in recovery — and unverifiable, because the structure that would vouch for them is what was lost.</p></div>
+      <div class="qa"><h3>What is a SQLite pointer map?</h3><p>A set of pages that record, for every page in the database, its type and which page owns it. They exist to support automatic vacuuming, and only appear in databases where that is enabled. Because they are written separately from the forward pointers, they can corroborate them.</p></div>
+      <div class="qa"><h3>Why not just follow the overflow pointer on an orphan page?</h3><p>Because a stale pointer left from earlier use looks exactly like a live one, and the b-tree that would normally vouch for the link is precisely what an orphan page has lost. Following it works most of the time, and "most of the time" cannot be distinguished from "always" in the output.</p></div>
+      <div class="qa"><h3>What happens when the pointer map disagrees with the chain?</h3><p>The row keeps everything the other evidence established — the bytes are still observed, the structure still valid, the record still decoded — and the ownership fact is marked contradicted. A disputed witness marks one fact as disputed; it does not invalidate the row.</p></div>
+      <div class="qa"><h3>Does this mean less data is recovered?</h3><p>Yes, in the cases where an uncorroborated pointer happened to be correct. The trade is that every assembled record has an independent statement behind its assembly, and a gap in the output means a gap in the evidence rather than a silent guess.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). Why we refuse to follow a chain we can see.
+VERAQIS Research. https://veraqis.tech/sqlite/orphan-pages-and-ptrmap/
+Engine: VERAQIS 0.2.1 · Measured: 4 September 2026 · Experiment: EXP-SQL-022</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/sqlite/what-an-index-proves/"><h3>What an index proves when the table is gone</h3><p>Existence proven, payload refused — the same discipline on a different structure.</p></a>
+      <a class="card link-card" href="/sqlite/provable-is-not-current/"><h3>The rows in the file were never committed</h3><p>Where a positive verdict still does not license the obvious claim.</p></a>
+      <a class="card link-card" href="/reference/evidence-model/"><h3>The evidence model</h3><p>Why a contradicted witness marks a fact rather than erasing a row.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>A gap in the output should mean something</h2>
+    <p class="sub">VERAQIS reports what it assembled, what it abstained on, and why — so an absence is a finding rather than a silence.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

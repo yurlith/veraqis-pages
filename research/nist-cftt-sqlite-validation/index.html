@@ -15,18 +15,18 @@
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="Running the NIST CFTT SQLite specification on ourselves" />
 <meta property="og:description" content="A recovery tool graded against the published federal methodology, with every failure listed. We pass 9 of 13 core assertions unlicensed, 11 of 13 licensed — and publish why the other two fail." />
-<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/nist-cftt-sqlite-validation.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:type" content="image/png" />
-<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:image:alt" content="VERAQIS research card: the federal SQLite spec, run on ourselves — 126 assertion results against the NIST CFTT methodology, including the six we fail" />
 <meta property="og:url" content="https://veraqis.tech/research/nist-cftt-sqlite-validation/" />
 <meta property="article:published_time" content="2026-09-04" />
 <meta property="article:modified_time" content="2026-09-04" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Running the NIST CFTT SQLite specification on ourselves" />
 <meta name="twitter:description" content="A recovery tool graded against the published federal methodology, with every failure listed. We pass 9 of 13 core assertions unlicensed, 11 of 13 licensed — and publish why the other two fail." />
-<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/nist-cftt-sqlite-validation.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
   "@context": "https://schema.org",
@@ -103,7 +103,7 @@
       "@type": "Dataset",
       "@id": "https://veraqis.tech/research/nist-cftt-sqlite-validation/#dataset",
       "name": "CFTT SQLite methodology results (VERAQIS-SQL-VAL-001)",
-      "description": "Per-fixture, per-assertion outcomes for the NIST CFTT SQLite Data Recovery specification applied internally to VERAQIS, alongside the anomaly summaries published for four other products.",
+      "description": "Per-fixture, per-assertion outcomes for the NIST CFTT SQLite Data Recovery specification applied internally to VERAQIS.",
       "url": "https://veraqis.tech/research/nist-cftt-sqlite-validation/",
       "license": "https://creativecommons.org/licenses/by/4.0/",
       "creator": {
@@ -163,10 +163,10 @@
         },
         {
           "@type": "Question",
-          "name": "Does this show VERAQIS is better than commercial forensic suites?",
+          "name": "Does this show VERAQIS is better than other recovery tools?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No, and that conclusion is explicitly excluded. The competitor figures come from published federal reports on versions tested between 2021 and 2023, in a different environment, by different operators. No head-to-head run exists, and none of those products was re-tested here."
+            "text": "No, and that conclusion is explicitly excluded. This is one tool measured against a published specification on six fixtures it built itself. No comparative run exists here, no other tool was run, and an assertion count is not a ranking."
           }
         }
       ]
@@ -214,6 +214,8 @@
         <a href="/mobile.html">Android</a>
         <a href="/guides/">Guides</a>
         <a href="/research/" class="active">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
         <a href="/docs.html">Docs</a>
         <a href="/download.html">Download</a>
       </div>
@@ -265,10 +267,9 @@
 <section>
   <div class="wrap">
     <div class="prose">
-      <h2 id="convergent">The finding that was about everyone</h2>
-      <p>The specification's journal-mode assertions ask a tool to report how the database handles rollback — WAL, PERSIST, DELETE, OFF. At the first measurement, <strong>all four products deviated on it, ours included</strong>.</p>
-      <div class="table-scroll"><table><thead><tr><th scope="col">product</th><th scope="col">version tested</th><th scope="col">report</th><th scope="col">journal-mode outcome as recorded</th></tr></thead><tbody><tr><td>VERAQIS</td><td>0.2.1</td><td>this experiment, 2026-08-14</td><td>published a derived classification instead of the two header bytes</td></tr><tr><td>Belkasoft Evidence Center X</td><td>v1.17.12873</td><td>June 2023</td><td>PERSIST reported as Rollbackjournal</td></tr><tr><td>Cellebrite Physical Analyzer</td><td>v7.58.0.66</td><td>January 2023</td><td>journal mode not reported</td></tr><tr><td>Sanderson Forensic Browser</td><td>v3.3.0</td><td>April 2021</td><td>PERSIST and OFF reported as DELETE</td></tr></tbody></table></div><p class="note">Competitor rows are the anomaly summaries from the published CFTT reports for those specific versions on those dates — not a re-test. Four independent implementations landing on the same deviation says something about the assertion: it asks for information tools discard early. We now report both raw header bytes; nobody else was re-tested, and a current release of any of these products may well report them too.</p>
-      <div class="callout info"><strong>What this comparison is not.</strong> The competitor results were produced by NIST/DHS between April 2021 and June 2023, on their environment, against versions that are now years old. VERAQIS was run here, today, by us. The only thing genuinely shared is the specification. Nothing here establishes that any product is better than another, that a current release behaves as its tested version did, or that a capability a report does not mention is absent.</div>
+      <h2 id="journal-mode">The assertion we got wrong first</h2>
+      <p>The specification's journal-mode assertions ask a tool to report how the database handles rollback — WAL, PERSIST, DELETE, OFF. At the first measurement we deviated on it: we published a <strong>derived classification</strong> instead of the two raw header bytes the specification asks for.</p>
+      <p>It is a fair thing to be caught by, because the assertion asks for exactly the information a tool is tempted to throw away. The two bytes are read, interpreted into a friendlier label, and then the bytes themselves are gone from the report — which is convenient right up until an examiner needs to say what the file actually contained rather than what a tool concluded about it. We now report both raw header version bytes.</p>
     </div>
   </div>
 </section>
@@ -292,10 +293,22 @@ Parse error: database disk image is malformed (11)
 $ phx analyze testdata/sqlite/btree_page_corrupt/SQ_0008.db
   health : 65/100 (Significant damage, partial loss)
   MAJOR [structural_corruption] SQ_BTREE_001: page 1: type byte 0xFF not in {2,5,10,13}</pre></div>
-      <div class="claim" id="claim-payload"><p class="claim-text">A single bit flipped at byte 913, inside a row payload, is reported as intact by SQLite's own integrity check and by our analyzer. The same amount of damage on a page type byte is reported as malformed by both. The difference is not tool quality: a page type byte has a declared set of legal values, and a payload byte has no checksum, no declared value and no second copy.</p><p class="claim-src">EXP-SQL-PAYLOAD-EVIDENCE · sqlite3 3.53.2, VERAQIS phx 0.2.1 · fixtures testdata/sqlite/bitflip_payload/SQ_0022.db and testdata/sqlite/btree_page_corrupt/SQ_0008.db · measured 2026-09-04</p></div>
+      <div class="claim" id="claim-payload"><p class="claim-text">A single bit flipped at byte 913, inside a row payload, is reported as intact by SQLite's own integrity check and by our analyzer. The same amount of damage on a page type byte is reported as malformed by both. In this pair the difference is not tool quality: a page type byte has a declared set of legal values, and a payload byte has no checksum, no declared value and no second copy. Elsewhere in the same fixture family it is — see the open gap below.</p><p class="claim-src">EXP-SQL-PAYLOAD-EVIDENCE · sqlite3 3.53.2, VERAQIS phx 0.2.1 · fixtures testdata/sqlite/bitflip_payload/SQ_0022.db and testdata/sqlite/btree_page_corrupt/SQ_0008.db · measured 2026-09-04</p></div>
       <figure class="evidence-shot"><img src="/assets/research/nist-sqlite/veraqis-report-btree.png" alt="VERAQIS HTML report for a SQLite fixture with a corrupted b-tree page: health 65 of 100, Significant damage partial loss, verdict Damage detected, and one evidence row — rule SQ_BTREE_001, structural corruption at offset 0x0, major severity, 95% confidence" width="2000" height="1720" loading="lazy" decoding="async" /><figcaption>The detectable case, reported. One rule fires, at one offset, with the severity and confidence attached — and the file is still 65/100 rather than condemned, because one bad page type byte is not a destroyed database. The undetectable case above produces no such row, and honestly cannot.<span class="fig-prov">phx report testdata/sqlite/btree_page_corrupt/SQ_0008.db --output sqlite-report.html --format html · VERAQIS 0.2.1 · fixture committed in the repository</span></figcaption></figure>
       <p>This is the honest reading of a health score: <strong>it is a statement about the evidence the format carries, not about whether the data is right.</strong> A score that hedged here would have to hedge on every intact database too, which would make it useless. The same limit binds our recovery claims — content read out of a page like this is bytes as found, and under our evidence model it cannot raise the health of anything.</p>
       <p>Where an independent witness does exist — a WAL frame checksum covering that page, a checksum VFS, an external hash manifest — the flip becomes detectable, and detectable <em>by that witness specifically</em>. That is the whole content of the evidence model, arriving from a different direction.</p>
+      <h3 id="open-gap">An open gap in the same fixture family</h3>
+      <p>The paragraph above says the two tools agree because the evidence is absent. Checking that across the rest of the family found one file where they <strong>do not</strong> agree, and where we are the one that is wrong.</p>
+      <div class="terminal"><pre>$ sqlite3 testdata/sqlite/bitflip_payload/SQ_0050.db "PRAGMA integrity_check;"
+*** in database main ***
+Tree 4 page 4 cell 2: Rowid 9 out of order
+Multiple uses for byte 4062 of page 4
+database disk image is malformed
+
+$ phx analyze testdata/sqlite/bitflip_payload/SQ_0050.db
+  health : 100/100 (Perfect)
+  no corruptions detected</pre></div>
+      <div class="callout warn"><strong>This one is not "nothing to detect".</strong> SQLite found structural damage — a rowid out of order, a byte claimed by two cells — with no reference file and no checksum, from the same evidence available to us. Our analyzer missed it. The cause is not established, it is not a calibration threshold, and it is not fixed at the time of writing: it is a detection gap in the structural analyzer, recorded here because finding it while checking our own claim is exactly when it is least convenient and most necessary to say so.</div>
     </div>
   </div>
 </section>
@@ -305,9 +318,9 @@ $ phx analyze testdata/sqlite/btree_page_corrupt/SQ_0008.db
     <div class="prose">
       <h2 id="forbidden">Conclusions this experiment does not support</h2>
       <p>The source document keeps a list of claims the measurement must not be used for. Publishing it is more useful than publishing another headline, because it is the part a reader cannot check for themselves.</p>
-      <ul><li>That VERAQIS is <strong>better than, or outperforms, any named product</strong> — different dates, versions, environments and operators; no head-to-head run exists.</li><li>That any competitor <strong>lacks</strong> a capability its report does not mention. A cell a report is silent about is not evidence of absence.</li><li>That current vendor releases behave as their <strong>2021–2023</strong> tested versions did.</li><li>That VERAQIS is <strong>NIST certified, approved, validated or compliant</strong>. It has not been submitted; all four cited products have.</li><li>That passing the source-filename and byte-offset assertions where another report records anomalies makes our provenance model superior — those assertions ask for a filename and an offset, nothing more.</li></ul>
+      <ul><li>That VERAQIS is <strong>better than, or outperforms, any other tool</strong>. This is a single tool measured against a specification — no comparative run exists, and none is reported here.</li><li>That VERAQIS is <strong>NIST certified, approved, validated or compliant</strong>. It has not been submitted to the programme.</li><li>That passing the source-filename and byte-offset assertions says anything about the quality of our provenance model in general — those assertions ask for a filename and an offset, nothing more.</li><li>That a <strong>9-of-13 score is a grade</strong>. It is the count of assertions answered on this methodology, on six fixtures, by this version.</li></ul>
       <h2 id="limits">Limits</h2>
-      <ul><li><strong>Six fixtures.</strong> That is what the specification defines. It is a methodology, not a large corpus.</li><li><strong>Two recorded deviations from the literal text</strong>: row selection uses a fixed stride rather than a random draw, for reproducibility, and the WAL fixture is captured from inside the open session rather than by killing the process.</li><li><strong>Competitor rows come from anomaly summaries, not the detail grids</strong> in those reports — the layout does not survive text extraction reliably, so a cell not called out in a summary is not counted against anyone. The comparison is deliberately conservative towards them.</li><li><strong>Our harness was wrong three times before it was right.</strong> Each error would have produced a flattering but false result, and each was caught by checking a number that looked too good. The record is in the findings document beside the results.</li></ul>
+      <ul><li><strong>Six fixtures.</strong> That is what the specification defines. It is a methodology, not a large corpus.</li><li><strong>Two recorded deviations from the literal text</strong>: row selection uses a fixed stride rather than a random draw, for reproducibility, and the WAL fixture is captured from inside the open session rather than by killing the process.</li><li><strong>Our harness was wrong three times before it was right.</strong> Each error would have produced a flattering but false result, and each was caught by checking a number that looked too good. The record is in the findings document beside the results.</li><li><strong>One unresolved detection gap</strong>, found while checking the claim above: on <code>SQ_0050</code> SQLite reports structural corruption and our analyzer reports nothing. Not root-caused, not fixed, and not excluded from this page.</li></ul>
       <h2 id="reproduce">Reproduce it</h2>
       <div class="terminal"><pre># the harness builds each fixture from the specification's own Test Actions,
 # then drives the shipped CLI the way an examiner would
@@ -319,7 +332,7 @@ phx recover &lt;db&gt; --semantic sqlite --output &lt;dir&gt; --evidence all
 # results, per fixture and per assertion
 docs/validation/nist-sqlite/veraqis-results.json
 docs/validation/nist-sqlite/assertions.json</pre></div>
-      <ul class="source-list"><li><a href="/research/nist-cftt-sqlite-validation/data.json">data.json</a> — assertion outcomes and the published competitor anomaly summaries</li><li><a href="/formats/sqlite/">SQLite format reference</a> — the structures these assertions ask about</li><li><a href="/reference/evidence-model/">The evidence model</a> — why an unwitnessed payload byte cannot be verified</li><li><a href="/research/experiments/">Experiment ledger</a> — every measurement behind this site</li></ul>
+      <ul class="source-list"><li><a href="/research/nist-cftt-sqlite-validation/data.json">data.json</a> — every fixture × assertion outcome from both runs</li><li><a href="/formats/sqlite/">SQLite format reference</a> — the structures these assertions ask about</li><li><a href="/reference/evidence-model/">The evidence model</a> — why an unwitnessed payload byte cannot be verified</li><li><a href="/research/experiments/">Experiment ledger</a> — every measurement behind this site</li></ul>
     </div>
   </div>
 </section>
@@ -332,7 +345,7 @@ docs/validation/nist-sqlite/assertions.json</pre></div>
       <div class="qa"><h3>Why does the tool fail the recoverable-rows assertion?</h3><p>Because it does not scavenge. Rows are recovered through the transactional record — from a write-ahead log, recall was 200 of 200 — and not from freelist or unallocated space, where 111 findable values were returned as zero. A row lifted from free space carries no evidence of when it was live or whether it was ever committed, so resurrecting it is a separate, explicitly risk-marked mode rather than the default.</p></div>
       <div class="qa"><h3>Can a SQLite database be corrupted without any tool noticing?</h3><p>Yes, when the damage lands where the format keeps no evidence. A bit flipped inside a row payload leaves the file structurally perfect: SQLite's own integrity check returns ok and our analyzer reports no findings. A bit flipped on a page type byte is caught immediately by both, because that byte has a declared set of legal values.</p></div>
       <div class="qa"><h3>What does a health score of 100 actually mean?</h3><p>That nothing detectable is wrong, given the evidence the format carries — not that the data is correct. For formats with checksums the two are close together; for a checksum-less SQLite payload they are not. This is why recovery results carry what each byte was verified against rather than a single confidence number.</p></div>
-      <div class="qa"><h3>Does this show VERAQIS is better than commercial forensic suites?</h3><p>No, and that conclusion is explicitly excluded. The competitor figures come from published federal reports on versions tested between 2021 and 2023, in a different environment, by different operators. No head-to-head run exists, and none of those products was re-tested here.</p></div>
+      <div class="qa"><h3>Does this show VERAQIS is better than other recovery tools?</h3><p>No, and that conclusion is explicitly excluded. This is one tool measured against a published specification on six fixtures it built itself. No comparative run exists here, no other tool was run, and an assertion count is not a ranking.</p></div>
     </div>
   </div>
 </section>

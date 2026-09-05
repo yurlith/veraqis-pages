@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>What an index proves when the table is gone | VERAQIS</title>
+<meta name="description" content="An index is a second copy of part of your data. It can prove a row existed and what its key was — and it must never be allowed to supply the rest of the row." />
+<link rel="canonical" href="https://veraqis.tech/sqlite/what-an-index-proves/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="What a SQLite index proves when the table is destroyed" />
+<meta property="og:description" content="With the table b-tree emptied, the index still proved all five rows existed and what their timestamps were — and still refused to supply their contents." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/what-an-index-proves.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS card: what an index proves when the table is gone — five rows proven to have existed, and their contents never supplied" />
+<meta property="og:url" content="https://veraqis.tech/sqlite/what-an-index-proves/" />
+<meta property="article:published_time" content="2026-09-04" />
+<meta property="article:modified_time" content="2026-09-04" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="What a SQLite index proves when the table is destroyed" />
+<meta name="twitter:description" content="With the table b-tree emptied, the index still proved all five rows existed and what their timestamps were — and still refused to supply their contents." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/what-an-index-proves.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/sqlite/what-an-index-proves/#article",
+      "url": "https://veraqis.tech/sqlite/what-an-index-proves/",
+      "headline": "What an index proves when the table is gone",
+      "name": "What an index proves when the table is gone | VERAQIS",
+      "description": "An index is a second copy of part of your data. It can prove a row existed and what its key was — and it must never be allowed to supply the rest of the row.",
+      "datePublished": "2026-09-04",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "b-tree index"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "digital forensics"
+        },
+        {
+          "@type": "Thing",
+          "name": "database internals"
+        }
+      ],
+      "citation": [
+        {
+          "@type": "CreativeWork",
+          "name": "Database File Format",
+          "publisher": "SQLite",
+          "url": "https://www.sqlite.org/fileformat2.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/sqlite/what-an-index-proves/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a SQLite index be used to recover deleted or lost rows?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It can prove that a row existed and what its indexed columns contained — nothing more. On a fixture with the table emptied, the index proved all five rows had existed and gave their timestamps, and supplied no other column. An index holds only the indexed columns plus the row key, so the rest of the row is not there to recover."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is stored in a SQLite index b-tree?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "One record per row, made of the columns being indexed followed by the key of the corresponding table row. For an index on a timestamp column, each entry is a timestamp and a rowid. There is no copy of the other columns anywhere in the index."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is an index entry independent evidence that a row existed?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, in the useful sense: it is written separately from the table b-tree, so when both agree they corroborate each other. It is not independent in the stronger sense — both live in the same file, so an index cannot testify that the file as a whole was not altered."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do index pages need different parsing from table pages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Two differences that are silent when got wrong. The overflow threshold uses a different formula, so the table rule applied to an index mis-classifies which records spill and truncates keys. And an index cell has no rowid varint — the row key is the last column of the record instead."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the last column of an index entry always give the rowid?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. For a WITHOUT ROWID table the index b-tree is the table itself and the trailing column is ordinary data. Reading it as a rowid would invent row identities, so it is only treated as one when the indexed table has been independently confirmed to be a rowid table from its root page type byte."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/sqlite/what-an-index-proves/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "SQLite",
+          "item": "https://veraqis.tech/sqlite/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "What an index proves",
+          "item": "https://veraqis.tech/sqlite/what-an-index-proves/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/" class="active">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/sqlite/">SQLite</a></p>
+    <p class="kicker">Experiment EXP-SQL-015</p>
+    <h1>What an index proves when the table is gone</h1>
+    <p class="lead">Every index in a database is a second, partial copy of the data, written at a different time to a different place. When the table it belongs to is destroyed, that copy is suddenly the most valuable thing in the file — and the most dangerous, because it is <em>almost</em> a backup of the rows. This measurement is about how much an index genuinely proves, and about the discipline needed to stop it being read as more.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-09-04">4 September 2026</time></span> · <span class="mono">EXP-SQL-015</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="contents">What is actually in an index</h2>
+      <p>An index b-tree stores one record per row: the columns being indexed, followed by the key of the table row they belong to. Nothing else. For a table of messages indexed on a timestamp, the whole index is five pairs:</p>
+      <div class="terminal"><pre>CREATE INDEX idx_messages_ts ON messages(ts);
+
+  4500|5   4600|4   4700|3   4800|2   4900|1
+
+  each entry proves:  a row with rowid 5 existed, and its ts was 4500
+  each entry says about the body column:  nothing whatsoever</pre></div>
+      <p>That distinction is the whole subject. The index is genuine, independent evidence about <strong>existence</strong> and about <strong>the indexed columns</strong> — and it is silent about every other column in the row. A recovery tool that blurs the two produces something far worse than a gap: a row that looks recovered and is mostly invented.</p>
+      <div class="callout info">This is why index findings are reported in their own section and never enter the recovered-rows list. Not as a presentation choice — as a containment rule. A value that reached the report through the index can never be mistaken for a value that came out of the table.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="result">The result that matters</h2>
+      <p>The test is the case where the index is all that is left. The table's leaf page was emptied, so the row data is genuinely gone; the index was left intact.</p>
+      <figure class="chart">
+<svg viewBox="0 0 720 130" width="100%" height="auto" role="img" aria-labelledby="cg-81m193" preserveAspectRatio="xMinYMin meet"><title id="cg-81m193">Table emptied, index intact — what comes back</title><desc>On the damaged-table fixture the row recovery is zero and the existence recovery is complete: five rows proven to have existed, with their indexed key, and no payload produced for any of them.</desc><rect x="0" y="4" width="11" height="11" rx="2" fill="var(--recovery-accent)"/><text x="17" y="14" font-size="12" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">entries</text><text x="0" y="37" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">rows recovered</text><rect x="168" y="24" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="24" width="0" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="35" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text><text x="0" y="62" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">existence proven</text><rect x="168" y="49" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="49" width="448" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="60" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">5</text><text x="0" y="87" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">payloads supplied</text><rect x="168" y="74" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="74" width="0" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="85" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text><text x="0" y="112" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">fabricated values</text><rect x="168" y="99" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="99" width="0" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="110" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text></svg>
+<figcaption>On the damaged-table fixture the row recovery is zero and the existence recovery is complete: five rows proven to have existed, with their indexed key, and no payload produced for any of them.</figcaption>
+</figure>
+      <div class="claim" id="claim-existence"><p class="claim-text">With the table b-tree yielding nothing, the index still proved that all five rows existed and what each of their timestamps was, and still refused to supply their contents. That is complete recall of existence with zero recall of content — and the report says so explicitly rather than presenting five partial rows.</p><p class="claim-src">EXP-SQL-015, criterion X5 · fixture SQL_GT_006, table leaf emptied · 0 rows recovered, 5 index-only existence entries, rowids 1–5, no fabricated payload, warned explicitly</p></div>
+      <p>The undamaged direction is checked too, and it is the more common one in practice: when the table <em>is</em> readable, the index becomes corroboration. All five entries matched rows the table b-tree had already produced independently, which is a second witness to the same fact rather than a new one.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">fixture</th><th scope="col">rows recovered</th><th scope="col">index confirms a row</th><th scope="col">index-only existence</th></tr></thead><tbody><tr><td><code>index_corroborates_rows</code></td><td>3</td><td><strong>3</strong></td><td>0</td></tr><tr><td><code>index_only_existence</code></td><td><strong>0</strong></td><td>0</td><td><strong>3</strong></td></tr></tbody></table></div><p class="note">Two fixtures, deliberately mirrored. The second asserts a claim the gates can falsify: the table gives nothing, the index gives existence, and the payload column stays empty. A dash and a zero are kept distinct throughout — "this fixture does not exercise that claim" is not the same fact as "it exercised it and found none".</p>
+      <p>The rule is enforced rather than intended. Every index entry reports its content as <em>not reached</em>, corroborated or not; no index entry can populate a row's values; and the property is asserted under fuzzing — 4,000 mutated inputs in the in-repo sweep plus a continuous target — with a check that no input can make an entry claim a payload.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="traps">Two ways to read an index wrongly</h2>
+      <p>Index pages look enough like table pages to invite reusing the table code on them. Both differences below are silent when got wrong — no error, no malformed structure, just quietly incorrect output.</p>
+      <h3 id="threshold">1. The overflow threshold is a different formula</h3>
+      <p>A record too large for its page spills onto overflow pages, and the size at which that happens is computed differently for index pages than for table leaves. The constants are close enough to be mistaken for each other.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">page kind</th><th scope="col">threshold formula</th><th scope="col">at a 4096-byte page</th></tr></thead><tbody><tr><td>table leaf</td><td><code>X = U − 35</code></td><td><strong>4061</strong> bytes</td></tr><tr><td>index page</td><td><code>X = ((U − 12) × 64 / 255) − 23</code></td><td><strong>1002</strong> bytes</td></tr><tr><td><em>a nearby constant that is not this one</em></td><td><code>M = ((U − 12) × 32 / 255) − 23</code></td><td>64 versus 32 — the easy mistake</td></tr></tbody></table></div><p class="note">Proven rather than assumed: a 1,500-byte key spills under the index rule and would not under the table rule. Using the table formula on an index would mis-classify which records spill and silently truncate keys — producing shorter values that still look like values.</p>
+      <h3 id="rowid">2. The rowid is not where a table cell keeps it</h3>
+      <figure class="diagram"><svg viewBox="0 0 720 250" width="100%" height="auto" role="img" aria-labelledby="sqlite-page-types-t" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<title id="sqlite-page-types-t">A table leaf page beside an index leaf page</title><desc>Two page kinds side by side. A table b-tree leaf starts with the byte 0x0D and its cell carries length, rowid and payload. An index b-tree leaf starts with 0x0A and its cell carries only length and payload, with the row key as the last column of the record. A WITHOUT ROWID table is stored as the second kind.</desc>
+<text x="8" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">table b-tree leaf</text><rect x="8" y="28" width="344" height="34" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="50" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">first byte of the page: 0x0D</text><rect x="8" y="84" width="63" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="39.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">length</text><rect x="71" y="84" width="63" height="38" rx="4" fill="var(--recovery-accent)" stroke="var(--line)" stroke-width="1"/><text x="102.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#ffffff" font-weight="700" text-anchor="middle">rowid</text><rect x="134" y="84" width="219" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="243.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">payload</text><text x="8" y="142" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the row key sits in the cell</text><text x="8" y="160" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">a WITHOUT ROWID table never has this page type</text><text x="376" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">index b-tree leaf</text><rect x="376" y="28" width="344" height="34" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="388" y="50" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">first byte of the page: 0x0A</text><rect x="376" y="84" width="63" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="407.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">length</text><rect x="439" y="84" width="281" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="579.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">payload — indexed columns, then the key</text><text x="376" y="142" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the row key is the last column of the record</text><text x="376" y="160" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">and it is a rowid only for a rowid table</text><text x="8" y="240" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the byte on the page decides how to read it; the schema text only describes it</text>
+</svg><figcaption>A table cell keeps the row key in the cell; an index cell has no such field, and the key is the last column of the record instead. Reading the second as the first produces values, not errors.</figcaption></figure>
+      <p>A table-leaf cell is <code>[length][rowid][payload]</code>. An index leaf cell is <code>[length][payload]</code> — no rowid varint at all. The row key is instead the <strong>last column of the record</strong>, because an index key is "the indexed columns followed by the key of the corresponding table row".</p>
+      <div class="callout warn"><strong>And that trailing column is a rowid only for rowid tables.</strong> For a <code>WITHOUT ROWID</code> table the index b-tree <em>is</em> the table, and its last column is ordinary data. Reading it as a rowid would fabricate row identities — on exactly the kind of table that already needs special handling. So a rowid is extracted only when the indexed table was independently confirmed to be a rowid table, decided from the root page's type byte rather than from what the schema text calls it.</div>
+      <p>That last clause is the same decision, made in the same place, as the one behind <a href="/sqlite/without-rowid-tables/">the tables our recovery looked past</a> — the byte on the page is the fact, the schema text is the description. Getting it right once fixed a missing table; getting it right here prevented inventing identities.</p>
+      <h2 id="cost">Why it is not on by default</h2>
+      <p>Reading indexes means a second walk over the b-trees, and it is not free: <strong>+18.0%</strong> on the fixture, 14.2 to 16.8 microseconds. The standing rule is that the default path does not pay for capability most runs will not use, so index evidence is requested explicitly. Its cost is measured and reported separately rather than folded into the headline.</p>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>An index can never return a row.</strong> Existence and the indexed columns are the ceiling; nothing else in the record is in the index to recover.</li><li><strong>Index keys that spill onto overflow pages are skipped and counted</strong>, not decoded from the fragment that fits on the page. An abstention, recorded.</li><li><strong>Corroboration is not independence in every sense.</strong> An index entry confirms a row the table produced, which is a real second witness — but both live in the same file, so neither is evidence against the file having been altered as a whole.</li><li><strong>One fixture family.</strong> This measures the rule and the format handling, not how often an intact index outlives its table in the field.</li></ul>
+      <ul class="source-list"><li><a href="/sqlite/without-rowid-tables/">The table a recovery tool looks past</a> — where the same root-page-type decision was the whole bug</li><li><a href="/sqlite/">SQLite recovery</a> — the rest of the section</li><li><a href="/reference/evidence-model/">The evidence model</a> — why "existence proven, payload unknown" needs to be sayable</li><li><a href="/formats/sqlite/">SQLite format reference</a> — pages, cells and b-trees</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about index evidence</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can a SQLite index be used to recover deleted or lost rows?</h3><p>It can prove that a row existed and what its indexed columns contained — nothing more. On a fixture with the table emptied, the index proved all five rows had existed and gave their timestamps, and supplied no other column. An index holds only the indexed columns plus the row key, so the rest of the row is not there to recover.</p></div>
+      <div class="qa"><h3>What is stored in a SQLite index b-tree?</h3><p>One record per row, made of the columns being indexed followed by the key of the corresponding table row. For an index on a timestamp column, each entry is a timestamp and a rowid. There is no copy of the other columns anywhere in the index.</p></div>
+      <div class="qa"><h3>Is an index entry independent evidence that a row existed?</h3><p>Yes, in the useful sense: it is written separately from the table b-tree, so when both agree they corroborate each other. It is not independent in the stronger sense — both live in the same file, so an index cannot testify that the file as a whole was not altered.</p></div>
+      <div class="qa"><h3>Why do index pages need different parsing from table pages?</h3><p>Two differences that are silent when got wrong. The overflow threshold uses a different formula, so the table rule applied to an index mis-classifies which records spill and truncates keys. And an index cell has no rowid varint — the row key is the last column of the record instead.</p></div>
+      <div class="qa"><h3>Does the last column of an index entry always give the rowid?</h3><p>No. For a WITHOUT ROWID table the index b-tree is the table itself and the trailing column is ordinary data. Reading it as a rowid would invent row identities, so it is only treated as one when the indexed table has been independently confirmed to be a rowid table from its root page type byte.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). What an index proves when the table is gone.
+VERAQIS Research. https://veraqis.tech/sqlite/what-an-index-proves/
+Engine: VERAQIS 0.2.1 · Measured: 4 September 2026 · Experiment: EXP-SQL-015</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/sqlite/without-rowid-tables/"><h3>The table a recovery tool looks past</h3><p>The same page-type decision, where getting it wrong lost an entire table silently.</p></a>
+      <a class="card link-card" href="/sqlite/provable-is-not-current/"><h3>The rows in the file were never committed</h3><p>Another case where the honest answer is narrower than the one a tool could get away with.</p></a>
+      <a class="card link-card" href="/research/sqlite-rowid-from-btree-geometry/"><h3>A deleted row's identity from b-tree shape</h3><p>Recovering identity from structure when the key itself is gone.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>See what a database can still prove</h2>
+    <p class="sub">VERAQIS reports rows with the evidence behind each one, and reports separately what only survived as existence — never the two mixed together.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

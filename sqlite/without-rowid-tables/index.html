@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" data-veraqis-generated="render-content">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>The table a recovery tool looks straight past | VERAQIS</title>
+<meta name="description" content="A WITHOUT ROWID table is stored as an index b-tree. Our own recovery returned 0 of its 4 rows and reported no error. What that costs, and how it was found." />
+<link rel="canonical" href="https://veraqis.tech/sqlite/without-rowid-tables/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="The SQLite table a recovery tool can look straight past" />
+<meta property="og:description" content="One byte decides whether a page is a table or an index. Read it wrong and an entire table returns nothing — with no error, no warning, and a clean report." />
+<meta property="og:image" content="https://veraqis.tech/assets/research/cards/without-rowid-tables.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS card: the table a recovery tool looks straight past — 0 of 4 rows returned from a WITHOUT ROWID table until the walker was chosen by the root page type byte" />
+<meta property="og:url" content="https://veraqis.tech/sqlite/without-rowid-tables/" />
+<meta property="article:published_time" content="2026-09-04" />
+<meta property="article:modified_time" content="2026-09-04" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The SQLite table a recovery tool can look straight past" />
+<meta name="twitter:description" content="One byte decides whether a page is a table or an index. Read it wrong and an entire table returns nothing — with no error, no warning, and a clean report." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/research/cards/without-rowid-tables.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/sqlite/without-rowid-tables/#article",
+      "url": "https://veraqis.tech/sqlite/without-rowid-tables/",
+      "headline": "The table our own recovery looked straight past",
+      "name": "The table a recovery tool looks straight past | VERAQIS",
+      "description": "A WITHOUT ROWID table is stored as an index b-tree. Our own recovery returned 0 of its 4 rows and reported no error. What that costs, and how it was found.",
+      "datePublished": "2026-09-04",
+      "dateModified": "2026-09-04",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "proficiencyLevel": "Expert",
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "b-tree"
+        },
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "WITHOUT ROWID"
+        },
+        {
+          "@type": "Thing",
+          "name": "database internals"
+        }
+      ],
+      "citation": [
+        {
+          "@type": "CreativeWork",
+          "name": "The WITHOUT ROWID Optimization",
+          "publisher": "SQLite",
+          "url": "https://www.sqlite.org/withoutrowid.html"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/sqlite/without-rowid-tables/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a WITHOUT ROWID table in SQLite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A table stored as a b-tree keyed by its own primary key instead of by a hidden rowid. It saves a level of indirection and is common for key-value and lookup tables. For recovery the consequence is structural: the table is stored as an index b-tree, so its pages carry index type bytes rather than table ones."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why would a recovery tool return no rows from a table that has rows?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because it looked for the wrong page type. A table leaf page starts with 0x0D and an index leaf with 0x0A; a WITHOUT ROWID table uses the latter. Code that collects pages by searching for 0x0D finds none, and finding none is not an error — an empty table produces the same result."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do recovered WITHOUT ROWID rows have a rowid?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, because the table does not have one. The primary key is present as an ordinary column value and the rowid field is left empty. Inventing a synthetic rowid to fill the column would be fabricating an identifier the database never had."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can an index be used to recover a row?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only partly, and never as a recovered row. An index can prove that a row existed and what its indexed columns contained. The rest of the row is not in the index, so it cannot be produced — and presenting an index entry as a recovered row would over-claim."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I know whether a recovery tool handles these tables?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Give it a database with a WITHOUT ROWID table whose contents you know, and check the row count against the truth. The failure mode here is a clean report with zero rows, so an empty result on a table you know had contents is the signal — there will not be an error message."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/sqlite/without-rowid-tables/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "SQLite",
+          "item": "https://veraqis.tech/sqlite/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "WITHOUT ROWID tables",
+          "item": "https://veraqis.tech/sqlite/without-rowid-tables/"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/" class="active">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/sqlite/">SQLite</a></p>
+    <p class="kicker">Experiment EXP-SQL-016</p>
+    <h1>The table our own recovery looked straight past</h1>
+    <p class="lead">A recovery tool returning nothing for a table is bad. A recovery tool returning nothing for a table <em>and reporting success</em> is worse, because the output looks complete. That is what ours did for every table declared <code>WITHOUT ROWID</code>: zero rows, no error, a clean run. The cause was one byte, the fix was a routing change, and the reason it survived so long is the interesting part.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-09-04">4 September 2026</time></span> · <span class="mono">EXP-SQL-016</span> · <span class="mono">VERAQIS 0.2.1</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="two-kinds">Two kinds of table</h2>
+      <p>An ordinary SQLite table is a b-tree keyed by a hidden 64-bit integer, the rowid. Add <code>WITHOUT ROWID</code> to the <code>CREATE TABLE</code> and that changes completely: the table becomes a b-tree keyed by its own primary key, and — this is the part that matters for recovery — <strong>it is stored as an index b-tree, not a table b-tree</strong>.</p>
+      <p>The distinction is visible in exactly one place: the first byte of each page. A table leaf is <code>0x0D</code>. An index leaf is <code>0x0A</code>. Everything else about the page — the cell pointer array, the payload, the record header with its serial types — is read the same way.</p>
+      <div class="terminal"><pre>CREATE TABLE kv(k TEXT PRIMARY KEY, v TEXT) WITHOUT ROWID;
+
+  root page 2, first byte 0x0A          &lt;- an index leaf
+  the schema says  type = "table"       &lt;- and it is a table
+
+  the table walker looked for 0x0D
+  the root was 0x0A
+  so nothing looked</pre></div>
+      <figure class="diagram"><svg viewBox="0 0 720 250" width="100%" height="auto" role="img" aria-labelledby="sqlite-page-types-t" preserveAspectRatio="xMinYMin meet" xmlns="http://www.w3.org/2000/svg">
+<title id="sqlite-page-types-t">A table leaf page beside an index leaf page</title><desc>Two page kinds side by side. A table b-tree leaf starts with the byte 0x0D and its cell carries length, rowid and payload. An index b-tree leaf starts with 0x0A and its cell carries only length and payload, with the row key as the last column of the record. A WITHOUT ROWID table is stored as the second kind.</desc>
+<text x="8" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">table b-tree leaf</text><rect x="8" y="28" width="344" height="34" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="20" y="50" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">first byte of the page: 0x0D</text><rect x="8" y="84" width="63" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="39.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">length</text><rect x="71" y="84" width="63" height="38" rx="4" fill="var(--recovery-accent)" stroke="var(--line)" stroke-width="1"/><text x="102.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#ffffff" font-weight="700" text-anchor="middle">rowid</text><rect x="134" y="84" width="219" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="243.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">payload</text><text x="8" y="142" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the row key sits in the cell</text><text x="8" y="160" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">a WITHOUT ROWID table never has this page type</text><text x="376" y="18" font-size="12" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">index b-tree leaf</text><rect x="376" y="28" width="344" height="34" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="388" y="50" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="600">first byte of the page: 0x0A</text><rect x="376" y="84" width="63" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="407.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">length</text><rect x="439" y="84" width="281" height="38" rx="4" fill="var(--bg2)" stroke="var(--line)" stroke-width="1"/><text x="579.5" y="107" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--ink)" font-weight="400" text-anchor="middle">payload — indexed columns, then the key</text><text x="376" y="142" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the row key is the last column of the record</text><text x="376" y="160" font-size="10" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">and it is a rowid only for a rowid table</text><text x="8" y="240" font-size="11" font-family="ui-monospace,Menlo,Consolas,monospace" fill="var(--mut)">the byte on the page decides how to read it; the schema text only describes it</text>
+</svg><figcaption>The two page kinds a walker has to tell apart. Everything after the first byte is read the same way — which is exactly why searching for the wrong byte fails silently rather than loudly.</figcaption></figure>
+      <p>The code that collected table pages searched for <code>0x0D</code>. A <code>WITHOUT ROWID</code> table's root is <code>0x0A</code>. The search found no pages, so no cells were parsed, so no rows were emitted — and because finding zero pages is a perfectly normal outcome for a table that is genuinely empty, nothing anywhere reported a problem.</p>
+      <div class="claim" id="claim-silent"><p class="claim-text">A table declared WITHOUT ROWID returned 0 of its 4 rows, with no error raised and no warning in the report. The failure was indistinguishable from an empty table, because at the level the code was working, an empty table is exactly what it looked like.</p><p class="claim-src">EXP-SQL-016 / gap G-10 · fixture SQL_GT_007, <code>CREATE TABLE kv(k TEXT PRIMARY KEY, v TEXT) WITHOUT ROWID</code>, root page 2, type byte 0x0A</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="never-damaged">The rows were never damaged</h2>
+      <p>Before writing any code, the first cell of that table was decoded by hand. This matters: it settles whether the problem is that the data is hard to read, or that nobody read it.</p>
+      <div class="terminal"><pre>first cell of SQL_GT_007, decoded by hand
+
+  15            payload length = 21
+  03            record header length = 3
+  1d 21         serial 29 -&gt; TEXT(8), serial 33 -&gt; TEXT(10)
+  "KEY-0001" "VAL-000001"
+
+  03 1d 21 | "KEY-0001" "VAL-000001"
+  ^header    ^both columns, and no trailing rowid</pre></div>
+      <p>A complete, undamaged record — both columns present, and no rowid at the end because this table has none. Every component needed to read it already existed in the engine: the index-page collector built for a previous experiment, the record parser, the overflow follower, the evidence axes. <strong>The gap was routing, not decoding.</strong></p>
+      <p>So the fix is one decision moved to the right place: choose the walker by the root page's type byte rather than by what the schema calls the object. A schema entry declaring <code>type="table"</code> over an index b-tree is routed to the <code>WITHOUT ROWID</code> path, because the byte on the page is the fact and the schema text is the description.</p>
+      <figure class="chart">
+<svg viewBox="0 0 720 156" width="100%" height="auto" role="img" aria-labelledby="cg-1nw91l5" preserveAspectRatio="xMinYMin meet"><title id="cg-1nw91l5">The WITHOUT ROWID fixture, before and after the routing fix</title><desc>Rows recovered from SQL_GT_007, a four-row WITHOUT ROWID table. Recall goes from zero to one; false positives stay at zero, which is the gate that lets the change ship at all.</desc><rect x="0" y="4" width="11" height="11" rx="2" fill="var(--bad)"/><text x="17" y="14" font-size="12" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">before</text><rect x="190" y="4" width="11" height="11" rx="2" fill="var(--recovery-accent)"/><text x="207" y="14" font-size="12" fill="var(--mut)" font-family="ui-monospace,Menlo,Consolas,monospace">after</text><text x="0" y="37" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">rows recovered</text><rect x="168" y="24" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="24" width="0" height="13" rx="2" fill="var(--bad)"/><text x="625" y="35" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text><rect x="168" y="41" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="41" width="448" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="52" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">4</text><text x="0" y="79" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">rows missed</text><rect x="168" y="66" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="66" width="448" height="13" rx="2" fill="var(--bad)"/><text x="625" y="77" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">4</text><rect x="168" y="83" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="83" width="0" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="94" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text><text x="0" y="121" font-size="13" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">false rows</text><rect x="168" y="108" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="108" width="0" height="13" rx="2" fill="var(--bad)"/><text x="625" y="119" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text><rect x="168" y="125" width="448" height="13" rx="2" fill="var(--bg2)"/><rect x="168" y="125" width="0" height="13" rx="2" fill="var(--recovery-accent)"/><text x="625" y="136" font-size="12" font-weight="600" fill="var(--ink)" font-family="ui-monospace,Menlo,Consolas,monospace">0</text></svg>
+<figcaption>Rows recovered from SQL_GT_007, a four-row WITHOUT ROWID table. Recall goes from zero to one; false positives stay at zero, which is the gate that lets the change ship at all.</figcaption>
+</figure>
+      <div class="claim" id="claim-fix"><p class="claim-text">After routing by the root page type byte, the fixture recovers exactly 4 rows whose key and value equal the independently authored ground truth, with 0 false positives — recall 1.000. Recovered rows carry no rowid, because the table has none, and no synthetic rowid is invented to fill the column.</p><p class="claim-src">EXP-SQL-016, gap G-10 closed 2026-08-12 · SQL_GT_007 0/4 → 4/0/0 · secondary indexes unaffected: they remain index evidence, never row output</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="why-survived">Why this survived so long</h2>
+      <p>Three properties combined to keep it invisible, and each one generalises past this bug.</p>
+      <div class="grid g3"><div class="card"><h3>The failure had no shape</h3><p>Zero pages found is a legal answer. There was no exception to catch, no malformed structure to report, no counter that went the wrong way — only an absence, which looks like an empty table.</p></div><div class="card"><h3>The schema agreed with the wrong reading</h3><p><code>sqlite_master</code> calls it a table, and it <em>is</em> a table. Trusting that description over the bytes on the page is a reasonable-looking decision that happens to be wrong.</p></div><div class="card"><h3>Nothing in the corpus used it</h3><p>Until a fixture declared WITHOUT ROWID, no test could fail. The measurement did not find a broken feature; it found a feature that had never been asked for.</p></div></div>
+      <div class="callout warn"><strong>A recovery report that says "0 rows" is not evidence that a table was empty.</strong> It is evidence that the tool found no rows, which is a different statement. Anyone evaluating recovery output should check an empty result against a table they know had contents — a bug of this shape produces confident, clean, wrong reports.</div>
+      <h2 id="blast-radius">What it cost, and what it did not</h2>
+      <p>The reach of this is narrower than it first sounds, and the boundary is worth stating precisely rather than reassuringly.</p>
+      <div class="table-scroll"><table><thead><tr><th scope="col">case</th><th scope="col">affected?</th></tr></thead><tbody><tr><th scope="row">Ordinary rowid tables</th><td>No. A different byte, a different walker, unchanged by the fix.</td></tr><tr><th scope="row"><code>WITHOUT ROWID</code> tables</th><td><strong>Yes — every row, silently.</strong> They are the whole of the impact.</td></tr><tr><th scope="row">Secondary indexes</th><td>No, and deliberately: an index is never a row source. It can prove a row existed and what its indexed columns held, never the rest of the row.</td></tr><tr><th scope="row">Records spilling to overflow pages</th><td>Assembled in full, or abstained on. Never emitted as a partial row.</td></tr></tbody></table></div><p class="note">The second row is the one to weigh: <code>WITHOUT ROWID</code> is a deliberate schema choice, common in key-value tables and in application caches, and rare in casually designed schemas. Where it is used, the loss was total.</p>
+      <p>The corpus now covers it in both directions: a clean <code>WITHOUT ROWID</code> table and a damaged one. The damaged fixture recovers 2 of its rows and counts the third as malformed rather than guessing at it — the same rule that applies everywhere else.</p>
+      <h2 id="limits">Limits</h2>
+      <ul><li><strong>This is a report about one engine.</strong> It measures what ours did, and says nothing about what any other tool does with <code>WITHOUT ROWID</code> tables.</li><li><strong>Recall 1.000 is on this fixture family</strong>, not a general claim about every <code>WITHOUT ROWID</code> schema in the world.</li><li><strong>Index keys that spill onto overflow pages are skipped and counted</strong>, not decoded from their local fragment — an abstention, recorded rather than papered over.</li><li><strong>The fix changes routing only.</strong> No new decoding was added, so it inherits exactly the guarantees the existing record parser already had.</li></ul>
+      <ul class="source-list"><li><a href="/sqlite/">SQLite recovery</a> — the rest of the section</li><li><a href="/sqlite/database-without-its-wal/">The database that cannot prove it is current</a> — the other silent failure: right rows, wrong version</li><li><a href="/formats/sqlite/">SQLite format reference</a> — page types, cells and b-trees</li><li><a href="/research/experiments/">Experiment ledger</a> — every measurement behind this site</li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about WITHOUT ROWID tables</h2>
+    <div class="faq">
+      <div class="qa"><h3>What is a WITHOUT ROWID table in SQLite?</h3><p>A table stored as a b-tree keyed by its own primary key instead of by a hidden rowid. It saves a level of indirection and is common for key-value and lookup tables. For recovery the consequence is structural: the table is stored as an index b-tree, so its pages carry index type bytes rather than table ones.</p></div>
+      <div class="qa"><h3>Why would a recovery tool return no rows from a table that has rows?</h3><p>Because it looked for the wrong page type. A table leaf page starts with 0x0D and an index leaf with 0x0A; a WITHOUT ROWID table uses the latter. Code that collects pages by searching for 0x0D finds none, and finding none is not an error — an empty table produces the same result.</p></div>
+      <div class="qa"><h3>Do recovered WITHOUT ROWID rows have a rowid?</h3><p>No, because the table does not have one. The primary key is present as an ordinary column value and the rowid field is left empty. Inventing a synthetic rowid to fill the column would be fabricating an identifier the database never had.</p></div>
+      <div class="qa"><h3>Can an index be used to recover a row?</h3><p>Only partly, and never as a recovered row. An index can prove that a row existed and what its indexed columns contained. The rest of the row is not in the index, so it cannot be produced — and presenting an index entry as a recovered row would over-claim.</p></div>
+      <div class="qa"><h3>How do I know whether a recovery tool handles these tables?</h3><p>Give it a database with a WITHOUT ROWID table whose contents you know, and check the row count against the truth. The failure mode here is a clean report with zero rows, so an empty result on a table you know had contents is the signal — there will not be an error message.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <h2 id="cite">How to cite this</h2>
+      <p>Stable URL, dated, versioned. Quote the numbers with the method attached — every figure
+        above is tied to the experiment that produced it.</p>
+      <div class="terminal"><pre>VERAQIS (2026). The table our own recovery looked straight past.
+VERAQIS Research. https://veraqis.tech/sqlite/without-rowid-tables/
+Engine: VERAQIS 0.2.1 · Measured: 4 September 2026 · Experiment: EXP-SQL-016</pre></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 id="related">Related</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/sqlite/database-without-its-wal/"><h3>The database that cannot prove it is current</h3><p>The other way to be confidently wrong: every row correct, and every one of them out of date.</p></a>
+      <a class="card link-card" href="/research/sqlite-rowid-from-btree-geometry/"><h3>A deleted row's identity from b-tree shape</h3><p>What the same page structures give you once a row has been deleted.</p></a>
+      <a class="card link-card" href="/research/experiments/"><h3>The experiment ledger</h3><p>Every measurement behind this site, with its verdict.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Check what a database actually contains</h2>
+    <p class="sub">VERAQIS reads the file read-only and reports rows with the evidence behind each one — including which tables it found, and which it could not.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn ghost" href="/testing.html">Read the test record</a>
+      <a class="btn ghost" href="/contact.html">Join the beta</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
