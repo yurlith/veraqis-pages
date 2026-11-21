@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Bit Rot Hunt — find damaged shards with hash checks | VERAQIS</title>
+<meta name="description" content="A puzzle about proof: locate rotten shards with as few hash checks as possible, descend a hash tree, respect a repair budget, and learn when the honest answer is to abstain. 8 levels plus a marathon." />
+<link rel="canonical" href="https://veraqis.tech/play/bit-rot/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<link rel="stylesheet" href="/assets/play/play.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Bit Rot Hunt — a puzzle about proof" />
+<meta property="og:description" content="A puzzle about proof: locate rotten shards with as few hash checks as possible, descend a hash tree, respect a repair budget, and learn when the honest answer is to abstain. 8 levels plus a marathon." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/play/bit-rot/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Bit Rot Hunt — a puzzle about proof" />
+<meta name="twitter:description" content="A puzzle about proof: locate rotten shards with as few hash checks as possible, descend a hash tree, respect a repair budget, and learn when the honest answer is to abstain. 8 levels plus a marathon." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/play/bit-rot/#webpage",
+      "url": "https://veraqis.tech/play/bit-rot/",
+      "name": "Bit Rot Hunt — find damaged shards with hash checks | VERAQIS",
+      "description": "A puzzle about proof: locate rotten shards with as few hash checks as possible, descend a hash tree, respect a repair budget, and learn when the honest answer is to abstain. 8 levels plus a marathon.",
+      "dateModified": "2026-11-21",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/play/bit-rot/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Play",
+          "item": "https://veraqis.tech/play/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Bit Rot Hunt",
+          "item": "https://veraqis.tech/play/bit-rot/"
+        }
+      ]
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://veraqis.tech/play/bit-rot/#game",
+      "name": "Bit Rot Hunt",
+      "url": "https://veraqis.tech/play/bit-rot/",
+      "description": "A puzzle about proof: locate rotten shards with as few hash checks as possible, descend a hash tree, respect a repair budget, and learn when the honest answer is to abstain. 8 levels plus a marathon.",
+      "genre": [
+        "Educational",
+        "Puzzle"
+      ],
+      "gamePlatform": "Web browser",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "isAccessibleForFree": true,
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<div class="page-head page-head--game">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / <a href="/play/">Play</a> / Bit Rot Hunt</div>
+    <h1>Bit Rot Hunt</h1>
+    <p class="lead">A file has rotted somewhere. Check runs of shards against a manifest of known-good hashes, prove what is intact, and corner the damage in as few checks as possible — or abstain when the evidence cannot say where.</p>
+    <p class="note mt-8">Free · runs in your browser · nothing is uploaded · progress stays in this browser</p>
+  </div>
+</div>
+
+<section class="play-section">
+  <div class="wrap">
+    <div id="game" class="game-root">
+      <noscript><div class="callout warn"><strong>This game needs JavaScript.</strong> Everything runs in your browser; nothing is uploaded.</div></noscript>
+      <div class="stage stage--loading"><div class="stage-view"><p class="g-kicker">VERAQIS Play</p><h2>Loading…</h2></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>What you learn here</h2>
+    <ul class="checks mw-760">
+      <li><strong>Localisation:</strong> why per-block checksums let damage be found in log₂(n) checks.</li>
+      <li><strong>Hash trees:</strong> how a tree of hashes makes a halving search possible.</li>
+      <li><strong>Limits of evidence:</strong> gzip’s single checksum detects damage but cannot say where.</li>
+      <li><strong>Repair budgets:</strong> a parity rebuild is honest only inside its budget; past it, report and abstain.</li>
+      <li>The rules are the ones in <a href="/reference/evidence-model/">the VERAQIS evidence model</a>.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>More games</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/play/gatekeeper/"><div class="ic">GATE</div><h3>Gatekeeper</h3><p>Block Zip Slip, zip bombs and symlinks before they land.</p></a>
+      <a class="card link-card" href="/play/magic-bytes/"><div class="ic">HEX</div><h3>Magic Bytes</h3><p>Name a file from its first bytes — not from its name.</p></a>
+      <a class="card link-card" href="/play/"><div class="ic">ALL</div><h3>All games</h3><p>Progress, ranks and what each game teaches.</p></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+            <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+<script src="/assets/play/bit-rot.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Archive safety games — play in your browser | VERAQIS</title>
+<meta name="description" content="Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
+<link rel="canonical" href="https://veraqis.tech/play/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<link rel="stylesheet" href="/assets/play/play.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="VERAQIS Play — archive safety games" />
+<meta property="og:description" content="Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/play/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="VERAQIS Play — archive safety games" />
+<meta name="twitter:description" content="Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://veraqis.tech/play/#webpage",
+      "url": "https://veraqis.tech/play/",
+      "name": "Archive safety games — play in your browser | VERAQIS",
+      "description": "Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded.",
+      "dateModified": "2026-11-21",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/play/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Play",
+          "item": "https://veraqis.tech/play/"
+        }
+      ]
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://veraqis.tech/play/#games",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "url": "https://veraqis.tech/play/gatekeeper/",
+          "name": "Gatekeeper"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "url": "https://veraqis.tech/play/magic-bytes/",
+          "name": "Magic Bytes"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "url": "https://veraqis.tech/play/bit-rot/",
+          "name": "Bit Rot Hunt"
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<div class="page-head page-head--game">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / Play</div>
+    <h1>Archive safety, played</h1>
+    <p class="lead">Three browser games built from the rules VERAQIS applies to real files. Stop hostile archive entries before they
+      land, name a file from its first bytes, and corner damaged data with hash checks — then know when to abstain.</p>
+    <p class="note mt-8">Free · no sign-up · runs in your browser · nothing is uploaded</p>
+  </div>
+</div>
+
+<section class="play-section">
+  <div class="wrap">
+    <div class="arcade" id="arcade">
+      <p class="g-kicker">VERAQIS Play · 3 games · 24 levels</p>
+      <h2>Pick a game</h2>
+      <p class="play-rank" id="play-rank">Rank: <b>Visitor</b> · ★ 0 / 72</p>
+      <div class="play-cards">
+        <a class="pc" href="/play/gatekeeper/">
+          <span class="pc-ic">GATEKEEPER · ARCADE</span>
+          <span class="pc-t">Gatekeeper</span>
+          <span class="pc-d">Entries roll toward your folder. Extract the safe ones; refuse Zip Slip, absolute paths, bombs, symlinks and overlaps before the belt delivers them.</span>
+          <span class="pc-art"><span class="r">✕</span> ../../.ssh/authorized_keys
+<span class="g">✓</span> photos/2026/IMG_4410.jpg
+<span class="r">✕</span> 42.zip  42 KB → 4.5 PB
+<span class="g">✓</span> a/b/../c.txt</span>
+          <span class="pc-foot"><span data-progress="gatekeeper">not started</span><span class="pc-go">Play ▶</span></span>
+        </a>
+        <a class="pc" href="/play/magic-bytes/">
+          <span class="pc-ic">MAGIC BYTES · QUIZ</span>
+          <span class="pc-t">Magic Bytes</span>
+          <span class="pc-d">A hex dump and a ticking clock. Name the format from its signature — RAR 4 or RAR 5, TAR at byte 257, renamed or destroyed.</span>
+          <span class="pc-art">00000000  <span class="g">52 61 72 21 1A 07 01 00</span>
+          <span class="g">R  a  r  !  ·  ·  ·  ·</span>
+name: holiday.<span class="y">zip</span>
+→ <span class="g">really a RAR 5 archive</span></span>
+          <span class="pc-foot"><span data-progress="magic-bytes">not started</span><span class="pc-go">Play ▶</span></span>
+        </a>
+        <a class="pc" href="/play/bit-rot/">
+          <span class="pc-ic">BIT ROT HUNT · PUZZLE</span>
+          <span class="pc-t">Bit Rot Hunt</span>
+          <span class="pc-d">Check runs of shards against known-good hashes and corner the damage under par. One level’s right answer is to abstain.</span>
+          <span class="pc-art"><span class="g">■■■■</span>■■<span class="r">■</span>■  check 5–8
+<span class="g">✓ ✓ ✓ ✓</span> ? ? <span class="r">✕</span> ?  <span class="y">par 3</span></span>
+          <span class="pc-foot"><span data-progress="bit-rot">not started</span><span class="pc-go">Play ▶</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Built from the real rules</h2>
+    <p class="sub">The archives and files in the games are simulated. The rules, signatures and evidence logic are the ones this site documents.</p>
+    <div class="grid g3">
+      <a class="card link-card" href="/security.html"><div class="ic">GATE</div><h3>Security model</h3><p>Path safety, bomb and overlap defences, symlinks — what Gatekeeper trains.</p></a>
+      <a class="card link-card" href="/formats/identification/"><div class="ic">HEX</div><h3>Identifying a file</h3><p>The signature table behind Magic Bytes, and why the name is only a claim.</p></a>
+      <a class="card link-card" href="/reference/evidence-model/"><div class="ic">HASH</div><h3>Evidence model</h3><p>What a check proves, when to abstain — the logic of Bit Rot Hunt.</p></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>Is anything uploaded or tracked?</h3><p>No. The games run entirely in your browser, make no network requests and have no analytics. Your progress is kept in this browser's local storage only.</p></div>
+      <div class="qa"><h3>Do they work on a phone?</h3><p>Yes. Gatekeeper takes swipes or the two big buttons, Magic Bytes takes taps, and Bit Rot Hunt selects shards with two taps.</p></div>
+      <div class="qa"><h3>Are the files real?</h3><p>The archives, dumps and disks are generated for each round. The rules they follow — path safety, magic numbers, checksum evidence — are the real ones.</p></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+            <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+<script src="/assets/play/hub.js" type="module"></script>
+</body>
+</html>
