@@ -2,7 +2,7 @@
 // A top-down action game: walk Vera through an archive, take only data you can prove, scan the
 // unproven, and stop the creatures that stand for real archive threats. The archives are simulated;
 // the rules are the ones on /security.html and in the evidence model.
-import { Game, h, hud, loop, toast, shake, makeRng, fmtInt, reducedMotion } from './core.js';
+import { Game, h, hud, loop, toast, shake, makeRng, fmtInt, reducedMotion, touchFirst } from './core.js';
 import { LEVELS, ENDLESS, randomMap } from './guardian-levels.js';
 import { drawVera, drawSlipper, drawRot, drawBomblet, drawLinker, drawHydra, drawPortal, drawBlock, drawVault, drawHole, drawCharacter, rr } from './characters.js';
 
@@ -27,19 +27,11 @@ const same = (a, b) => !!a && !!b && a.x === b.x && a.y === b.y;
 const fmtTime = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 const OUCH = ['Ouch!', 'Shield down!', 'Hey!'];
 
-// On a tall, narrow screen the 15×11 map is turned on its diagonal so the tiles stay big.
-function portraitScreen() {
-  try { return window.innerWidth < 720 && window.innerWidth < window.innerHeight * 0.8; } catch { return false; }
-}
-function transpose(map) {
-  return map[0].split('').map((_, x) => map.map((row) => row[x]).join(''));
-}
 function enemy(type, x, y, extra = {}) {
   return { type, x, y, tx: x, ty: y, dir: null, look: { x: 0, y: 1 }, alive: true, t: Math.random() * 10, moving: false, ...extra };
 }
-function buildWorld(def, rng, wave, turn) {
-  let map = def.endless ? randomMap(rng, wave) : def.map;
-  if (turn) map = transpose(map);
+function buildWorld(def, rng, wave) {
+  const map = def.endless ? randomMap(rng, wave) : def.map;
   const H = map.length;
   const W = map[0].length;
   const w = { W, H, tiles: [], items: new Map(), enemies: [], bolts: [], holes: [], junk: new Map(), portals: [], chainNext: 1, chainMax: 0, start: null, vault: null, vaultOpen: false, boss: null };
@@ -80,7 +72,7 @@ function play(api) {
   const motion = !reducedMotion();
   const debug = (() => { try { return new URLSearchParams(window.location.search).has('debug'); } catch { return false; } })();
   const speed = debug ? (() => { try { return Math.min(4, Math.max(0.25, Number(new URLSearchParams(window.location.search).get('speed')) || 1)); } catch { return 1; } })() : 1;
-  const st = { score: 0, shields: 3, shieldsLost: 0, guesses: 0, time: 0, collected: 0, zapped: 0, wave: 1, escaped: 0, corrupted: 0, over: false };
+  const st = { score: 0, shields: 3, shieldsLost: 0, guesses: 0, time: 0, collected: 0, zapped: 0, shots: 0, wave: 1, escaped: 0, corrupted: 0, over: false };
   let w = null;
   let p = null;
   let paused = false;
@@ -97,6 +89,7 @@ function play(api) {
   let wavesLeft = 0;
   let teleCd = 0;
   let shownSec = -1;
+  let shownCd = '';
   const hintsShown = new Set();
 
   // ---------- DOM ----------
@@ -115,38 +108,49 @@ function play(api) {
   const pauseTxt = h('span', { class: 'gd-pause-t' }, 'Pause');
   const pauseBtn = h('button', { class: 'g-btn g-btn--ghost gd-pause', type: 'button', 'aria-label': 'Pause', title: 'Pause (P)' }, pauseIc, pauseTxt, h('span', { class: 'g-key' }, 'P'));
   pauseBtn.addEventListener('click', () => { togglePause(); api.stage.focus({ preventScroll: true }); });
-  const dirBtn = (dir, label) => h('button', { class: 'gd-pad-btn gd-pad-btn--' + dir, type: 'button', 'aria-label': `Move ${dir}`, 'data-dir': dir }, label);
-  const zapBtn = h('button', { class: 'gd-act gd-act--zap', type: 'button', 'aria-label': 'Zap' }, h('span', { class: 'gd-act-ic', 'aria-hidden': 'true' }, '⚡'), h('span', null, 'ZAP'));
-  const scanBtn = h('button', { class: 'gd-act gd-act--scan', type: 'button', 'aria-label': 'Scan' }, h('span', { class: 'gd-act-ic', 'aria-hidden': 'true' }, '◎'), h('span', null, 'SCAN'));
-  const pad = h('div', { class: 'gd-pad' },
-    h('div', { class: 'gd-dpad' }, dirBtn('up', '▲'), dirBtn('left', '◀'), dirBtn('right', '▶'), dirBtn('down', '▼')),
-    h('div', { class: 'gd-acts' }, scanBtn, zapBtn));
+  // touch controls: a thumb stick on the left, fire and scan on the right
+  const arrows = [['u', '▲'], ['r', '▶'], ['d', '▼'], ['l', '◀']].map(([c, t]) => h('i', { class: 'gd-arr gd-arr--' + c }, t));
+  const knob = h('div', { class: 'gd-knob' });
+  const base = h('div', { class: 'gd-base' }, arrows, knob);
+  const stickZone = h('div', { class: 'gd-stick-zone', 'aria-hidden': 'true' }, base, h('span', { class: 'gd-zone-hint' }, 'drag to move'));
+  const dots = [0, 1, 2].map(() => h('i', { class: 'gd-dot' }));
+  const zapBtn = h('button', { class: 'gd-act gd-act--zap', type: 'button', 'aria-label': 'Zap — hold to keep firing' },
+    h('span', { class: 'gd-act-ic', 'aria-hidden': 'true' }, '⚡'), h('span', null, 'ZAP'));
+  const scanBtn = h('button', { class: 'gd-act gd-act--scan', type: 'button', 'aria-label': 'Scan' },
+    h('span', { class: 'gd-act-ic', 'aria-hidden': 'true' }, '◎'), h('span', null, 'SCAN'), h('span', { class: 'gd-dots', 'aria-hidden': 'true' }, dots));
+  const actZone = h('div', { class: 'gd-act-zone' }, scanBtn, zapBtn);
   const tips = h('p', { class: 'gd-tips' },
     h('span', { class: 'g-key' }, '←↑↓→'), ' or ', h('span', { class: 'g-key' }, 'WASD'), ' move · ',
-    h('span', { class: 'g-key' }, 'Space'), ' zap · ', h('span', { class: 'g-key' }, 'E'), ' scan · click a tile to walk there · gamepad works too');
+    h('span', { class: 'g-key' }, 'Space'), ' zap (hold to keep firing) · ', h('span', { class: 'g-key' }, 'E'), ' scan · ',
+    h('span', { class: 'g-key' }, 'F'), ' full screen · click a tile to walk there · gamepad works too');
   const wrap = h('div', { class: 'gd-wrap' }, canvas);
-  const under = h('div', { class: 'gd-under' }, pad, h('div', { class: 'gd-side' }, tips));
+  const body = h('div', { class: 'gd-body' }, stickZone, wrap, actZone);
   bar.el.querySelector('.hud-quit')?.prepend(pauseBtn);
   api.area.classList.add('gd-area');
   api.stage.classList.add('stage--gd');
-  api.area.append(wrap, under);
+  api.area.append(body, tips);
 
   // ---------- input ----------
   const held = [];
   const KEYDIR = { ArrowUp: 0, w: 0, W: 0, ArrowRight: 1, d: 1, D: 1, ArrowDown: 2, s: 2, S: 2, ArrowLeft: 3, a: 3, A: 3 };
   const ZAPKEYS = new Set([' ', 'j', 'J', 'z', 'Z']);
   const SCANKEYS = new Set(['e', 'E', 'k', 'K', 'x', 'X']);
-  let touchDir = null;
-  let padDir = null;
-  let tapDir = null;
-  let path = null;
-  const heldDir = () => {
-    if (touchDir != null) return DIRS[touchDir];
-    if (padDir != null) return DIRS[padDir];
-    if (held.length) return DIRS[held[held.length - 1]];
-    return null;
-  };
-  const anyHeld = () => touchDir != null || padDir != null || held.length > 0;
+  let stickDirs = [];   // thumb stick: [main direction, second direction for cornering]
+  let padDirs = [];     // gamepad, the same way
+  let tapDir = null;    // a short tap or flick still moves one tile
+  let path = null;      // a route from clicking or tapping a tile
+  let zapKey = false;
+  let zapTouch = false;
+  let zapPad = false;
+  let touchUI = touchFirst();
+  // What the player is asking for, most wanted first.
+  function wantedDirs() {
+    if (stickDirs.length) return stickDirs;
+    if (padDirs.length) return padDirs;
+    if (held.length) return held.slice().reverse().map((i) => DIRS[i]);
+    return [];
+  }
+  const anyHeld = () => stickDirs.length > 0 || padDirs.length > 0 || held.length > 0;
   function onDown(e) {
     if (e.altKey || e.ctrlKey || e.metaKey) return;
     const isGameKey = e.key in KEYDIR || ZAPKEYS.has(e.key) || SCANKEYS.has(e.key) || e.key === 'p' || e.key === 'P';
@@ -160,35 +164,96 @@ function play(api) {
       if (!held.includes(d)) held.push(d);
       if (!e.repeat) tapDir = d;
       path = null;
-    } else if (ZAPKEYS.has(e.key)) { if (!e.repeat) zap(); }
+    } else if (ZAPKEYS.has(e.key)) { if (!e.repeat) { zapKey = true; zap(); } }
     else if (SCANKEYS.has(e.key)) { if (!e.repeat) scan(); }
     else if (!e.repeat) togglePause();
   }
   function onUp(e) {
     if (e.key in KEYDIR) { const i = held.indexOf(KEYDIR[e.key]); if (i >= 0) held.splice(i, 1); }
+    if (ZAPKEYS.has(e.key)) zapKey = false;
   }
   document.addEventListener('keydown', onDown);
   document.addEventListener('keyup', onUp);
-  const blurClear = () => { held.length = 0; touchDir = null; };
+  const blurClear = () => { held.length = 0; restStick(); zapKey = false; zapTouch = false; };
   window.addEventListener('blur', blurClear);
   const visPause = () => { if (document.hidden && !paused && !st.over) togglePause(); };
   document.addEventListener('visibilitychange', visPause);
 
-  pad.querySelectorAll('.gd-pad-btn').forEach((b) => {
-    const d = { up: 0, right: 1, down: 2, left: 3 }[b.dataset.dir];
-    b.addEventListener('pointerdown', (e) => {
-      e.preventDefault(); touchDir = d; tapDir = d; path = null; b.classList.add('on');
-      try { b.setPointerCapture(e.pointerId); } catch { /* ignore */ }
-    });
-    const release = () => { if (touchDir === d) touchDir = null; b.classList.remove('on'); };
-    b.addEventListener('pointerup', release);
-    b.addEventListener('pointercancel', release);
-    b.addEventListener('lostpointercapture', release);
-    b.addEventListener('contextmenu', (e) => e.preventDefault());
+  // Thumb stick: it appears under the thumb, and sliding the thumb turns Vera without lifting it.
+  const STICK_R = 44;
+  const DEAD = 11;
+  let stickId = null;
+  function restStick() {
+    stickId = null;
+    stickDirs = [];
+    base.classList.remove('on');
+    base.removeAttribute('data-dir');
+    base.style.left = '';
+    base.style.top = '';
+    knob.style.transform = '';
+  }
+  function stickMove(e) {
+    const r0 = base.getBoundingClientRect();
+    const dx = e.clientX - (r0.left + r0.width / 2);
+    const dy = e.clientY - (r0.top + r0.height / 2);
+    const dist = Math.hypot(dx, dy);
+    const kk = dist > STICK_R ? STICK_R / dist : 1;
+    knob.style.transform = `translate(${(dx * kk).toFixed(1)}px, ${(dy * kk).toFixed(1)}px)`;
+    if (dist < DEAD) { stickDirs = []; base.removeAttribute('data-dir'); return; }
+    const ax = Math.abs(dx);
+    const ay = Math.abs(dy);
+    const cur = stickDirs[0];
+    const horiz = cur ? (cur.x ? ax * 1.3 >= ay : ax > ay * 1.3) : ax >= ay; // no flicker on a diagonal
+    const hDir = dx > 0 ? 1 : 3;
+    const vDir = dy > 0 ? 2 : 0;
+    const main = horiz ? hDir : vDir;
+    const dirs = [DIRS[main]];
+    if ((horiz ? ay : ax) > (horiz ? ax : ay) * 0.45) dirs.push(DIRS[horiz ? vDir : hDir]);
+    if (stickDirs[0] !== DIRS[main]) { tapDir = main; path = null; }
+    stickDirs = dirs;
+    base.setAttribute('data-dir', ['up', 'right', 'down', 'left'][main]);
+  }
+  stickZone.addEventListener('pointerdown', (e) => {
+    if (stickId != null) return;
+    e.preventDefault();
+    stickId = e.pointerId;
+    try { stickZone.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    const zr = stickZone.getBoundingClientRect();
+    const half = base.offsetWidth / 2 || 62;
+    const x = Math.min(zr.width - half, Math.max(half, e.clientX - zr.left));
+    const y = Math.min(zr.height - half, Math.max(half, e.clientY - zr.top));
+    base.style.left = `${Math.round(x)}px`;
+    base.style.top = `${Math.round(y)}px`;
+    base.classList.add('on');
+    stickMove(e);
   });
-  const press = (b, fn) => b.addEventListener('pointerdown', (e) => { e.preventDefault(); b.classList.add('on'); fn(); window.setTimeout(() => b.classList.remove('on'), 140); });
-  press(zapBtn, () => zap());
-  press(scanBtn, () => scan());
+  stickZone.addEventListener('pointermove', (e) => { if (e.pointerId === stickId) stickMove(e); });
+  const stickEnd = (e) => { if (e.pointerId === stickId) restStick(); };
+  stickZone.addEventListener('pointerup', stickEnd);
+  stickZone.addEventListener('pointercancel', stickEnd);
+  stickZone.addEventListener('lostpointercapture', stickEnd);
+  // Fire: hold to keep firing. Scan: one tap, one scan.
+  zapBtn.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    zapTouch = true;
+    zapBtn.classList.add('on');
+    zap();
+    try { zapBtn.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+  });
+  const zapEnd = () => { zapTouch = false; zapBtn.classList.remove('on'); };
+  zapBtn.addEventListener('pointerup', zapEnd);
+  zapBtn.addEventListener('pointercancel', zapEnd);
+  zapBtn.addEventListener('lostpointercapture', zapEnd);
+  scanBtn.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    scanBtn.classList.add('on');
+    scan();
+    window.setTimeout(() => scanBtn.classList.remove('on'), 140);
+  });
+  for (const el of [stickZone, zapBtn, scanBtn, canvas]) el.addEventListener('contextmenu', (e) => e.preventDefault());
+  // The first touch on the stage switches the touch controls on (a touchscreen laptop, say).
+  const onAnyPointer = (e) => { if (e.pointerType === 'touch' && !touchUI) { touchUI = true; relayout(); } };
+  api.stage.addEventListener('pointerdown', onAnyPointer, true);
   // Click or tap a tile and Vera walks there by the shortest open route.
   canvas.addEventListener('pointerdown', (e) => {
     if (!w || paused || st.over) return;
@@ -199,24 +264,35 @@ function play(api) {
     if (tx === from.x && ty === from.y) { path = null; return; }
     const route = bfs(from, (x, y) => x === tx && y === ty, 'vera', true);
     if (route && route.length) {
-      path = route; held.length = 0; touchDir = null;
+      path = route; held.length = 0;
       addText(tx + 0.5, ty + 0.5, '◇', '94,231,255', 0.5);
     } else addText(tx + 0.5, ty + 0.5, '✕', '255,95,109', 0.5);
   });
 
-  // Gamepad: stick or d-pad moves; A zaps; X or B scans; Start pauses. Buttons are edge-triggered.
+  // Gamepad: stick or d-pad moves; A zaps (hold to keep firing); X or B scans; Start pauses.
   const gpPrev = {};
   function pollGamepad() {
     let gp = null;
     try { gp = [...(navigator.getGamepads ? navigator.getGamepads() : [])].find(Boolean) || null; } catch { gp = null; }
-    if (!gp) { padDir = null; return; }
+    if (!gp) { padDirs = []; zapPad = false; return; }
     const b = (i) => !!(gp.buttons[i] && gp.buttons[i].pressed);
-    const ax = gp.axes[0] || 0;
-    const ay = gp.axes[1] || 0;
-    let d = null;
-    if (b(12) || ay < -0.5) d = 0; else if (b(15) || ax > 0.5) d = 1; else if (b(13) || ay > 0.5) d = 2; else if (b(14) || ax < -0.5) d = 3;
-    if (d != null) { path = null; if (padDir !== d) tapDir = d; }
-    padDir = d;
+    let ax = gp.axes[0] || 0;
+    let ay = gp.axes[1] || 0;
+    if (b(14)) ax = -1;
+    if (b(15)) ax = 1;
+    if (b(12)) ay = -1;
+    if (b(13)) ay = 1;
+    const dirs = [];
+    if (Math.max(Math.abs(ax), Math.abs(ay)) > 0.45) {
+      const horiz = Math.abs(ax) >= Math.abs(ay);
+      const hDir = ax > 0 ? 1 : 3;
+      const vDir = ay > 0 ? 2 : 0;
+      dirs.push(DIRS[horiz ? hDir : vDir]);
+      if (Math.min(Math.abs(ax), Math.abs(ay)) > 0.45) dirs.push(DIRS[horiz ? vDir : hDir]);
+    }
+    if (dirs.length) { path = null; if (padDirs[0] !== dirs[0]) tapDir = DIRS.indexOf(dirs[0]); }
+    padDirs = dirs;
+    zapPad = b(0);
     const edge = (i, fn) => { const now = b(i); if (now && !gpPrev[i]) fn(); gpPrev[i] = now; };
     edge(0, zap); edge(1, scan); edge(2, scan); edge(9, togglePause);
   }
@@ -373,29 +449,54 @@ function play(api) {
     return { x: cr.left - sr.left + (x + 0.5) * (cr.width / w.W), y: cr.top - sr.top + (y + 0.5) * (cr.height / w.H) };
   }
   const paintShields = () => bar.set('shields', '◆'.repeat(Math.max(0, st.shields)) + '◇'.repeat(3 - Math.max(0, st.shields)), st.shields <= 1 ? 'bad' : '');
-  const paintScan = () => { const full = Math.floor(scanCharges); scanEl.textContent = '◉'.repeat(full) + '◯'.repeat(SCAN_MAX - full); };
+  const paintScan = () => {
+    const full = Math.floor(scanCharges);
+    scanEl.textContent = '◉'.repeat(full) + '◯'.repeat(SCAN_MAX - full);
+    dots.forEach((d, i) => d.classList.toggle('on', i < full));
+  };
+  const buzz = (pattern) => { try { if (touchUI && navigator.vibrate) navigator.vibrate(pattern); } catch { /* ignore */ } };
 
   // ---------- actions ----------
-  function zap() {
-    if (!w || paused || st.over || zapCd > 0) return;
-    zapCd = ZAP_COOLDOWN;
-    p.zapT = 0.18;
-    const d = p.look || { x: p.face || 1, y: 0 };
-    const ox = Math.round(p.x);
-    const oy = Math.round(p.y);
-    let hit = null;
+  // Where a beam in direction d stops, and the first creature on that line.
+  function beamLine(d, ox, oy) {
     let end = { x: ox, y: oy };
-    for (let i = 0; i <= ZAP_RANGE && !hit; i++) {
+    for (let i = 0; i <= ZAP_RANGE; i++) {
       const x = ox + d.x * i;
       const y = oy + d.y * i;
       if (i > 0 && (x < 0 || y < 0 || x >= w.W || y >= w.H || w.tiles[y][x] === 'wall' || (w.tiles[y][x] === 'vault' && !w.vaultOpen) || w.junk.has(k(x, y)))) break;
       end = { x, y };
-      const cands = w.enemies.filter((e) => {
+      let hit = null;
+      let best = Infinity;
+      for (const e of w.enemies) {
         const reach = e.type === 'hydra' ? 0.95 : 0.62;
-        return e.alive && Math.abs(e.x - x) < reach && Math.abs(e.y - y) < reach;
-      });
-      if (cands.length) hit = cands.sort((a, b) => (Math.abs(a.x - p.x) + Math.abs(a.y - p.y)) - (Math.abs(b.x - p.x) + Math.abs(b.y - p.y)))[0];
+        if (!e.alive || Math.abs(e.x - x) >= reach || Math.abs(e.y - y) >= reach) continue;
+        const dd = Math.abs(e.x - p.x) + Math.abs(e.y - p.y);
+        if (dd < best) { best = dd; hit = e; }
+      }
+      if (hit) return { hit, end, i };
     }
+    return { hit: null, end, i: Infinity };
+  }
+  function zap() {
+    if (!w || paused || st.over || zapCd > 0) return;
+    zapCd = ZAP_COOLDOWN;
+    st.shots++;
+    p.zapT = 0.18;
+    const ox = Math.round(p.x);
+    const oy = Math.round(p.y);
+    // Aim the way Vera faces if a creature is on that line; otherwise at the nearest creature on any straight line.
+    let d = p.look || { x: p.face || 1, y: 0 };
+    let line = beamLine(d, ox, oy);
+    if (!line.hit) {
+      for (const d2 of DIRS) {
+        if (d2.x === d.x && d2.y === d.y) continue;
+        const l2 = beamLine(d2, ox, oy);
+        if (l2.hit && (!line.hit || l2.i < line.i)) { line = l2; d = d2; }
+      }
+    }
+    p.look = d;
+    if (d.x) p.face = d.x;
+    const { hit, end } = line;
     beam = { x1: p.x + 0.5 + d.x * 0.3, y1: p.y + 0.5 + d.y * 0.3, x2: (hit ? hit.x : end.x + d.x * 0.45) + 0.5, y2: (hit ? hit.y : end.y + d.y * 0.45) + 0.5, t: 0.16 };
     sfx.zap();
     if (hit) onHit(hit);
@@ -414,6 +515,7 @@ function play(api) {
         fx.flash('255,255,255', 0.35); fx.ring(stagePt(e.x, e.y), '255,209,102', 260); sfx.boom(); shake(api.view, true);
         banner = { text: 'HYDRA DOWN', sub: 'one set of bytes, no more heads', t: 0, color: '255,209,102' };
         say('Heads off!');
+        buzz([30, 40, 90]);
         for (const o of w.enemies) if (o.alive && o !== e) { o.alive = false; burstTile(o.x, o.y, '167,139,250', 16, 3); }
         for (const b of w.bolts) burstTile(b.x, b.y, '167,139,250', 10, 2);
         w.bolts = [];
@@ -469,7 +571,7 @@ function play(api) {
     st.shields--; st.shieldsLost++;
     p.inv = 1.6;
     paintShields();
-    fx.flash('255,95,109', 0.4); fx.alert = 1; shake(api.view, true); sfx.bad();
+    fx.flash('255,95,109', 0.4); fx.alert = 1; shake(api.view, true); sfx.bad(); buzz(70);
     toast(api.toasts, msg, 'bad', 3400);
     burstTile(p.x, p.y, '255,95,109', 26, 4);
     say(r.pick(OUCH), 1.2);
@@ -481,7 +583,7 @@ function play(api) {
     if (debug) (st.hits || (st.hits = [])).push(`${st.time.toFixed(1)}s ${msg.slice(0, 40)}`);
     st.shields--; st.shieldsLost++;
     paintShields();
-    fx.flash('255,95,109', 0.35); fx.alert = 1; sfx.bad();
+    fx.flash('255,95,109', 0.35); fx.alert = 1; sfx.bad(); buzz([40, 30, 40]);
     toast(api.toasts, msg, 'bad', 3400);
     say('One got out!', 1.4);
     if (st.shields <= 0) lose('Folder compromised', msg);
@@ -714,9 +816,9 @@ function play(api) {
 
   // ---------- lifecycle ----------
   function startLevel() {
-    w = buildWorld(def, r, st.wave, portraitScreen());
+    w = buildWorld(def, r, st.wave);
     p = { x: w.start.x, y: w.start.y, tx: w.start.x, ty: w.start.y, face: 1, look: { x: 1, y: 0 }, moving: false, walk: 0, inv: 0, zapT: 0, alive: true };
-    path = null; held.length = 0; touchDir = null; tapDir = null;
+    path = null; held.length = 0; tapDir = null;
     particles = []; texts = []; beam = null; scanRing = null; teleCd = 0;
     wavesT = 0;
     wavesLeft = def.slipperWaves ? def.slipperWaves.max : endless ? Math.min(4, Math.floor(st.wave / 2)) : 0;
@@ -768,26 +870,85 @@ function play(api) {
       stats: [['Time', fmtTime(st.time)], ['Proven data', `${st.collected}`], ['Zapped', `${st.zapped}`]], delay: 1200 });
   }
 
-  // ---------- rendering ----------
+  // ---------- layout: map size, touch controls, and which way the map lies ----------
+  const CONTROLS_H = 176;
   let T = 32;
   let dpr = 1;
   let staticLayer = null;
+  // Swap x and y for the whole world, so a phone held upright gets a tall map (and back when it turns).
+  function turnWorld() {
+    const swap = (o) => { const t = o.x; o.x = o.y; o.y = t; };
+    const swapV = (v) => (v ? { x: v.y, y: v.x } : v);
+    const tiles = [];
+    for (let y = 0; y < w.W; y++) { const row = []; for (let x = 0; x < w.H; x++) row.push(w.tiles[x][y]); tiles.push(row); }
+    w.tiles = tiles;
+    [w.W, w.H] = [w.H, w.W];
+    const items = new Map();
+    for (const it of w.items.values()) { swap(it); items.set(k(it.x, it.y), it); }
+    w.items = items;
+    const junk = new Map();
+    for (const [key, v] of w.junk) { const [x, y] = key.split(',').map(Number); junk.set(k(y, x), v); }
+    w.junk = junk;
+    w.holes.forEach(swap);
+    swap(w.start);
+    swap(w.vault);
+    for (const pp of w.portals) { swap(pp.a); swap(pp.b); }
+    for (const b of w.bolts) { swap(b); [b.dx, b.dy] = [b.dy, b.dx]; }
+    for (const a of [...w.enemies, p]) {
+      [a.x, a.y] = [a.y, a.x];
+      [a.tx, a.ty] = [a.ty, a.tx];
+      a.dir = swapV(a.dir);
+      a.look = swapV(a.look);
+      if (a.aim) a.aim = swapV(a.aim);
+      if (a.chewKey) { const [x, y] = a.chewKey.split(',').map(Number); a.chewKey = k(y, x); }
+      if (a.look && a.look.x) a.face = a.look.x;
+    }
+    if (path) path.forEach(swap);
+    particles = []; texts = []; beam = null; scanRing = null;
+    w.turned = !w.turned;
+  }
   function sizeCanvas() {
-    const avail = Math.max(220, wrap.clientWidth || api.area.clientWidth || 600);
-    const header = document.querySelector('header');
-    const headerH = header ? header.getBoundingClientRect().height : 0;
-    const reserve = headerH + bar.el.getBoundingClientRect().height + under.getBoundingClientRect().height + 44;
-    const maxH = Math.max(260, window.innerHeight - reserve);
-    T = Math.max(18, Math.min(56, Math.floor(Math.min(avail / w.W, maxH / w.H))));
+    api.area.classList.toggle('gd-area--touch', touchUI);
+    const full = api.stage.classList.contains('stage--full');
+    const areaW = Math.max(240, api.area.clientWidth || 600);
+    const hudH = bar.el.getBoundingClientRect().height + 14;
+    let availH;
+    if (full) availH = api.area.clientHeight - hudH;
+    else {
+      const header = document.querySelector('header');
+      availH = window.innerHeight - (header ? header.getBoundingClientRect().height : 0) - hudH - 44;
+    }
+    availH = Math.max(200, availH);
+    // touch: controls under the map when there is height to spare, beside it on a wide, short screen
+    const side = touchUI && areaW >= 520 && areaW > availH * 1.3;
+    api.area.classList.toggle('gd-area--side', side);
+    const sideW = Math.round(Math.min(230, Math.max(136, areaW * 0.21)));
+    api.area.style.setProperty('--gd-side', `${sideW}px`);
+    let mapW = areaW;
+    let mapH = availH;
+    if (touchUI && side) mapW = areaW - 2 * sideW - 24;
+    else if (touchUI) mapH = availH - CONTROLS_H - 12;
+    else mapH = availH - (tips.getBoundingClientRect().height + 12);
+    mapW = Math.max(150, mapW);
+    mapH = Math.max(150, mapH);
+    // turn the map on its diagonal when that gives clearly bigger tiles
+    if (Math.min(mapW / w.H, mapH / w.W) > Math.min(mapW / w.W, mapH / w.H) * 1.12) turnWorld();
+    T = Math.max(16, Math.min(64, Math.floor(Math.min(mapW / w.W, mapH / w.H))));
     dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(w.W * T * dpr);
     canvas.height = Math.round(w.H * T * dpr);
     canvas.style.width = `${w.W * T}px`;
     canvas.style.height = `${w.H * T}px`;
-    // hints appear over the bottom of the map, never over the pad
+    // hints appear over the bottom of the map, never over the controls
     const sr = api.stage.getBoundingClientRect();
-    const ur = under.getBoundingClientRect();
-    api.stage.style.setProperty('--gd-toast-bottom', `${Math.max(14, Math.round(sr.bottom - ur.top + 10))}px`);
+    const belowEl = touchUI ? (side ? null : stickZone) : tips;
+    const top = belowEl ? belowEl.getBoundingClientRect().top : sr.bottom - 2;
+    api.stage.style.setProperty('--gd-toast-bottom', `${Math.max(12, Math.round(sr.bottom - top + 10))}px`);
+  }
+  function relayout() {
+    if (!w) return;
+    sizeCanvas();
+    renderStatic();
   }
   function renderStatic() {
     staticLayer = document.createElement('canvas');
@@ -1004,6 +1165,11 @@ function play(api) {
     st.time += dt;
     if (!endless && st.time > LIMIT) { lose('Session expired', 'Four minutes passed and the archive session timed out.'); return; }
     zapCd = Math.max(0, zapCd - dt);
+    if ((zapKey || zapTouch || zapPad) && zapCd <= 0) zap();
+    if (touchUI) {
+      const cd = (zapCd / ZAP_COOLDOWN).toFixed(2);
+      if (cd !== shownCd) { shownCd = cd; zapBtn.style.setProperty('--cd', cd); }
+    }
     teleCd = Math.max(0, teleCd - dt);
     p.inv = Math.max(0, p.inv - dt);
     p.zapT = Math.max(0, p.zapT - dt);
@@ -1011,7 +1177,7 @@ function play(api) {
     scanCharges = Math.min(SCAN_MAX, scanCharges + dt / SCAN_REGEN);
     if (Math.floor(scanCharges) !== before) paintScan();
     // turning back mid-tile is instant
-    const want = path && path.length ? null : (heldDir() || (tapDir != null ? DIRS[tapDir] : null));
+    const want = path && path.length ? null : (wantedDirs()[0] || (tapDir != null ? DIRS[tapDir] : null));
     if (want && p.moving && p.dir && want.x === -p.dir.x && want.y === -p.dir.y) {
       p.tx -= p.dir.x; p.ty -= p.dir.y; p.dir = want; p.look = want; if (want.x) p.face = want.x; tapDir = null;
     } else if (want && !p.moving) { p.look = want; if (want.x) p.face = want.x; }
@@ -1021,12 +1187,12 @@ function play(api) {
         if (Math.abs(nx.x - e.x) + Math.abs(nx.y - e.y) === 1 && passable(nx.x, nx.y, 'vera')) { path.shift(); return { x: nx.x - e.x, y: nx.y - e.y }; }
         path = null;
       }
-      let d = heldDir();
-      if (!d && tapDir != null) d = DIRS[tapDir];
+      const wants = wantedDirs();
+      const list = wants.length ? wants : (tapDir != null ? [DIRS[tapDir]] : []);
       tapDir = null;
-      if (d && passable(e.x + d.x, e.y + d.y, 'vera')) return d;
-      if (d && e.dir && anyHeld() && passable(e.x + e.dir.x, e.y + e.dir.y, 'vera')) return e.dir; // keep going until the turn opens
-      if (d) { e.look = d; if (d.x) e.face = d.x; }
+      for (const d of list) if (passable(e.x + d.x, e.y + d.y, 'vera')) return d;
+      if (list.length && e.dir && anyHeld() && passable(e.x + e.dir.x, e.y + e.dir.y, 'vera')) return e.dir; // keep going until a turn opens
+      if (list.length) { e.look = list[0]; if (list[0].x) e.face = list[0].x; }
       return null;
     }, veraArrive);
     if (st.over) return;
@@ -1086,8 +1252,14 @@ function play(api) {
   }
 
   startLevel();
-  const onResize = () => { if (!w) return; sizeCanvas(); renderStatic(); };
+  const onResize = () => relayout();
   window.addEventListener('resize', onResize);
+  // leaving full screen in the middle of a run pauses it; either way the layout is redone
+  const onFull = (e) => {
+    if (!e.detail && w && !paused && !st.over) togglePause();
+    window.requestAnimationFrame(relayout);
+  };
+  api.stage.addEventListener('g-fullscreen', onFull);
   let clock = 0;
   const stopLoop = loop((dt) => {
     clock += dt;
@@ -1109,6 +1281,7 @@ function play(api) {
       setPath: (steps) => { path = steps.map((q) => ({ x: q.x, y: q.y })); },
       face: (i) => { p.look = DIRS[i]; if (DIRS[i].x) p.face = DIRS[i].x; },
       zap, scan, charges: () => scanCharges, cooldown: () => zapCd, frozen: () => freeze > 0,
+      turned: () => !!w.turned, touchUI: () => touchUI, tile: () => T, paused: () => paused,
     };
   }
 
@@ -1119,6 +1292,8 @@ function play(api) {
     window.removeEventListener('blur', blurClear);
     window.removeEventListener('resize', onResize);
     document.removeEventListener('visibilitychange', visPause);
+    api.stage.removeEventListener('g-fullscreen', onFull);
+    api.stage.removeEventListener('pointerdown', onAnyPointer, true);
     if (debug) delete window.__guardian;
   };
 }
@@ -1154,7 +1329,8 @@ if (root) {
     title: 'Vera: Archive Guardian',
     levels: LEVELS,
     endless: ENDLESS,
-    controls: 'Move: arrows or WASD, the on-screen pad, or click a tile · Zap: Space · Scan: E · Pause: P · Gamepad: stick or d-pad, A zaps, X or B scans · Esc: back to the levels.',
+    immersive: true,
+    controls: 'Move: arrows or WASD, the thumb stick on a phone, or click a tile · Zap: Space (hold to keep firing — it aims at the nearest creature in line) · Scan: E · Pause: P · Full screen: F · Gamepad: stick or d-pad, A zaps, X or B scans · Esc: back to the levels.',
     howto: 'Progress is saved in this browser only. The archives are simulated; every creature stands for a real archive threat.',
     play,
   });

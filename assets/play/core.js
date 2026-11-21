@@ -350,6 +350,7 @@ export function hud(host, items, onQuit) {
   }
   if (onQuit) {
     bar.append(h('div', { class: 'hud-quit' },
+      fullToggle(),
       soundToggle(),
       h('button', { class: 'g-btn g-btn--ghost', type: 'button', onclick: onQuit, title: 'Back to levels (Esc)' }, 'Levels ', h('span', { class: 'g-key' }, 'Esc'))));
   }
@@ -379,12 +380,50 @@ export function soundToggle() {
   return b;
 }
 
+// ---------- full screen: the Fullscreen API where the browser has it; otherwise (iPhone Safari)
+// the stage is fixed over the whole page, which looks the same apart from the browser's own bars ----------
+const SVGNS = 'http://www.w3.org/2000/svg';
+function svgIcon(d) {
+  const s = document.createElementNS(SVGNS, 'svg');
+  s.setAttribute('viewBox', '0 0 24 24');
+  s.setAttribute('class', 'g-ic');
+  s.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS(SVGNS, 'path');
+  path.setAttribute('d', d);
+  s.append(path);
+  return s;
+}
+const FS_ON = 'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5';
+const FS_OFF = 'M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5';
+let activeGame = null;
+export const fullscreenEl = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+export const touchFirst = () => {
+  try { return window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches; } catch { return false; }
+};
+export function paintFull(b) {
+  const on = !!(activeGame && activeGame.immersive);
+  b.textContent = '';
+  b.append(svgIcon(on ? FS_OFF : FS_ON), h('span', { class: 'g-full-txt' }, on ? 'Exit full screen' : 'Full screen'));
+  b.setAttribute('aria-pressed', String(on));
+  b.setAttribute('aria-label', on ? 'Exit full screen' : 'Full screen');
+  b.title = `${on ? 'Exit full screen' : 'Full screen'} (F)`;
+}
+export function fullToggle() {
+  const b = h('button', { class: 'g-btn g-btn--ghost g-full', type: 'button' });
+  b.addEventListener('click', () => { if (activeGame) activeGame.toggleFull(); });
+  paintFull(b);
+  return b;
+}
+
 // ---------- the game shell: level select → brief → play → result ----------
 export class Game {
   constructor(root, cfg) {
     this.root = root;
     this.cfg = cfg;
     this.cleanup = null;
+    this.immersive = false;
+    this.nativeFull = false;
+    activeGame = this;
     root.textContent = '';
     this.stage = h('div', { class: 'stage', tabindex: '-1' });
     this.view = h('div', { class: 'stage-view' });
@@ -396,16 +435,57 @@ export class Game {
     this.onKey = (e) => {
       if (e.altKey || e.ctrlKey || e.metaKey) return;
       if (e.key === 'Escape' && this.mode === 'play') { e.preventDefault(); this.menu(); }
+      else if (e.key === 'Escape' && this.immersive) { e.preventDefault(); this.toggleFull(false); }
+      if ((e.key === 'f' || e.key === 'F') && !e.repeat && !(e.target instanceof HTMLInputElement)) { e.preventDefault(); this.toggleFull(); }
       if ((e.key === 'm' || e.key === 'M') && !(e.target instanceof HTMLInputElement)) {
         sfx.setMuted(!sfx.muted);
         this.stage.querySelectorAll('.g-sound').forEach((b) => paintSound(b));
       }
     };
     document.addEventListener('keydown', this.onKey);
+    // leaving the browser's full screen (Back gesture, Esc) also leaves ours
+    const onFs = () => { if (!fullscreenEl() && this.immersive && this.nativeFull) { this.nativeFull = false; this.setImmersive(false); } };
+    document.addEventListener('fullscreenchange', onFs);
+    document.addEventListener('webkitfullscreenchange', onFs);
     const want = (() => { try { return new URLSearchParams(window.location.search).get('level'); } catch { return null; } })();
     const n = want ? Number(want) : 0;
     if (n >= 1 && n <= cfg.levels.length && this.unlocked(n - 1)) this.brief(n - 1);
     else this.menu();
+  }
+
+  toggleFull(on = !this.immersive) {
+    if (on === this.immersive) return;
+    if (on) {
+      this.setImmersive(true);
+      const el = this.stage;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req && !fullscreenEl()) {
+        try {
+          this.nativeFull = true;
+          const pr = req.call(el, { navigationUI: 'hide' });
+          if (pr && typeof pr.then === 'function') pr.then(null, () => { this.nativeFull = false; });
+        } catch { this.nativeFull = false; }
+      }
+    } else {
+      this.nativeFull = false;
+      this.setImmersive(false);
+      if (fullscreenEl()) {
+        try {
+          const ex = document.exitFullscreen || document.webkitExitFullscreen;
+          const pr = ex && ex.call(document);
+          if (pr && typeof pr.then === 'function') pr.then(null, () => {});
+        } catch { /* ignore */ }
+      }
+    }
+  }
+
+  setImmersive(on) {
+    this.immersive = on;
+    this.stage.classList.toggle('stage--full', on);
+    document.documentElement.classList.toggle('g-immersive', on);
+    this.stage.querySelectorAll('.g-full').forEach((b) => paintFull(b));
+    this.stage.dispatchEvent(new CustomEvent('g-fullscreen', { detail: on }));
+    if (!on) this.reveal();
   }
 
   say(text) {
@@ -418,7 +498,7 @@ export class Game {
     this.mode = mode;
     this.view.textContent = '';
     this.toasts.textContent = '';
-    this.stage.className = 'stage stage--' + mode;
+    this.stage.className = 'stage stage--' + mode + (this.immersive ? ' stage--full' : '');
     this.fx.mood = 0;
   }
 
@@ -439,7 +519,7 @@ export class Game {
     const got = totalStars(this.cfg.id);
     this.view.append(h('div', { class: 'lv-head' },
       h('div', null, h('p', { class: 'g-kicker' }, this.cfg.title), h('h2', null, 'Choose a level')),
-      h('div', { class: 'lv-head-r' }, h('span', { class: 'g-muted lv-total' }, '★ ', h('b', null, String(got)), ` / ${max}`), soundToggle())));
+      h('div', { class: 'lv-head-r' }, h('span', { class: 'g-muted lv-total' }, '★ ', h('b', null, String(got)), ` / ${max}`), fullToggle(), soundToggle())));
     const grid = h('div', { class: 'lv-grid' });
     let firstOpen = null;
     this.cfg.levels.forEach((lv, i) => {
@@ -486,7 +566,11 @@ export class Game {
     for (const [tag, text, isNew] of lv.brief || []) {
       list.append(h('li', null, h('span', { class: 'tag' + (isNew ? ' tag--new' : '') }, isNew ? `NEW · ${tag}` : tag), h('span', null, text)));
     }
-    const start = h('button', { class: 'g-btn g-btn--primary g-btn--big g-btn--glow', type: 'button', onclick: () => { sfx.power(); this.run(i); } }, '▶ Start ', h('span', { class: 'g-key' }, 'Enter'));
+    const start = h('button', { class: 'g-btn g-btn--primary g-btn--big g-btn--glow', type: 'button', onclick: () => {
+      sfx.power();
+      if (this.cfg.immersive && touchFirst() && !this.immersive) this.toggleFull(true);
+      this.run(i);
+    } }, '▶ Start ', h('span', { class: 'g-key' }, 'Enter'));
     this.view.append(h('div', { class: 'brief-wrap' },
       h('p', { class: 'g-kicker' }, `${this.labelOf(i)} · ${lv.name}`),
       h('h2', null, lv.title || lv.name),
@@ -532,6 +616,7 @@ export class Game {
 
   // Bring the whole stage into view below the sticky site header when a level starts.
   reveal() {
+    if (this.immersive) return;
     try {
       const r = this.stage.getBoundingClientRect();
       const header = document.querySelector('header');
