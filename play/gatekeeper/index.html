@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Gatekeeper — block Zip Slip, zip bombs and symlinks | VERAQIS</title>
+<meta name="description" content="A browser game about extracting untrusted archives: let safe entries through, block path traversal, absolute and Windows paths, compression bombs, symlinks and overlapping entries. 8 levels plus an endless shift." />
+<link rel="canonical" href="https://veraqis.tech/play/gatekeeper/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<link rel="stylesheet" href="/assets/play/play.css" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Gatekeeper — an archive safety game" />
+<meta property="og:description" content="A browser game about extracting untrusted archives: let safe entries through, block path traversal, absolute and Windows paths, compression bombs, symlinks and overlapping entries. 8 levels plus an endless shift." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/play/gatekeeper/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Gatekeeper — an archive safety game" />
+<meta name="twitter:description" content="A browser game about extracting untrusted archives: let safe entries through, block path traversal, absolute and Windows paths, compression bombs, symlinks and overlapping entries. 8 levels plus an endless shift." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/play/gatekeeper/#webpage",
+      "url": "https://veraqis.tech/play/gatekeeper/",
+      "name": "Gatekeeper — block Zip Slip, zip bombs and symlinks | VERAQIS",
+      "description": "A browser game about extracting untrusted archives: let safe entries through, block path traversal, absolute and Windows paths, compression bombs, symlinks and overlapping entries. 8 levels plus an endless shift.",
+      "dateModified": "2026-11-21",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/play/gatekeeper/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Play",
+          "item": "https://veraqis.tech/play/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Gatekeeper",
+          "item": "https://veraqis.tech/play/gatekeeper/"
+        }
+      ]
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://veraqis.tech/play/gatekeeper/#game",
+      "name": "Gatekeeper",
+      "url": "https://veraqis.tech/play/gatekeeper/",
+      "description": "A browser game about extracting untrusted archives: let safe entries through, block path traversal, absolute and Windows paths, compression bombs, symlinks and overlapping entries. 8 levels plus an endless shift.",
+      "genre": [
+        "Educational",
+        "Arcade"
+      ],
+      "gamePlatform": "Web browser",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "isAccessibleForFree": true,
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<div class="page-head page-head--game">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / <a href="/play/">Play</a> / Gatekeeper</div>
+    <h1>Gatekeeper</h1>
+    <p class="lead">Entries from an untrusted archive roll along the belt toward your folder. Extract the safe ones, refuse the hostile ones — before the belt delivers them for you.</p>
+    <p class="note mt-8">Free · runs in your browser · nothing is uploaded · progress stays in this browser</p>
+  </div>
+</div>
+
+<section class="play-section">
+  <div class="wrap">
+    <div id="game" class="game-root">
+      <noscript><div class="callout warn"><strong>This game needs JavaScript.</strong> Everything runs in your browser; nothing is uploaded.</div></noscript>
+      <div class="stage stage--loading"><div class="stage-view"><p class="g-kicker">VERAQIS Play</p><h2>Loading…</h2></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>What you learn here</h2>
+    <ul class="checks mw-760">
+      <li><strong>Zip Slip:</strong> an entry name is a path, and “../” can climb out of the folder you chose.</li>
+      <li><strong>Absolute and Windows paths:</strong> “/etc/passwd”, “C:evil.exe”, UNC shares and device names such as CON and NUL.</li>
+      <li><strong>Compression bombs:</strong> why extraction needs an expansion-ratio gate and an output cap.</li>
+      <li><strong>Symlinks, duplicates and overlapping entries:</strong> the tricks that redirect or multiply later writes.</li>
+      <li>The same rules VERAQIS applies before extracting a real archive — see <a href="/security.html">the security model</a>.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>More games</h2>
+    <div class="grid g3">
+      <a class="card link-card" href="/play/magic-bytes/"><div class="ic">HEX</div><h3>Magic Bytes</h3><p>Name a file from its first bytes — not from its name.</p></a>
+      <a class="card link-card" href="/play/bit-rot/"><div class="ic">HASH</div><h3>Bit Rot Hunt</h3><p>Find damaged shards with as few hash checks as possible.</p></a>
+      <a class="card link-card" href="/play/"><div class="ic">ALL</div><h3>All games</h3><p>Progress, ranks and what each game teaches.</p></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+            <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+
+<script src="/assets/play/gatekeeper.js" type="module"></script>
+</body>
+</html>

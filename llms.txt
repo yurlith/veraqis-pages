@@ -103,3 +103,10 @@ from an experiment in our own repository and the page names the experiment and l
 Research pages carry a stable URL, a publication date, the engine version and the experiment ID.
 Quote the number together with its method — every figure is conditional on the corpus and damage
 class it was measured on, and the pages say so.
+
+## Games — learn by playing
+
+- [VERAQIS Play](https://veraqis.tech/play/): three free browser games built from the rules on this site; nothing is uploaded.
+- [Gatekeeper](https://veraqis.tech/play/gatekeeper/): block Zip Slip, absolute and Windows paths, compression bombs, symlinks and overlapping entries before extraction.
+- [Magic Bytes](https://veraqis.tech/play/magic-bytes/): identify archives, streams and disk images from their signatures; renamed versus damaged files.
+- [Bit Rot Hunt](https://veraqis.tech/play/bit-rot/): localise damaged shards with hash checks, hash trees and repair budgets — and abstain when evidence cannot localise.
