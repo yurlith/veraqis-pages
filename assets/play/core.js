@@ -4,8 +4,11 @@
 // Progress is a per-browser convenience kept in localStorage; every access is wrapped so the
 // games still work in private windows or with storage blocked.
 
+import { veraPortrait } from './characters.js';
+
 const KEY = 'veraqis.play.v1';
 export const GAMES = {
+  guardian: { title: 'Vera: Archive Guardian', href: '/play/guardian/', levels: 8 },
   gatekeeper: { title: 'Gatekeeper', href: '/play/gatekeeper/', levels: 8 },
   'magic-bytes': { title: 'Magic Bytes', href: '/play/magic-bytes/', levels: 8 },
   'bit-rot': { title: 'Bit Rot Hunt', href: '/play/bit-rot/', levels: 8 },
@@ -65,6 +68,11 @@ export function h(tag, props, ...kids) {
     el.append(kid instanceof Node ? kid : document.createTextNode(String(kid)));
   }
   return el;
+}
+// Vera, the guide of every game, with a speech bubble.
+export function veraSays(text, mood = 'ok') {
+  return h('div', { class: 'vera-says' + (mood === 'sad' ? ' vera-says--sad' : '') }, veraPortrait(72, mood),
+    h('p', { class: 'vera-bubble' }, h('b', null, 'Vera: '), text));
 }
 export function starsEl(n, max = 3, big = false) {
   const s = h('span', { class: 'stars' + (big ? ' stars--big' : ''), role: 'img', 'aria-label': `${n} of ${max} stars` });
@@ -482,6 +490,7 @@ export class Game {
     this.view.append(h('div', { class: 'brief-wrap' },
       h('p', { class: 'g-kicker' }, `${this.labelOf(i)} · ${lv.name}`),
       h('h2', null, lv.title || lv.name),
+      lv.say ? veraSays(lv.say) : null,
       lv.intro ? h('p', null, lv.intro) : null,
       list,
       this.cfg.controls ? h('p', { class: 'g-dim' }, this.cfg.controls) : null,
@@ -552,11 +561,16 @@ export class Game {
     buttons.push(h('button', { class: 'g-btn' + (buttons.length ? '' : ' g-btn--primary g-btn--big'), type: 'button', onclick: () => { sfx.click(); this.run(i); } }, r.won || endless ? '↻ Play again' : '↻ Try again'));
     buttons.push(h('button', { class: 'g-btn g-btn--ghost', type: 'button', onclick: () => this.menu() }, 'All levels'));
     const lesson = r.lesson || lv.lesson;
+    const line = r.say || (endless ? 'Nice run! Your best score stays in this browser.'
+      : !r.won ? 'That one got past us. Read the note below, then let’s try again.'
+        : r.stars === 3 ? 'Perfect — proof first, every time.'
+          : r.stars === 2 ? 'Cleared! One more star to earn on this one.' : 'Cleared! Two more stars are waiting here.');
     const score = h('div', { class: 'score' }, '0');
     this.view.append(h('div', { class: 'result' + (r.won || endless ? ' result--won' : ' result--lost') },
       h('p', { class: 'g-kicker' }, `${this.labelOf(i)} · ${lv.name}`),
       h('h2', null, r.title || (endless ? 'Run over' : r.won ? 'Level cleared' : 'Level failed')),
       !endless ? starsEl(r.won ? r.stars : 0, 3, true) : null,
+      veraSays(line, r.won || endless ? 'happy' : 'sad'),
       score,
       newBest ? h('span', { class: 'best' }, 'NEW BEST') : null,
       r.won && !endless && r.stars > prevStars && prevStars > 0 ? h('p', { class: 'g-dim' }, `Up from ${prevStars} ★`) : null,
