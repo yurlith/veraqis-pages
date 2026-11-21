@@ -345,3 +345,85 @@
   .hud-quit{margin-left:0;width:100%;justify-content:flex-end}
   .hud-item--power{min-width:0}
 }
+
+/* ---------- Vera, the guide in every game ---------- */
+.vera-says{display:flex;align-items:center;gap:12px;margin:12px 0 6px;max-width:760px;animation:g-rise .35s ease both}
+.vera-says .vera-portrait{width:72px;height:72px;flex:none;filter:drop-shadow(0 0 14px rgba(94,231,255,.35))}
+.stage .vera-bubble{position:relative;margin:0;padding:11px 15px;border-radius:16px;background:rgba(241,236,255,.97);color:#1b1233;
+  font-size:15.5px;line-height:1.45;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.vera-bubble::before{content:"";position:absolute;left:-7px;top:50%;margin-top:-8px;border-style:solid;border-width:8px 8px 8px 0;border-color:transparent rgba(241,236,255,.97) transparent transparent}
+.vera-bubble b{color:#6d28d9}
+.vera-says--sad .vera-bubble b{color:#9b2637}
+.result .vera-says{justify-content:center;margin:12px auto 8px;text-align:left}
+
+/* ---------- Vera: Archive Guardian ---------- */
+.gd-area{display:flex;flex-direction:column}
+.stage--gd .toasts{bottom:var(--gd-toast-bottom,14px)}
+.gd-wrap{display:flex;justify-content:center;min-width:0}
+.gd-canvas{display:block;max-width:100%;border-radius:12px;background:#0d0820;border:1px solid rgba(167,139,250,.45);
+  box-shadow:0 0 0 1px rgba(124,58,237,.25),0 18px 50px rgba(0,0,0,.45),0 0 70px rgba(124,58,237,.2);touch-action:manipulation;cursor:pointer}
+.gd-under{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.gd-side{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hud-quit .gd-pause{gap:6px}
+.gd-pause-ic{font-size:12px;letter-spacing:-1px}
+.stage .gd-tips{margin:0;font-size:13px;color:var(--g-dim)}
+.gd-tips .g-key{margin:0 2px}
+.gd-charges{letter-spacing:2px;color:var(--g-cyan);text-shadow:0 0 12px rgba(94,231,255,.7)}
+.gd-pad{display:none;width:100%;align-items:center;justify-content:space-between;gap:16px;user-select:none;-webkit-user-select:none;touch-action:none}
+.gd-dpad{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,56px);gap:5px}
+.gd-pad-btn,.gd-act{appearance:none;-webkit-appearance:none;margin:0;padding:0;cursor:pointer;font-family:inherit;touch-action:none;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.gd-pad-btn{border-radius:14px;background:linear-gradient(180deg,#2f2260,#1b1233);border:1px solid rgba(167,139,250,.5);color:#e9ddff;font-size:20px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 4px 0 #0d0820}
+.gd-pad-btn--up{grid-column:2;grid-row:1}
+.gd-pad-btn--left{grid-column:1;grid-row:2}
+.gd-pad-btn--right{grid-column:3;grid-row:2}
+.gd-pad-btn--down{grid-column:2;grid-row:3}
+.gd-pad-btn.on{background:linear-gradient(180deg,#8b5cf6,#5b21b6);box-shadow:0 0 18px rgba(167,139,250,.65);transform:translateY(2px)}
+.gd-acts{display:flex;gap:14px;align-items:center}
+.gd-act{border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font:800 11px/1 var(--mono);letter-spacing:1px;color:#fff;border:2px solid}
+.gd-act--zap{width:84px;height:84px;background:radial-gradient(circle at 35% 30%,#8ff5ff,#0e7490 70%);border-color:#5ee7ff;box-shadow:0 0 26px rgba(94,231,255,.5)}
+.gd-act--scan{width:66px;height:66px;background:radial-gradient(circle at 35% 30%,#d8ccff,#5b21b6 70%);border-color:#a78bfa;box-shadow:0 0 20px rgba(167,139,250,.45)}
+.gd-act-ic{font-size:24px;line-height:1}
+.gd-act.on{transform:scale(.92);filter:brightness(1.35)}
+@media (pointer:coarse),(hover:none){
+  .gd-pad{display:flex}
+  .gd-tips{display:none}
+  .gd-under{flex-direction:column;align-items:stretch;gap:10px;margin-top:12px}
+  .gd-side{justify-content:center}
+}
+@media (max-width:560px){
+  .stage--play .stage-view{padding:12px 10px}
+  .gd-area .hud{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;gap:6px 10px;padding-bottom:8px;margin-bottom:10px}
+  .gd-area .hud-item{min-width:0}
+  .gd-area .hud-k{font-size:9.5px;letter-spacing:.8px}
+  .gd-area .hud-v{font-size:15px}
+  .gd-area .hud-quit{grid-column:3 / -1;justify-self:end;align-self:center;width:auto;margin:0}
+  .gd-area .hud-quit .g-btn{min-height:34px;padding:4px 10px}
+  .gd-pause-t,.gd-pause .g-key{display:none}
+  .gd-side{display:none}
+  .gd-dpad{grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px)}
+  .gd-act--zap{width:80px;height:80px}
+}
+
+/* who's who on the Guardian page */
+.gd-roster{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.gd-char{display:flex;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;color:#f1ecff;
+  background:radial-gradient(120% 100% at 0% 0%,#2a1a5e,#160e2c 60%,#0d0820);border:1px solid rgba(167,139,250,.35);box-shadow:0 12px 30px rgba(27,18,51,.25)}
+.gd-char canvas{width:96px;height:96px;flex:none}
+.gd-char h3{margin:0;color:#fff;font-size:18px}
+.gd-char p{margin:4px 0 0;color:#c9c0ec;font-size:14px;line-height:1.45}
+.gd-char .gd-role{font:800 11px/1.3 var(--mono);letter-spacing:1.4px;text-transform:uppercase;color:#5ee7ff;margin:2px 0 0}
+.gd-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.gd-keys .card h3{margin-top:0}
+@media (max-width:900px){.gd-roster,.gd-keys{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.gd-roster,.gd-keys{grid-template-columns:1fr}}
+
+/* the hub: four games in a 2 × 2 grid, Guardian's card has a live scene */
+.arcade .play-cards{grid-template-columns:repeat(2,1fr)}
+.pc-scene{display:block;width:100%;height:auto;aspect-ratio:320/110;border-radius:10px;background:#0d0820;border:1px solid rgba(94,231,255,.25)}
+.pc--new{border-color:#ffd166;box-shadow:0 0 0 1px rgba(255,209,102,.25),0 0 40px rgba(255,209,102,.12)}
+.pc--new .pc-ic{color:#ffd166;text-shadow:0 0 12px rgba(255,209,102,.6)}
+@media (prefers-reduced-motion:reduce){.vera-says{animation:none}}
+@media (max-width:900px){.arcade .play-cards{grid-template-columns:1fr}}

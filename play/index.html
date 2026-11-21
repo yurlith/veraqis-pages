@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Archive safety games — play in your browser | VERAQIS</title>
-<meta name="description" content="Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
+<meta name="description" content="Four free browser games about archive safety: guide Vera through hostile archives, block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
 <link rel="canonical" href="https://veraqis.tech/play/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="/assets/veraqis.css" />
@@ -14,7 +14,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="VERAQIS Play — archive safety games" />
-<meta property="og:description" content="Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
+<meta property="og:description" content="Four free browser games about archive safety: guide Vera through hostile archives, block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://veraqis.tech/play/" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="VERAQIS Play — archive safety games" />
-<meta name="twitter:description" content="Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
+<meta name="twitter:description" content="Four free browser games about archive safety: guide Vera through hostile archives, block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -52,7 +52,7 @@
       "@id": "https://veraqis.tech/play/#webpage",
       "url": "https://veraqis.tech/play/",
       "name": "Archive safety games — play in your browser | VERAQIS",
-      "description": "Three free browser games about archive safety: block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded.",
+      "description": "Four free browser games about archive safety: guide Vera through hostile archives, block Zip Slip and zip bombs, identify files by their magic bytes, and hunt bit rot with hash checks. No sign-up, nothing uploaded.",
       "dateModified": "2026-11-21",
       "inLanguage": "en",
       "isPartOf": {
@@ -87,18 +87,24 @@
         {
           "@type": "ListItem",
           "position": 1,
+          "url": "https://veraqis.tech/play/guardian/",
+          "name": "Vera: Archive Guardian"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
           "url": "https://veraqis.tech/play/gatekeeper/",
           "name": "Gatekeeper"
         },
         {
           "@type": "ListItem",
-          "position": 2,
+          "position": 3,
           "url": "https://veraqis.tech/play/magic-bytes/",
           "name": "Magic Bytes"
         },
         {
           "@type": "ListItem",
-          "position": 3,
+          "position": 4,
           "url": "https://veraqis.tech/play/bit-rot/",
           "name": "Bit Rot Hunt"
         }
@@ -140,8 +146,9 @@
   <div class="wrap">
     <div class="crumb"><a href="/">VERAQIS</a> / Play</div>
     <h1>Archive safety, played</h1>
-    <p class="lead">Three browser games built from the rules VERAQIS applies to real files. Stop hostile archive entries before they
-      land, name a file from its first bytes, and corner damaged data with hash checks — then know when to abstain.</p>
+    <p class="lead">Four browser games built from the rules VERAQIS applies to real files. Guide Vera through a hostile archive,
+      stop dangerous entries before they land, name a file from its first bytes, and corner damaged data with hash checks — then
+      know when to abstain.</p>
     <p class="note mt-8">Free · no sign-up · runs in your browser · nothing is uploaded</p>
   </div>
 </div>
@@ -149,10 +156,17 @@
 <section class="play-section">
   <div class="wrap">
     <div class="arcade" id="arcade">
-      <p class="g-kicker">VERAQIS Play · 3 games · 24 levels</p>
+      <p class="g-kicker">VERAQIS Play · 4 games · 32 levels</p>
       <h2>Pick a game</h2>
-      <p class="play-rank" id="play-rank">Rank: <b>Visitor</b> · ★ 0 / 72</p>
+      <p class="play-rank" id="play-rank">Rank: <b>Visitor</b> · ★ 0 / 96</p>
       <div class="play-cards">
+        <a class="pc pc--new" href="/play/guardian/">
+          <span class="pc-ic">NEW · VERA · ACTION</span>
+          <span class="pc-t">Vera: Archive Guardian</span>
+          <span class="pc-d">Walk Vera through hostile archives. Scan before you take, zap Slippers before they escape through “../”, defuse growing zip bombs, and beat the Overlap Hydra.</span>
+          <canvas class="pc-scene" data-scene="guardian" width="320" height="110" aria-hidden="true"></canvas>
+          <span class="pc-foot"><span data-progress="guardian">not started</span><span class="pc-go">Play ▶</span></span>
+        </a>
         <a class="pc" href="/play/gatekeeper/">
           <span class="pc-ic">GATEKEEPER · ARCADE</span>
           <span class="pc-t">Gatekeeper</span>
@@ -190,10 +204,11 @@ name: holiday.<span class="y">zip</span>
   <div class="wrap">
     <h2>Built from the real rules</h2>
     <p class="sub">The archives and files in the games are simulated. The rules, signatures and evidence logic are the ones this site documents.</p>
-    <div class="grid g3">
+    <div class="grid g4">
       <a class="card link-card" href="/security.html"><div class="ic">GATE</div><h3>Security model</h3><p>Path safety, bomb and overlap defences, symlinks — what Gatekeeper trains.</p></a>
       <a class="card link-card" href="/formats/identification/"><div class="ic">HEX</div><h3>Identifying a file</h3><p>The signature table behind Magic Bytes, and why the name is only a claim.</p></a>
       <a class="card link-card" href="/reference/evidence-model/"><div class="ic">HASH</div><h3>Evidence model</h3><p>What a check proves, when to abstain — the logic of Bit Rot Hunt.</p></a>
+      <a class="card link-card" href="/formats/7z/"><div class="ic">7Z</div><h3>Solid archives</h3><p>Why one broken block costs everything after it — Archive Guardian’s Solid Mine.</p></a>
     </div>
   </div>
 </section>
@@ -203,7 +218,9 @@ name: holiday.<span class="y">zip</span>
     <h2>Questions</h2>
     <div class="faq">
       <div class="qa"><h3>Is anything uploaded or tracked?</h3><p>No. The games run entirely in your browser, make no network requests and have no analytics. Your progress is kept in this browser's local storage only.</p></div>
-      <div class="qa"><h3>Do they work on a phone?</h3><p>Yes. Gatekeeper takes swipes or the two big buttons, Magic Bytes takes taps, and Bit Rot Hunt selects shards with two taps.</p></div>
+      <div class="qa"><h3>Do they work on a phone?</h3><p>Yes. Archive Guardian has an on-screen pad and turns its map to fit a tall screen, Gatekeeper takes swipes or the two big buttons, Magic Bytes takes taps, and Bit Rot Hunt selects shards with two taps.</p></div>
+      <div class="qa"><h3>Who is Vera?</h3><p>Vera is the guardian robot you play in Archive Guardian and the guide in every game. She stands for the VERAQIS rule: nothing is shown as recovered until it is proven.</p></div>
+      <div class="qa"><h3>Can I play with a gamepad?</h3><p>Archive Guardian supports any standard controller the browser can see: stick or d-pad moves, A zaps, X or B scans, Start pauses.</p></div>
       <div class="qa"><h3>Are the files real?</h3><p>The archives, dumps and disks are generated for each round. The rules they follow — path safety, magic numbers, checksum evidence — are the real ones.</p></div>
     </div>
   </div>
