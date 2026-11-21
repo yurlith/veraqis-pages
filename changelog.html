@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-11-21",
       "inLanguage": "en"
     },
     {
@@ -128,7 +128,49 @@
 
 <section>
   <div class="wrap prose">
-    <h2>VERAQIS Archiver Pro 1.8.0 — SQLite row-identity recovery <span class="tag t-beta">in source, not yet published</span></h2>
+    <h2>VERAQIS Archiver Mobile 2.10.0 — everyday file operations <span class="tag t-exact">published</span></h2>
+    <p class="note">20 November 2026 · published on this site 21 November 2026 · versionCode 25 ·
+      package <code>tech.veraqis.archiver.mobile</code></p>
+    <ul class="checks">
+      <li>Replaces Archiver Pro 1.8.0 as the Android download. Mobile is a separate app with its own
+        package name and signing certificate, so it installs next to Pro instead of updating it.</li>
+      <li>A selection bar shows the number of selected items, their known size and the number of
+        folders; copy, move, a separate size count and clear-selection sit under Actions. Rotation keeps
+        the selection, deleted items drop out on refresh, and changing folder clears it.</li>
+      <li>One destination picker for copy, move and extract: path, parent, favourite and recent
+        folders, new folder, other storage, and a button that names the operation.</li>
+      <li>Name conflicts: skip, replace, keep both, apply to all, or cancel. The result lists copied,
+        moved, skipped, failed and cancelled items separately.</li>
+      <li>A copy is written to a temporary file and read back to verify its SHA-256. Replacing keeps
+        the old file until the new copy is committed; a move checks the source before deleting it.</li>
+      <li>Sorting and compact view are remembered per folder; an active search or filter is shown and
+        clears with one tap.</li>
+      <li>Fixed: a hang when the size-count window was replaced quickly; the result now appears in the
+        same window.</li>
+      <li>764 instrumented checks and 71 UI check groups passed — see the
+        <a href="/testing.html#android-release">test record</a>.</li>
+    </ul>
+
+    <h2>VERAQIS Archiver Mobile 2.9.0 — favourite and recent folders <span class="tag t-beta">built, not published separately</span></h2>
+    <p class="note">19 November 2026 · included in 2.10.0</p>
+    <ul class="checks">
+      <li>Favourite and recent folders from the path bar — up to 64 favourites and 20 recent folders.</li>
+      <li>The scroll position of each folder is remembered, including after a restart.</li>
+      <li>Access to a saved folder is checked before it opens; a removed or unavailable folder leaves
+        the current one open.</li>
+    </ul>
+
+    <h2>VERAQIS Archiver Mobile 2.8.0 — navigation and layout <span class="tag t-beta">built, not published separately</span></h2>
+    <p class="note">18 November 2026 · included in 2.10.0</p>
+    <ul class="checks">
+      <li>Back and Forward move through history; Up always opens the parent folder; tapping the path
+        opens the list of parent folders.</li>
+      <li>Storage details fold into one Storage control, and information cards hide on short screens or
+        with a large font to leave room for the file list.</li>
+      <li>Restyled buttons and tabs, with system animation settings respected.</li>
+    </ul>
+
+    <h2>VERAQIS Archiver Pro 1.8.0 — SQLite row-identity recovery <span class="tag t-beta">published, superseded by Mobile 2.10.0</span></h2>
     <p class="note">26 August 2026</p>
     <ul class="checks">
       <li>The Android Pro app's on-device SQLite database recovery can now bound — and, where the bound
@@ -258,6 +300,7 @@
         <a href="/testing.html">Test record</a>
         <a href="/research/">Research</a>
         <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
         <a href="/reference/">Reference &amp; glossary</a>
         <a href="/reports.html">Reports &amp; verification</a>
       </div>

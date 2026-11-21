@@ -1,9 +1,12 @@
 # VERAQIS public release artifact checksums
 # Windows Recovery and ColdPass artifacts were withdrawn on 2026-07-19 pending clean rebuilds.
-# The Free Android edition was retired 2026-08-23 (docs/ANDROID_EDITIONS_ROADMAP.md DEC-K);
-# VERAQIS Archiver Pro is now the only Android download.
+# The Free Android edition was retired 2026-08-23 (docs/ANDROID_EDITIONS_ROADMAP.md DEC-K).
+# On 2026-11-21 VERAQIS Archiver Mobile 2.10.0 replaced Archiver Pro 1.8.0 as the only Android
+# download. Mobile is a separate app (package tech.veraqis.archiver.mobile, its own signing
+# certificate), so it installs alongside Archiver Pro 1.8.0 instead of updating it.
 # Verify from this directory:
 #   sha256sum -c SHA256SUMS.txt
-#   CertUtil -hashfile VERAQIS-Archiver-Pro-Android-1.8.0.apk SHA256
-# size 3826733 bytes - VERAQIS Archiver Pro for Android (production-key-signed APK)
-321e90f935a6988652e4436ee484fb69faad59b6741e27561b7b171e5d24f0da  VERAQIS-Archiver-Pro-Android-1.8.0.apk
+#   CertUtil -hashfile VERAQIS-Archiver-Mobile-Android-2.10.0.apk SHA256
+# size 31370187 bytes - VERAQIS Archiver Mobile 2.10.0 for Android (versionCode 25)
+# APK signing certificate SHA-256: fd8106cbcd6529754a228f4acd4b4e4746331fc91e5c47439af1e518c7236cbe
+beafeb1a130383f2619bf1e7e004ba24f076925a44c24b0b0fdd4708aead4587  VERAQIS-Archiver-Mobile-Android-2.10.0.apk

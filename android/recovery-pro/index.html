@@ -6,14 +6,14 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Recovery on Android — what actually ships, and what does not | VERAQIS</title>
-<meta name="description" content="There is no separate VERAQIS Recovery Pro app for Android. On-device recovery is SQLite row recovery inside VERAQIS Archiver Pro; deep ZIP repair stays on the desktop." />
+<meta name="description" content="There is no separate VERAQIS Recovery Pro app for Android. On-device recovery lives inside VERAQIS Archiver Mobile: SQLite rows and CRC-verified ZIP entries, nothing deeper." />
 <link rel="canonical" href="https://veraqis.tech/android/recovery-pro/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="/assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="Recovery on Android — what actually ships, and what does not" />
-<meta property="og:description" content="No separate Recovery Pro Android app exists. On-device recovery is SQLite row recovery inside VERAQIS Archiver Pro; deep ZIP repair stays on the desktop." />
+<meta property="og:description" content="No separate Recovery Pro Android app exists. On-device recovery lives inside VERAQIS Archiver Mobile: SQLite rows and CRC-verified ZIP entries." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -68,7 +68,8 @@
     <div class="callout warn">
       <strong>Correction, 2026-08-26.</strong> There is no separate VERAQIS Recovery Pro application
       for Android, and none is in development. Recovery on Android is a capability inside
-      <a href="/mobile.html">VERAQIS Archiver Pro</a>, and it is narrower than the desktop's. The
+      <a href="/mobile.html">VERAQIS Archiver Mobile</a> (and, before it, Archiver Pro 1.8.0), and
+      it is narrower than the desktop's. The
       earlier "planned Android ZIP recovery product" framing is superseded by what is described
       below.
     </div>
@@ -78,7 +79,7 @@
 <section>
   <div class="wrap">
     <h2>What on-device recovery actually covers</h2>
-    <p class="sub">Shipped in VERAQIS Archiver Pro 1.8.0, not planned.</p>
+    <p class="sub">Shipped in VERAQIS Archiver Pro 1.8.0 and carried into Archiver Mobile 2.10.0, not planned.</p>
     <ul class="checks mw-760">
       <li><strong>SQLite databases.</strong> Rows are recovered from a damaged SQLite database
         entirely on the phone, in an isolated process.</li>
@@ -92,7 +93,7 @@
     </ul>
     <div class="cta mt-22">
       <a class="btn primary" href="/mobile.html">See it in the app</a>
-      <a class="btn ghost" href="/android/archiver/">About VERAQIS Archiver Pro</a>
+      <a class="btn ghost" href="/android/archiver/">About VERAQIS Archiver Mobile</a>
     </div>
   </div>
 </section>
@@ -102,8 +103,9 @@
     <h2>What is not on Android</h2>
     <ul class="checks mw-760">
       <li class="no"><strong>Deep archive repair.</strong> Format-aware structural repair of damaged
-        ZIP, 7z and RAR archives is desktop work. On Android the recovery entry point for a damaged
-        archive reports that it is not available rather than attempting it.</li>
+        ZIP, 7z and RAR archives is not on Android. For a damaged ZIP the app does something narrower:
+        it recovers only the entries whose CRC-32 still matches, or recovers from a backup copy of the
+        archive that you select.</li>
       <li class="no"><strong>The desktop's full evidence model.</strong> Value provenance,
         transaction linking, object history, journal and prior-epoch row recovery and generated
         explanations stay on the desktop. Only the structural row-identity layer was extended to
@@ -161,6 +163,7 @@
         <a href="/testing.html">Test record</a>
         <a href="/research/">Research</a>
         <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
         <a href="/reference/">Reference &amp; glossary</a>
         <a href="/reports.html">Reports &amp; verification</a>
       </div>
@@ -173,7 +176,7 @@
       </div>
     </div>
     <hr>
-    <p class="note">© 2026 VERAQIS · <span class="mono">Site v0.2.1 · App v1.8.0</span></p>
+    <p class="note">© 2026 VERAQIS · <span class="mono">Site v0.2.1 · App v2.10.0</span></p>
   </div>
 </footer>
 
