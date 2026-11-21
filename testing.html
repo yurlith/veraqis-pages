@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-11-21",
       "inLanguage": "en"
     },
     {
@@ -110,7 +110,7 @@
           "name": "Trust summary",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The current trust posture is transparent beta. The one publicly available artifact is the VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. VERAQIS Studio runs in the browser and is not a distributed binary, so it carries no signature. The checks below are for the current development and release-gate builds."
+            "text": "The current trust posture is transparent beta. The one publicly available artifact is VERAQIS Archiver Mobile 2.10.0 for Android, signed with its published certificate and paired with a published SHA-256. VERAQIS Studio runs in the browser and is not a distributed binary, so it carries no signature. The checks below are for the current development and release-gate builds."
           }
         }
       ],
@@ -168,7 +168,7 @@
       <table>
         <thead><tr><th scope="col">Product</th><th scope="col">Public status</th></tr></thead>
         <tbody>
-          <tr><td class="f">VERAQIS Archiver (Android)</td><td><span class="status status--available">Available — release-key signed</span></td></tr>
+          <tr><td class="f">VERAQIS Archiver Mobile (Android)</td><td><span class="status status--available">Available — signed APK 2.10.0</span></td></tr>
           <tr><td class="f">VERAQIS Studio (in-browser)</td><td><span class="status status--available">Available — nothing to install</span></td></tr>
         </tbody>
       </table>
@@ -236,10 +236,45 @@
           <tr><td class="f">Rust engine</td><td><code>cargo test --workspace --all-targets</code></td><td><span class="tag t-exact">passed</span></td><td>Workspace test suite completed successfully.</td></tr>
           <tr><td class="f">Rust quality</td><td><code>cargo fmt --all --check</code> and clippy with warnings denied</td><td><span class="tag t-exact">passed</span></td><td>Formatting and lint gates were clean for the checked workspace.</td></tr>
           <tr><td class="f">Site deploy</td><td>Static deploy dry-run with token substitution</td><td><span class="tag t-exact">passed</span></td><td>Canonical URLs, sitemap, robots file and downloads are copied into deploy output.</td></tr>
-          <tr><td class="f">Published artifact hash</td><td>SHA-256 of the Android Archiver Pro APK on the download page</td><td><span class="tag t-exact">verified</span></td><td>The published <code>VERAQIS-Archiver-Pro-Android-1.8.0.apk</code> matches its listed SHA-256.</td></tr>
+          <tr><td class="f">Published artifact hash</td><td>SHA-256 of the Android Archiver Mobile APK on the download page</td><td><span class="tag t-exact">verified</span></td><td>The published <code>VERAQIS-Archiver-Mobile-Android-2.10.0.apk</code> matches its listed SHA-256.</td></tr>
         </tbody>
       </table>
     </div>
+  </div>
+</section>
+
+<section id="android-release">
+  <div class="wrap">
+    <h2>Android: VERAQIS Archiver Mobile 2.10.0</h2>
+    <p class="sub">From the release report for the published APK (20 November 2026). Instrumented checks
+      ran on emulators; physical phones, manufacturer skins and third-party cloud storage providers
+      were not tested.</p>
+    <div class="card table-scroll">
+      <table>
+        <thead><tr><th scope="col">Configuration</th><th scope="col">Passed</th><th scope="col">Failed</th></tr></thead>
+        <tbody>
+          <tr><td class="f">Android 8.0 · API 26 · x86_64</td><td>238</td><td>0</td></tr>
+          <tr><td class="f">Android 14 · API 34 · arm64-v8a through translation</td><td>238</td><td>0</td></tr>
+          <tr><td class="f">Android 15 · API 35 · x86_64</td><td>238</td><td>0</td></tr>
+          <tr><td class="f">Layout · Android 8.0, 14 and 15</td><td>30</td><td>0</td></tr>
+          <tr><td class="f">Layout · 320 dp · 150% font, with and without animations</td><td>20</td><td>0</td></tr>
+          <tr><td class="f"><strong>Total instrumented checks</strong></td><td><strong>764</strong></td><td><strong>0</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="checks mw-760 mt-16">
+      <li><strong>71 UI check groups in 19 scenarios</strong> passed with real taps and Android's own
+        document provider: file operations, name conflicts, destination picker, sorting and search,
+        favourites, folder trees, archive recovery, private files, PDF, the reader and the PIN lock.</li>
+      <li><strong>Failure behaviour.</strong> Out-of-space, corrupted-write and failed-delete cases were
+        injected through a test storage adapter, not produced by filling a real disk. A cancelled
+        recursive move kept all 400 source files and left no partial folder or temporary files.</li>
+      <li><strong>Package.</strong> A rebuild from the build kit matched the tested APK in all 205 ZIP
+        entries; signature schemes v2/v3 and 16 KiB alignment were verified; the build installed as
+        an update over earlier Mobile test installs with their data kept.</li>
+      <li class="no"><strong>Not covered:</strong> physical devices, manufacturer skins, third-party
+        cloud providers, and recovery after a force-stop or power loss.</li>
+    </ul>
   </div>
 </section>
 
@@ -652,7 +687,7 @@
       <li class="no"><strong>No guaranteed recovery.</strong> Passing tests does not mean every damaged file can be recovered.</li>
       <li class="no"><strong>No password recovery.</strong> Encryption is detected and reported, not bypassed.</li>
       <li class="no"><strong>No macOS artifact.</strong> macOS is a CI build target only; it is not called a release.</li>
-      <li><strong>Published today:</strong> the signed VERAQIS Archiver for Android, with a published SHA-256.</li>
+      <li><strong>Published today:</strong> the signed VERAQIS Archiver Mobile 2.10.0 for Android, with a published SHA-256.</li>
     </ul>
   </div>
 </section>
@@ -675,7 +710,8 @@
       <div class="qa">
         <h3>Trust summary</h3>
         <p>The current trust posture is transparent beta. The one publicly available artifact is the
-          VERAQIS Archiver for Android, which is release-key signed with a published SHA-256. VERAQIS
+          VERAQIS Archiver Mobile 2.10.0 for Android, signed with its published certificate and paired
+          with a published SHA-256. VERAQIS
           Studio runs in the browser and is not a distributed binary, so it carries no signature. The
           checks on this page are for the current development and release-gate builds.</p>
       </div>
@@ -715,6 +751,7 @@
         <a href="/testing.html">Test record</a>
         <a href="/research/">Research</a>
         <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
         <a href="/reference/">Reference &amp; glossary</a>
         <a href="/reports.html">Reports &amp; verification</a>
       </div>

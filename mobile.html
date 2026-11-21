@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<title>VERAQIS Archiver for Android — scan a ZIP before extracting</title>
-<meta name="description" content="Scan an archive before you open it, then list and extract safe entries into a folder you choose. Honest verdicts, offline, no telemetry. Signed Android beta." />
+<title>VERAQIS Archiver Mobile for Android — files, archives, reader</title>
+<meta name="description" content="Offline Android file manager, archiver and reader. Archives are scanned before extraction and copies are verified with SHA-256. No network permission. Signed APK." />
 <link rel="canonical" href="https://veraqis.tech/mobile.html" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="VERAQIS Archiver for Android | VERAQIS" />
-<meta property="og:description" content="Scan an archive before you open it. Safe listing and extraction, honest verdicts, 7 languages. Android beta." />
+<meta property="og:title" content="VERAQIS Archiver Mobile for Android | VERAQIS" />
+<meta property="og:description" content="Files, archives and a reader in one offline Android app. Archives scanned before extraction, copies verified with SHA-256. Beta." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -21,8 +21,8 @@
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
 <meta property="og:url" content="https://veraqis.tech/mobile.html" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="VERAQIS Archiver for Android | VERAQIS" />
-<meta name="twitter:description" content="Scan before you open. Safe listing and extraction, honest verdicts, 7 languages. Android beta." />
+<meta name="twitter:title" content="VERAQIS Archiver Mobile for Android | VERAQIS" />
+<meta name="twitter:description" content="Files, archives and a reader in one offline Android app. Copies verified with SHA-256. Beta." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -50,8 +50,8 @@
       "@type": "WebPage",
       "@id": "https://veraqis.tech/mobile.html#webpage",
       "url": "https://veraqis.tech/mobile.html",
-      "name": "VERAQIS Archiver for Android",
-      "description": "Scan an archive before you open it, then list and extract safe entries into a folder you choose. Honest verdicts, offline, no telemetry. Signed Android beta.",
+      "name": "VERAQIS Archiver Mobile for Android",
+      "description": "Offline Android file manager, archiver and reader. Archives are scanned before extraction and copies are verified with SHA-256. No network permission. Signed APK.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-08-23",
+      "dateModified": "2026-11-21",
       "inLanguage": "en"
     },
     {
@@ -80,7 +80,7 @@
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "VERAQIS Archiver",
+          "name": "VERAQIS Archiver Mobile",
           "item": "https://veraqis.tech/mobile.html"
         }
       ]
@@ -88,13 +88,13 @@
     {
       "@type": "MobileApplication",
       "@id": "https://veraqis.tech/mobile.html#software",
-      "name": "VERAQIS Archiver Pro",
+      "name": "VERAQIS Archiver Mobile",
       "applicationCategory": "UtilitiesApplication",
-      "operatingSystem": "Android",
-      "softwareVersion": "1.8.0",
-      "isAccessibleForFree": false,
-      "downloadUrl": "https://veraqis.tech/downloads/VERAQIS-Archiver-Pro-Android-1.8.0.apk",
-      "description": "VERAQIS Archiver Pro scans archives before opening, lists entries safely and extracts safe entries into a user-selected folder, with professional local batch, reporting and archive-writing workflows.",
+      "operatingSystem": "Android 8.0 or later",
+      "softwareVersion": "2.10.0",
+      "isAccessibleForFree": true,
+      "downloadUrl": "https://veraqis.tech/downloads/VERAQIS-Archiver-Mobile-Android-2.10.0.apk",
+      "description": "Offline Android file manager, archiver and reader. It scans archives before opening, extracts safe entries into a folder you choose, verifies copies with SHA-256, reads books and PDFs, keeps private files behind the device lock, and recovers SQLite rows on-device.",
       "publisher": {
         "@id": "https://veraqis.tech/#organization"
       }
@@ -105,10 +105,18 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "What does VERAQIS Archiver do?",
+          "name": "What does VERAQIS Archiver Mobile do?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "It scans archives before opening, lists entries safely, and extracts safe entries into a folder you choose."
+            "text": "It is an offline file manager, archiver and reader for Android. It scans archives before opening, extracts safe entries into a folder you choose, verifies copies with SHA-256, reads books and PDFs, and keeps private files behind the device lock."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it update VERAQIS Archiver Pro 1.8.0?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Archiver Mobile has a different package name and signing certificate, so Android installs it as a separate app next to Archiver Pro. Pro's app data stays with Pro."
           }
         },
         {
@@ -116,7 +124,7 @@
           "name": "Does the mobile app perform deep recovery?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "For archives (ZIP, 7z, RAR), no -- deep archive recovery workflows belong to VERAQIS Recovery on desktop. For SQLite databases, mobile has one narrower capability: it can recover rows from a damaged database on-device and, from the database's own structure alone, bound or prove a deleted row's original row ID. It never invents a row's content and never guesses an ID it cannot prove."
+            "text": "Not full archive repair. For a damaged ZIP it recovers the entries whose CRC-32 still matches, or recovers from a backup copy of the archive that you select. For SQLite databases it recovers rows on-device and, from the database's own structure alone, can bound or prove a deleted row's original row ID. It never invents content and never guesses an ID it cannot prove."
           }
         },
         {
@@ -124,7 +132,15 @@
           "name": "Does VERAQIS Archiver store passwords?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Passwords, when supplied, are handled as transient character data and are not stored in models or logs."
+            "text": "No. Archive passwords are not saved. Passwords, when supplied, are handled as transient character data and are not stored in models or logs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the app ask for access to all files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "To work as a file manager it requests Android's all-files access. Folders on other storage providers are opened through the Android system picker, with the permission you grant there. The app declares no INTERNET permission."
           }
         },
         {
@@ -174,78 +190,86 @@
 
 <div class="page-head">
   <div class="wrap">
-    <div class="crumb"><a href="/">VERAQIS</a> / Products / Mobile</div>
-    <h1>VERAQIS Archiver Pro for Android</h1>
-    <p class="lead">Check an archive on your phone <em>before</em> you open it. List and extract only
-      what is safe, into a folder you choose — plus professional local batch, reporting and
-      archive-writing workflows.</p>
-    <p class="note mt-14">Android · 14 languages · offline · no telemetry</p>
+    <div class="crumb"><a href="/">VERAQIS</a> / Products / Android</div>
+    <h1>VERAQIS Archiver Mobile for Android</h1>
+    <p class="lead">Files, archives and a reader in one offline app. An archive is checked
+      <em>before</em> you open it, and a copy is read back and verified with SHA-256 before it is
+      committed.</p>
+    <p class="note mt-14">Android 8.0+ · version 2.10.0 · offline · no network permission · beta</p>
     <div class="cta mt-22">
-      <a class="btn primary" href="downloads/VERAQIS-Archiver-Pro-Android-1.8.0.apk" download>Download signed APK</a>
+      <a class="btn primary" href="downloads/VERAQIS-Archiver-Mobile-Android-2.10.0.apk" download>Download signed APK (31 MB)</a>
       <a class="btn ghost" href="downloads/SHA256SUMS.txt" download>Verify SHA-256</a>
     </div>
-    <p class="note mt-14">No account, telemetry or network permission is required.</p>
-    <p class="note mt-8">Distributed as a directly verifiable signed APK during
-      beta for sideload testing. A Google Play listing is planned after internal testing, Play App
-      Signing and permissions review.</p>
-    <p class="note mt-8">The Android app inspects and extracts archives safely; for a damaged
-      archive (ZIP, 7z, RAR…) it does not perform deep recovery — start with
-      <a href="/recovery.html">verified ZIP recovery</a> or the guide for
-      <a href="/guides/zip-file-wont-open/">a ZIP that will not open</a>.</p>
-    <p class="note mt-8">One narrower exception: on-device, it can recover rows from a damaged
-      <strong>SQLite</strong> database, and — from the database's own structure alone, never its
-      content — bound or prove which row ID a recent deletion affected.</p>
+    <p class="note mt-14">No account and no telemetry. The app declares no <code>INTERNET</code>
+      permission.</p>
+    <p class="note mt-8">Distributed as a directly verifiable signed APK during beta for sideload
+      testing. A Google Play listing is planned after internal testing, Play App Signing and
+      permissions review. Signing details are on the <a href="/download.html">download page</a>.</p>
   </div>
 </div>
+
+<section class="band">
+  <div class="wrap">
+    <div class="callout">
+      <strong>Archiver Mobile replaces Archiver Pro 1.8.0 as the Android download.</strong> It is a
+      separate app — package <code>tech.veraqis.archiver.mobile</code> and its own signing
+      certificate — so Android installs it next to Archiver Pro instead of updating it, and Pro's app
+      data stays with Pro. The archive-safety and SQLite features below are the ones Pro 1.8.0
+      shipped; the file manager, reader and private files are new in the 2.x line.
+    </div>
+  </div>
+</section>
 
 <section>
   <div class="wrap">
     <h2>What it does today</h2>
-    <p class="sub">These features are implemented and tested in the current Android build. Mobile is
-      focused on safe inspection and extraction, not deep archive recovery — with one narrower
-      exception, on-device SQLite row recovery, below.</p>
+    <p class="sub">Implemented in the 2.10.0 build and covered by its release checks. Recovery on the
+      phone is deliberately narrow — see the limits further down.</p>
     <div class="grid g2">
+      <div class="card">
+        <div class="ic">FILES</div><h3>A file manager that checks its own work</h3>
+        <p>Select files and folders and see the count and known size at once. Copy, move and extract
+        go through one destination picker with the current path, the parent folder, favourite and
+        recent folders, a new-folder button and other storage.</p>
+        <p>A copy is written to a temporary file and read back to verify its SHA-256. Replacing a file
+        keeps the old one until the new copy is committed, and a move checks the source before it
+        deletes it. When names collide you choose: skip, replace, keep both, apply to all, or cancel.
+        The result lists copied, moved, skipped, failed and cancelled items separately.</p>
+      </div>
       <div class="card">
         <div class="ic">SCAN</div><h3>Safety scan before open</h3>
         <p>A read-only scan classifies the archive — Safe, Suspicious, Blocked, Encrypted or
         Unsupported — before any content is opened. You decide with the facts in front of you.</p>
-        <p class="note"><strong>“Safe” means structurally safe to extract.</strong> File contents were
+        <p class="note"><strong>“Safe” means structurally safe to extract.</strong> File contents are
           not checked for malware — VERAQIS Archiver is a structural safety inspector, not an antivirus.</p>
         <figure class="evidence-shot mw-320">
-          <img src="assets/mobile-safety-scan.png" width="320" height="640"
-            alt="VERAQIS Archiver Pro listing the three files inside veraqis-demo-safe.zip, with each entry's size" loading="lazy" decoding="async" />
-          <figcaption>An archive that scans clean: the contents are listed with sizes, and nothing is withheld.</figcaption>
-        </figure>
-        <figure class="evidence-shot mw-320">
           <img src="assets/mobile-safety-scan-suspicious.png" width="320" height="640"
-            alt="VERAQIS Archiver Pro's VERAQIS report dialog showing a Suspicious verdict, with the risk count and a recommendation to extract only trusted entries" loading="lazy"  decoding="async" />
-          <figcaption>Current Pro build: a bundled native-library entry (.so) is enough to flag an archive Suspicious — high-risk entries are refused by default.</figcaption>
+            alt="VERAQIS report dialog showing a Suspicious verdict, with the risk count and a recommendation to extract only trusted entries" loading="lazy" decoding="async" />
+          <figcaption>Captured from Archiver Pro 1.8.0, whose scan and report Mobile 2.10.0 carries
+            over; the 2.x restyle changed buttons and spacing. A bundled native-library entry (.so) is
+            enough to flag an archive Suspicious.</figcaption>
         </figure>
       </div>
       <div class="card">
-        <div class="ic">LIST</div><h3>Safe listing</h3>
+        <div class="ic">LIST</div><h3>Safe listing and extraction</h3>
         <p>See the entries an archive contains without extracting them, with unsafe paths
-        (traversal, absolute, reserved names) flagged rather than followed.</p>
-        <figure class="evidence-shot mw-320">
-          <img src="assets/mobile-files-redesign.png" width="320" height="640"
-            alt="VERAQIS Archiver Pro Files tab showing connected storage and free space" loading="lazy"  decoding="async" />
-          <figcaption>Current Pro build: the Files tab with the redesigned header and storage card.</figcaption>
-        </figure>
+        (traversal, absolute, reserved names) flagged rather than followed. Extraction is
+        transactional and stays inside the destination you pick — entries that fail a safety or
+        integrity check are not written.</p>
+        <p>ZIP and RAR4/RAR5 archives can be created, tested and extracted; a split RAR archive opens
+        when you select all of its volumes.</p>
       </div>
       <div class="card">
-        <div class="ic">OUT</div><h3>Safe extraction</h3>
-        <p>Extraction is transactional and stays inside the destination you pick — entries that fail
-        a safety or integrity check are not written.</p>
+        <div class="ic">READ</div><h3>Books and PDFs</h3>
+        <p>A library with import from ZIP and RAR, continue-where-you-left-off, highlights and notes
+        with export, reading themes, and read-aloud. PDFs get margin cropping, a two-column mode,
+        zoom, bookmarks and a remembered position.</p>
       </div>
       <div class="card">
-        <div class="ic">OUT</div><h3>Writes only where you choose</h3>
-        <p>Output is written into the target folder you select through Android's system picker.
-        VERAQIS Archiver doesn't roam your storage.</p>
-        <figure class="evidence-shot mw-320">
-          <img src="assets/mobile-folder-picker.png" width="320" height="640"
-            alt="Android system folder picker opened by VERAQIS Archiver" loading="lazy"  decoding="async" />
-          <figcaption>The operating system asks you to choose and approve the destination.</figcaption>
-        </figure>
+        <div class="ic">LOCK</div><h3>Private files</h3>
+        <p>A private section behind the device PIN or biometrics, which locks again when you leave the
+        app. A private PDF opens with screenshots blocked. In the release checks a private PDF moved
+        back out came back byte-for-byte identical.</p>
       </div>
       <div class="card">
         <div class="ic">DB</div><h3>SQLite row recovery, on-device</h3>
@@ -253,13 +277,10 @@
         process. Reports whether the current state is provably fresh or not — never guesses — and
         can bound or prove the row ID of a recently deleted row from the database's own structure,
         never from content.</p>
-        <p class="note"><strong>Narrower than desktop.</strong> This is SQLite-specific row
-          identity, not the desktop's full semantic reconstruction; it never invents a row's
-          content and withholds a row ID it cannot prove rather than guessing.</p>
         <figure class="evidence-shot mw-320">
           <img src="assets/mobile-sqlite-recovery.png" width="320" height="640"
-            alt="VERAQIS Archiver Pro SQLite recovery result screen showing recovered rows, a freshness verdict, and structural row-identity findings for deleted rows" loading="lazy" decoding="async" />
-          <figcaption>Current Pro build: a recovered SQLite table with its freshness verdict and structural identity findings for deleted rows.</figcaption>
+            alt="SQLite recovery result screen showing recovered rows, a freshness verdict, and structural row-identity findings for deleted rows" loading="lazy" decoding="async" />
+          <figcaption>Captured from Archiver Pro 1.8.0; the same recovery ships in Mobile 2.10.0.</figcaption>
         </figure>
       </div>
     </div>
@@ -268,25 +289,30 @@
 
 <section>
   <div class="wrap">
-    <h2>Design, from a real build</h2>
-    <p class="sub">VERAQIS Archiver Pro was visually relaunched in August 2026 — navigation,
-      layout, color and type all rebuilt. These are screenshots of the current signed build, not
+    <h2>Screens from the 2.10.0 release checks</h2>
+    <p class="sub">Captured on an Android emulator while the 2.10.0 release was being tested, with the
+      interface set to Russian. Folder and file names are test fixtures. These are real screens, not
       mockups.</p>
-    <div class="grid g3">
+    <div class="grid g2">
       <figure class="evidence-shot mw-320">
-        <img src="assets/mobile-workspace-redesign.png" width="320" height="640"
-          alt="VERAQIS Archiver Pro Workspace tab with Batch Center and task history" loading="lazy" decoding="async" />
-        <figcaption>Workspace: Batch Center plus a filterable task history, always visible on launch.</figcaption>
+        <img src="assets/mobile-2.10-selection.png" width="443" height="960"
+          alt="Archiver Mobile file list with two files selected and the selection bar showing the count and total size" loading="lazy" decoding="async" />
+        <figcaption>Selection: two files chosen; the bar shows the count and size, with actions one tap away.</figcaption>
       </figure>
       <figure class="evidence-shot mw-320">
-        <img src="assets/mobile-settings-redesign.png" width="320" height="640"
-          alt="VERAQIS Archiver Pro Settings screen with theme and accent color controls, light mode" loading="lazy" decoding="async" />
-        <figcaption>Settings in light mode: theme and accent-color pickers drive every screen from one token system.</figcaption>
+        <img src="assets/mobile-2.10-name-conflict.png" width="443" height="960"
+          alt="Name conflict dialog offering skip, replace or keep both copies, with an apply-to-all option and a cancel action" loading="lazy" decoding="async" />
+        <figcaption>Name conflict: skip, replace or keep both, optionally for every match.</figcaption>
       </figure>
       <figure class="evidence-shot mw-320">
-        <img src="assets/mobile-settings-dark-redesign.png" width="320" height="640"
-          alt="VERAQIS Archiver Pro Settings screen in dark mode" loading="lazy" decoding="async" />
-        <figcaption>The same screen in dark mode — same layout, tokens swap the palette.</figcaption>
+        <img src="assets/mobile-2.10-copy-destination.png" width="443" height="960"
+          alt="Copy destination picker showing the target path, parent, favourites and new-folder buttons, other storage, and a Copy here button" loading="lazy" decoding="async" />
+        <figcaption>Destination picker: the button names the operation it will run.</figcaption>
+      </figure>
+      <figure class="evidence-shot mw-320">
+        <img src="assets/mobile-2.10-reader-library.png" width="443" height="960"
+          alt="Reader library listing TXT and PDF books with reading progress and buttons to open a book or import one from an archive" loading="lazy" decoding="async" />
+        <figcaption>Reader library: books opened directly or imported from an archive, with progress kept.</figcaption>
       </figure>
     </div>
   </div>
@@ -298,33 +324,39 @@
     <p class="sub">Mobile follows the same rule as the rest of VERAQIS: report the truth, never fake a
       result.</p>
     <ul class="checks mw-760">
-      <li><strong>Encrypted archives</strong> are detected and reported as encrypted — VERAQIS never
-        decrypts, recovers passwords, or bypasses restrictions.</li>
+      <li><strong>Encrypted archives</strong> are detected and reported as encrypted. Archive passwords
+        are not saved; VERAQIS never recovers or guesses passwords and never bypasses restrictions.</li>
       <li><strong>Unsupported formats</strong> are detected and reported honestly rather than
         guessed at.</li>
-      <li class="no"><strong>Deep archive recovery on mobile is not available.</strong> For a
-        damaged archive, the mobile recovery entry point returns <code>NOT_AVAILABLE</code> — the
-        desktop's format-aware structural repair lives on the desktop only.</li>
-      <li><strong>SQLite row recovery is the one exception.</strong> On-device, it can recover
-        rows from a damaged SQLite database and bound or prove a deleted row's original row ID
-        from the database's own structure — never its content, and never a guess when the
-        structure can't prove one.</li>
-      <li>Passwords, when supplied, are handled as transient character data and are not stored in
-        models or logs.</li>
+      <li><strong>Damaged ZIP files:</strong> the app recovers only the entries whose CRC-32 still
+        matches, or recovers from a backup copy of the archive that you select. It does not emit
+        anything an independent check cannot confirm. For a deeper look at a damaged ZIP, use
+        <a href="/recovery.html">verified ZIP recovery</a> in your browser.</li>
+      <li><strong>SQLite row recovery</strong> can bound or prove a deleted row's original row ID
+        from the database's own structure — never its content, and never a guess when the structure
+        can't prove one.</li>
+      <li class="no"><strong>No background queue yet.</strong> Copy and move run while the app is
+        open. Completed items stay in place on cancel and the unfinished item is cleaned up as far as
+        the storage allows; if a temporary or backup file cannot be removed, the app names it. A
+        force-stop or power loss is not handled like Cancel, and there is no automatic resume.</li>
+      <li class="no"><strong>Some storage providers refuse safe operations.</strong> Where a
+        provider does not support safe rename or a nesting check, the operation stops with an error
+        instead of continuing unsafely.</li>
     </ul>
     <div class="callout warn">
-      <strong>Mobile is for safe inspection and extraction, plus SQLite row recovery.</strong> It
-      does not perform the desktop's format-aware archive repair or the desktop's full Tier-3
-      semantic reconstruction (provenance graphs, transaction linking, and the other deep evidence
-      layers stay desktop-only). Don't expect full desktop archive recovery on the phone.
+      <strong>Tested on emulators, not on your phone.</strong> 2.10.0 was checked on Android 8, 14 and
+      15 emulators, with ARM64 run through translation on Android 14. Physical phones, manufacturer
+      skins and third-party cloud storage providers were not tested.
     </div>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <h2>Speaks your language</h2>
-    <p class="sub">The interface ships in 7 languages, including full right-to-left layout for Arabic.</p>
+    <h2>Languages</h2>
+    <p class="sub">The archive and safety screens ship in 14 languages: complete in seven, core
+      strings only in the other seven. The file manager and reader screens added in 2.x are in
+      English and Russian.</p>
     <div class="chips">
       <span class="chip">English</span>
       <span class="chip">Русский</span>
@@ -334,8 +366,9 @@
       <span class="chip">العربية <span class="x">RTL</span></span>
       <span class="chip">Português</span>
     </div>
-    <p class="note mt-16">Translations are reviewed for key parity and placeholder
-      safety; native-speaker polish is ongoing during beta.</p>
+    <p class="note mt-16">Core strings only: Deutsch, Français, 日本語, 한국어, Türkçe, Tiếng Việt,
+      Bahasa Indonesia. Translations are reviewed for key parity and placeholder safety;
+      native-speaker polish is ongoing during beta.</p>
   </div>
 </section>
 
@@ -345,20 +378,34 @@
     <p class="sub">The current Android beta scope, stated without over-claiming.</p>
     <div class="faq">
       <div class="qa">
-        <h3>What does VERAQIS Archiver do?</h3>
-        <p>It scans archives before opening, lists entries safely, and extracts safe entries into a folder you choose.</p>
+        <h3>What does VERAQIS Archiver Mobile do?</h3>
+        <p>It is an offline file manager, archiver and reader for Android. It scans archives before
+          opening, extracts safe entries into a folder you choose, verifies copies with SHA-256, reads
+          books and PDFs, and keeps private files behind the device lock.</p>
+      </div>
+      <div class="qa">
+        <h3>Does it update VERAQIS Archiver Pro 1.8.0?</h3>
+        <p>No. Archiver Mobile has a different package name and signing certificate, so Android
+          installs it as a separate app next to Archiver Pro. Pro's app data stays with Pro.</p>
       </div>
       <div class="qa">
         <h3>Does the mobile app perform deep recovery?</h3>
-        <p>For archives (ZIP, 7z, RAR…), no — deep archive recovery workflows belong to VERAQIS
-          Recovery on desktop. For SQLite databases, mobile does have one narrower capability: it
-          can recover rows from a damaged database on-device and, from the database's own
-          structure alone, bound or prove a deleted row's original row ID. It never invents a
-          row's content and never guesses an ID it cannot prove.</p>
+        <p>Not full archive repair. For a damaged ZIP it recovers the entries whose CRC-32 still
+          matches, or recovers from a backup copy of the archive that you select. For SQLite
+          databases it recovers rows on-device and, from the database's own structure alone, can
+          bound or prove a deleted row's original row ID. It never invents content and never guesses
+          an ID it cannot prove.</p>
       </div>
       <div class="qa">
         <h3>Does VERAQIS Archiver store passwords?</h3>
-        <p>No. Passwords, when supplied, are handled as transient character data and are not stored in models or logs.</p>
+        <p>No. Archive passwords are not saved. Passwords, when supplied, are handled as transient
+          character data and are not stored in models or logs.</p>
+      </div>
+      <div class="qa">
+        <h3>Why does the app ask for access to all files?</h3>
+        <p>To work as a file manager it requests Android's all-files access. Folders on other storage
+          providers are opened through the Android system picker, with the permission you grant
+          there. The app declares no <code>INTERNET</code> permission.</p>
       </div>
       <div class="qa">
         <h3>Is an iOS version available?</h3>
@@ -370,20 +417,26 @@
 
 <section class="band">
   <div class="wrap">
-    <h2>Built on the VERAQIS Archiver Facade</h2>
-    <p class="sub">Every screen talks to the archive engine through a single, Android-free safety
-      facade — never directly to the low-level engine. This keeps every safety decision in one
-      audited place, and is enforced by an architecture test in the build.</p>
+    <h2>How 2.10.0 was checked</h2>
+    <p class="sub">From the release report for this exact APK. Full figures are in the
+      <a href="/testing.html#android-release">test record</a>.</p>
     <div class="grid g3">
-      <div class="card"><h3 class="fs-17">One seam</h3><p>Scan, list, extract, verify, report
-        and license all flow through the <code>VERAQIS Archiver Facade API</code> (schema v1).</p></div>
-      <div class="card"><h3 class="fs-17">Pure core</h3><p>The safety logic is a plain
-        Kotlin/JVM module with no Android dependencies, adapted to the phone at the edges only.</p></div>
-      <div class="card"><h3 class="fs-17">No native blobs</h3><p>No JNI/NDK and no copied-in
-        engine internals — the mobile app is its own clean implementation of the safety surface.</p></div>
+      <div class="card"><h3 class="fs-17">764 instrumented checks, 0 failures</h3><p>238 functional
+        checks on each of Android 8.0, 14 and 15, plus 50 layout checks — including a 320 dp screen
+        at 150% font size with animations off.</p></div>
+      <div class="card"><h3 class="fs-17">71 UI check groups</h3><p>Real taps through 19 scenarios and
+        Android's own document provider. A cancelled recursive move kept all 400 source files and
+        left no partial folder or temporary files behind.</p></div>
+      <div class="card"><h3 class="fs-17">Reproducible package</h3><p>A rebuild from the build kit
+        matched the tested APK in all 205 ZIP entries, byte for byte. APK signature schemes v2/v3 and
+        16 KiB alignment were verified.</p></div>
     </div>
+    <p class="note mt-16">Out-of-space, corrupted-write and failed-delete cases were produced by
+      injecting those failures through a test storage adapter, not by filling a real disk. The APK
+      contains native libraries for arm64-v8a and x86_64 (the VERAQIS engine, RAR and e-book
+      support); the licences of bundled third-party components ship inside the app.</p>
     <div class="cta">
-      <a class="btn primary" href="downloads/VERAQIS-Archiver-Pro-Android-1.8.0.apk" download>Download signed APK →</a>
+      <a class="btn primary" href="downloads/VERAQIS-Archiver-Mobile-Android-2.10.0.apk" download>Download signed APK →</a>
       <a class="btn ghost" href="/studio/new/">Recover in your browser</a>
     </div>
   </div>
@@ -421,6 +474,7 @@
         <a href="/testing.html">Test record</a>
         <a href="/research/">Research</a>
         <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
         <a href="/reference/">Reference &amp; glossary</a>
         <a href="/reports.html">Reports &amp; verification</a>
       </div>
@@ -433,7 +487,7 @@
       </div>
     </div>
     <hr>
-    <p class="note">© 2026 VERAQIS · <span class="mono">Site v0.2.1 · App v1.8.0</span></p>
+    <p class="note">© 2026 VERAQIS · <span class="mono">Site v0.2.1 · App v2.10.0</span></p>
   </div>
 </footer>
 

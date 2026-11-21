@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-07-20",
+      "dateModified": "2026-11-21",
       "inLanguage": "en"
     },
     {
@@ -205,7 +205,8 @@
       <div class="card"><h3>Published artifact + checksum</h3><p>The currently published Android APK is
         paired with a SHA-256 checksum on the download page and in the checksum file. It is the only
         distributed binary; everything else runs in the browser.</p></div>
-      <div class="card"><h3>Signing vs checksum</h3><p>The Android APK is release-key signed. A SHA-256
+      <div class="card"><h3>Signing vs checksum</h3><p>The Android APK is signed with the VERAQIS Archiver
+        Mobile certificate, published with its SHA-256 on the <a href="/download.html">download page</a>. A SHA-256
         proves file integrity but is not a publisher signature — it says the bytes are the ones we
         published, not who published them.</p></div>
       <div class="card"><h3>Pages before binaries</h3><p>Public pages are open for indexing; the binary
@@ -286,6 +287,7 @@
         <a href="/testing.html">Test record</a>
         <a href="/research/">Research</a>
         <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
         <a href="/reference/">Reference &amp; glossary</a>
         <a href="/reports.html">Reports &amp; verification</a>
       </div>
