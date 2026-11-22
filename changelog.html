@@ -64,7 +64,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-11-21",
+      "dateModified": "2026-11-22",
       "inLanguage": "en"
     },
     {
@@ -103,6 +103,7 @@
       <span class="pill beta">beta</span>
       <div class="links">
         <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/">Engine</a>
         <a href="/mobile.html">Android</a>
         <a href="/play/">Play</a>
         <a href="/guides/">Guides</a>
@@ -129,6 +130,26 @@
 
 <section>
   <div class="wrap prose">
+    <h2>Full engine in the browser — every function, free <span class="tag t-exact">published</span></h2>
+    <p class="note">22 November 2026 · <a href="/studio/engine/">veraqis.tech/studio/engine/</a> · source of
+      the web version in <a href="https://github.com/yurlith/veraqis-pages/tree/main/web-engine">web-engine/</a></p>
+    <ul class="checks">
+      <li>The complete VERAQIS engine — the same Rust code as the desktop and Android apps — compiled to
+        WebAssembly and running on the visitor's device. No upload, no account, no license, no charge.</li>
+      <li>Every end-user function: analysis, verification, reports, safety scan, the recovery assistant,
+        structural repair, content recovery (SQLite, Office, PDF, 7z, RAR), bzip2 and xz salvage, ZIP and
+        ISO reconciliation, restore from repair data, repair data for files and folders, folder check and
+        repair, AES-256-GCM encryption, Ed25519 signatures, look inside, safe extraction and history.
+        Rebuilding from your own earlier copy is available as an experimental option.</li>
+      <li>RAR: list, test and extract, including solid and multi-volume archives, with UnRAR 7.23
+        compiled to WebAssembly.</li>
+      <li>Checked: 73 of 74 requests answered exactly as by native builds (the one difference is the
+        honest “isolation: limits only” label); all 29 reference RAR archives extract to the Android
+        app's reference hashes; 59 of 59 checks through the page in headless Chromium.</li>
+      <li>Pricing updated: every function is free in the browser. The Personal and Technician tiers stay
+        a planned model and are not on sale.</li>
+    </ul>
+
     <h2>VERAQIS Archiver Mobile 2.10.0 — everyday file operations <span class="tag t-exact">published</span></h2>
     <p class="note">20 November 2026 · published on this site 21 November 2026 · versionCode 25 ·
       package <code>tech.veraqis.archiver.mobile</code></p>

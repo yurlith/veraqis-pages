@@ -1,0 +1,56 @@
+--- a/crates/phx_api/src/dispatch.rs	2026-11-19 13:08:22.000000000 +0100
++++ b/crates/phx_api/src/dispatch.rs	2026-11-22 08:08:09.207003689 +0100
+@@ -58,6 +58,17 @@
+     F: FnOnce() -> ApiResult<T> + Send + 'static,
+     T: Send + 'static,
+ {
++    // In the browser build the engine already runs inside a dedicated Web
++    // Worker and there is no OS thread pool to hand the work to, so the
++    // blocking closure runs inline. A panic still folds into `Internal`.
++    #[cfg(target_os = "emscripten")]
++    {
++        return match std::panic::catch_unwind(std::panic::AssertUnwindSafe(f)) {
++            Ok(r) => r,
++            Err(_) => Err(ApiError::internal("worker task did not complete: panic".to_string())),
++        };
++    }
++    #[cfg(not(target_os = "emscripten"))]
+     match tokio::task::spawn_blocking(f).await {
+         Ok(r) => r,
+         Err(e) => Err(ApiError::internal(format!(
+--- a/crates/phx_api/src/session.rs	2026-11-19 13:08:22.000000000 +0100
++++ b/crates/phx_api/src/session.rs	2026-11-22 08:45:21.481233702 +0100
+@@ -89,6 +89,7 @@
+     license_path: Option<PathBuf>,
+     oem: Option<OemConfig>,
+     history_dir: Option<PathBuf>,
++    policy: Option<Policy>,
+ }
+ 
+ impl PhxApiBuilder {
+@@ -112,10 +113,22 @@
+         self
+     }
+ 
+-    /// Finalize. Tier + OEM are resolved into a [`Policy`] by [`phx_policy`].
++    /// Use an already-resolved [`Policy`] instead of resolving one from a
++    /// license file — e.g. an edition that opens every feature without a
++    /// license. When set, `license_file` and `oem_config_file` are not used:
++    /// the supplied policy is the whole entitlement decision.
++    pub fn policy(mut self, policy: Policy) -> Self {
++        self.policy = Some(policy);
++        self
++    }
++
++    /// Finalize. Tier + OEM are resolved into a [`Policy`] by [`phx_policy`],
++    /// unless an explicit policy was supplied.
+     pub fn build(self) -> PhxApi {
+-        let oem = self.oem.map(Arc::new);
+-        let policy = Policy::from_license(self.license_path.as_deref(), oem);
++        let policy = match self.policy {
++            Some(policy) => policy,
++            None => Policy::from_license(self.license_path.as_deref(), self.oem.map(Arc::new)),
++        };
+         PhxApi {
+             policy,
+             history_dir: self.history_dir,

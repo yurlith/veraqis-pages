@@ -1,0 +1,61 @@
+{
+  "note": "Provenance of the full engine's WebAssembly modules. Rebuild with web-engine/build.sh and web-engine/unrar/build.sh rather than editing by hand.",
+  "builtAt": "2026-11-22",
+  "engine": {
+    "files": {
+      "phx_web.wasm": {
+        "sha256": "d855c1086f7f60c73fe178cf102e7760833038f896a7215f8b669679c2694d8c",
+        "bytes": 2247917
+      },
+      "phx_web.js": {
+        "sha256": "d5e974c101b5498073f16903664b3b932712b94521e7f25936fa468c96dc710c",
+        "bytes": 74753
+      }
+    },
+    "builtFrom": {
+      "engineWorkspace": "phx-platform (not published) at commit 3b8b356d95a7eddfa63e45cb5313e089e00e9ba3",
+      "patch": {
+        "path": "web-engine/patches/phx_api-browser.patch",
+        "sha256": "7a3b3041918fd8268c3084af8a51a00f574353d9d531bd36bdb66ce9cdbb40a0"
+      },
+      "adapter": {
+        "path": "web-engine/phx_web/src/main.rs",
+        "sha256": "fe1b2e63a2897c788cd0bcb09b4ec4371fa2fb61650d6853f5f2828da4357d65"
+      },
+      "buildScript": "web-engine/build.sh"
+    },
+    "toolchain": {
+      "rustc": "1.100.0 (0ef1bc386 2026-11-09)",
+      "target": "wasm32-unknown-emscripten",
+      "emscripten": "4.0.9",
+      "binaryen": "123"
+    },
+    "reproduced": "Rebuilt from a clean copy with web-engine/build.sh on 2026-11-22: phx_web.wasm and phx_web.js byte-identical to these files."
+  },
+  "unrar": {
+    "files": {
+      "unrar.wasm": {
+        "sha256": "b80483e7935b5161731099aa723bb2f6a421e384efc8399dff5a5411a49711e8",
+        "bytes": 230503
+      },
+      "unrar.js": {
+        "sha256": "a4f63a91a987ff72bce2a483268904a39b70f98345cffc0083d98f2498f94464",
+        "bytes": 71001
+      }
+    },
+    "builtFrom": {
+      "unrarSource": "UnRAR 7.23 (unrarsrc), library objects of its own makefile",
+      "adapter": {
+        "path": "web-engine/unrar/unrar_web.cpp",
+        "sha256": "222d3d7dd7659dd2f871ed9a5c45312e2afd99df8b12ec20f131e0420184b43e"
+      },
+      "buildScript": "web-engine/unrar/build.sh",
+      "license": "assets/studio/engine/UNRAR-LICENSE.txt"
+    },
+    "toolchain": {
+      "emscripten": "4.0.9",
+      "binaryen": "123"
+    },
+    "reproduced": "Rebuilt with web-engine/unrar/build.sh on 2026-11-22: unrar.wasm and unrar.js byte-identical to these files."
+  }
+}

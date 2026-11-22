@@ -18,7 +18,7 @@
 // A visitor still holding the v3 cache has those files installed for offline
 // use; bumping the version is what deletes that cache on activate, rather than
 // leaving paid implementation bytes resident on a free user's device.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const CACHE = `veraqis-studio-${VERSION}`;
 
 // The complete application shell. Every entry is same-origin and static.
@@ -65,9 +65,29 @@ const PRECACHE = [
   '/assets/zip-checker/worker.js',
   '/manifest.webmanifest',
   '/studio/offline/',
+  // The full engine page. Its worker entry sits inside the scope for the same
+  // reason as /studio/worker.js above.
+  '/studio/engine/',
+  '/studio/engine-worker.js',
+  '/assets/studio/engine/app.js',
+  '/assets/studio/engine/ops.js',
+  '/assets/studio/engine/zip.js',
+  '/assets/studio/engine/worker.js',
+  '/assets/studio/engine/engine.css',
 ];
 
-const ALLOWED = new Set(PRECACHE);
+// The engine itself (about 2.5 MB before compression) is allowlisted but not
+// precached: a Studio visitor who never opens the full engine never downloads
+// it. The first visit to /studio/engine/ fetches it once and the fetch handler
+// below keeps it, so the engine then works offline like the rest of Studio.
+const ON_FIRST_USE = [
+  '/assets/studio/engine/phx_web.js',
+  '/assets/studio/engine/phx_web.wasm',
+  '/assets/studio/engine/unrar.js',
+  '/assets/studio/engine/unrar.wasm',
+];
+
+const ALLOWED = new Set([...PRECACHE, ...ON_FIRST_USE]);
 
 // addAll is atomic: one 404 would leave the shell half-cached, so each entry is
 // added individually and a missing optional file cannot block the install.

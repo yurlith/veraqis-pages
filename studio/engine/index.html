@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
+<title>The full VERAQIS engine, free in your browser | VERAQIS Studio</title>
+<meta name="description" content="Every function of the VERAQIS engine — analysis, recovery, repair data, encryption, signatures, safe extraction and RAR — running on your own device in the browser. No upload, no account, no license, no charge." />
+<link rel="canonical" href="https://veraqis.tech/studio/engine/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="#1b1233" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<link rel="stylesheet" href="/assets/studio/engine/engine.css" />
+<link rel="modulepreload" href="/assets/studio/engine/app.js" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="The full VERAQIS engine, free in your browser" />
+<meta property="og:description" content="Every function of the VERAQIS engine — analysis, recovery, repair data, encryption, signatures, safe extraction and RAR — running on your own device in the browser. No upload, no account, no license, no charge." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="VERAQIS Local Recovery Studio" />
+<meta property="og:url" content="https://veraqis.tech/studio/engine/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="The full VERAQIS engine, free in your browser" />
+<meta name="twitter:description" content="Every function of the VERAQIS engine — analysis, recovery, repair data, encryption, signatures, safe extraction and RAR — running on your own device in the browser. No upload, no account, no license, no charge." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": "https://veraqis.tech/#organization", "name": "VERAQIS", "url": "https://veraqis.tech/", "logo": "https://veraqis.tech/assets/favicon.svg" },
+    { "@type": "WebSite", "@id": "https://veraqis.tech/#website", "name": "VERAQIS", "url": "https://veraqis.tech/", "publisher": { "@id": "https://veraqis.tech/#organization" }, "inLanguage": "en" },
+    {
+      "@type": "WebPage", "@id": "https://veraqis.tech/studio/engine/#webpage", "url": "https://veraqis.tech/studio/engine/", "name": "The full VERAQIS engine, free in your browser | VERAQIS Studio",
+      "description": "Every function of the VERAQIS engine — analysis, recovery, repair data, encryption, signatures, safe extraction and RAR — running on your own device in the browser. No upload, no account, no license, no charge.",
+      "isPartOf": { "@id": "https://veraqis.tech/#website" }, "dateModified": "2026-11-22", "inLanguage": "en"
+    },
+    {
+      "@type": "SoftwareApplication", "@id": "https://veraqis.tech/studio/engine/#app", "name": "VERAQIS full engine (web)",
+      "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any current web browser",
+      "url": "https://veraqis.tech/studio/engine/", "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+      "publisher": { "@id": "https://veraqis.tech/#organization" }
+    },
+    {
+      "@type": "BreadcrumbList", "@id": "https://veraqis.tech/studio/engine/#breadcrumbs",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "VERAQIS", "item": "https://veraqis.tech/" },
+        { "@type": "ListItem", "position": 2, "name": "Studio", "item": "https://veraqis.tech/studio/" },
+        { "@type": "ListItem", "position": 3, "name": "Full engine", "item": "https://veraqis.tech/studio/engine/" }
+      ]
+    }
+  ]
+}
+</script>
+<script type="module" src="/assets/studio/engine/app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<div class="page-head">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / <a href="/studio/">Studio</a> / Full engine</div>
+    <h1>The full engine, free in your browser</h1>
+    <p class="lead">Every function of the VERAQIS engine — analysis, recovery, repair data, encryption,
+      signatures, safe extraction and RAR — runs here, on your device. No upload, no account, no
+      license, no charge.</p>
+    <p id="ex-status" class="ex-status ex-status--loading" role="status">Loading the engine…</p>
+    <noscript><div class="callout warn"><strong>The engine needs JavaScript and WebAssembly.</strong>
+      Nothing on this page works without them; the explanation below still applies.</div></noscript>
+  </div>
+</div>
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">1. Your files</h2>
+    <div id="ex-drop" class="ex-drop ex-files-panel">
+      <p><strong>Drop files or folders here</strong></p>
+      <p class="ex-buttons">
+        <button type="button" id="ex-pick-files" class="btn primary">Add files</button>
+        <button type="button" id="ex-pick-folder" class="btn ghost">Add a folder</button>
+        <button type="button" id="ex-pool-clear" class="btn ghost" hidden>Remove all</button>
+      </p>
+      <p class="note">Files are read where they are. Nothing is uploaded: this page is not allowed to
+        connect anywhere except veraqis.tech, and veraqis.tech only serves the page.</p>
+      <input type="file" id="ex-add-files" class="ex-hidden-input" multiple tabindex="-1" aria-hidden="true" />
+      <input type="file" id="ex-add-folder" class="ex-hidden-input" webkitdirectory multiple tabindex="-1" aria-hidden="true" />
+    </div>
+    <ul id="ex-pool" aria-label="Your files"></ul>
+
+    <h2>2. Pick a function</h2>
+    <nav id="ex-jump" aria-label="Function groups"></nav>
+    <div class="ex-toggles">
+      <label><input type="checkbox" id="ex-experimental" /> Show experimental methods</label>
+      <label><input type="checkbox" id="ex-advanced" /> Show advanced and developer tools</label>
+    </div>
+    <div id="ex-groups"></div>
+    <p id="ex-live" class="ex-live" aria-live="polite"></p>
+    <p id="studio-busy" class="ex-live" hidden>A function is running.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap prose">
+    <h2>How this works</h2>
+    <p>The page loads the VERAQIS engine once — about 1 MB — and runs it in a background thread of
+      your browser. It is the same Rust engine as the desktop and Android apps, compiled to
+      WebAssembly, and it answers every request the same way they do: checked against the native
+      build, 73 of 74 test requests gave identical answers, and the one difference is the honest
+      note below about isolation.</p>
+    <h3>Your files stay on your device</h3>
+    <p>Files are read directly from your disk in pieces; nothing is uploaded and no copy is sent
+      anywhere. The page's security policy forbids connections to any site but veraqis.tech, and
+      veraqis.tech is static hosting that cannot receive files. Results are created in the tab's
+      memory and reach your disk only when you press Download. Operations that must write beside
+      their input — a signature, repair data for a folder — work on a copy in memory.</p>
+    <p>The only thing kept between visits is the engine's history of what you analysed, in this
+      browser's storage. Clear it under “Your history on this device”, or with
+      <a href="/studio/settings/">Delete all local VERAQIS data</a>.</p>
+    <h3>What “verified” means here</h3>
+    <p>The engine marks a byte, row or object verified only when an independent check proves it, and
+      says “unknown” for the rest. Nothing is guessed to look complete. See
+      <a href="/reference/evidence-model/">the evidence model</a>.</p>
+    <h3>Limits of the browser</h3>
+    <ul>
+      <li>The engine can use up to 4 GB of memory. Some operations read a whole file at once, so very
+        large files may not fit; the desktop and Android apps have no such limit.</li>
+      <li>Each operation runs on one thread, so heavy analysis is slower than in the apps.</li>
+      <li>A browser has no operating-system sandbox to offer, so reports say “isolation: limits
+        only”. The engine's own guards — against zip bombs, paths that escape the folder and links —
+        work exactly as in the apps.</li>
+      <li>Chrome and Edge can save into a folder directly; other browsers download results.</li>
+    </ul>
+    <h3>Free, and the code is open</h3>
+    <p>Every function here is free, with no license file and no limit on use. The code of this web
+      version — the browser adapter, the build scripts and this page — is published in the
+      <a href="https://github.com/yurlith/veraqis-pages/tree/main/web-engine">web-engine folder of
+      the site's repository</a>. RAR support uses UnRAR by Alexander Roshal under its own license.</p>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/studio/">Local Recovery Studio</a>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry. · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+<script src="/assets/studio/register-sw.js" type="module"></script>
+
+</body>
+</html>

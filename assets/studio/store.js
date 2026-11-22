@@ -234,6 +234,14 @@ export async function deleteAllLocalData(store) {
       result.opfs = true;
     }
   } catch { /* OPFS unavailable or empty */ }
+  try {
+    // The full engine page (/studio/engine/) keeps its history in its own database.
+    await new Promise((resolve) => {
+      const r = indexedDB.deleteDatabase('veraqis-engine');
+      r.onsuccess = r.onerror = r.onblocked = () => resolve();
+    });
+    result.engineHistory = true;
+  } catch (e) { result.errors.push('engine history: ' + (e && e.message)); }
   // The caches just cleared held the application shell, which is our code rather
   // than the user's data. Ask the service worker to re-prime it so offline use
   // survives a "delete everything" — otherwise the app quietly loses the ability

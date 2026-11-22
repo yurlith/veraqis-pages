@@ -63,6 +63,11 @@ from an experiment in our own repository and the page names the experiment and l
 
 ## Products
 
+- [Full engine in the browser](https://veraqis.tech/studio/engine/): every function of the VERAQIS
+  engine — analysis, structural repair, content recovery (SQLite, Office, PDF, 7z, RAR), salvage of
+  damaged bzip2/xz, repair data (.phxs) and folder protection, encryption, Ed25519 signatures, safe
+  extraction and RAR list/test/extract — free, without a license, running on the visitor's device.
+  It is the same Rust engine as the apps, compiled to WebAssembly; files are not uploaded.
 - [Verified ZIP recovery](https://veraqis.tech/recovery.html): how recovery actually works — what a
   local file header proves when the central directory is gone, what a CRC-32 match does and does not
   settle, and the four labels a result can carry (Verified / Damaged / Unknown / Lost). Also states
