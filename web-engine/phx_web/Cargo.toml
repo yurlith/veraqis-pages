@@ -1,0 +1,16 @@
+[package]
+name = "phx_web"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "Browser (WebAssembly) entry point for the complete PHX end-user API"
+
+[[bin]]
+name = "phx_web"
+path = "src/main.rs"
+
+[dependencies]
+phx_api = { workspace = true }
+phx_policy = { workspace = true }
+tokio = { workspace = true }
