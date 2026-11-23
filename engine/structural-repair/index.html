@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Repair a corrupted ZIP, TAR, GZIP or ISO in your browser | VERAQIS</title>
+<meta name="description" content="Rebuild a broken ZIP central directory, TAR and GZIP headers or ISO descriptors on your device. Repaired copy plus signed manifest. Free, nothing uploaded." />
+<link rel="canonical" href="https://veraqis.tech/engine/structural-repair/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Repair a corrupted ZIP, TAR, GZIP or ISO in your browser" />
+<meta property="og:description" content="Rebuild a broken ZIP central directory, TAR and GZIP headers or ISO descriptors on your device. Repaired copy plus signed manifest. Free, nothing uploaded." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/structural-repair/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Repair a corrupted ZIP, TAR, GZIP or ISO in your browser" />
+<meta name="twitter:description" content="Rebuild a broken ZIP central directory, TAR and GZIP headers or ISO descriptors on your device. Repaired copy plus signed manifest. Free, nothing uploaded." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/structural-repair/#article",
+      "url": "https://veraqis.tech/engine/structural-repair/",
+      "headline": "Repair a corrupted archive’s structure — ZIP, TAR, GZIP, ISO",
+      "name": "Repair a corrupted ZIP, TAR, GZIP or ISO in your browser | VERAQIS",
+      "description": "Rebuild a broken ZIP central directory, TAR and GZIP headers or ISO descriptors on your device. Repaired copy plus signed manifest. Free, nothing uploaded.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "ZIP repair"
+        },
+        {
+          "@type": "Thing",
+          "name": "archive repair"
+        },
+        {
+          "@type": "Thing",
+          "name": "TAR"
+        },
+        {
+          "@type": "Thing",
+          "name": "GZIP"
+        },
+        {
+          "@type": "Thing",
+          "name": "ISO 9660"
+        },
+        {
+          "@type": "Thing",
+          "name": "central directory"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/structural-repair/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Structural repair",
+          "item": "https://veraqis.tech/engine/structural-repair/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/structural-repair/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I repair a corrupted ZIP online without uploading it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The full engine runs in your browser tab. It reads the ZIP from your disk, rebuilds the central directory from surviving local headers and gives you the repaired copy as a download. Nothing is sent anywhere."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will every file in the archive come back?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only those the surviving bytes can prove. Each entry is checked against its own CRC-32; entries that fail stay labelled damaged, and entries past a truncation point are gone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the repair manifest?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A sidecar file written with every repair. It records which repairs were made, why, and to which byte ranges, and it is signed so the record cannot be quietly changed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does “aggressive” do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It allows repairs that are less certain. Results are still labelled by the evidence behind them; aggressive mode never turns a guess into a verified result."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on 7z and RAR?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "7z gets signature and start-header repair plus limited content recovery. RAR is handled by RAR support."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / Structural repair</p>
+    <h1>Repair a corrupted archive’s structure — ZIP, TAR, GZIP, ISO</h1>
+    <p class="lead">When an archive will not open, the index is usually what broke. The engine rebuilds headers, directories and checksums from what survives, checks every repaired byte independently, and writes a new copy with a signed repair manifest. Free, in your browser.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-recover_plan">See the repair plan</a><a class="btn ghost" href="/studio/engine/#fn-recover">Run structural repair</a></div>
+    <p class="note mt-14">The original is opened read-only. The repaired archive reaches your disk only as a download.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">Most “corrupted” archives have a broken index, not broken data</h2>
+    <p>Archive formats keep their bookkeeping — the ZIP central directory, the TAR end marker, the ISO volume descriptor, the SQLite header — in a few small places. Damage there makes every ordinary tool refuse the file while the data itself is untouched. <strong>Structural repair</strong> rebuilds that bookkeeping from what survives and writes a repaired copy, checked byte for byte, with a signed repair manifest that records what changed and why.</p>
+    <p>Your original is opened read-only and never edited. The repaired file is a new download.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Formats and what gets repaired</h2>
+    <p class="sub">The engine’s registry lists automatic structural repair as production for ZIP, OPC, TAR, GZIP, ISO and SQLite; the 7z signature repair belongs to its limited 7z method.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Format</th><th scope="col">What the engine can repair</th><th scope="col">Main limit</th></tr></thead>
+      <tbody>
+        <tr><td>ZIP, JAR, APK</td><td>Rebuilds a missing or broken central directory from surviving local headers; recovers complete entries up to a truncation point; reconciles fields that disagree.</td><td>Entries whose bytes fail their CRC-32 are not passed off as recovered.</td></tr>
+        <tr><td>DOCX, XLSX, PPTX (OPC)</td><td>The ZIP container of an Office file, repaired like any ZIP.</td><td>Missing application content is not invented to make a document open — see <a href="/engine/recover-office-documents/">Office recovery</a>.</td></tr>
+        <tr><td>TAR, GZIP</td><td>Header repair, resynchronisation at the next member, exact continuation where independent checks survive.</td><td>Compressed regions with no surviving verifier stay unknown.</td></tr>
+        <tr><td>ISO 9660</td><td>Descriptor repair and reconciliation of the duplicated descriptors and the two path tables.</td><td>Conflicting copies with no unique answer are refused.</td></tr>
+        <tr><td>SQLite</td><td>Header and structure repair; content is rebuilt by <a href="/engine/recover-sqlite-database/">SQLite recovery</a>.</td><td>Deleted content is excluded by default.</td></tr>
+        <tr><td>7z</td><td>Signature and start-header repair.</td><td>Solid LZMA payload corruption is not recoverable — see <a href="/engine/7z-recovery/">7z recovery</a>.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Three functions, one workflow</h2>
+    <div class="grid g2"><div class="card"><h3>1. Repair plan (dry look)</h3><p><a href="/studio/engine/#fn-recover_plan">Repair plan</a> lists the rule-keyed repairs the engine would make and how risky each one is — without writing anything.</p></div><div class="card"><h3>2. Structural repair</h3><p><a href="/studio/engine/#fn-recover">Structural repair</a> performs them. Leave the strategy empty and the engine chooses (for example <code>zip-rebuild</code>). <em>Aggressive</em> also tries less certain repairs; <em>dry run</em> plans and checks without writing.</p></div><div class="card"><h3>3. Reconcile duplicate records</h3><p><a href="/studio/engine/#fn-recover_reconcile">Reconciliation</a> uses the copies a format keeps of its own records — ZIP’s local header versus its central directory, ISO’s duplicated descriptors and path tables — and fixes a field only where at least two independent copies agree.</p></div><div class="card"><h3>Or let the assistant choose</h3><p>The <a href="/studio/engine/#fn-hub">Recovery assistant</a> checks the file, shows which recovery methods apply and runs the one you pick.</p></div></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Repair a corrupted ZIP in your browser</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-recover_plan">the full engine</a> and add the damaged archive.</li><li>Run <strong>Repair plan</strong> to see what would change. Nothing is written.</li><li>Run <strong>Structural repair</strong>. Leave <em>Aggressive</em> off for the first attempt.</li><li>Download the repaired copy and its repair manifest. Keep the original until you have checked the result.</li><li>Open the repaired archive, or run <strong>Analyze a file</strong> on it: every entry that passed its CRC-32 is verified; anything else stays labelled.</li></ol></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>What the result proves</h2>
+    <div class="compare"><div class="side veraqis"><h3>What the engine proves</h3><ul><li>Every repaired byte is checked against the format’s own checksum or parser, independent of the repair.</li><li>Each ZIP entry is verified against its own CRC-32 after the rebuild.</li><li>A signed repair manifest records exactly what was changed, and why.</li><li>Where nothing can be proven, the engine abstains and says why.</li></ul></div><div class="side"><h3>What it will not claim</h3><ul><li>It does not guess the contents of a damaged entry.</li><li>It does not mark an entry recovered because the archive now opens.</li><li>It does not decrypt or bypass encryption.</li><li>It does not claim more than the surviving bytes support.</li></ul></div></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2 id="exact-copy">Exact-copy reconstruction (experimental)</h2>
+    <p>If you still own an earlier copy of the same file — a backup, an older version — the experimental <strong>Rebuild from your own earlier copy</strong> function copies damaged regions back from it, only where the bytes match exactly and a checksum independent of the search confirms the placement. It is same-owner only and never searches anyone else’s data. It is hidden until you tick <em>Show experimental methods</em> on the engine page.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Related</h2>
+    <div class="grid g3"><a class="card link-card" href="/guides/central-directory-not-found/"><h3>End of central directory not found</h3><p>The ZIP index is gone, not the files.</p></a><a class="card link-card" href="/guides/unexpected-end-of-zip/"><h3>Unexpected end of archive</h3><p>What a truncated file still holds.</p></a><a class="card link-card" href="/formats/zip/"><h3>ZIP format reference</h3><p>Seven failure modes and what each one costs.</p></a><a class="card link-card" href="/formats/gzip-tar/"><h3>gzip and tar</h3><p>Opposite blind spots, stacked.</p></a><a class="card link-card" href="/formats/iso/"><h3>ISO 9660</h3><p>Sector 16 and the spare tree.</p></a><a class="card link-card" href="/research/"><h3>Research</h3><p>Measured results, negative ones included.</p></a></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can I repair a corrupted ZIP online without uploading it?</h3><p>Yes. The <a href="/studio/engine/#fn-recover">full engine</a> runs in your browser tab. It reads the ZIP from your disk, rebuilds the central directory from surviving local headers and gives you the repaired copy as a download. Nothing is sent anywhere.</p></div>
+      <div class="qa"><h3>Will every file in the archive come back?</h3><p>Only those the surviving bytes can prove. Each entry is checked against its own CRC-32; entries that fail stay labelled damaged, and entries past a truncation point are gone.</p></div>
+      <div class="qa"><h3>What is the repair manifest?</h3><p>A sidecar file written with every repair. It records which repairs were made, why, and to which byte ranges, and it is signed so the record cannot be quietly changed.</p></div>
+      <div class="qa"><h3>What does “aggressive” do?</h3><p>It allows repairs that are less certain. Results are still labelled by the evidence behind them; aggressive mode never turns a guess into a verified result.</p></div>
+      <div class="qa"><h3>Does it work on 7z and RAR?</h3><p>7z gets signature and start-header repair plus <a href="/engine/7z-recovery/">limited content recovery</a>. RAR is handled by <a href="/engine/open-rar-online/">RAR support</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

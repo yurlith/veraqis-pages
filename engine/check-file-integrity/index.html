@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Check if a file is corrupted — free, in your browser | VERAQIS</title>
+<meta name="description" content="Analyze a ZIP, PDF, SQLite, 7z, ISO or TAR file on your device: health score, every defect with its rule ID, hashes and reports. Nothing is uploaded." />
+<link rel="canonical" href="https://veraqis.tech/engine/check-file-integrity/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Check if a file is corrupted — free, in your browser" />
+<meta property="og:description" content="Analyze a ZIP, PDF, SQLite, 7z, ISO or TAR file on your device: health score, every defect with its rule ID, hashes and reports. Nothing is uploaded." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/check-file-integrity/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Check if a file is corrupted — free, in your browser" />
+<meta name="twitter:description" content="Analyze a ZIP, PDF, SQLite, 7z, ISO or TAR file on your device: health score, every defect with its rule ID, hashes and reports. Nothing is uploaded." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/check-file-integrity/#article",
+      "url": "https://veraqis.tech/engine/check-file-integrity/",
+      "headline": "Check if a file is corrupted — and exactly where",
+      "name": "Check if a file is corrupted — free, in your browser | VERAQIS",
+      "description": "Analyze a ZIP, PDF, SQLite, 7z, ISO or TAR file on your device: health score, every defect with its rule ID, hashes and reports. Nothing is uploaded.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "file integrity check"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "checksum"
+        },
+        {
+          "@type": "Thing",
+          "name": "SHA-256"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/check-file-integrity/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Check a file",
+          "item": "https://veraqis.tech/engine/check-file-integrity/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/check-file-integrity/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I know if a file is corrupted?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run Analyze a file. It checks the format’s own structure and checksums and lists every defect with a rule ID, a severity and the byte range involved. A file with no findings and a health of 100 passed every check the format allows."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which formats can it analyze?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ZIP and ZIP-based formats (DOCX, XLSX, PPTX, JAR, APK), TAR, GZIP, bzip2, xz, ISO 9660, SQLite, PDF, 7z and RAR detection, plus generic truncation, bit-flip and safety checks for any container."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I check a file against a known hash?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Verify integrity hashes the file with SHA-256 or SHA3-512 and checks it against a manifest if you provide one."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a passing CRC prove the file is unchanged?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Against accidental damage, yes to about one in four billion. Against deliberate tampering, no: CRC-32 can be forged by construction. Use a SHA-256 manifest or a signature for that — see CRC-32 collisions that pass gzip -t."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / Check a file</p>
+    <h1>Check if a file is corrupted — and exactly where</h1>
+    <p class="lead">Health out of 100, every defect named by a stable rule ID, a recoverability estimate, SHA-256 or SHA3-512 hashes and reports in four formats. The file is opened read-only in your browser and never uploaded.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-analyze">Analyze a file now</a><a class="btn ghost" href="/reference/rule-ids/">All 87 rule IDs</a></div>
+    <p class="note mt-14">Free, no account. Analysis never changes the file.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">Before you repair anything, find out what is wrong</h2>
+    <p>A file that will not open can be damaged, truncated, renamed, encrypted or simply opened with the wrong program — and each needs different advice. The engine’s <strong>Analyze a file</strong> function reads the file read-only and answers precisely: which format the bytes say it is, every defect it finds with the evidence behind it, a health score out of 100 and an estimate of how likely recovery is.</p>
+    <p>Every finding has a stable rule ID such as <code>ZIP_EOCD_001</code> (end of central directory missing) or <code>PDF_XREF_001</code> (startxref points at nothing). There are <a href="/reference/rule-ids/">87 rules across 11 formats</a>, each with its field, category, severity and evidence type, so a report says exactly what was checked.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>The check functions</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Function</th><th scope="col">What you get</th></tr></thead>
+      <tbody>
+        <tr><td><a href="/studio/engine/#fn-analyze">Analyze a file</a></td><td>Health score, every detected problem with its evidence, and the recoverability estimate. Options: look inside nested archives; strict mode for borderline findings; SHA-256 or SHA3-512.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-verify">Verify integrity</a></td><td>Hashes the file and, if you have one, checks it against a manifest.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-score">Health score only</a></td><td>Just the numbers: health out of 100 and the recoverability estimate.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-render">Readable report on screen</a></td><td>The full analysis as plain text, Markdown, HTML or JSON, shown on the page and ready to download.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-report">Save a report file</a></td><td>Writes the analysis as an HTML, Markdown or JSON file you can keep or send.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-safety_scan">Is it safe to open?</a></td><td>Looks for zip bombs, paths that escape the folder, links and other traps before anything is extracted.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>How to check a file in your browser</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-analyze">the full engine</a> and wait for “Engine ready”.</li><li>Drop the file onto the page or press <strong>Add files</strong>. It is read where it is; nothing is uploaded.</li><li>Under <strong>Check</strong>, open <strong>Analyze a file</strong>, pick the file and press Run.</li><li>Read the health score and findings. Each finding names its rule ID — look it up in the <a href="/reference/rule-ids/">rule reference</a>.</li><li>If recovery looks possible, open <strong>Recover → Recovery assistant</strong>: it shows which methods apply to this file and runs the one you pick.</li></ol></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>What a health score is allowed to mean</h2>
+    <p>Health is not a feeling. Under the <a href="/reference/evidence-model/">evidence model</a> it may rise after a repair only from an exact erasure resolved against a trusted checksum, from at least 32 bits of independent checksum evidence, or from structural uniqueness that passed its gate. Guessed bytes never move it, and neither does a checksum the repair was solved against.</p>
+    <p>In the published example a truncated ZIP reported health 15/100 with <code>ZIP_EOCD_001</code>; the central directory was rebuilt from surviving local headers, 8,412 bytes were recovered and 0 lost. See the <a href="/testing.html">test record</a>.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Identify a file by its bytes, not its name</h2>
+    <p>The analysis reports what the bytes say and what the name claims as two separate answers. A RAR someone renamed to .zip and a ZIP whose first bytes were overwritten look the same to most tools; here they get opposite advice. Read <a href="/formats/identification/">how identification works</a>.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Related</h2>
+    <div class="grid g3"><a class="card link-card" href="/reference/rule-ids/"><h3>Rule ID reference</h3><p>All 87 findings, with the field and evidence type behind each.</p></a><a class="card link-card" href="/guides/zip-file-wont-open/"><h3>A ZIP that will not open</h3><p>Five causes, most common first. Only one is real corruption.</p></a><a class="card link-card" href="/tools/zip-checker/"><h3>Quick ZIP check</h3><p>A lighter browser check for ZIP archives only.</p></a></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>How do I know if a file is corrupted?</h3><p>Run <a href="/studio/engine/#fn-analyze">Analyze a file</a>. It checks the format’s own structure and checksums and lists every defect with a rule ID, a severity and the byte range involved. A file with no findings and a health of 100 passed every check the format allows.</p></div>
+      <div class="qa"><h3>Which formats can it analyze?</h3><p>ZIP and ZIP-based formats (DOCX, XLSX, PPTX, JAR, APK), TAR, GZIP, bzip2, xz, ISO 9660, SQLite, PDF, 7z and RAR detection, plus generic truncation, bit-flip and safety checks for any container.</p></div>
+      <div class="qa"><h3>Can I check a file against a known hash?</h3><p>Yes. <a href="/studio/engine/#fn-verify">Verify integrity</a> hashes the file with SHA-256 or SHA3-512 and checks it against a manifest if you provide one.</p></div>
+      <div class="qa"><h3>Does a passing CRC prove the file is unchanged?</h3><p>Against accidental damage, yes to about one in four billion. Against deliberate tampering, no: CRC-32 can be forged by construction. Use a SHA-256 manifest or a signature for that — see <a href="/research/crc32-collisions-that-pass-gzip-t/">CRC-32 collisions that pass gzip -t</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

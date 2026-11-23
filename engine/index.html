@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>VERAQIS engine: free file recovery in your browser, no upload</title>
+<meta name="description" content="How the VERAQIS engine works: Rust compiled to WebAssembly, 13 recovery methods, files read on your device. What it proves, what it refuses, its limits." />
+<link rel="canonical" href="https://veraqis.tech/engine/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="VERAQIS engine: free file recovery in your browser, no upload" />
+<meta property="og:description" content="How the VERAQIS engine works: Rust compiled to WebAssembly, 13 recovery methods, files read on your device. What it proves, what it refuses, its limits." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="VERAQIS engine: free file recovery in your browser, no upload" />
+<meta name="twitter:description" content="How the VERAQIS engine works: Rust compiled to WebAssembly, 13 recovery methods, files read on your device. What it proves, what it refuses, its limits." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/engine/#webpage",
+      "url": "https://veraqis.tech/engine/",
+      "name": "VERAQIS engine: free file recovery in your browser, no upload",
+      "description": "How the VERAQIS engine works: Rust compiled to WebAssembly, 13 recovery methods, files read on your device. What it proves, what it refuses, its limits.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "data recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "file corruption"
+        },
+        {
+          "@type": "Thing",
+          "name": "WebAssembly"
+        },
+        {
+          "@type": "Thing",
+          "name": "Rust"
+        },
+        {
+          "@type": "Thing",
+          "name": "archive repair"
+        },
+        {
+          "@type": "Thing",
+          "name": "file integrity"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is the VERAQIS engine really free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Every function on the engine page is free, including saving recovered output, with no account, no license file and no limit on use."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the engine upload my files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The engine runs in a background worker of your browser and reads files from your disk. The page’s security policy forbids connections to any site but veraqis.tech, which only serves the page."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which file types can it recover?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ZIP and ZIP-based formats (including DOCX, XLSX, PPTX, JAR, APK), TAR, GZIP, ISO 9660, SQLite, PDF, bzip2 and xz, with limited recovery for 7z and RAR. Support depends on the damage: a listed format is not a promise that every damaged file can be recovered."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it the same engine as the VERAQIS apps?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes — the same Rust code compiled to WebAssembly. Compared with the native build, 73 of 74 test requests gave identical answers; the difference is that the browser reports isolation: limits_only."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it recover a password or open an encrypted archive without the password?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Encrypted archives and documents are detected and reported. A traditional-ZIP or RAR archive opens only with the password you type; nothing is guessed, cracked or stored."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The page and its worker live inside the Studio service-worker scope, so once loaded they are built to keep working without a connection."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / Engine</p>
+    <h1>The VERAQIS engine — how it works, what it proves, what it refuses</h1>
+    <p class="lead">A file recovery and file-safety engine that runs in your browser tab: it checks damaged files, recovers what surviving bytes can prove, protects files with repair data, encryption and signatures, and extracts archives safely. Free, with nothing uploaded.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/">Open the full engine</a><a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a><a class="btn ghost" href="/reference/evidence-model/">The evidence model</a></div>
+    <p class="note mt-14">The engine itself is at <a href="/studio/engine/">/studio/engine/</a>. This page explains it; every function name below links to a detailed guide.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">What the engine is</h2>
+    <p>VERAQIS is a recovery and file-safety engine written in Rust. The same engine the VERAQIS apps use is compiled to WebAssembly and published at <a href="/studio/engine/">veraqis.tech/studio/engine/</a>, where it runs inside your browser tab. There is no server behind it: the page downloads the engine once (2.25 MB, about 0.9 MB compressed), starts it in a background worker and hands it your files directly from your disk.</p>
+    <p>It does four kinds of work. It <strong>checks</strong> files and names every defect it finds. It <strong>recovers</strong> what the surviving bytes can prove, from damaged archives, databases, Office documents and PDFs. It <strong>protects</strong> files in advance with repair data, encryption and signatures. And it <strong>extracts safely</strong>, refusing zip bombs, path escapes and links before anything reaches your disk.</p>
+    <p>What makes it different is a single rule: a byte, row or object is reported as <em>verified</em> only when a check that is independent of the repair confirms it. Everything else is reported as <em>unknown</em>. The engine is allowed to abstain, and it does.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Your files never leave your device</h2>
+    <div class="grid g2"><div class="card"><h3>Read in place</h3><p>Files are mounted read-only and read in pieces (a small read-ahead cache serves the engine from 4 MiB blocks). Nothing is copied to a server, because there is none.</p></div><div class="card"><h3>No connection out</h3><p>The page’s Content-Security-Policy allows connections to veraqis.tech only, and veraqis.tech is static hosting that cannot receive files. <code>eval</code> is not allowed.</p></div><div class="card"><h3>Results as downloads</h3><p>Everything an operation writes stays in the tab’s memory until you press Download. Operations that must write beside their input — a signature, folder repair data — work on an in-memory copy.</p></div><div class="card"><h3>One thing kept</h3><p>A history of what you analysed is stored in this browser’s IndexedDB, nowhere else. Clear it on the page or with <a href="/studio/settings/">Delete all local VERAQIS data</a>.</p></div></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>The 13 recovery methods</h2>
+    <p class="sub">Each method declares how mature it is and what kind of evidence stands behind its results. Higher-trust methods run first, and a method emits only what its verifier supports.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Method</th><th scope="col">Lifecycle</th><th scope="col">Kind of proof</th><th scope="col">Formats</th><th scope="col">What it does</th></tr></thead>
+      <tbody>
+        <tr><td><a href="/engine/structural-repair/">Automatic structural repair</a></td><td><span class="status status--available">production</span></td><td>signed repair manifest</td><td>ZIP, Office (OPC), TAR, GZIP, ISO, SQLite</td><td>Repairs container structure — headers, directories, checksums — and writes a byte-verified copy with a signed repair manifest. The source is opened read-only.</td></tr>
+        <tr><td><a href="/engine/recover-sqlite-database/">SQLite semantic recovery</a></td><td><span class="status status--available">production</span></td><td>structural uniqueness</td><td>SQLite</td><td>Rebuilds the schema and verified rows from surviving pages, including the WAL overlay and overflow chains. Deleted and free-list content stays off by default.</td></tr>
+        <tr><td><a href="/engine/recover-office-documents/">Office / OOXML semantic recovery</a></td><td><span class="status status--available">production</span></td><td>checksum verified</td><td>DOCX, XLSX, PPTX and other ZIP packages</td><td>Recovers the parts whose CRC-32 still matches, plus the content-type and relationship graph of the package.</td></tr>
+        <tr><td><a href="/engine/repair-pdf/">PDF semantic recovery</a></td><td><span class="status status--available">production</span></td><td>object-graph proof</td><td>PDF</td><td>Rebuilds the object graph and the cross-reference table, recovering the objects reachable from the document root. Encrypted PDFs abstain.</td></tr>
+        <tr><td><a href="/engine/7z-recovery/">Verified 7z recovery</a></td><td><span class="status status--pending">limited</span></td><td>checksum verified</td><td>7z</td><td>Restores a corrupted signature or start header, lists the verified inventory and extracts intact non-solid folders.</td></tr>
+        <tr><td><a href="/engine/open-rar-online/">Verified RAR recovery</a></td><td><span class="status status--pending">limited</span></td><td>checksum verified</td><td>RAR</td><td>Lists the verified RAR5 inventory and extracts stored (uncompressed) files exactly, with recovery-record localisation.</td></tr>
+        <tr><td><a href="/engine/xz-bzip2-salvage/">BZIP2 block salvage</a></td><td><span class="status status--available">production</span></td><td>independent per-block CRC</td><td>bzip2</td><td>Recovers every cleanly decodable block of a damaged bzip2 stream, each re-checked by its own CRC, resynchronising past a bad block.</td></tr>
+        <tr><td><a href="/engine/xz-bzip2-salvage/">XZ block salvage</a></td><td><span class="status status--available">production</span></td><td>independent per-block CRC</td><td>xz</td><td>Recovers independently checksummed blocks of a damaged xz stream, including truncated ones, by walking block headers forward.</td></tr>
+        <tr><td><a href="/engine/structural-repair/">ZIP reconciliation</a></td><td><span class="status status--available">production</span></td><td>structural uniqueness</td><td>ZIP, Office (OPC)</td><td>Compares local headers, central directory and decompressed data three ways and keeps only values the bytes confirm.</td></tr>
+        <tr><td><a href="/engine/structural-repair/">ISO reconciliation</a></td><td><span class="status status--available">production</span></td><td>structural uniqueness</td><td>ISO 9660</td><td>Reconciles duplicated volume descriptors and the two path tables, rebuilding one from the other byte-exact.</td></tr>
+        <tr><td><a href="/engine/repair-data/">Shield restore</a></td><td><span class="status status--available">production</span></td><td>exact parity</td><td>.phxs repair data</td><td>Rebuilds a damaged or missing file byte for byte from its Reed-Solomon repair data — or returns an error, never wrong bytes.</td></tr>
+        <tr><td><a href="/engine/safe-extraction/">Safe archive extraction</a></td><td><span class="status status--available">production</span></td><td>safety report</td><td>ZIP, Office (OPC), TAR</td><td>Extracts only the entries that pass a read-only safety scan; path escapes, bombs and unsupported encryption are refused.</td></tr>
+        <tr><td><a href="/engine/structural-repair/#exact-copy">Exact-copy reconstruction</a></td><td><span class="status status--experimental">experimental</span></td><td>exact-copy proof</td><td>any</td><td>Copies damaged regions back from your own earlier copy of the same file, with placement confirmed by an independent verifier. Same owner only.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">This table is the engine’s own capability registry, as the <a href="/studio/engine/#fn-capabilities">“What this engine can do”</a> function returns it in the browser. <strong>production</strong>, <strong>limited</strong> and <strong>experimental</strong> are the engine’s labels; experimental methods stay hidden on the page until you switch them on.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Every function, in seven groups</h2>
+    <p class="sub">This is the full list the page offers. Each group heading leads to a page that explains those functions in detail.</p>
+    <div class="grid g2"><div class="card"><h3><a href="/engine/check-file-integrity/">Check</a></h3><p>Find out whether a file is healthy and exactly what is wrong. Nothing is changed.</p><ul><li>Analyze a file</li><li>Verify integrity (SHA-256 or SHA3-512, optional manifest)</li><li>Health score only</li><li>Readable report on screen (text, Markdown, HTML, JSON)</li><li>Save a report file</li><li>Is it safe to open? (safety scan)</li></ul></div><div class="card"><h3><a href="/engine/structural-repair/">Recover</a></h3><p>Get back what the surviving bytes can prove. The original is only read.</p><ul><li>Recovery assistant</li><li>Repair plan (dry look)</li><li>Structural repair</li><li>Recover contents: SQLite, Office, PDF, 7z, RAR</li><li>Salvage a damaged .bz2 or .xz</li><li>Reconcile duplicate records (ZIP, ISO)</li><li>Restore from repair data (.phxs)</li><li>Rebuild from your own earlier copy (experimental)</li></ul></div><div class="card"><h3><a href="/engine/repair-data/">Protect</a></h3><p>Add repair data before anything goes wrong, check later, rebuild what broke.</p><ul><li>Add repair data to a file</li><li>Protect a whole folder</li><li>Check a protected folder</li><li>Repair a protected folder</li></ul></div><div class="card"><h3><a href="/engine/encrypt-and-sign/">Encrypt and sign</a></h3><p>Lock a file with a password or key, open it again, sign it so changes are detectable.</p><ul><li>Encrypt a file (AES-256-GCM)</li><li>Decrypt a .phx file</li><li>About an encrypted file</li><li>Sign a file (Ed25519)</li><li>Check a signature</li></ul></div><div class="card"><h3><a href="/engine/safe-extraction/">Inspect and extract safely</a></h3><p>Look inside without opening the file in another program; extract only safe entries.</p><ul><li>Look inside</li><li>Extract safe entries</li></ul></div><div class="card"><h3><a href="/engine/open-rar-online/">RAR archives</a></h3><p>List, test and extract RAR, including solid and multi-volume archives.</p><ul><li>Open a RAR archive: list, test, extract</li></ul></div><div class="card"><h3><a href="/engine/how-it-was-tested/">Engine, history and advanced</a></h3><p>What the engine can do, its self-test, your local history and developer tools.</p><ul><li>What this engine can do (capability registry)</li><li>Self-test</li><li>Your history on this device</li><li>Read a license file (advanced)</li><li>Check a license signature (advanced)</li><li>Developer: send any protocol-v1 request (advanced)</li></ul></div></div>
+    <p class="note">35 engine operations exist. 34 are open in the browser; the vendor-only <code>license_gen</code> is refused by the same allowlist as in the apps.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>What “verified” means</h2>
+    <p>Most recovery tools have one dial: a confidence number. VERAQIS keeps two kinds of certainty apart. <strong>Checksum evidence</strong> is counted in bits: a matching CRC-32 is worth 32 bits, a cryptographic hash over the emitted bytes 256. <strong>Structural evidence</strong> — “this row fits exactly one recovered schema” — gets no bit value, because it fails by an incomplete model rather than by collision; it is held to a zero-false record on a corpus with known answers.</p>
+    <p>Two rules do most of the work. A checksum the repair was solved against counts for nothing (the <em>tautology rule</em>), so a result must be confirmed by a verifier from outside that set. And <code>false_recovered_bytes</code> — emitted bytes that differ from the original — is a hard gate fixed at zero on every recovery layer. Read the full <a href="/reference/evidence-model/">evidence model</a>.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Limits of the browser version</h2>
+    <div class="grid g2"><div class="card"><h3>Memory</h3><p>The engine can use up to 4 GB. Some operations read a whole file at once, so very large files may not fit.</p></div><div class="card"><h3>One thread</h3><p>Each operation runs on a single thread, so heavy analysis is slower than in the apps.</p></div><div class="card"><h3>No OS sandbox</h3><p>A browser offers no operating-system sandbox, so reports say <code>isolation: limits_only</code>. The engine’s own guards against zip bombs, path escapes and links work exactly as in the apps.</p></div><div class="card"><h3>Downloads only</h3><p>Results reach your disk as downloads, one file at a time or all together as a ZIP.</p></div></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Open, reproducible, checked</h2>
+    <p>The browser adapter, the two-change patch to the engine, the build scripts and the page code are published under MIT or Apache-2.0 in the <a href="https://github.com/yurlith/veraqis-pages/tree/main/web-engine">web-engine folder</a> of the site’s repository. Both WebAssembly modules rebuild byte-identical from a clean copy; their SHA-256 hashes are in <a href="/assets/studio/engine/SOURCE.json">SOURCE.json</a>. RAR support is UnRAR 7.23 by Alexander Roshal under its own license.</p>
+    <p>Before publication the browser build was compared with the native build request by request: 73 of 74 answers were identical, and the one difference is the honest isolation note above. The full record is on <a href="/engine/how-it-was-tested/">how the engine was tested</a>.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Guides to each function</h2>
+    <div class="grid g3"><a class="card link-card" href="/engine/check-file-integrity/"><h3>Check if a file is corrupted</h3><p>Health score, rule-keyed findings, hashes and reports.</p></a><a class="card link-card" href="/engine/structural-repair/"><h3>Repair archive structure</h3><p>ZIP, TAR, GZIP, ISO and SQLite structure, with a signed repair manifest.</p></a><a class="card link-card" href="/engine/recover-sqlite-database/"><h3>Recover a SQLite database</h3><p>Schema and verified rows from surviving pages, WAL included.</p></a><a class="card link-card" href="/engine/recover-office-documents/"><h3>Recover DOCX, XLSX, PPTX</h3><p>The parts that still pass their checksum, and the package graph.</p></a><a class="card link-card" href="/engine/repair-pdf/"><h3>Repair a damaged PDF</h3><p>Rebuild the cross-reference table from the objects themselves.</p></a><a class="card link-card" href="/engine/7z-recovery/"><h3>Recover a 7z archive</h3><p>Header repair, verified inventory, intact non-solid folders.</p></a><a class="card link-card" href="/engine/open-rar-online/"><h3>Open RAR in your browser</h3><p>List, test and extract RAR 1.3 to RAR 5, solid and multi-volume.</p></a><a class="card link-card" href="/engine/xz-bzip2-salvage/"><h3>Salvage .xz and .bz2</h3><p>Every block that still passes its own CRC.</p></a><a class="card link-card" href="/engine/repair-data/"><h3>Protect files with repair data</h3><p>Reed-Solomon sidecars that rebuild a file byte for byte.</p></a><a class="card link-card" href="/engine/encrypt-and-sign/"><h3>Encrypt and sign</h3><p>AES-256-GCM containers and Ed25519 signatures.</p></a><a class="card link-card" href="/engine/safe-extraction/"><h3>Extract archives safely</h3><p>Zip bombs, Zip Slip and links refused before extraction.</p></a><a class="card link-card" href="/engine/how-it-was-tested/"><h3>How it was tested</h3><p>Native equivalence, UnRAR fixtures, 59 page checks.</p></a></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions about the engine</h2>
+    <div class="faq">
+      <div class="qa"><h3>Is the VERAQIS engine really free?</h3><p>Yes. Every function on <a href="/studio/engine/">the engine page</a> is free, including saving recovered output, with no account, no license file and no limit on use.</p></div>
+      <div class="qa"><h3>Does the engine upload my files?</h3><p>No. The engine runs in a background worker of your browser and reads files from your disk. The page’s security policy forbids connections to any site but veraqis.tech, which only serves the page.</p></div>
+      <div class="qa"><h3>Which file types can it recover?</h3><p>ZIP and ZIP-based formats (including DOCX, XLSX, PPTX, JAR, APK), TAR, GZIP, ISO 9660, SQLite, PDF, bzip2 and xz, with limited recovery for 7z and RAR. Support depends on the damage: a listed format is not a promise that every damaged file can be recovered.</p></div>
+      <div class="qa"><h3>Is it the same engine as the VERAQIS apps?</h3><p>Yes — the same Rust code compiled to WebAssembly. Compared with the native build, 73 of 74 test requests gave identical answers; the difference is that the browser reports <code>isolation: limits_only</code>.</p></div>
+      <div class="qa"><h3>Can it recover a password or open an encrypted archive without the password?</h3><p>No. Encrypted archives and documents are detected and reported. A traditional-ZIP or RAR archive opens only with the password you type; nothing is guessed, cracked or stored.</p></div>
+      <div class="qa"><h3>Does it work offline?</h3><p>The page and its worker live inside the Studio service-worker scope, so once loaded they are built to keep working without a connection.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

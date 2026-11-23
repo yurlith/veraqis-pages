@@ -46,6 +46,45 @@ from an experiment in our own repository and the page names the experiment and l
   header, ZIP64, solid archive, erasure, resynchronisation, LZ-coupled stream, WAL, xref,
   freelist, parity, bit rot, abstention and more.
 
+## The engine — how it works, function by function
+
+- [How the VERAQIS engine works](https://veraqis.tech/engine/): Rust engine compiled to WebAssembly
+  (2.25 MB, about 0.9 MB compressed) running in a browser worker; files are read in place and never
+  uploaded. Lists the engine's own registry of 13 recovery methods with lifecycle (production,
+  limited, experimental) and evidence type, all 32 functions the page offers, and the browser limits
+  (4 GB memory, one thread, no OS sandbox so reports say isolation: limits_only).
+- [Check if a file is corrupted](https://veraqis.tech/engine/check-file-integrity/): health score out
+  of 100, rule-keyed findings (87 rules, 11 formats), SHA-256 or SHA3-512, reports in text,
+  Markdown, HTML or JSON.
+- [Structural repair](https://veraqis.tech/engine/structural-repair/): ZIP central-directory rebuild,
+  TAR/GZIP header repair, ISO descriptor and path-table reconciliation; repaired copy plus a signed
+  repair manifest; dry-run repair plan.
+- [Recover a SQLite database](https://veraqis.tech/engine/recover-sqlite-database/): schema and
+  verified rows from surviving pages, WAL overlay, overflow chains; deleted content off by default;
+  0 false rows across 16 benchmark fixtures.
+- [Recover DOCX, XLSX, PPTX](https://veraqis.tech/engine/recover-office-documents/): the OPC parts
+  whose CRC-32 still matches plus the content-type and relationship graph; nothing invented to make
+  a document open.
+- [Repair a damaged PDF](https://veraqis.tech/engine/repair-pdf/): rebuild the cross-reference table
+  from the objects themselves; objects reachable from the root; encrypted PDFs abstain.
+- [Recover a 7z archive](https://veraqis.tech/engine/7z-recovery/): limited — signature/start-header
+  repair, verified inventory, intact non-solid folders, solid prefix salvage.
+- [Open RAR in the browser](https://veraqis.tech/engine/open-rar-online/): UnRAR 7.23 in WebAssembly;
+  RAR 1.3 to RAR 5, solid, multi-volume, password you type; 29 of 29 reference archives extract to
+  their reference SHA-256.
+- [Salvage .xz and .bz2](https://veraqis.tech/engine/xz-bzip2-salvage/): every block that passes its
+  own CRC; 9 of 10 blocks in the headline xz case.
+- [Repair data (.phxs)](https://veraqis.tech/engine/repair-data/): Reed-Solomon parity sidecars for a
+  file or folder; restore is byte-exact against the original's hash, or an error.
+- [Encrypt and sign](https://veraqis.tech/engine/encrypt-and-sign/): AES-256-GCM .phx containers
+  (password or key file; the original name is visible without a password) and Ed25519 signatures.
+- [Safe extraction](https://veraqis.tech/engine/safe-extraction/): zip bombs, Zip Slip path
+  traversal, absolute/UNC/reserved paths, symlinks and overlapping entries refused before
+  extraction; structural safety, not antivirus.
+- [How the browser engine was tested](https://veraqis.tech/engine/how-it-was-tested/): 73 of 74
+  requests identical to the native build, 84 of 85 output files byte-identical, 59 of 59 page
+  checks, reproducible WebAssembly with published SHA-256.
+
 ## Formats
 
 - [File formats index](https://veraqis.tech/formats/): which formats carry an independent payload
@@ -76,10 +115,8 @@ from an experiment in our own repository and the page names the experiment and l
 - [VERAQIS Archiver for Android](https://veraqis.tech/mobile.html): free, signed public beta.
   Scan an archive before extracting; list and extract safe entries into a folder you choose.
   No telemetry. This is the only publicly downloadable build today.
-- [VERAQIS Recovery for Windows](https://veraqis.tech/desktop.html): damaged-ZIP analysis and
-  verified recovery. Status: store release pending — there is no public Windows binary and no
-  Microsoft Store URL yet. No unsigned .exe is published.
-  development and no download.
+- Desktop: there is no desktop package. The desktop product was cancelled; the full engine runs in
+  the browser instead (see above), and no Windows binary is published.
 
 ## Verification and process
 

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Protect files from corruption with Reed-Solomon repair data | VERAQIS</title>
+<meta name="description" content="Make .phxs parity files for a file or folder in your browser. If bit rot or a bad copy damages it, rebuild it byte for byte, or get an error, never wrong bytes." />
+<link rel="canonical" href="https://veraqis.tech/engine/repair-data/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Protect files from corruption with Reed-Solomon repair data" />
+<meta property="og:description" content="Make .phxs parity files for a file or folder in your browser. If bit rot or a bad copy damages it, rebuild it byte for byte, or get an error, never wrong bytes." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/repair-data/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Protect files from corruption with Reed-Solomon repair data" />
+<meta name="twitter:description" content="Make .phxs parity files for a file or folder in your browser. If bit rot or a bad copy damages it, rebuild it byte for byte, or get an error, never wrong bytes." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/repair-data/#article",
+      "url": "https://veraqis.tech/engine/repair-data/",
+      "headline": "Protect files from corruption with repair data",
+      "name": "Protect files from corruption with Reed-Solomon repair data | VERAQIS",
+      "description": "Make .phxs parity files for a file or folder in your browser. If bit rot or a bad copy damages it, rebuild it byte for byte, or get an error, never wrong bytes.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "Reed-Solomon"
+        },
+        {
+          "@type": "Thing",
+          "name": "parity"
+        },
+        {
+          "@type": "Thing",
+          "name": "bit rot"
+        },
+        {
+          "@type": "Thing",
+          "name": "data integrity"
+        },
+        {
+          "@type": "Thing",
+          "name": "file protection"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/repair-data/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Repair data",
+          "item": "https://veraqis.tech/engine/repair-data/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/repair-data/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a .phxs file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A repair-data sidecar made by the VERAQIS engine: Reed-Solomon parity for one file, signed. Keep it next to the file it protects."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is this different from PAR2?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The idea is the same — parity files that can rebuild damaged data — but .phxs is the engine’s own format, and a restore is accepted only if it matches the original’s hash exactly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much damage can it repair?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on the size you choose. More repair data rebuilds more damage. If the damage is beyond it, the engine returns an error rather than a partly wrong file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does protecting a folder upload it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The engine reads the folder in your browser and gives you the repair data as a ZIP download."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / Repair data</p>
+    <h1>Protect files from corruption with repair data</h1>
+    <p class="lead">Small Reed-Solomon parity files, made while your files are healthy, that can rebuild them byte for byte after bit rot, a bad sector or a broken copy. Check a whole folder later and repair what changed. In your browser, free.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-protect_shield">Protect a file now</a><a class="btn ghost" href="/studio/engine/#fn-protect_batch">Protect a folder</a></div>
+    <p class="note mt-14">Restore is byte-exact against the original’s hash, or it is an error.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">Recovery works best when it is prepared in advance</h2>
+    <p>After damage, recovery can only use what the format itself kept — and most formats keep very little. Repair data changes that. Made while a file is still healthy, a small <code>.phxs</code> sidecar holds Reed-Solomon parity for it. If the file is later damaged by bit rot, a bad sector or a broken copy, the engine rebuilds it <strong>byte for byte</strong> from the sidecar.</p>
+    <p>The restore either reproduces the original exactly — checked against the protected original’s hash — or stops with an error. It never writes wrong bytes. In the engine’s registry this is <strong>Shield restore</strong>: production, with exact-parity evidence.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Five functions</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Function</th><th scope="col">What it does</th></tr></thead>
+      <tbody>
+        <tr><td><a href="/studio/engine/#fn-protect_shield">Add repair data to a file</a></td><td>Creates a <code>.phxs</code> file for one file. You choose its size as a percentage of the file (1–100%, default 10%). Keep both files together.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-protect_batch">Protect a whole folder</a></td><td>Repair data for every file in a folder plus a manifest, delivered as one ZIP — unpack it into the same folder. <em>Update</em> redoes only files that changed since last time.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-protect_check">Check a protected folder</a></td><td>Finds files that changed, rotted or went missing since the folder was protected. Read-only.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-protect_repair">Repair a protected folder</a></td><td>Rebuilds the damaged files byte for byte. Your folder is not touched; repaired files come back as downloads.</td></tr>
+        <tr><td><a href="/studio/engine/#fn-recover_shield">Restore from repair data</a></td><td>Rebuilds one damaged file from its <code>.phxs</code>.</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Protect a folder against bit rot — in your browser</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-protect_batch">the full engine</a> and press <strong>Add a folder</strong>.</li><li>Under <strong>Protect</strong>, open <strong>Protect a whole folder</strong>, choose the repair-data size and press Run.</li><li>Download the ZIP of repair data and unpack it into the same folder.</li><li>Later — after a copy, a move to new storage, a few years on a disk — run <strong>Check a protected folder</strong>.</li><li>If anything rotted, run <strong>Repair a protected folder</strong> and replace the damaged files with the rebuilt ones.</li></ol></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Choosing the size</h2>
+    <p>The percentage sets how much repair data is made. More repair data can rebuild more damage and costs more space; 10% is the default. If damage exceeds what the repair data covers, restore fails with an error rather than writing a file that is almost right.</p>
+    <p>Repair data must be created while the file is healthy — a sidecar made from a damaged file faithfully protects the damage. For archives, it also removes the worst risk of <a href="/formats/7z/">solid 7z compression</a>: with parity, the position of damage no longer decides the loss.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Why not just keep a hash?</h2>
+    <div class="grid g2"><div class="card"><h3>A hash detects</h3><p>A SHA-256 manifest tells you a file changed. It cannot tell you what it was.</p></div><div class="card"><h3>Repair data rebuilds</h3><p>Parity can reconstruct the original bytes — and the result is still checked against the original’s hash before it is accepted.</p></div><div class="card"><h3>Against tampering</h3><p>The sidecar is signed. For proof that a file was not deliberately changed, add an <a href="/engine/encrypt-and-sign/">Ed25519 signature</a>.</p></div><div class="card"><h3>On Android too</h3><p>VERAQIS Archiver for Android can verify a file against its <code>.phxs</code> sidecar.</p></div></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>What is a .phxs file?</h3><p>A repair-data sidecar made by the VERAQIS engine: Reed-Solomon parity for one file, signed. Keep it next to the file it protects.</p></div>
+      <div class="qa"><h3>How is this different from PAR2?</h3><p>The idea is the same — parity files that can rebuild damaged data — but .phxs is the engine’s own format, and a restore is accepted only if it matches the original’s hash exactly.</p></div>
+      <div class="qa"><h3>How much damage can it repair?</h3><p>It depends on the size you choose. More repair data rebuilds more damage. If the damage is beyond it, the engine returns an error rather than a partly wrong file.</p></div>
+      <div class="qa"><h3>Does protecting a folder upload it?</h3><p>No. The engine reads the folder in your browser and gives you the repair data as a ZIP download.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

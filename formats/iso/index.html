@@ -161,7 +161,7 @@
 <section>
   <div class="wrap">
     <div class="prose">
-      <div class="cap-card"><h3>ISO 9660 — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — <code>CD001</code> at offset 32769, which is why identification reads a 32 KB prefix</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>12</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None. ISO 9660 stores no checksum over file contents</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Good — fixed 2048-byte sectors and self-describing directory records make a rescan practical</dd></div></dl></div>
+      <div class="cap-card"><h3>ISO 9660 — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — <code>CD001</code> at offset 32769, which is why identification reads a 32 KB prefix</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>Yes — in the <a href="/studio/engine/">full engine</a>, free. The quick ZIP check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>12</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None. ISO 9660 stores no checksum over file contents</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Good — fixed 2048-byte sectors and self-describing directory records make a rescan practical</dd></div></dl></div>
       <h2 id="sector-16">Sector 16</h2>
       <p>The first sixteen sectors — 32,768 bytes — are the system area, reserved for boot code and ignored by the filesystem. The primary volume descriptor starts immediately after, and it is the first thing in the file that says "this is an ISO 9660 image". The stamp <code>CD001</code> sits one byte into it, at 32769, which is exactly why <a href="/formats/identification/">identification</a> reads a 32 KB prefix rather than a handful of bytes.</p>
       <div class="terminal"><pre>byte 0      ┌──────────────────────────────┐
@@ -208,9 +208,10 @@ byte 32768  ├─────────────────────�
 <section class="band">
   <div class="wrap">
     <h2>Check your own file — analysis is free</h2>
-    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Every function of the full engine, saving the result included, is free in your browser.</p>
     <div class="chips">
-      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/studio/new/">See what's recoverable</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
       <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
@@ -239,6 +240,8 @@ byte 32768  ├─────────────────────�
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>

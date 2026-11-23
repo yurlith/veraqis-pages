@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Open, test and extract RAR files in your browser — no upload | VERAQIS</title>
+<meta name="description" content="List, test and extract RAR 1.3 to RAR 5 archives, solid and multi-volume, on your device with UnRAR compiled to WebAssembly. Free, nothing uploaded." />
+<link rel="canonical" href="https://veraqis.tech/engine/open-rar-online/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Open, test and extract RAR files in your browser — no upload" />
+<meta property="og:description" content="List, test and extract RAR 1.3 to RAR 5 archives, solid and multi-volume, on your device with UnRAR compiled to WebAssembly. Free, nothing uploaded." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/open-rar-online/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Open, test and extract RAR files in your browser — no upload" />
+<meta name="twitter:description" content="List, test and extract RAR 1.3 to RAR 5 archives, solid and multi-volume, on your device with UnRAR compiled to WebAssembly. Free, nothing uploaded." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/open-rar-online/#article",
+      "url": "https://veraqis.tech/engine/open-rar-online/",
+      "headline": "Open, test and extract RAR archives in your browser",
+      "name": "Open, test and extract RAR files in your browser — no upload | VERAQIS",
+      "description": "List, test and extract RAR 1.3 to RAR 5 archives, solid and multi-volume, on your device with UnRAR compiled to WebAssembly. Free, nothing uploaded.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "RAR"
+        },
+        {
+          "@type": "Thing",
+          "name": "unrar"
+        },
+        {
+          "@type": "Thing",
+          "name": "extract RAR online"
+        },
+        {
+          "@type": "Thing",
+          "name": "multi-volume RAR"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/open-rar-online/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "RAR",
+          "item": "https://veraqis.tech/engine/open-rar-online/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/open-rar-online/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I open a RAR file without installing anything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Open the engine page in any current browser, add the .rar file and press List or Extract. UnRAR runs inside the page; the file is never uploaded."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it extract multi-volume RAR archives?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Add every volume of the set. If one is missing, the engine names it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it open a password-protected RAR?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only with the password you type. It does not guess, crack or store passwords."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I check whether a RAR is damaged?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Press Test: every file is decompressed and its checksum checked, without writing anything. Damaged files are reported as checksum failures."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / RAR</p>
+    <h1>Open, test and extract RAR archives in your browser</h1>
+    <p class="lead">RAR 1.3 to RAR 5, solid and multi-volume, encrypted with your password — listed, tested and extracted on your own device by UnRAR compiled to WebAssembly. Free, no install, no upload.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-rar">Open a RAR now</a><a class="btn ghost" href="/engine/safe-extraction/">Safe extraction</a></div>
+    <p class="note mt-14">RAR support uses UnRAR by Alexander Roshal under its own license.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">RAR in a browser tab, with nothing installed</h2>
+    <p>The engine page includes UnRAR 7.23 by Alexander Roshal, compiled to WebAssembly (0.2 MB). It can <strong>list</strong> a RAR archive, <strong>test</strong> it — decompress every file and check every checksum without writing anything — and <strong>extract</strong> all files or the ones you pick. The archive is read from your disk and never uploaded.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>What it handles</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Case</th><th scope="col">Support</th></tr></thead>
+      <tbody>
+        <tr><td>RAR versions</td><td>RAR 1.3 to RAR 5</td></tr>
+        <tr><td>Solid archives</td><td>Yes</td></tr>
+        <tr><td>Multi-volume archives (.part1.rar, .r00 …)</td><td>Yes — add every volume. A missing volume is named.</td></tr>
+        <tr><td>Filters, PPMd, RarVM</td><td>Yes</td></tr>
+        <tr><td>Encrypted archives</td><td>With the password you type. Wrong passwords are refused; nothing is guessed or stored.</td></tr>
+        <tr><td>Damaged archives</td><td>Reported as checksum failures, file by file.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Checked against all 29 reference archives of the VERAQIS Android app: every one extracts to its reference SHA-256. With encrypted-header fixtures, the right password opened, wrong passwords were refused every time, and three deliberately broken headers were refused even with the right password.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Open a RAR file online, without uploading it</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-rar">the full engine</a> and add the .rar file — for a multi-volume set, add every part.</li><li>Under <strong>RAR archives</strong>, open <strong>Open a RAR archive</strong>.</li><li>Type the password only if the archive is encrypted.</li><li>Press <strong>List</strong> to see the contents, <strong>Test</strong> to check every checksum, or <strong>Extract</strong> to download the files — all of them or only those you select.</li></ol></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Damaged RAR: verified recovery</h2>
+    <p>For damaged archives the engine also has its own <strong>Verified RAR recovery</strong> method, labelled <strong>limited</strong> in its registry: it lists the verified RAR5 inventory and extracts <em>stored</em> (uncompressed) files exactly, with localisation of the archive’s recovery record. Recovery of compressed proprietary payload is not claimed. Run it under <strong>Recover contents → RAR archive</strong>.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>How do I open a RAR file without installing anything?</h3><p>Open <a href="/studio/engine/#fn-rar">the engine page</a> in any current browser, add the .rar file and press List or Extract. UnRAR runs inside the page; the file is never uploaded.</p></div>
+      <div class="qa"><h3>Can it extract multi-volume RAR archives?</h3><p>Yes. Add every volume of the set. If one is missing, the engine names it.</p></div>
+      <div class="qa"><h3>Can it open a password-protected RAR?</h3><p>Only with the password you type. It does not guess, crack or store passwords.</p></div>
+      <div class="qa"><h3>How do I check whether a RAR is damaged?</h3><p>Press Test: every file is decompressed and its checksum checked, without writing anything. Damaged files are reported as checksum failures.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

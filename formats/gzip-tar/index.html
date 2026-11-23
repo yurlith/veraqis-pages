@@ -161,7 +161,7 @@
 <section>
   <div class="wrap">
     <div class="prose">
-      <div class="cap-card"><h3>gzip and tar — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — gzip by magic at offset 0, tar by the <code>ustar</code> stamp 257 bytes in</dd></div><div class="cap-row"><dt>Browser structural analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine analysis</dt><dd>Yes — 9 gzip rules and 15 tar rules in the classifier</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>gzip: one CRC-32 for the whole stream. <strong>tar: none at all</strong></dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>tar: yes, by rescanning for the next header. gzip: no resync point exists</dd></div></dl><p class="note">The row that matters is the fourth. A tar has no checksum over file contents anywhere in the format — see <a href="#blind">what tar cannot see</a> below.</p></div>
+      <div class="cap-card"><h3>gzip and tar — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — gzip by magic at offset 0, tar by the <code>ustar</code> stamp 257 bytes in</dd></div><div class="cap-row"><dt>Browser structural analysis</dt><dd>Yes — in the <a href="/studio/engine/">full engine</a>, free. The quick ZIP check reads ZIP only</dd></div><div class="cap-row"><dt>Engine analysis</dt><dd>Yes — 9 gzip rules and 15 tar rules in the classifier</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>gzip: one CRC-32 for the whole stream. <strong>tar: none at all</strong></dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>tar: yes, by rescanning for the next header. gzip: no resync point exists</dd></div></dl><p class="note">The row that matters is the fourth. A tar has no checksum over file contents anywhere in the format — see <a href="#blind">what tar cannot see</a> below.</p></div>
       <h2 id="layout">Layout — one of these is scannable and one is not</h2>
       <p>A tar is a flat sequence of 512-byte blocks. Each member begins with a header block naming the file and its length, followed by its content padded to a block boundary. Nothing indexes it: there is no table of contents, and there does not need to be, because every member announces itself.</p>
       <div class="terminal"><pre>tar — every member is self-describing
@@ -222,9 +222,10 @@ gzip — one stream, one checksum, at the end
 <section class="band">
   <div class="wrap">
     <h2>Check your own file — analysis is free</h2>
-    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Every function of the full engine, saving the result included, is free in your browser.</p>
     <div class="chips">
-      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/studio/new/">See what's recoverable</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
       <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
@@ -253,6 +254,8 @@ gzip — one stream, one checksum, at the end
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>
