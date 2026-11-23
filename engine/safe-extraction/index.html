@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Check a ZIP for zip bombs and Zip Slip before extracting | VERAQIS</title>
+<meta name="description" content="Scan a ZIP or TAR for zip bombs, ../ path traversal, symlinks and reserved names in your browser, then extract only the safe entries. Free, no upload." />
+<link rel="canonical" href="https://veraqis.tech/engine/safe-extraction/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Check a ZIP for zip bombs and Zip Slip before extracting" />
+<meta property="og:description" content="Scan a ZIP or TAR for zip bombs, ../ path traversal, symlinks and reserved names in your browser, then extract only the safe entries. Free, no upload." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/safe-extraction/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Check a ZIP for zip bombs and Zip Slip before extracting" />
+<meta name="twitter:description" content="Scan a ZIP or TAR for zip bombs, ../ path traversal, symlinks and reserved names in your browser, then extract only the safe entries. Free, no upload." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/safe-extraction/#article",
+      "url": "https://veraqis.tech/engine/safe-extraction/",
+      "headline": "Check an archive for zip bombs and Zip Slip — then extract only what is safe",
+      "name": "Check a ZIP for zip bombs and Zip Slip before extracting | VERAQIS",
+      "description": "Scan a ZIP or TAR for zip bombs, ../ path traversal, symlinks and reserved names in your browser, then extract only the safe entries. Free, no upload.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "zip bomb"
+        },
+        {
+          "@type": "Thing",
+          "name": "Zip Slip"
+        },
+        {
+          "@type": "Thing",
+          "name": "path traversal"
+        },
+        {
+          "@type": "Thing",
+          "name": "safe extraction"
+        },
+        {
+          "@type": "Thing",
+          "name": "symlink"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/safe-extraction/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Safe extraction",
+          "item": "https://veraqis.tech/engine/safe-extraction/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/safe-extraction/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I check if a ZIP file is safe to open?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run Is it safe to open?. It reports zip bombs, path traversal, links, absolute and reserved paths and overlapping entries without extracting anything."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Zip Slip?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "An archive entry whose name contains ../ or an absolute path, so a naive extractor writes it outside the target folder — for example over a configuration file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it scan for viruses?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It checks structure, not contents. A structurally safe archive can still contain a malicious program."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it extract a password-protected ZIP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A traditional-ZIP archive, yes, with the password you type. Other encryption is refused."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / Safe extraction</p>
+    <h1>Check an archive for zip bombs and Zip Slip — then extract only what is safe</h1>
+    <p class="lead">A read-only safety scan for zip bombs, path traversal, symlinks, absolute and reserved paths and overlapping entries, a look inside without extracting, and extraction of only the entries that pass. In your browser, free.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-safety_scan">Scan an archive now</a><a class="btn ghost" href="/studio/engine/#fn-safe_extract">Extract safe entries</a></div>
+    <p class="note mt-14">Engine lifecycle: production, with a safety report as evidence.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">An archive can attack the machine that extracts it</h2>
+    <p>A ZIP or TAR can carry entries named <code>../../.ssh/authorized_keys</code> that escape the folder you extract into (“Zip Slip”), symlinks that point outside it, absolute or Windows drive and UNC paths, reserved device names, overlapping entries, or a few kilobytes that expand to terabytes (a zip bomb). Most extractors trust the archive. The engine scans it first.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Three functions</h2>
+    <div class="grid g3"><div class="card"><h3><a href="/studio/engine/#fn-safety_scan">Is it safe to open?</a></h3><p>A read-only safety scan: zip bombs, paths that escape the folder, links and other traps, reported before anything is extracted.</p></div><div class="card"><h3><a href="/studio/engine/#fn-inspect">Look inside</a></h3><p>The tree of an archive or document, with previews of entries, without extracting anything or opening it in another program.</p></div><div class="card"><h3><a href="/studio/engine/#fn-safe_extract">Extract safe entries</a></h3><p>Lists what can be extracted safely, lets you pick, and extracts only those. Traps are refused.</p></div></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>What is refused</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Trap</th><th scope="col">What the engine does</th></tr></thead>
+      <tbody>
+        <tr><td>Path traversal (Zip Slip): <code>../</code> in a name</td><td>Detected and refused; extraction stays inside the target.</td></tr>
+        <tr><td>Absolute, drive-relative and UNC paths</td><td>Detected and refused.</td></tr>
+        <tr><td>Reserved names (for example Windows device names)</td><td>Detected and refused.</td></tr>
+        <tr><td>Symlinks</td><td>Detected and refused.</td></tr>
+        <tr><td>Zip bombs and overlapping entries</td><td>Stopped by an incremental, output-capped ratio gate before they exhaust memory.</td></tr>
+        <tr><td>Unsupported encryption</td><td>Refused. A traditional-ZIP archive opens with a password you type.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Checked in the browser build: a zip bomb, an entry named <code>../evil.txt</code> and a symlink entry got exactly the same verdicts as from the native engine. Safe extraction covers ZIP, Office (OPC) and TAR.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Check an archive before you extract it</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-safety_scan">the full engine</a> and add the archive.</li><li>Run <strong>Is it safe to open?</strong> and read the verdict.</li><li>Open <strong>Look inside</strong> to see the tree and preview entries.</li><li>Open <strong>Extract safe entries</strong>, select what you need and download it.</li></ol></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>What “safe” means here</h2>
+    <p>“Safe” means structurally safe to extract: nothing escapes the folder, nothing explodes, nothing links elsewhere. The engine does not inspect file contents for malicious payloads — it is a structural safety inspector, not an antivirus. Learn the traps by playing <a href="/play/gatekeeper/">Gatekeeper</a> or <a href="/play/guardian/">Vera: Archive Guardian</a>.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>How do I check if a ZIP file is safe to open?</h3><p>Run <a href="/studio/engine/#fn-safety_scan">Is it safe to open?</a>. It reports zip bombs, path traversal, links, absolute and reserved paths and overlapping entries without extracting anything.</p></div>
+      <div class="qa"><h3>What is Zip Slip?</h3><p>An archive entry whose name contains <code>../</code> or an absolute path, so a naive extractor writes it outside the target folder — for example over a configuration file.</p></div>
+      <div class="qa"><h3>Does it scan for viruses?</h3><p>No. It checks structure, not contents. A structurally safe archive can still contain a malicious program.</p></div>
+      <div class="qa"><h3>Can it extract a password-protected ZIP?</h3><p>A traditional-ZIP archive, yes, with the password you type. Other encryption is refused.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

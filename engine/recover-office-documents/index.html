@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Recover a corrupted DOCX, XLSX or PPTX file — free, no upload | VERAQIS</title>
+<meta name="description" content="Get back the parts of a damaged Word, Excel or PowerPoint file that still pass their checksum: text XML, sheets, slides, images. In your browser, free." />
+<link rel="canonical" href="https://veraqis.tech/engine/recover-office-documents/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Recover a corrupted DOCX, XLSX or PPTX file — free, no upload" />
+<meta property="og:description" content="Get back the parts of a damaged Word, Excel or PowerPoint file that still pass their checksum: text XML, sheets, slides, images. In your browser, free." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/recover-office-documents/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Recover a corrupted DOCX, XLSX or PPTX file — free, no upload" />
+<meta name="twitter:description" content="Get back the parts of a damaged Word, Excel or PowerPoint file that still pass their checksum: text XML, sheets, slides, images. In your browser, free." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/recover-office-documents/#article",
+      "url": "https://veraqis.tech/engine/recover-office-documents/",
+      "headline": "Recover a corrupted Word, Excel or PowerPoint file",
+      "name": "Recover a corrupted DOCX, XLSX or PPTX file — free, no upload | VERAQIS",
+      "description": "Get back the parts of a damaged Word, Excel or PowerPoint file that still pass their checksum: text XML, sheets, slides, images. In your browser, free.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "DOCX"
+        },
+        {
+          "@type": "Thing",
+          "name": "XLSX"
+        },
+        {
+          "@type": "Thing",
+          "name": "PPTX"
+        },
+        {
+          "@type": "Thing",
+          "name": "Office Open XML"
+        },
+        {
+          "@type": "Thing",
+          "name": "corrupted Word file"
+        },
+        {
+          "@type": "Thing",
+          "name": "corrupted Excel file"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/recover-office-documents/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Office recovery",
+          "item": "https://veraqis.tech/engine/recover-office-documents/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/recover-office-documents/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I recover a corrupted Word document without uploading it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The engine runs in your browser and reads the .docx from your disk. It recovers every part whose CRC-32 still matches and gives you the parts as downloads."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will Word open the recovered file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not necessarily, and the engine does not promise it. It returns what can be proven intact; it does not fill in missing parts to force the document to open. The text itself is in word/document.xml."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about Excel “we found a problem with some content”?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run Analyze first: it shows whether the container or specific parts are damaged. Recovery then returns the worksheets whose bytes verify."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it open a password-protected Office file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Encrypted documents are detected and reported, not decrypted."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / Office recovery</p>
+    <h1>Recover a corrupted Word, Excel or PowerPoint file</h1>
+    <p class="lead">A .docx, .xlsx or .pptx file is a ZIP of parts, each with its own checksum. The engine recovers every part that still verifies — your text, sheets, slides and images — and tells you exactly which ones are missing. In your browser, free, nothing uploaded.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-recover_semantic">Recover a document now</a><a class="btn ghost" href="/formats/zip/">How ZIP breaks</a></div>
+    <p class="note mt-14">Engine lifecycle for this method: production, with checksum-verified evidence.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">A DOCX is a ZIP — and that is good news</h2>
+    <p>Word, Excel and PowerPoint files (.docx, .xlsx, .pptx) are ZIP packages in the Open Packaging Conventions format: XML parts for the text, sheets and slides, media files, a <code>[Content_Types].xml</code> list and a web of relationship files tying them together. Each part is stored as a ZIP entry with its own CRC-32.</p>
+    <p>So when Office says a document is corrupt, the question is which parts still pass their checksum. The engine’s <strong>Office / OOXML semantic recovery</strong> answers it: it recovers every part whose CRC-32 matches, checks the content-type list and the relationship graph, and reports exactly which parts are missing or damaged.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>What it recovers — and what it will not invent</h2>
+    <div class="compare"><div class="side veraqis"><h3>What the engine proves</h3><ul><li>Every part whose bytes still match their CRC-32 — document XML, worksheets, slides, images and other media.</li><li>The content-type list and the relationship graph, checked for parts that are referenced but missing.</li><li>A report that names which parts are verified, damaged or absent.</li><li>The ZIP container itself, rebuilt by <a href="/engine/structural-repair/">structural repair</a> if its index is broken.</li></ul></div><div class="side"><h3>What it will not claim</h3><ul><li>It does not invent missing application content just to make the document open.</li><li>It does not rewrite damaged XML into something plausible.</li><li>It does not open password-protected (encrypted) Office files.</li><li>It does not guarantee that Word, Excel or PowerPoint will open the result.</li></ul></div></div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Recover a corrupted Word, Excel or PowerPoint file</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-recover_semantic">the full engine</a> and add the .docx, .xlsx or .pptx file.</li><li>Run <strong>Analyze a file</strong> to see whether the container or individual parts are damaged.</li><li>If the ZIP index is broken, run <strong>Structural repair</strong> first.</li><li>Open <strong>Recover contents</strong>, choose <em>Office document (DOCX, XLSX, PPTX)</em> and press Run.</li><li>Download the verified parts and the report. In a Word file the text lives in <code>word/document.xml</code>; in Excel the sheets are under <code>xl/worksheets/</code>, in PowerPoint the slides under <code>ppt/slides/</code>, and images sit in each package’s <code>media</code> folder.</li></ol></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Also works on other ZIP packages</h2>
+    <p>The same method applies to other ZIP-based packages, because the evidence is the same: a per-entry CRC-32. To look inside a document without extracting anything, use <a href="/studio/engine/#fn-inspect">Look inside</a>; to pull out individual entries safely, use <a href="/engine/safe-extraction/">safe extraction</a>.</p>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can I recover a corrupted Word document without uploading it?</h3><p>Yes. The engine runs in your browser and reads the .docx from your disk. It recovers every part whose CRC-32 still matches and gives you the parts as downloads.</p></div>
+      <div class="qa"><h3>Will Word open the recovered file?</h3><p>Not necessarily, and the engine does not promise it. It returns what can be proven intact; it does not fill in missing parts to force the document to open. The text itself is in <code>word/document.xml</code>.</p></div>
+      <div class="qa"><h3>What about Excel “we found a problem with some content”?</h3><p>Run Analyze first: it shows whether the container or specific parts are damaged. Recovery then returns the worksheets whose bytes verify.</p></div>
+      <div class="qa"><h3>Can it open a password-protected Office file?</h3><p>No. Encrypted documents are detected and reported, not decrypted.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

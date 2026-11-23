@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Recover a corrupted SQLite database in your browser | VERAQIS</title>
+<meta name="description" content="Rebuild the schema and verified rows of a damaged .db, .sqlite or .sqlite3 file on your device, WAL included. 0 false rows in our benchmark. Free, no upload." />
+<link rel="canonical" href="https://veraqis.tech/engine/recover-sqlite-database/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Recover a corrupted SQLite database in your browser" />
+<meta property="og:description" content="Rebuild the schema and verified rows of a damaged .db, .sqlite or .sqlite3 file on your device, WAL included. 0 false rows in our benchmark. Free, no upload." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/recover-sqlite-database/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Recover a corrupted SQLite database in your browser" />
+<meta name="twitter:description" content="Rebuild the schema and verified rows of a damaged .db, .sqlite or .sqlite3 file on your device, WAL included. 0 false rows in our benchmark. Free, no upload." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/recover-sqlite-database/#article",
+      "url": "https://veraqis.tech/engine/recover-sqlite-database/",
+      "headline": "Recover a corrupted SQLite database — rows you can trust",
+      "name": "Recover a corrupted SQLite database in your browser | VERAQIS",
+      "description": "Rebuild the schema and verified rows of a damaged .db, .sqlite or .sqlite3 file on your device, WAL included. 0 false rows in our benchmark. Free, no upload.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "SQLite"
+        },
+        {
+          "@type": "Thing",
+          "name": "database recovery"
+        },
+        {
+          "@type": "Thing",
+          "name": "corrupted database"
+        },
+        {
+          "@type": "Thing",
+          "name": "WAL"
+        },
+        {
+          "@type": "Thing",
+          "name": "forensics"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/recover-sqlite-database/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "SQLite recovery",
+          "item": "https://veraqis.tech/engine/recover-sqlite-database/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/recover-sqlite-database/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I recover a corrupted SQLite database without uploading it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Add the file to the full engine and run “Recover contents” with SQLite database. The database is read in your browser and the results come back as downloads."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I include the -wal file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, if you have it. The WAL holds everything since the last checkpoint; without it the rows you recover may not be the current ones, and nothing in the main file says so."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it recover deleted rows?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not by default. Deleted and free-list content is a separate forensic opt-in in the engine. The default output is the live database as far as surviving pages can prove it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this “database is malformed” repair?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is recovery rather than an in-place fix: it reads what survives and gives you the verified tables and rows. The original file is never modified."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work for MySQL or SQL Server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Everything here concerns the SQLite file format only."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / SQLite recovery</p>
+    <h1>Recover a corrupted SQLite database — rows you can trust</h1>
+    <p class="lead">Schema and verified rows from the surviving pages of a damaged SQLite file, with the WAL applied and overflow chains followed. Every emitted row has passed every structural check. Runs free in your browser; the database is never uploaded.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-recover_semantic">Recover a database now</a><a class="btn ghost" href="/sqlite/">SQLite research</a></div>
+    <p class="note mt-14">Works on the SQLite file format (.db, .sqlite, .sqlite3) — not MySQL, PostgreSQL or SQL Server.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">A damaged database is not a damaged archive</h2>
+    <p>SQLite is in phones, browsers, desktop applications and embedded devices, and it does not checksum its own pages. <code>PRAGMA integrity_check</code> confirms the B-trees are structurally sound; it does not confirm the rows still say what they said. And a database is often three files — <code>app.db</code>, <code>app.db-wal</code> and sometimes a journal — so what you were handed decides what can be proven.</p>
+    <p>The engine’s <strong>SQLite semantic recovery</strong> reads the surviving pages, rebuilds the schema, and recovers rows. A row is emitted only when its cell, payload bounds, record header, serial types and full body all validate. Nothing partial is presented as a row, and no row ID is invented for a table that does not have one.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>What it recovers</h2>
+    <div class="grid g2"><div class="card"><h3>Schema</h3><p>Tables and their declared columns, read back from the database’s own schema pages.</p></div><div class="card"><h3>Verified rows</h3><p>Rows from surviving table pages, each one passing every structural check before it is emitted.</p></div><div class="card"><h3>WAL overlay</h3><p>If you add the <code>-wal</code> file, committed frames are applied over the main file, so you read the newer state.</p></div><div class="card"><h3>Overflow chains</h3><p>Long values that spill onto overflow pages are followed and reassembled when the chain is intact.</p></div></div>
+    <p class="note">Deleted and free-list content is <strong>off by default</strong>. Recovering it is a separate forensic opt-in in the engine, not something it does silently.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Recover a corrupted SQLite database in your browser</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-recover_semantic">the full engine</a>.</li><li>Add the damaged <code>.db</code>, <code>.sqlite</code> or <code>.sqlite3</code> file — and its <code>-wal</code> file if you have it. Copying the database without its WAL is the most common acquisition mistake.</li><li>Optionally run <strong>Analyze a file</strong> first: SQLite has 17 rules, the second-largest family after ZIP.</li><li>Open <strong>Recover contents (rows, parts, objects)</strong>, choose <em>SQLite database</em> and press Run.</li><li>Download the recovered tables and the report. Only rows that passed every check are marked verified.</li></ol></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Measured, not promised</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Measurement</th><th scope="col">Result</th></tr></thead>
+      <tbody>
+        <tr><td>Semantic benchmark fixtures</td><td>16</td></tr>
+        <tr><td>False rows, across all fixtures</td><td>0</td></tr>
+        <tr><td>Over-claim rate</td><td>0.00</td></tr>
+        <tr><td>Rows found in the random-bytes negative control</td><td>0</td></tr>
+        <tr><td>NIST CFTT methodology, self-administered: fixture × assertion results</td><td>126, with 0 source mutations — and two core assertions failed, because the engine does not scavenge free space</td></tr>
+        <tr><td>Deleted row IDs rebuilt from B-tree shape alone, on a dedicated fixture</td><td>100 of 100</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">VERAQIS is not NIST certified, approved or validated; the CFTT run was done by us using the published methodology. Details: <a href="/research/nist-cftt-sqlite-validation/">the CFTT run</a>, <a href="/research/sqlite-rowid-from-btree-geometry/">row IDs from B-tree geometry</a>, and the whole <a href="/sqlite/">SQLite section</a>.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Questions a careful recovery has to answer</h2>
+    <div class="grid g2"><div class="card"><h3>Are these the current rows?</h3><p>Without the WAL, rows can read perfectly and still not be the latest. <a href="/sqlite/database-without-its-wal/">When currency is provable, and when it is not</a>.</p></div><div class="card"><h3>Were they ever committed?</h3><p>A hot journal can mean the rows in the file were never committed. <a href="/sqlite/provable-is-not-current/">Provable is not current</a>.</p></div><div class="card"><h3>WITHOUT ROWID tables</h3><p>They are stored as index B-trees and are easy to look straight past. <a href="/sqlite/without-rowid-tables/">How it was found and fixed</a>.</p></div><div class="card"><h3>What an index proves</h3><p>With the table emptied, an index proved five rows existed and nothing more. <a href="/sqlite/what-an-index-proves/">The measurement</a>.</p></div></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can I recover a corrupted SQLite database without uploading it?</h3><p>Yes. Add the file to <a href="/studio/engine/#fn-recover_semantic">the full engine</a> and run “Recover contents” with <em>SQLite database</em>. The database is read in your browser and the results come back as downloads.</p></div>
+      <div class="qa"><h3>Should I include the -wal file?</h3><p>Yes, if you have it. The WAL holds everything since the last checkpoint; without it the rows you recover may not be the current ones, and nothing in the main file says so.</p></div>
+      <div class="qa"><h3>Does it recover deleted rows?</h3><p>Not by default. Deleted and free-list content is a separate forensic opt-in in the engine. The default output is the live database as far as surviving pages can prove it.</p></div>
+      <div class="qa"><h3>Is this “database is malformed” repair?</h3><p>It is recovery rather than an in-place fix: it reads what survives and gives you the verified tables and rows. The original file is never modified.</p></div>
+      <div class="qa"><h3>Does it work for MySQL or SQL Server?</h3><p>No. Everything here concerns the SQLite file format only.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

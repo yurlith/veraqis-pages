@@ -157,7 +157,7 @@
 <section>
   <div class="wrap">
     <div class="prose">
-      <div class="cap-card"><h3>PDF — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — <code>%PDF-</code> at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>14 — the third-largest family after ZIP and TAR</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None. A PDF stores no checksum over its own content</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>The object structure is scannable, so a lost index is recoverable; a lost object is not</dd></div></dl><p class="note">PDF and TAR share a blind spot: neither stores a checksum over the bytes it holds. A PDF that opens is not a PDF that is intact.</p></div>
+      <div class="cap-card"><h3>PDF — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — <code>%PDF-</code> at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>Yes — in the <a href="/studio/engine/">full engine</a>, free. The quick ZIP check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>14 — the third-largest family after ZIP and TAR</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None. A PDF stores no checksum over its own content</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>The object structure is scannable, so a lost index is recoverable; a lost object is not</dd></div></dl><p class="note">PDF and TAR share a blind spot: neither stores a checksum over the bytes it holds. A PDF that opens is not a PDF that is intact.</p></div>
       <h2 id="asymmetry">The same flip, twice</h2>
       <p>Two rules in the registry describe one bit flipped in two places, and they are rated differently:</p>
       <div class="table-scroll"><table><thead><tr><th scope="col">rule</th><th scope="col">where the bit flipped</th><th scope="col">severity</th></tr></thead><tbody><tr><td><code>PDF_FLIP_001</code></td><td>a page content stream</td><td>Minor</td></tr><tr><td><code>PDF_FLIP_002</code></td><td>a cross-reference stream</td><td>Major</td></tr></tbody></table></div>
@@ -198,9 +198,10 @@ startxref
 <section class="band">
   <div class="wrap">
     <h2>Check your own file — analysis is free</h2>
-    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Every function of the full engine, saving the result included, is free in your browser.</p>
     <div class="chips">
-      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/studio/new/">See what's recoverable</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
       <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
@@ -229,6 +230,8 @@ startxref
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>

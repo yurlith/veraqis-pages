@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <link rel="alternate" type="application/atom+xml" title="VERAQIS Research" href="/feed.xml" />
-<title>CRC failed, the file is corrupt — what it costs | VERAQIS</title>
+<title>CRC failed or bad CRC in a ZIP — what is still intact | VERAQIS</title>
 <meta name="description" content="A CRC error is a per-entry verdict, not an archive-wide one. The other entries can still be proven intact. What a failing checksum does and does not tell you." />
 <link rel="canonical" href="https://veraqis.tech/guides/zip-crc-error/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
@@ -53,7 +53,7 @@
       "@id": "https://veraqis.tech/guides/zip-crc-error/#article",
       "url": "https://veraqis.tech/guides/zip-crc-error/",
       "headline": "\"CRC failed\" — one entry's verdict, not the archive's",
-      "name": "CRC failed, the file is corrupt — what it costs | VERAQIS",
+      "name": "CRC failed or bad CRC in a ZIP — what is still intact | VERAQIS",
       "description": "A CRC error is a per-entry verdict, not an archive-wide one. The other entries can still be proven intact. What a failing checksum does and does not tell you.",
       "datePublished": "2026-07-28",
       "dateModified": "2026-07-28",
@@ -280,9 +280,10 @@ phx recover archive.zip --output recovered/</pre></div>
 <section class="band">
   <div class="wrap">
     <h2>Check your own file — analysis is free</h2>
-    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Every function of the full engine, saving the result included, is free in your browser.</p>
     <div class="chips">
-      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/studio/new/">See what's recoverable</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
       <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
@@ -311,6 +312,8 @@ phx recover archive.zip --output recovered/</pre></div>
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>

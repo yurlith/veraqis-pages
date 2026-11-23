@@ -161,7 +161,7 @@
 <section>
   <div class="wrap">
     <div class="prose">
-      <div class="cap-card"><h3>SQLite — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — the 16-byte header string at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>17 — the second-largest family after ZIP</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None in the database file. The WAL has one per frame</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Page-level. Intact pages remain readable; a damaged interior B-tree node costs the subtree under it</dd></div></dl><p class="note">Sixteen of these were missing from this site's public reference until 2026-08-08 — the extractor dropped them. <a href="/reference/rule-ids/#coverage">What happened</a>.</p></div>
+      <div class="cap-card"><h3>SQLite — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — the 16-byte header string at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>Yes — in the <a href="/studio/engine/">full engine</a>, free. The quick ZIP check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>17 — the second-largest family after ZIP</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>None in the database file. The WAL has one per frame</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Page-level. Intact pages remain readable; a damaged interior B-tree node costs the subtree under it</dd></div></dl><p class="note">Sixteen of these were missing from this site's public reference until 2026-08-08 — the extractor dropped them. <a href="/reference/rule-ids/#coverage">What happened</a>.</p></div>
       <h2 id="asymmetry">The same flip, twice</h2>
       <div class="table-scroll"><table><thead><tr><th scope="col">rule</th><th scope="col">where the bit flipped</th><th scope="col">severity</th></tr></thead><tbody><tr><td><code>SQ_FLIP_001</code></td><td>row data on a leaf page</td><td>Minor</td></tr><tr><td><code>SQ_FLIP_002</code></td><td>a B-tree <strong>interior</strong> key</td><td>Major</td></tr></tbody></table></div>
       <p>A flip in row data changes one value and nothing notices — there is no checksum over it, and the B-tree above it is untouched, so every structural check still passes. A flip in an interior key changes the <em>routing</em>: searches take the wrong branch, and rows that are physically present become unreachable. The second is rated worse because more is affected, not because more bytes were damaged.</p>
@@ -195,9 +195,10 @@
 <section class="band">
   <div class="wrap">
     <h2>Check your own file — analysis is free</h2>
-    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Every function of the full engine, saving the result included, is free in your browser.</p>
     <div class="chips">
-      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/studio/new/">See what's recoverable</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
       <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
@@ -226,6 +227,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>

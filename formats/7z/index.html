@@ -161,7 +161,7 @@
 <section>
   <div class="wrap">
     <div class="prose">
-      <div class="cap-card"><h3>7z — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — by magic at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>Three. That number is a property of the format, not of the effort spent</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>CRC-32 per file, stored in the end header</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>No. Prefix only — files stored before the damage, measured, with false recoveries at zero</dd></div></dl><p class="note">The prefix salvage is a shipped path, not a plan. What it does <strong>not</strong> do is recover anything after the damage in a solid block, because nothing in the format makes that possible.</p></div>
+      <div class="cap-card"><h3>7z — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — by magic at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>Yes — in the <a href="/studio/engine/">full engine</a>, free. The quick ZIP check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>Three. That number is a property of the format, not of the effort spent</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>CRC-32 per file, stored in the end header</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>No. Prefix only — files stored before the damage, measured, with false recoveries at zero</dd></div></dl><p class="note">The prefix salvage is a shipped path, not a plan. What it does <strong>not</strong> do is recover anything after the damage in a solid block, because nothing in the format makes that possible.</p></div>
       <h2 id="three-rules">Why only three rules</h2>
       <p>Rule count tracks how much of a format can be checked against itself. A ZIP states every entry twice — once in a local header, once in the central directory — and ends with a record saying where that index begins. Those copies can disagree, and each disagreement is a finding with a name.</p>
       <p>A 7z states things once. There is a signature header at the front, one end header at the back describing everything, and between them a compressed stream. There is no second opinion to compare against, so there are three things that can be said: the signature is wrong, the end header is unreachable, or a CRC failed.</p>
@@ -193,9 +193,10 @@
 <section class="band">
   <div class="wrap">
     <h2>Check your own file — analysis is free</h2>
-    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Every function of the full engine, saving the result included, is free in your browser.</p>
     <div class="chips">
-      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/studio/new/">See what's recoverable</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
       <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
@@ -224,6 +225,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>

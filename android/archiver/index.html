@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>VERAQIS Archiver Mobile — Android files, archives, reader | VERAQIS</title>
-<meta name="description" content="Manage files, inspect and extract archives, and read books and PDFs on Android. Safety checks before extraction, offline only — no account, ads, telemetry or network permission." />
+<meta name="description" content="Android file manager, archiver and reader. Archives are safety-checked before extraction. Offline: no account, ads, telemetry or network permission." />
 <link rel="canonical" href="https://veraqis.tech/android/archiver/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="/assets/veraqis.css" />
@@ -24,6 +24,76 @@
 <meta name="twitter:title" content="VERAQIS Archiver Mobile — Android files, archives, reader" />
 <meta name="twitter:description" content="Inspect an archive before you open it. Extract only what is safe. Offline, no telemetry." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/android/archiver/#webpage",
+      "url": "https://veraqis.tech/android/archiver/",
+      "name": "VERAQIS Archiver Mobile — Android files, archives, reader",
+      "description": "Android file manager, archiver and reader. Archives are safety-checked before extraction. Offline: no account, ads, telemetry or network permission.",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/mobile.html#software"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      },
+      "dateModified": "2026-11-23",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/android/archiver/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Android",
+          "item": "https://veraqis.tech/mobile.html"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Archiver",
+          "item": "https://veraqis.tech/android/archiver/"
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -180,6 +250,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>

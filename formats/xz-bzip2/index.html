@@ -161,7 +161,7 @@
 <section>
   <div class="wrap">
     <div class="prose">
-      <div class="cap-card"><h3>xz and bzip2 — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — both by magic at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>No — the browser check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>Two each — a damaged stream magic, and a failed check</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>xz: CRC-32 or CRC-64 per block. bzip2: CRC-32 per block</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Yes — measured at 9 of 10 blocks in the headline xz case; bzip2 reaches the safe optimum</dd></div></dl></div>
+      <div class="cap-card"><h3>xz and bzip2 — current capability</h3><dl class="cap-list"><div class="cap-row"><dt>Browser detection</dt><dd>Yes — both by magic at offset 0</dd></div><div class="cap-row"><dt>Browser analysis</dt><dd>Yes — in the <a href="/studio/engine/">full engine</a>, free. The quick ZIP check reads ZIP only</dd></div><div class="cap-row"><dt>Engine rules</dt><dd>Two each — a damaged stream magic, and a failed check</dd></div><div class="cap-row"><dt>Independent payload verifier</dt><dd>xz: CRC-32 or CRC-64 per block. bzip2: CRC-32 per block</dd></div><div class="cap-row"><dt>Salvage past damage</dt><dd>Yes — measured at 9 of 10 blocks in the headline xz case; bzip2 reaches the safe optimum</dd></div></dl></div>
       <h2 id="the-word">The word that carries the difference</h2>
       <p>The engine's rule for a failed bzip2 checksum reads: <em>"BZIP2 <strong>block</strong> CRC mismatch"</em>. gzip's equivalent reads <em>"Content CRC32 mismatch"</em>, singular, because a gzip has exactly one checksum covering the whole stream. That is the entire structural difference between a format you can salvage and one you cannot.</p>
       <p>Both formats compress in independent blocks and store a check value for each. A reader that hits a bad block knows <em>which</em> block is bad, can skip its length, and can resume decoding at the next boundary. Nothing similar exists in gzip or in a solid 7z folder — not because their designers were careless, but because neither format defines a boundary to resume at.</p>
@@ -191,9 +191,10 @@
 <section class="band">
   <div class="wrap">
     <h2>Check your own file — analysis is free</h2>
-    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Saving a recovered result is the paid step.</p>
+    <p class="sub">VERAQIS opens the file read-only and reports what is verified, what is damaged and what is unknown. Nothing is uploaded; there is no telemetry. Every function of the full engine, saving the result included, is free in your browser.</p>
     <div class="chips">
-      <a class="btn primary" href="/studio/new/">See what's recoverable</a>
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/studio/new/">See what's recoverable</a>
       <a class="btn ghost" href="/testing.html">Read the test record</a>
       <a class="btn ghost" href="/contact.html">Join the beta</a>
     </div>
@@ -222,6 +223,8 @@
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>

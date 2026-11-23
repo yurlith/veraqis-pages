@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Repair a damaged PDF — rebuild the xref table in your browser | VERAQIS</title>
+<meta name="description" content="A PDF that will not open usually has a broken cross-reference table, not lost content. Rebuild it from the objects themselves, on your device, free." />
+<link rel="canonical" href="https://veraqis.tech/engine/repair-pdf/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Repair a damaged PDF — rebuild the xref table in your browser" />
+<meta property="og:description" content="A PDF that will not open usually has a broken cross-reference table, not lost content. Rebuild it from the objects themselves, on your device, free." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
+<meta property="og:url" content="https://veraqis.tech/engine/repair-pdf/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Repair a damaged PDF — rebuild the xref table in your browser" />
+<meta name="twitter:description" content="A PDF that will not open usually has a broken cross-reference table, not lost content. Rebuild it from the objects themselves, on your device, free." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "TechArticle",
+      "@id": "https://veraqis.tech/engine/repair-pdf/#article",
+      "url": "https://veraqis.tech/engine/repair-pdf/",
+      "headline": "Repair a damaged PDF by rebuilding its cross-reference table",
+      "name": "Repair a damaged PDF — rebuild the xref table in your browser | VERAQIS",
+      "description": "A PDF that will not open usually has a broken cross-reference table, not lost content. Rebuild it from the objects themselves, on your device, free.",
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "author": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "about": [
+        {
+          "@type": "Thing",
+          "name": "PDF repair"
+        },
+        {
+          "@type": "Thing",
+          "name": "cross-reference table"
+        },
+        {
+          "@type": "Thing",
+          "name": "xref"
+        },
+        {
+          "@type": "Thing",
+          "name": "corrupted PDF"
+        }
+      ],
+      "mentions": {
+        "@id": "https://veraqis.tech/studio/engine/#app"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://veraqis.tech/assets/veraqis-card.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/engine/repair-pdf/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Engine",
+          "item": "https://veraqis.tech/engine/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PDF repair",
+          "item": "https://veraqis.tech/engine/repair-pdf/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/engine/repair-pdf/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I repair a PDF online without uploading it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The engine runs in your browser, reads the PDF from your disk and returns the result as a download."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my PDF say “damaged and could not be repaired”?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually because the cross-reference table or the startxref pointer is broken. Every object still names itself in the file, so the table can be rebuilt by scanning."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it repair a password-protected PDF?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Encrypted PDFs are detected and the engine abstains."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will every page come back?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pages whose objects survive and are reachable from the root come back. A PDF has no content checksum, so the engine cannot prove a page’s content is unchanged."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/" class="active">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+<article>
+
+<div class="page-head">
+  <div class="wrap">
+    <p class="crumb"><a href="/">VERAQIS</a> / <a href="/engine/">Engine</a> / PDF repair</p>
+    <h1>Repair a damaged PDF by rebuilding its cross-reference table</h1>
+    <p class="lead">Most PDFs that “cannot be opened” have a damaged index, not damaged content. The engine scans the objects, rebuilds the cross-reference table and recovers everything reachable from the document root — in your browser, free, nothing uploaded.</p>
+    <div class="cta"><a class="btn primary" href="/studio/engine/#fn-recover_semantic">Repair a PDF now</a><a class="btn ghost" href="/formats/pdf/">PDF format reference</a></div>
+    <p class="note mt-14">Engine lifecycle for this method: production, with object-graph evidence.</p>
+    <p class="status-line"><span class="mono">Published <time datetime="2026-11-23">23 November 2026</time></span> · <span class="mono">engine build of 22 November 2026</span></p>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2 class="mt-0">Why a broken PDF is usually a broken index</h2>
+    <p>A PDF is a set of numbered objects plus a cross-reference table saying where each one starts. When a reader says the file is damaged, the table is usually what is damaged — and the table is the one part that can be rebuilt from the file itself, because every object announces its own number (<code>12 0 obj</code>) right next to its content.</p>
+    <p>The engine’s <strong>PDF semantic recovery</strong> scans the objects, rebuilds the object graph and the cross-reference table, and recovers the objects reachable from the document root. “Will not open” and “content destroyed” are almost unrelated conditions, and the first is far more common.</p>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Typical PDF faults the engine names</h2>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Rule</th><th scope="col">Fault</th><th scope="col">Severity</th><th scope="col">What it means</th></tr></thead>
+      <tbody>
+        <tr><td><code>PDF_XREF_001</code></td><td>startxref offset wrong</td><td>Major</td><td>Every reader stops; nothing is destroyed. Rebuildable.</td></tr>
+        <tr><td><code>PDF_XREF_002</code></td><td>xref table missing</td><td>Major</td><td>Rebuildable by scanning object headers.</td></tr>
+        <tr><td><code>PDF_EOF_001</code></td><td>%%EOF marker missing</td><td>Major</td><td>Often truncation; objects before the cut survive.</td></tr>
+        <tr><td><code>PDF_OBJ_002</code></td><td>Indirect object missing</td><td>Major</td><td>That object is gone; others may be fine.</td></tr>
+        <tr><td><code>PDF_HDR_001</code></td><td>%PDF- header missing</td><td>Catastrophic</td><td>The file no longer identifies as PDF.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">PDF has 14 rules in total. All of them are in the <a href="/formats/pdf/">PDF format reference</a>.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Repair a damaged PDF in your browser</h2>
+    <div class="card"><ol><li>Open <a href="/studio/engine/#fn-recover_semantic">the full engine</a> and add the PDF.</li><li>Run <strong>Analyze a file</strong> to see which rules fire.</li><li>Open <strong>Recover contents</strong>, choose <em>PDF</em> and press Run.</li><li>Download the result and the report: recovered objects are the ones reachable from the recovered document root.</li></ol></div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Honest limits</h2>
+    <div class="compare"><div class="side veraqis"><h3>What the engine proves</h3><ul><li>Rebuilds the cross-reference table from the objects themselves.</li><li>Recovers objects reachable from a recovered document root.</li><li>Works when an older xref section survives an incremental update.</li></ul></div><div class="side"><h3>What no tool can prove for PDF</h3><ul><li>A PDF stores no checksum over its content, so a flipped bit inside a page stream can go unnoticed — the page is quietly wrong.</li><li>Objects that are not reachable from the root are not labelled verified.</li><li>Encrypted PDFs are detected and refused.</li></ul></div></div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2 id="faq">Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>Can I repair a PDF online without uploading it?</h3><p>Yes. The engine runs in your browser, reads the PDF from your disk and returns the result as a download.</p></div>
+      <div class="qa"><h3>Why does my PDF say “damaged and could not be repaired”?</h3><p>Usually because the cross-reference table or the startxref pointer is broken. Every object still names itself in the file, so the table can be rebuilt by scanning.</p></div>
+      <div class="qa"><h3>Can it repair a password-protected PDF?</h3><p>No. Encrypted PDFs are detected and the engine abstains.</p></div>
+      <div class="qa"><h3>Will every page come back?</h3><p>Pages whose objects survive and are reachable from the root come back. A PDF has no content checksum, so the engine cannot prove a page’s content is unchanged.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>Run it on your own file — free, on your device</h2>
+    <p class="sub">The full engine opens the file read-only in this browser and writes results only as downloads. Nothing is uploaded, there is no account, and every function is free.</p>
+    <div class="chips">
+      <a class="btn primary" href="/studio/engine/">Open the full engine</a>
+      <a class="btn ghost" href="/engine/">How the engine works</a>
+      <a class="btn ghost" href="/engine/how-it-was-tested/">How it was tested</a>
+    </div>
+  </div>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+      <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · offline-first, no telemetry · <span class="mono">v0.2.1 beta</span> ·
+      this site is statically hosted and does not upload files or send telemetry.
+      <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

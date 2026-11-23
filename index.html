@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<title>Offline ZIP recovery and archive integrity checks | VERAQIS</title>
-<meta name="description" content="Analyze damaged ZIP archives on your own machine. VERAQIS recovers only what its checksums can prove and labels the rest unknown. No uploads. Signed Android app." />
+<title>Recover damaged ZIP files free in your browser, no upload | VERAQIS</title>
+<meta name="description" content="Recover a damaged or truncated ZIP free, in your browser. Nothing is uploaded. VERAQIS recovers only what checksums prove and marks the rest unknown." />
 <link rel="canonical" href="https://veraqis.tech/" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/veraqis.css" />
 <link rel="stylesheet" href="/assets/play/play.css" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
-<meta property="og:title" content="Offline ZIP recovery and archive integrity checks" />
+<meta property="og:title" content="Recover damaged ZIP files free, in your browser — nothing uploaded" />
 <meta property="og:description" content="Analyze a damaged ZIP on your own machine. Recover only what the archive's own checksums can prove — the rest stays labelled unknown, never guessed." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
@@ -22,7 +22,7 @@
 <meta property="og:image:alt" content="VERAQIS proof-first safety tools" />
 <meta property="og:url" content="https://veraqis.tech/" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Offline ZIP recovery and archive integrity checks" />
+<meta name="twitter:title" content="Recover damaged ZIP files free, in your browser — nothing uploaded" />
 <meta name="twitter:description" content="Analyze a damaged ZIP on your own machine. Recover only what the archive's own checksums can prove — the rest stays labelled unknown, never guessed." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
@@ -51,8 +51,8 @@
       "@type": "WebPage",
       "@id": "https://veraqis.tech/#webpage",
       "url": "https://veraqis.tech/",
-      "name": "Offline ZIP recovery and archive integrity checks",
-      "description": "VERAQIS analyzes damaged ZIP archives on your own machine, recovers only what its checksums can prove, and labels everything else unknown. No uploads, no telemetry, no password recovery, no invented data.",
+      "name": "Recover damaged ZIP files free in your browser, no upload",
+      "description": "VERAQIS recovers damaged ZIP archives free in your browser, on your own device: it recovers only what checksums can prove and labels everything else unknown. No uploads, no telemetry, no password recovery, no invented data.",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
       },
@@ -65,7 +65,7 @@
         "width": 1200,
         "height": 630
       },
-      "dateModified": "2026-11-21",
+      "dateModified": "2026-11-23",
       "inLanguage": "en"
     },
     {
@@ -170,7 +170,7 @@
       <p class="note mt-16"><strong>New:</strong> every function of the VERAQIS engine — repair,
         content recovery for SQLite, Office, PDF, 7z and RAR, repair data, encryption, signatures and
         safe extraction — now runs free in your browser, on your device.
-        <a href="/studio/engine/">Open the full engine</a> · <a href="/download.html">Downloads &amp; release status</a></p>
+        <a href="/studio/engine/">Open the full engine</a> · <a href="/engine/">How the engine works</a> · <a href="/download.html">Downloads &amp; release status</a></p>
       <p class="note mt-16">Have the file to hand?
         <a href="/tools/zip-checker/">Check a ZIP archive locally in your browser</a> — nothing is
         uploaded. Or read the guide for
@@ -247,8 +247,8 @@ BIT ROT      <span class="g">✓✓✓✓</span> ? ? <span class="r">✕</span> 
     <div class="grid g2">
       <div class="card">
         <div class="ic">APP</div><h3>VERAQIS Recovery</h3>
-        <p>Analyze damaged ZIP archives and recover only what can be verified. Free analysis and preview;
-          you pay only to save the recovered result.</p>
+        <p>Analyze damaged ZIP archives and recover only what can be verified. Every function, including
+          saving the recovered result, is free in your browser.</p>
         <p class="my-12"><span class="status status--available">Available — runs in your browser</span></p>
         <div class="cta mt-8">
           <a class="btn ghost" href="/studio/new/">Open Studio</a>
@@ -453,11 +453,11 @@ BIT ROT      <span class="g">✓✓✓✓</span> ? ? <span class="r">✕</span> 
 <!-- PRICING TEASER -->
 <section>
   <div class="wrap">
-    <h2>Analysis is free. You pay only to save.</h2>
-    <p class="sub">The VERAQIS Recovery model: free full analysis and an evidence-backed preview, then a
-      paid save of the recovered result. The Android Archiver is free and downloadable today, and
-      VERAQIS Studio runs in the browser. Price and availability are separate — see
-      <a href="pricing.html">pricing</a> for the full breakdown.</p>
+    <h2>Every function is free in your browser.</h2>
+    <p class="sub">Analysis, preview and saving the recovered result all run free in the
+      <a href="/studio/engine/">full engine</a>, on your device — no account, no license. The paid
+      tiers are only a planned model; nothing is on sale. The Android Archiver is free and downloadable
+      today. See <a href="pricing.html">pricing</a> for the full breakdown.</p>
     <div class="cta">
       <a class="btn primary" href="mobile.html">Download Android beta</a>
       <a class="btn ghost" href="contact.html">Send feedback</a>
@@ -487,6 +487,8 @@ BIT ROT      <span class="g">✓✓✓✓</span> ? ? <span class="r">✕</span> 
       </div>
       <div>
         <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
         <a href="/recovery.html">Verified ZIP recovery</a>
         <a href="/mobile.html">VERAQIS Archiver for Android</a>
         <a href="/studio/">VERAQIS Studio (in-browser)</a>
