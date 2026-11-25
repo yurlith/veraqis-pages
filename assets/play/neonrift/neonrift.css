@@ -1,0 +1,219 @@
+/* VERAQIS Play — NEON RIFT: the 3D view, the HUD laid over it, hero cards, touch controls and the
+   pause menu. Loaded after play.css and uses its .game-root variables. No inline styles (CSP): JS only
+   toggles classes and sets CSSOM properties (sizes, transforms, custom properties). */
+
+.stage--nr .stage-view{padding:16px}
+.nr-area{display:flex;flex-direction:column}
+.nr-view{position:relative;width:100%;height:560px;overflow:hidden;border-radius:14px;isolation:isolate;background:#07040f;
+  border:1px solid rgba(167,139,250,.45);box-shadow:0 0 0 1px rgba(124,58,237,.25),0 18px 50px rgba(0,0,0,.45),0 0 70px rgba(124,58,237,.18);
+  touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.nr-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none;outline:none}
+.nr-canvas.drag{cursor:grabbing}
+
+/* the shell's HUD bar, over the top of the view */
+.nr-view .hud{position:absolute;z-index:4;left:0;right:0;top:0;margin:0;border:0;gap:6px 22px;align-items:flex-start;
+  padding:max(10px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 28px max(14px,env(safe-area-inset-left));
+  background:linear-gradient(180deg,rgba(7,4,18,.84),rgba(7,4,18,.5) 58%,rgba(7,4,18,0));pointer-events:none}
+.nr-view .hud .hud-quit{pointer-events:auto;margin-left:auto;width:auto;flex-wrap:wrap;justify-content:flex-end}
+.nr-view .hud-item{min-width:0}
+.nr-view .hud-v{font-size:19px;text-shadow:0 0 14px rgba(167,139,250,.55),0 2px 6px rgba(0,0,0,.6)}
+.nr-view .hud-k{color:rgba(205,196,240,.75)}
+.nr-time{display:inline-flex;align-items:baseline;gap:7px}
+.nr-time.bump{animation:g-pulse .35s ease}
+.nr-par{font:700 11px/1 var(--mono);color:var(--g-dim);letter-spacing:.4px;text-shadow:none}
+.hud-v.warn .nr-par{color:rgba(255,209,102,.75)}
+.nr-pausebtn,.nr-qbtn{gap:6px}
+.nr-pause-ic{font-size:12px;letter-spacing:-1px}
+.nr-q-ic{color:var(--g-cyan)}
+.nr-q-t{text-transform:none}
+.stage--nr .toasts{top:var(--nr-toast-top,78px);bottom:auto;z-index:6}
+.stage--nr .toast{background:rgba(30,21,62,.92);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+
+/* hero cards: bottom left on a computer, under the HUD on a touch screen */
+.nr-team{position:absolute;z-index:4;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));
+  display:flex;gap:8px;align-items:flex-end;pointer-events:none}
+.nr-card{pointer-events:auto;position:relative;display:flex;align-items:center;gap:8px;margin:0;padding:5px 12px 5px 5px;border-radius:14px;cursor:pointer;
+  background:rgba(20,13,40,.74);border:1px solid rgba(167,139,250,.28);color:var(--g-ink);font:inherit;text-align:left;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:.8;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,opacity .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.nr-card:hover{opacity:1;border-color:var(--hero)}
+.nr-card:focus-visible{outline:3px solid var(--g-cyan);outline-offset:2px}
+.nr-card.on{opacity:1;transform:translateY(-4px);border-color:var(--hero);background:rgba(30,20,60,.86);
+  box-shadow:0 0 0 1px var(--hero),0 0 26px var(--hero-glow),0 10px 26px rgba(0,0,0,.45)}
+.nr-card--vera{--hero:#a78bfa;--hero-glow:rgba(167,139,250,.5)}
+.nr-card--pix{--hero:#5ee7ff;--hero-glow:rgba(94,231,255,.42)}
+.nr-card--brick{--hero:#ffb347;--hero-glow:rgba(255,179,71,.42)}
+.nr-face{display:block;width:44px;height:44px;flex:none;border-radius:11px;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.1),rgba(0,0,0,.28))}
+.nr-card.on .nr-face{background:radial-gradient(circle at 50% 42%,var(--hero-glow),rgba(0,0,0,.22))}
+.nr-card-t{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.nr-card-n{font:800 13px/1.1 var(--sans);color:#fff;letter-spacing:.2px}
+.nr-card.on .nr-card-n{color:var(--hero)}
+.nr-hearts{display:flex;gap:2px;font-size:13px;line-height:1}
+.nr-heart{font-style:normal;color:#ff5f6d;text-shadow:0 0 8px rgba(255,95,109,.7);transition:color .25s ease}
+.nr-heart.off{color:rgba(255,255,255,.18);text-shadow:none}
+.nr-card-k{position:absolute;top:-8px;right:-6px;background:rgba(13,8,32,.95);font-size:10px;padding:3px 5px}
+.nr-card.on .nr-card-k{border-color:var(--hero);color:var(--hero)}
+.nr-card.hit{animation:nr-hit .45s ease}
+.nr-card.on.hit{animation:nr-hit-on .45s ease}
+.nr-card.low .nr-heart:not(.off){animation:nr-beat 1s ease-in-out infinite}
+.nr-team--solo .nr-card-k{display:none}
+@keyframes nr-hit{20%{transform:translateX(-5px) rotate(-2deg)}40%{transform:translateX(5px) rotate(2deg)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes nr-hit-on{20%{transform:translate(-5px,-4px) rotate(-2deg)}40%{transform:translate(5px,-4px) rotate(2deg)}60%{transform:translate(-3px,-4px)}80%{transform:translate(2px,-4px)}}
+@keyframes nr-beat{50%{transform:scale(1.25)}}
+
+/* the active hero's abilities */
+.nr-hint{position:absolute;z-index:4;right:max(14px,env(safe-area-inset-right));bottom:max(14px,env(safe-area-inset-bottom));max-width:min(540px,50%);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:5px 6px;padding:8px 12px;border-radius:12px;
+  background:rgba(20,13,40,.68);border:1px solid rgba(167,139,250,.25);font:12.5px/1.4 var(--sans);color:var(--g-mut);pointer-events:none;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.nr-hint b{color:#fff;font-weight:700}
+.nr-hint .g-key{font-size:10.5px;padding:3px 5px;color:#fff}
+.nr-hint-n{font:800 11px/1 var(--mono);letter-spacing:1.3px;text-transform:uppercase;color:var(--hero);margin-right:4px}
+.nr-hint--vera{--hero:#c4b5fd} .nr-hint--pix{--hero:#5ee7ff} .nr-hint--brick{--hero:#ffb347}
+.nr-meter{display:inline-block;width:46px;height:7px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden;vertical-align:middle}
+.nr-meter-fill{display:block;height:100%;width:100%;border-radius:999px;background:linear-gradient(90deg,var(--g-cyan),#fff);box-shadow:0 0 8px rgba(94,231,255,.8);transition:width .08s linear}
+.nr-meter.empty .nr-meter-fill{background:rgba(255,255,255,.2);box-shadow:none}
+
+/* portal progress */
+.nr-portal{position:absolute;z-index:4;left:50%;top:max(14px,env(safe-area-inset-top));transform:translate(-50%,-8px);opacity:0;pointer-events:none;white-space:nowrap;
+  padding:7px 13px;border-radius:999px;background:rgba(20,13,40,.82);border:1px solid rgba(94,231,255,.55);font:700 13px/1 var(--mono);color:var(--g-ink);
+  box-shadow:0 0 20px rgba(94,231,255,.32);transition:opacity .2s ease,transform .2s ease}
+.nr-portal.on{opacity:1;transform:translate(-50%,0)}
+.nr-portal b{color:var(--g-cyan)}
+.nr-portal-ic{color:var(--g-cyan);text-shadow:0 0 10px rgba(94,231,255,.9)}
+
+/* level intro: title, letterbox bars; the HUD waits until the fly-over ends */
+.nr-banner{position:absolute;z-index:5;left:0;right:0;bottom:12%;padding:22px 0 18px;text-align:center;pointer-events:none;animation:nr-banner-in .7s ease both;
+  background:radial-gradient(60% 75% at 50% 55%,rgba(7,4,18,.6),rgba(7,4,18,.28) 55%,rgba(7,4,18,0) 100%)}
+.nr-banner .g-kicker{font-size:13px}
+.stage .nr-banner h3{margin:4px 0 6px;font-size:clamp(30px,5.4vw,56px);line-height:1.05;color:#fff;letter-spacing:-.5px;
+  text-shadow:0 0 30px rgba(167,139,250,.85),0 4px 22px rgba(0,0,0,.65)}
+.stage .nr-banner-sub{margin:0 auto;max-width:560px;padding:0 16px;color:#ece6ff;font-size:15px;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.stage .nr-skip{margin:16px 0 0;font:700 11px/1 var(--mono);letter-spacing:1.4px;text-transform:uppercase;color:rgba(241,236,255,.7);animation:nr-blink 1.6s ease-in-out infinite}
+.nr-banner.out{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+@keyframes nr-banner-in{from{opacity:0;transform:translateY(18px)}}
+@keyframes nr-blink{50%{opacity:.35}}
+.nr-cine{position:absolute;inset:0;z-index:3;pointer-events:none}
+.nr-cine::before,.nr-cine::after{content:"";position:absolute;left:0;right:0;height:9%;background:#000;transition:transform .5s ease}
+.nr-cine::before{top:0;transform:translateY(-101%)}
+.nr-cine::after{bottom:0;transform:translateY(101%)}
+.nr-intro .nr-cine::before,.nr-intro .nr-cine::after{transform:none}
+.nr-view .hud,.nr-team,.nr-hint,.nr-touch{transition:opacity .4s ease}
+.nr-intro .hud,.nr-intro .nr-team,.nr-intro .nr-hint,.nr-intro .nr-touch,.nr-intro .nr-portal{opacity:0;pointer-events:none}
+.nr-intro .hud .hud-quit{pointer-events:none}
+.nr-won .nr-hint,.nr-won .nr-touch,.nr-won .nr-portal{opacity:0;pointer-events:none}
+
+/* a red edge when the active hero is hit */
+.nr-flash{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse at center,rgba(255,95,109,0) 42%,rgba(255,60,80,.5) 100%)}
+.nr-flash.on{animation:nr-flash .5s ease-out}
+@keyframes nr-flash{from{opacity:1}to{opacity:0}}
+
+/* pause menu */
+.nr-pause{position:absolute;inset:0;z-index:7;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;
+  background:rgba(8,5,20,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.nr-pause[hidden]{display:none}
+.nr-pause-card{width:min(720px,100%);margin:auto;background:linear-gradient(160deg,rgba(55,38,110,.97),rgba(26,18,54,.98));border:1px solid rgba(167,139,250,.45);
+  border-radius:18px;padding:20px 22px;box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 40px rgba(124,58,237,.3)}
+.stage .nr-pause-card h3{margin:4px 0 12px;font-size:26px;color:#fff}
+.nr-pause-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.nr-ctls{margin:0;padding:11px 13px;border-radius:12px;background:rgba(13,8,32,.55);border:1px solid var(--g-line);display:grid;gap:7px;align-content:start}
+.stage .nr-ctls-h{margin:0 0 2px;font:800 10.5px/1.2 var(--mono);letter-spacing:1.2px;text-transform:uppercase;color:var(--g-cyan)}
+.nr-ctl{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:10px;align-items:baseline}
+.nr-ctl dt{font:700 12.5px/1.5 var(--sans);color:#fff;white-space:nowrap}
+.nr-ctl dd{margin:0;font-size:12.5px;line-height:1.4;color:var(--g-mut)}
+.nr-ctl .g-key{font-size:10px;padding:2px 5px;color:#fff}
+.nr-ctls--touch{display:none}
+.nr-touchui .nr-ctls--touch{display:grid}
+.nr-touchui .nr-ctls--keys{display:none}
+.nr-pause-actions{margin-top:16px}
+.nr-touchui .nr-pause .g-key{display:none}
+
+/* touch: a floating thumb stick on the left, JUMP / ACTION / SWITCH on the right */
+.nr-touch{display:none}
+.nr-touchui .nr-touch{display:block;position:absolute;inset:0;z-index:5;pointer-events:none}
+.nr-stick{position:absolute;left:0;bottom:0;width:50%;height:50%;pointer-events:auto;touch-action:none;-webkit-user-select:none;user-select:none}
+.nr-base{position:absolute;left:44%;top:58%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(43,31,85,.5) 0 55%,rgba(20,13,40,.58) 56%);border:2px solid rgba(167,139,250,.45);
+  box-shadow:0 0 22px rgba(124,58,237,.3),inset 0 0 20px rgba(0,0,0,.5);opacity:.6;transition:opacity .15s,border-color .15s}
+.nr-base.on{opacity:1;border-color:rgba(94,231,255,.75);box-shadow:0 0 30px rgba(94,231,255,.35),inset 0 0 20px rgba(0,0,0,.5)}
+.nr-knob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#e3d9ff,#7c3aed 72%);border:2px solid #e9ddff;box-shadow:0 5px 14px rgba(0,0,0,.5),0 0 18px rgba(167,139,250,.6)}
+.nr-stick-hint{position:absolute;left:44%;top:calc(58% + 68px);transform:translateX(-50%);font:700 10px/1 var(--mono);letter-spacing:1.3px;text-transform:uppercase;
+  color:rgba(233,221,255,.5);pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.nr-btns{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));width:190px;height:180px;pointer-events:none}
+.nr-tb{position:absolute;pointer-events:auto;appearance:none;-webkit-appearance:none;margin:0;padding:0;border-radius:50%;border:2px solid;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#fff;font:800 10px/1 var(--mono);letter-spacing:1px;
+  text-shadow:0 1px 3px rgba(0,0,0,.5);touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  transition:transform .06s ease,filter .1s ease}
+.nr-tb-ic{font-size:22px;line-height:1}
+.nr-tb.on{transform:scale(.9);filter:brightness(1.35)}
+.nr-tb--jump{right:0;bottom:0;width:94px;height:94px;background:radial-gradient(circle at 35% 30%,#ddd2ff,#6d28d9 70%);border-color:#c4b5fd;box-shadow:0 0 26px rgba(167,139,250,.55)}
+.nr-tb--jump::after{content:"";position:absolute;inset:-8px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(#5ee7ff calc(var(--fuel,1) * 360deg),rgba(94,231,255,.12) 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));opacity:.85}
+.nr-tb--act{right:104px;bottom:10px;width:74px;height:74px;background:radial-gradient(circle at 35% 30%,#8ff5ff,#0e7490 70%);border-color:#5ee7ff;box-shadow:0 0 22px rgba(94,231,255,.5)}
+.nr-tb--act::after{content:"";position:absolute;inset:-7px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(#ffffff calc((1 - var(--cd,0)) * 360deg),rgba(255,255,255,.1) 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));opacity:.7}
+.nr-tb--act.nr-tb--pix{background:radial-gradient(circle at 35% 30%,#ffd9b0,#ea580c 70%);border-color:#ffb066;box-shadow:0 0 22px rgba(255,159,67,.5)}
+.nr-tb--act.nr-tb--brick{background:radial-gradient(circle at 35% 30%,#ffe2ad,#b45309 70%);border-color:#ffb347;box-shadow:0 0 22px rgba(255,179,71,.5)}
+.nr-tb--switch{right:12px;bottom:106px;width:62px;height:62px;font-size:9px;background:radial-gradient(circle at 35% 30%,#f1ecff,#5b21b6 70%);border-color:#a78bfa;box-shadow:0 0 18px rgba(167,139,250,.45)}
+.nr-tb--switch .nr-tb-ic{font-size:20px}
+.nr-touch--solo .nr-tb--switch{display:none}
+.nr-touchui .nr-team{top:calc(max(10px,env(safe-area-inset-top)) + 54px);bottom:auto;left:max(10px,env(safe-area-inset-left));gap:6px;align-items:flex-start}
+.nr-touchui .nr-card{padding:4px 9px 4px 4px;gap:6px;border-radius:12px}
+.nr-touchui .nr-card.on{transform:none}
+.nr-touchui .nr-face{width:36px;height:36px;border-radius:9px}
+.nr-touchui .nr-card-k{display:none}
+.nr-touchui .nr-card-n{font-size:11.5px}
+.nr-touchui .nr-hearts{font-size:11px}
+.nr-touchui .nr-hint{display:none}
+.nr-touchui .nr-portal{top:calc(max(10px,env(safe-area-inset-top)) + 110px)}
+
+/* desktop key line under the view */
+.stage .nr-tips{margin:10px 0 0;font-size:13px;color:var(--g-dim);text-align:center}
+.nr-tips .g-key{margin:0 2px}
+.nr-area--touch .nr-tips,.stage--full .nr-tips{display:none}
+
+/* full screen: the view fills the screen edge to edge */
+.stage--full.stage--nr{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.stage--full.stage--nr .stage-view{overflow:hidden;display:flex;flex-direction:column;padding:0}
+.stage--full.stage--nr .play-area{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.stage--full .nr-view{flex:1 1 auto;height:auto;min-height:0;border:0;border-radius:0;box-shadow:none}
+
+/* no WebGL */
+.nr-nogl{max-width:660px;padding:24px 4px 8px}
+.nr-nogl h2{margin-top:6px}
+
+/* phones */
+@media (max-width:560px){
+  .stage--nr .stage-view{padding:10px}
+  .nr-view .hud{gap:4px 14px;padding-bottom:22px}
+  .nr-view .hud-k{font-size:9px;letter-spacing:.8px}
+  .nr-view .hud-v{font-size:15px}
+  .nr-time{flex-direction:column;align-items:flex-start;gap:2px}
+  .nr-par{font-size:9.5px}
+  .nr-view .hud .hud-quit{gap:5px}
+  .nr-view .hud .hud-quit .g-btn{min-height:34px;padding:4px 9px}
+  .nr-pause-t,.nr-pausebtn .g-key,.nr-qbtn{display:none}
+  .nr-pause-cols{grid-template-columns:1fr}
+  .nr-pause-card{padding:16px}
+  .nr-team{gap:6px}
+  .nr-card{padding:4px 8px 4px 4px}
+}
+/* short screens (a phone on its side): slimmer HUD and buttons */
+@media (max-height:500px){
+  .nr-view .hud{padding-top:max(6px,env(safe-area-inset-top));padding-bottom:16px}
+  .nr-view .hud-v{font-size:15px}
+  .nr-view .hud .hud-quit .g-btn{min-height:32px;padding:4px 9px}
+  .nr-view .g-full-txt,.nr-view .g-sound-txt,.nr-pause-t,.nr-view .hud-quit .g-key{display:none}
+  .nr-touchui .nr-team{top:calc(max(6px,env(safe-area-inset-top)) + 44px)}
+  .nr-touchui .nr-face{width:30px;height:30px}
+  .nr-btns{transform:scale(.86);transform-origin:100% 100%}
+  .nr-base{width:104px;height:104px;margin:-52px 0 0 -52px}
+}
+@media (prefers-reduced-motion:reduce){
+  .nr-banner,.nr-skip,.nr-card.hit,.nr-card.on.hit,.nr-card.low .nr-heart,.nr-flash.on,.nr-time.bump{animation:none!important}
+  .nr-card,.nr-portal,.nr-cine::before,.nr-cine::after,.nr-banner.out,.nr-meter-fill{transition:none}
+}

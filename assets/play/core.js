@@ -8,6 +8,7 @@ import { veraPortrait } from './characters.js';
 
 const KEY = 'veraqis.play.v1';
 export const GAMES = {
+  'neon-rift': { title: 'Neon Rift', href: '/play/neon-rift/', levels: 8 },
   guardian: { title: 'Vera: Archive Guardian', href: '/play/guardian/', levels: 8 },
   gatekeeper: { title: 'Gatekeeper', href: '/play/gatekeeper/', levels: 8 },
   'magic-bytes': { title: 'Magic Bytes', href: '/play/magic-bytes/', levels: 8 },

@@ -1,0 +1,7 @@
+{
+  "note": "three.min.js is three.js 0.187.0 (npm), core plus addons, reduced to the 75 names Neon Rift uses and minified with esbuild 0.28.2. Rebuild with build-three.sh rather than editing by hand.",
+  "three": "0.187.0",
+  "esbuild": "0.28.2",
+  "exports": 75,
+  "file": { "name": "three.min.js", "bytes": 635297, "sha256": "22f7e0d393f5ba7ae6416ac13a8dcd612490fda65d73b382fff4421baef0fc72" }
+}
