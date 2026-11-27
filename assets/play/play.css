@@ -68,6 +68,8 @@
 .lv-total{font:700 16px var(--mono)}
 .lv-total b{color:var(--g-warn)}
 .lv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.lv-chapter{grid-column:1/-1;margin:10px 0 -2px;font-size:13px;letter-spacing:1.4px;text-transform:uppercase;color:var(--g-cyan,#5ee7ff)}
+.lv-chapter:first-child{margin-top:0}
 .lv{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:15px;border-radius:14px;
   border:1px solid rgba(167,139,250,.28);background:linear-gradient(160deg,rgba(55,38,110,.9),rgba(30,21,62,.92));color:var(--g-ink);
   cursor:pointer;font:inherit;min-height:132px;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease;overflow:hidden}

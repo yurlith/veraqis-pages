@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Neon Rift — a free 3D puzzle platformer in your browser | VERAQIS</title>
-<meta name="description" content="Free 3D browser game: switch between Vera, Pix and Brick to solve puzzles across neon rooftops, crystal caves, sky islands and a lava core. 8 levels." />
+<meta name="description" content="Free 3D browser adventure: Vera, Pix and Brick fight through 12 story levels, three bosses and the Underside — the world below the city. Hard missions, no install." />
 <link rel="canonical" href="https://veraqis.tech/play/neon-rift/" />
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="/assets/veraqis.css" />
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="VERAQIS" />
 <meta property="og:title" content="Neon Rift — a free 3D puzzle platformer" />
-<meta property="og:description" content="A free 3D puzzle platformer in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — and combine them to cross neon rooftops, crystal caves, sky islands and a lava core. Eight levels, keyboard, touch and gamepad, nothing to install." />
+<meta property="og:description" content="A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core and the Underside, the world below the city. Twelve levels in two chapters, three bosses, a hard mission on every level; keyboard, touch and gamepad, nothing to install." />
 <meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -25,7 +25,7 @@
 <meta property="og:url" content="https://veraqis.tech/play/neon-rift/" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Neon Rift — a free 3D puzzle platformer" />
-<meta name="twitter:description" content="A free 3D puzzle platformer in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — and combine them to cross neon rooftops, crystal caves, sky islands and a lava core. Eight levels, keyboard, touch and gamepad, nothing to install." />
+<meta name="twitter:description" content="A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core and the Underside, the world below the city. Twelve levels in two chapters, three bosses, a hard mission on every level; keyboard, touch and gamepad, nothing to install." />
 <meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
 <script type="application/ld+json" data-veraqis-schema="page">
 {
@@ -54,9 +54,9 @@
       "@id": "https://veraqis.tech/play/neon-rift/#webpage",
       "url": "https://veraqis.tech/play/neon-rift/",
       "name": "Neon Rift — a free 3D puzzle platformer in your browser | VERAQIS",
-      "description": "A free 3D puzzle platformer in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — and combine them to cross neon rooftops, crystal caves, sky islands and a lava core. Eight levels, keyboard, touch and gamepad, nothing to install.",
+      "description": "A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core and the Underside, the world below the city. Twelve levels in two chapters, three bosses, a hard mission on every level; keyboard, touch and gamepad, nothing to install.",
       "datePublished": "2026-11-24",
-      "dateModified": "2026-11-24",
+      "dateModified": "2026-11-26",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://veraqis.tech/#website"
@@ -70,7 +70,7 @@
       "@id": "https://veraqis.tech/play/neon-rift/#game",
       "name": "Neon Rift",
       "url": "https://veraqis.tech/play/neon-rift/",
-      "description": "A free 3D puzzle platformer in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — and combine them to cross neon rooftops, crystal caves, sky islands and a lava core. Eight levels, keyboard, touch and gamepad, nothing to install.",
+      "description": "A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core and the Underside, the world below the city. Twelve levels in two chapters, three bosses, a hard mission on every level; keyboard, touch and gamepad, nothing to install.",
       "genre": [
         "Puzzle",
         "Platformer",
@@ -100,8 +100,22 @@
           "@type": "Person",
           "name": "Brick",
           "description": "Slow and unstoppable. Pushes heavy crates, holds down heavy plates, smashes cracked floors and walks straight through lasers."
+        },
+        {
+          "@type": "Person",
+          "name": "Echo",
+          "description": "A voice in the Underside that guides the team — and the last spark of the Warden."
+        },
+        {
+          "@type": "Person",
+          "name": "The Null Queen",
+          "description": "The final boss. She rules the Underside and drinks the city's light."
         }
-      ]
+      ],
+      "numberOfPlayers": {
+        "@type": "QuantitativeValue",
+        "value": 1
+      }
     },
     {
       "@type": "BreadcrumbList",
@@ -157,6 +171,22 @@
         },
         {
           "@type": "Question",
+          "name": "What is the Underside?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The world below the city. In chapter 2, falling off a level does not end your run: the hero drops into the Underside, a glowing cavern with its own enemies and hidden deep shards, and rides a rift geyser back up."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are missions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every level has one optional hard mission on top of the three stars — no hits, a time limit, nobody falls, every enemy defeated or every deep shard found. A completed mission adds 1,500 points and is remembered in your browser."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Will it run on my device?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -199,8 +229,8 @@
   <div class="wrap">
     <div class="crumb"><a href="/">VERAQIS</a> / <a href="/play/">Play</a> / Neon Rift</div>
     <h1>Neon Rift</h1>
-    <p class="lead">A 3D puzzle platformer for three heroes. Switch between Vera, Pix and Brick, leave one holding a door while another runs ahead, and get the whole team to the portal — across neon rooftops, crystal caves, sky islands and a lava core.</p>
-    <p class="note mt-8">Free · 3D in your browser · keyboard, touch and gamepad · progress stays in this browser</p>
+    <p class="lead">A 3D story adventure for three heroes. Switch between Vera, Pix and Brick, leave one holding a door while another runs ahead, beat three bosses — and when the floor gives way, follow the light down into the Underside, the world below the city.</p>
+    <p class="note mt-8">Free · 12 levels · 3 bosses · hard missions · keyboard, touch and gamepad · progress stays in this browser</p>
   </div>
 </div>
 <section class="play-section">
@@ -224,12 +254,26 @@
 </section>
 <section>
   <div class="wrap">
-    <h2>Four worlds, eight levels</h2>
+    <h2>Two chapters, twelve levels</h2>
+    <p class="sub">Chapter 1 · The City Above — the light of Neon City is draining away, and three unlikely heroes go after it.</p>
     <div class="grid g4">
       <div class="card"><div class="ic">NEON</div><h3>Neon rooftops</h3><p>Night-city roofs in the rain. Learn to glide, then meet Pix in the wires.</p></div>
       <div class="card"><div class="ic">CRYSTAL</div><h3>Crystal caves</h3><p>Glowing caverns, heavy crates and laser grids — Brick joins the team.</p></div>
       <div class="card"><div class="ic">SKY</div><h3>Sky islands</h3><p>Moving platforms, bounce pads, crumbling bridges and drones that watch.</p></div>
       <div class="card"><div class="ic">LAVA</div><h3>Lava core</h3><p>Timed lasers over magma, and the Warden waiting at the bottom.</p></div>
+    </div>
+    <p class="sub mt-26">Chapter 2 · The Underside — the Warden falls, the streets crack, and the team drops into the world below.</p>
+    <div class="grid g4">
+      <div class="card"><div class="ic">9</div><h3>Freefall</h3><p>The skybridge gives way. Land in a glowing cavern 40 metres down and ride a rift geyser home.</p></div>
+      <div class="card"><div class="ic">10</div><h3>The Sunken Foundry</h3><p>Turrets, crumbling catwalks over the abyss and a geyser that only runs while Vera keeps it lit.</p></div>
+      <div class="card"><div class="ic">BOSS</div><h3>The Maw</h3><p>A colossal armoured eel in a pit. Break its chains, light the perches, pound its brood.</p></div>
+      <div class="card"><div class="ic">FINAL</div><h3>Heart of the Rift</h3><p>The Null Queen. Her throne shatters mid-fight and the battle drops into the Underside — then climbs back out.</p></div>
+    </div>
+    <h2 class="mt-36">Story, bosses and missions</h2>
+    <div class="grid g3">
+      <div class="card"><h3>A story with voices</h3><p>The heroes talk as they play, and a mysterious voice called Echo guides them through the dark. Who Echo really is changes everything.</p></div>
+      <div class="card"><h3>Three bosses</h3><p>The Warden, the Maw and the Null Queen. Each fight has three phases, and each phase needs a different hero — plates, pounds, perches and zaps.</p></div>
+      <div class="card"><h3>Hard missions</h3><p>Every level has one optional mission on top of its three stars: no hits, beat the clock, nobody falls, defeat every enemy or find every deep shard.</p></div>
     </div>
   </div>
 </section>
@@ -250,6 +294,8 @@
       <div class="qa"><h3>Do I need to install anything?</h3><p>No. Neon Rift runs in your browser with WebGL on a computer, a phone or a tablet. There is no sign-up and nothing is uploaded; your progress stays in this browser.</p></div>
       <div class="qa"><h3>How do the three heroes work together?</h3><p>Switch between them at any time. A hero you leave behind stays where you left them — still standing on a pressure plate, still holding a door open. Most puzzles need two or three of them, and the exit portal opens only when the whole team stands in it.</p></div>
       <div class="qa"><h3>How do I play on a phone?</h3><p>Start a level and the game opens full screen. The thumb stick on the left walks, drag anywhere else to turn the camera, pinch to zoom, and the buttons on the right jump, use the hero’s ability and switch heroes.</p></div>
+      <div class="qa"><h3>What is the Underside?</h3><p>The world below the city. In chapter 2, falling off a level does not end your run: the hero drops into the Underside, a glowing cavern with its own enemies and hidden deep shards, and rides a rift geyser back up.</p></div>
+      <div class="qa"><h3>What are missions?</h3><p>Every level has one optional hard mission on top of the three stars — no hits, a time limit, nobody falls, every enemy defeated or every deep shard found. A completed mission adds 1,500 points and is remembered in your browser.</p></div>
       <div class="qa"><h3>Will it run on my device?</h3><p>It picks a graphics quality automatically and lowers it if the frame rate drops. You can also choose Auto, High, Medium or Low in the game.</p></div>
     </div>
   </div>

@@ -149,7 +149,7 @@ class it was measured on, and the pages say so.
 ## Games — learn by playing
 
 - [VERAQIS Play](https://veraqis.tech/play/): five free browser games; four are built from the rules on this site; nothing is uploaded.
-- [Neon Rift](https://veraqis.tech/play/neon-rift/): a free 3D puzzle platformer (WebGL) for three switchable heroes — Vera (zap, glide), Pix (double jump, dash, low tunnels) and Brick (push, pound, laser-proof); eight levels in four worlds; keyboard, touch and gamepad.
+- [Neon Rift](https://veraqis.tech/play/neon-rift/): a free 3D story adventure (WebGL) for three switchable heroes — Vera (zap, glide), Pix (double jump, dash, low tunnels) and Brick (push, pound, laser-proof); twelve levels in two chapters (the city above and the Underside below), three bosses (the Warden, the Maw, the Null Queen) and a hard mission on every level; keyboard, touch and gamepad.
 - [Vera: Archive Guardian](https://veraqis.tech/play/guardian/): top-down action game — scan unproven data, stop Zip Slip, bit rot, compression bombs and symlinks, and defeat the Overlap Hydra; keyboard, touch and gamepad.
 - [Gatekeeper](https://veraqis.tech/play/gatekeeper/): block Zip Slip, absolute and Windows paths, compression bombs, symlinks and overlapping entries before extraction.
 - [Magic Bytes](https://veraqis.tech/play/magic-bytes/): identify archives, streams and disk images from their signatures; renamed versus damaged files.

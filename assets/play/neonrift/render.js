@@ -75,7 +75,29 @@ const THEMES = {
       [0, 1, 0, 40, 40, '#2a0c0a', 1]],
     scenery: 'cliffs', ambient: 'embers',
   },
+  // the Underside: where everything that falls ends up — black water light, glowing spores, crystal roots
+  abyss: {
+    sky: { top: '#010103', mid: '#03040d', hor: '#0a1a2c', bot: '#020309', glow: '#1de9b6', glowK: 9, glowI: 0.14 },
+    body: null, stars: 0.55, starCol: '#7cf7d4', aurora: { a: '#0f766e', b: '#6d28d9', amt: 0.26 },
+    fog: ['#050b16', 0.021], hemi: ['#5b86e0', '#2a1352', 0.8], key: ['#a4f7e4', 2.0, [0.22, 0.9, -0.32]], rim: ['#2ee6c8', 3.0],
+    env: 0.5, envSky: 0.45, exposure: 1.06, bloom: [0.95, 0.55, 0.9], accent: ['#2ee6c8', '#a855f7'], crystal: '#2ee6c8',
+    haze: '#08142a', hazeK: 0.0072, vig: 0.42, sat: 1.06, heat: 0, dust: '#5fe3c8',
+    tint: { stone: '#9fb0d8', rock: '#8f95c0', metal: '#b0c2e8', wood: '#8f86a8', sand: '#98a4c4', grass: '#6fd6c0', ice: '#9fd8ff', soil: '#7a7898' },
+    cards: [[0, -1, 0, 40, 40, '#0d9488', 1.8], [0.7, 0.1, 0.7, 20, 8, '#2ee6c8', 2.2], [-0.7, 0.2, -0.6, 10, 20, '#7c3aed', 2.2],
+      [0, 1, 0, 30, 30, '#0b1020', 0.8], [-0.4, 0.05, 0.9, 14, 6, '#22d3ee', 1.4]],
+    scenery: 'spires', ambient: 'spores',
+  },
 };
+
+// The Underside mood that setDepth() blends any theme toward (a hero who fell below the level).
+const DEEP = THEMES.abyss;
+const VEIL_FS = `
+uniform vec3 uColor; uniform float uOpacity; uniform vec3 uGlow; varying vec3 vDir;
+void main() {
+  float y = normalize(vDir).y;
+  vec3 c = uColor + uGlow * exp(-abs(y + 0.15) * 7.0) * 0.6;
+  gl_FragColor = vec4(c, uOpacity);
+}`;
 
 // ---------- deterministic randomness and tileable noise ----------
 function rng(seed) {
@@ -2319,6 +2341,18 @@ export function createRenderer(canvas, { quality = 'auto', reducedMotion = false
   dome.frustumCulled = false;
   dome.renderOrder = 1000;
   scene.add(dome);
+  // the Underside veil: drawn over the sky (at the far plane, behind everything) as a hero sinks below the level
+  const veil = new THREE.Mesh(domeGeo, new THREE.ShaderMaterial({
+    uniforms: { uColor: { value: new THREE.Color() }, uOpacity: { value: 0 }, uGlow: { value: new THREE.Color('#0e3b4a') } },
+    vertexShader: SKY_VS, fragmentShader: VEIL_FS, side: THREE.BackSide, transparent: true, depthWrite: false, fog: false,
+  }));
+  veil.frustumCulled = false;
+  veil.renderOrder = 1001;
+  veil.visible = false;
+  scene.add(veil);
+  let depthK = 0;
+  const mix0 = { fog: new THREE.Color(), hs: new THREE.Color(), hg: new THREE.Color(), key: new THREE.Color(), rim: new THREE.Color() };
+  const mix1 = { fog: new THREE.Color(DEEP.fog[0]), hs: new THREE.Color(DEEP.hemi[0]), hg: new THREE.Color(DEEP.hemi[1]), key: new THREE.Color(DEEP.key[0]), rim: new THREE.Color(DEEP.rim[0]) };
   const pmrem = new THREE.PMREMGenerator(renderer);
   let envRT = null;
 
@@ -2373,6 +2407,14 @@ export function createRenderer(canvas, { quality = 'auto', reducedMotion = false
       buildTheme(def);
     },
     setShadowFocus(v) { focus.copy(v); },
+    // 0 = the level's own theme, 1 = the Underside: fog, light, exposure, bloom and the sky veil blend over
+    setDepth(k) {
+      k = clamp(Number.isFinite(k) ? k : 0, 0, 1);
+      if (!theme || Math.abs(k - depthK) < 0.002) return;
+      depthK = k;
+      applyDepth();
+    },
+    get depth() { return depthK; },
     render(dt = 1 / 60) {
       if (!theme) buildTheme('neon');
       dt = clamp(Number.isFinite(dt) ? dt : 1 / 60, 0, 0.1);
@@ -2396,7 +2438,7 @@ export function createRenderer(canvas, { quality = 'auto', reducedMotion = false
       R.fx.dispose();
       mats.dispose();
       noiseTex.dispose();
-      domeGeo.dispose(); dome.material.dispose();
+      domeGeo.dispose(); dome.material.dispose(); veil.material.dispose();
       if (envRT) envRT.dispose();
       pmrem.dispose();
       key.dispose(); rim.dispose(); hemi.dispose();
@@ -2574,6 +2616,20 @@ export function createRenderer(canvas, { quality = 'auto', reducedMotion = false
     theme.lod = () => { sc.lod(tier.scenery); amb(tier.parts); };
     theme.lod();
   }
+  function applyDepth() {
+    const th = theme.def; const k = depthK; const lerp = (a, b) => a + (b - a) * k;
+    scene.fog.color.copy(mix0.fog).lerp(mix1.fog, k);
+    scene.fog.density = lerp(th.fog[1], DEEP.fog[1]);
+    renderer.setClearColor(scene.fog.color);
+    hemi.color.copy(mix0.hs).lerp(mix1.hs, k); hemi.groundColor.copy(mix0.hg).lerp(mix1.hg, k); hemi.intensity = lerp(th.hemi[2], DEEP.hemi[2]);
+    key.color.copy(mix0.key).lerp(mix1.key, k); key.intensity = lerp(th.key[1], DEEP.key[1]);
+    rim.color.copy(mix0.rim).lerp(mix1.rim, k); rim.intensity = lerp(th.rim[1], DEEP.rim[1]);
+    renderer.toneMappingExposure = lerp(th.exposure, DEEP.exposure);
+    bloom.strength = lerp(th.bloom[0], DEEP.bloom[0]); bloom.threshold = lerp(th.bloom[2], DEEP.bloom[2]);
+    veil.visible = k > 0.002;
+    veil.material.uniforms.uColor.value.copy(scene.fog.color);
+    veil.material.uniforms.uOpacity.value = sstep(0, 1, k);
+  }
   function buildTheme(name) {
     const th = THEMES[name];
     clearTheme();
@@ -2606,6 +2662,8 @@ export function createRenderer(canvas, { quality = 'auto', reducedMotion = false
     buildEnv(th);
     mats.applyTheme();
     buildScenery();
+    mix0.fog.set(th.fog[0]); mix0.hs.set(th.hemi[0]); mix0.hg.set(th.hemi[1]); mix0.key.set(th.key[0]); mix0.rim.set(th.rim[0]);
+    if (depthK > 0) applyDepth();
   }
 
   R.setQuality(quality);

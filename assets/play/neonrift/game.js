@@ -46,6 +46,20 @@ const HEROES = {
   brick: { name: 'Brick', kind: 'golem', radius: 0.55, height: 1.80, run: 4.2, jump: jv(0.9), airJumps: 0, hearts: 4, heavy: true,
     accel: 30, decel: 36, airAccel: 15, turn: 9, eye: 1.45, cam: 1.12, color: '#ffb347', pound: true },
 };
+// who can speak in the story, with the colour of their name
+const CAST = {
+  vera: { name: 'Vera', color: '#c4b5fd' }, pix: { name: 'Pix', color: '#5ee7ff' }, brick: { name: 'Brick', color: '#ffb347' },
+  echo: { name: 'Echo', color: '#5ef2c0' }, queen: { name: 'The Null Queen', color: '#e879f9' }, maw: { name: 'The Maw', color: '#ff8a3d' },
+};
+const MKEY = 'veraqis.neonrift.missions';
+function missionsDone() { try { const v = JSON.parse(window.localStorage.getItem(MKEY) || '[]'); return Array.isArray(v) ? v : []; } catch { return []; } }
+function saveMission(n) {
+  const all = missionsDone();
+  if (all.includes(n)) return false;
+  all.push(n);
+  try { window.localStorage.setItem(MKEY, JSON.stringify(all)); } catch { /* storage unavailable */ }
+  return true;
+}
 const CAM = {
   dist: 7.5, distTouch: 8, min: 3, max: 15, pitch: 0.36, pitchMin: -0.22, pitchMax: 1.18,
   keyYaw: 2.3, padYaw: 2.8, padPitch: 1.7, mouse: 0.0052, touch: 0.0078,
@@ -144,6 +158,48 @@ function drawFace(c, id, s) {
       c.strokeStyle = '#5ee7ff'; c.lineWidth = 3; glow('#5ee7ff', 1.2); c.stroke(); c.shadowBlur = 0;
       c.fillStyle = 'rgba(190,250,255,.9)'; c.beginPath(); c.arc(sx * 13 - 3, -9, 3, 0, TAU); c.fill();
     }
+  } else if (id === 'queen') {
+    // the Null Queen: a pale crystal mask under a crown of violet spikes
+    c.fillStyle = '#c084fc'; glow('#c084fc', 1.4);
+    for (let i = -3; i <= 3; i++) { c.beginPath(); c.moveTo(i * 9 - 4, -24); c.lineTo(i * 9, -48 + Math.abs(i) * 5); c.lineTo(i * 9 + 4, -24); c.fill(); }
+    c.shadowBlur = 0;
+    const qg = c.createLinearGradient(0, -30, 0, 40);
+    qg.addColorStop(0, '#2a1650'); qg.addColorStop(1, '#0d0620');
+    c.fillStyle = qg; c.beginPath(); c.moveTo(0, -32); c.lineTo(32, 0); c.lineTo(0, 44); c.lineTo(-32, 0); c.closePath(); c.fill();
+    c.fillStyle = '#ece6ff'; c.beginPath(); c.ellipse(0, 2, 20, 26, 0, 0, TAU); c.fill();
+    c.fillStyle = '#1a0f33';
+    for (const sx of [-1, 1]) { c.beginPath(); c.moveTo(sx * 4, -2); c.quadraticCurveTo(sx * 12, -9, sx * 17, -1); c.quadraticCurveTo(sx * 11, 3, sx * 4, -2); c.fill(); }
+    c.fillStyle = '#f5d0fe'; glow('#e879f9', 1.6);
+    for (const sx of [-1, 1]) { c.beginPath(); c.arc(sx * 10.5, -2.5, 2.4, 0, TAU); c.fill(); }
+    c.shadowBlur = 0;
+    c.strokeStyle = 'rgba(192,132,252,.8)'; c.lineWidth = 1.6;
+    c.beginPath(); c.moveTo(-6, 16); c.quadraticCurveTo(0, 19, 6, 16); c.stroke();
+    c.beginPath(); c.moveTo(0, -24); c.lineTo(0, -10); c.stroke();
+  } else if (id === 'maw') {
+    // the Maw: an armoured eel head, jaws open, four amber eyes
+    c.fillStyle = '#2a1c24'; c.beginPath(); c.ellipse(0, -4, 40, 30, 0, 0, TAU); c.fill();
+    c.fillStyle = '#ff7a1a'; glow('#ff7a1a', 1.6); c.beginPath(); c.ellipse(0, 18, 26, 14, 0, 0, TAU); c.fill(); c.shadowBlur = 0;
+    c.fillStyle = '#e8dccb';
+    for (let i = -4; i <= 4; i++) {
+      c.beginPath(); c.moveTo(i * 6 - 3, 6); c.lineTo(i * 6, 15); c.lineTo(i * 6 + 3, 6); c.fill();
+      c.beginPath(); c.moveTo(i * 6 - 3, 31); c.lineTo(i * 6, 22); c.lineTo(i * 6 + 3, 31); c.fill();
+    }
+    c.fillStyle = '#ffd23f'; glow('#ffd23f', 1.6);
+    for (const [x, y, r] of [[-14, -12, 5], [14, -12, 5], [-27, -4, 3.5], [27, -4, 3.5]]) { c.beginPath(); c.arc(x, y, r, 0, TAU); c.fill(); }
+    c.shadowBlur = 0;
+    c.fillStyle = '#4a3238';
+    for (let i = -2; i <= 2; i++) { c.beginPath(); c.moveTo(i * 12 - 6, -28); c.lineTo(i * 12, -44 + Math.abs(i) * 4); c.lineTo(i * 12 + 6, -28); c.fill(); }
+  } else if (id === 'echo') {
+    // Echo: what is left of the Warden — a small, flickering core of light
+    const eg = c.createRadialGradient(0, 0, 2, 0, 0, 40);
+    eg.addColorStop(0, '#ffffff'); eg.addColorStop(0.25, '#5ef2c0'); eg.addColorStop(0.6, 'rgba(46,230,200,.25)'); eg.addColorStop(1, 'rgba(46,230,200,0)');
+    c.fillStyle = eg; c.beginPath(); c.arc(0, 0, 40, 0, TAU); c.fill();
+    c.strokeStyle = 'rgba(94,242,192,.9)'; c.lineWidth = 2.5; glow('#5ef2c0', 1.2);
+    c.beginPath(); c.arc(0, 0, 24, -0.4, 1.6); c.stroke();
+    c.beginPath(); c.arc(0, 0, 30, 2.2, 4.4); c.stroke();
+    c.shadowBlur = 0;
+    c.fillStyle = '#0b1f1a'; c.beginPath(); c.ellipse(0, 0, 9, 5, 0, 0, TAU); c.fill();
+    c.fillStyle = '#eafff8'; c.beginPath(); c.arc(0, 0, 3, 0, TAU); c.fill();
   } else {
     const sg = c.createLinearGradient(0, -38, 0, 40);
     sg.addColorStop(0, '#a89c8c'); sg.addColorStop(1, '#5d554b');
@@ -410,7 +466,18 @@ function play(api) {
     h('span', { class: 'g-key' }, 'E'), ' ability · ', h('span', { class: 'g-key' }, 'Shift'), ' dash · ',
     h('span', { class: 'g-key' }, 'Tab'), ' switch · drag or ', h('span', { class: 'g-key' }, 'Z'), h('span', { class: 'g-key' }, 'X'), ' camera · ',
     h('span', { class: 'g-key' }, 'P'), ' pause · ', h('span', { class: 'g-key' }, 'F'), ' full screen');
-  view.append(cine, flash, teamEl, hintEl, portalEl, banner, touchEl, pauseEl);
+  // story: one line of dialogue at a time, with a portrait (click or tap it to move on)
+  const talkFace = h('span', { class: 'nr-talk-face' });
+  const talkName = h('b', { class: 'nr-talk-n' });
+  const talkText = h('span', { class: 'nr-talk-t' });
+  const talkEl = h('div', { class: 'nr-talk', 'aria-hidden': 'true' }, talkFace, h('span', { class: 'nr-talk-b' }, talkName, talkText));
+  talkEl.addEventListener('pointerdown', (e) => { e.stopPropagation(); talk.t = 0; });
+  // boss health: name, phase pips, a bar
+  const bossName = h('b', { class: 'nr-boss-n' });
+  const bossPips = h('span', { class: 'nr-boss-pips' });
+  const bossFill = h('i', { class: 'nr-boss-fill' });
+  const bossEl = h('div', { class: 'nr-boss', 'aria-hidden': 'true' }, h('span', { class: 'nr-boss-top' }, bossName, bossPips), h('span', { class: 'nr-boss-bar' }, bossFill));
+  view.append(cine, flash, teamEl, hintEl, portalEl, banner, touchEl, pauseEl, talkEl, bossEl);
   api.area.append(tips);
 
   // ---------- input ----------
@@ -1201,6 +1268,7 @@ function play(api) {
     if (hh.inv > 0 || !hh.alive) return;
     const dmg = Math.max(1, Math.round(ev.dmg || 1));
     hh.hearts = Math.max(0, hh.hearts - dmg);
+    if (mission && mission.kind === 'nohit') failMission(`${hh.S.name} was hit`);
     hh.inv = IFRAMES; hh.hurtT = 0.38;
     st.hits++;
     const b = hh.body;
@@ -1237,6 +1305,8 @@ function play(api) {
     if (!hh.alive) return;
     hh.hearts = Math.max(0, hh.hearts - 1);
     st.respawns++;
+    ms.falls++;
+    if (mission && (mission.kind === 'nofall' || mission.kind === 'nohit')) failMission(`${hh.S.name} fell`);
     sfx.tone(520, 0.45, 'sine', 0.05, 90);
     paintHearts(i, true);
     if (hh.hearts <= 0) { teamWipe(hh); return; }
@@ -1294,6 +1364,120 @@ function play(api) {
     flash.classList.add('on');
   }
 
+  // ---------- story ----------
+  const story = lv.story || {};
+  const talk = { q: [], t: 0, who: '', faces: new Map(), seen: new Set() };
+  function speak(lines, key) {
+    if (!Array.isArray(lines) || !lines.length) return;
+    if (key) { if (talk.seen.has(key)) return; talk.seen.add(key); }
+    for (const ln of lines) if (Array.isArray(ln) && ln[1]) talk.q.push(ln);
+  }
+  const onStory = (key) => { if (story.on && story.on[key]) speak(story.on[key], 'on:' + key); };
+  function faceOf(id) {
+    let cv = talk.faces.get(id);
+    if (!cv) { cv = faceCanvas(CAST[id] ? id : 'vera', 46); talk.faces.set(id, cv); }
+    return cv;
+  }
+  function updateTalk(dt) {
+    if (talk.t > 0) {
+      talk.t -= dt;
+      if (talk.t <= 0) talkEl.classList.remove('on');
+      return;
+    }
+    if (!talk.q.length || paused) return;
+    if (talk.t > -0.25) { talk.t -= dt; return; }       // a short beat between lines
+    const [who, text] = talk.q.shift();
+    const c = CAST[who] || CAST.vera;
+    talkFace.textContent = '';
+    talkFace.append(faceOf(who));
+    talkName.textContent = c.name;
+    talkName.style.color = c.color;
+    talkText.textContent = text;
+    talkEl.className = `nr-talk on nr-talk--${who}`;
+    talk.t = clamp(1.6 + text.length * 0.05, 2.6, 7);
+    api.say(`${c.name}: ${text}`);
+  }
+  const storyAt = (Array.isArray(story.at) ? story.at : []).filter((a) => a && Array.isArray(a.p)).map((a) => ({ p: toV3(a.p), r: Number(a.r) || 3, lines: a.lines, done: false }));
+  function checkStoryAt() {
+    if (!storyAt.length) return;
+    const b = heroes[active].body;
+    for (const a of storyAt) {
+      if (a.done) continue;
+      const dx = b.pos.x - a.p.x; const dz = b.pos.z - a.p.z;
+      if (dx * dx + dz * dz <= a.r * a.r && Math.abs(b.pos.y - a.p.y) < Math.max(3, a.r)) { a.done = true; speak(a.lines); }
+    }
+  }
+  // the Underside: below `def.under` the world fades into the dark below the level
+  const under = Number.isFinite(def.under) ? def.under : null;
+  let depthK = 0;
+  const fellUnder = new Set();
+  function updateDepth(dt) {
+    if (under === null) return;
+    const y = heroes[active].body.pos.y;
+    const tgt = clamp((under - y) / 10, 0, 1);
+    depthK += (tgt - depthK) * Math.min(1, dt * 2.2);
+    try { R.setDepth?.(depthK); } catch { /* ignore */ }
+    for (const hh of heroes) {
+      if (!hh.alive || fellUnder.has(hh.id) || hh.body.pos.y > under - 3) continue;
+      fellUnder.add(hh.id);
+      if (fellUnder.size === 1) {
+        toast(api.toasts, `${hh.S.name} fell into the Underside! Find a rift geyser ⇧ to get back up.`, 'info', 4200);
+        onStory('under');
+      } else toast(api.toasts, `${hh.S.name} is in the Underside.`, 'info', 2400);
+    }
+  }
+
+  // ---------- missions ----------
+  const mission = lv.mission || null;
+  const ms = { failed: false, falls: 0, said: false };
+  const defEnemies = (def.enemies || []).filter((e) => e && e.type !== 'warden' && e.type !== 'boss');
+  function failMission(why) {
+    if (!mission || ms.failed || over) return;
+    ms.failed = true;
+    sfx.tone(330, 0.18, 'sawtooth', 0.03); sfx.tone(247, 0.25, 'sawtooth', 0.03, 0, 0.14);
+    toast(api.toasts, `Mission failed — ${why}. You can still clear the level.`, 'bad', 3400);
+  }
+  function missionMet() {
+    if (!mission || ms.failed) return false;
+    switch (mission.kind) {
+      case 'nohit': return st.hits === 0;
+      case 'nofall': return ms.falls === 0;
+      case 'time': return st.time <= (Number(mission.t) || par);
+      case 'deep': return under !== null && shardList.filter((x) => x.pos.y < under).every((x) => x.taken);
+      case 'hunter': {
+        const recs = (W.debug && W.debug.enemies) || [];
+        return recs.filter((e) => defEnemies.includes(e.src)).every((e) => !e.alive);
+      }
+      case 'shards': return (W.shards || 0) >= (W.shardsTotal || 0);
+      default: return false;
+    }
+  }
+  function updateMission() {
+    if (!mission || ms.failed || over || mode !== 'play') return;
+    if (mission.kind === 'time' && st.time > (Number(mission.t) || par)) failMission('the clock ran out');
+  }
+  let bossShown = '';
+  let bossT = 0;
+  function paintBoss(dt) {
+    bossT -= dt;
+    if (bossT > 0) return;
+    bossT = 0.1;
+    let b = null;
+    try { b = W.boss ? W.boss() : null; } catch { b = null; }
+    bossEl.classList.toggle('on', !!b && mode === 'play');
+    if (!b) return;
+    const key = `${b.name}|${b.phase}|${b.phases}`;
+    if (key !== bossShown) {
+      bossShown = key;
+      bossName.textContent = b.name;
+      bossPips.textContent = '';
+      for (let i = 1; i <= b.phases; i++) bossPips.append(h('i', { class: i < b.phase ? 'done' : i === b.phase ? 'cur' : '' }));
+    }
+    bossFill.style.width = `${Math.round(b.hp01 * 1000) / 10}%`;
+    bossEl.classList.toggle('open', b.open);
+    bossEl.classList.toggle('down', !b.alive);
+  }
+
   // ---------- world events ----------
   const pendingTips = [];
   let shownTips = 0;
@@ -1322,6 +1506,29 @@ function play(api) {
       api.say('Every shard found.');
     }
   }
+  let gatesUsed = 0;
+  let quakeT = -9;
+  function onGate(ev) {
+    const i = heroIndex(ev.hero);
+    if (i < 0 || over) return;
+    const hh = heroes[i];
+    const b = hh.body;
+    if (hh.dashT > 0) endDash(hh, false);
+    const from = b.pos.clone();
+    const yaw = typeof ev.yaw === 'number' ? ev.yaw : hh.yaw;
+    spotNear(toV3(ev.to, tC), yaw, i, b.pos, hh);
+    b.vel.set(0, 0, 0); b.grounded = false; b.ground = null; b.wall = null;
+    hh.pound = null; hh.gliding = false; hh.jumpBuf = 0; hh.inv = Math.max(hh.inv, 0.8);
+    hh.yaw = hh.yawVis = yaw;
+    hh.prev.copy(b.pos); hh.root.position.copy(b.pos); hh.root.rotation.y = yaw;
+    fx.burst?.(from.setY(from.y + 1), '#5ef2c0', 26, 6);
+    fx.shockwave?.(b.pos.clone().setY(b.pos.y + 0.05), '#5ef2c0', 2.4);
+    fx.burst?.(b.pos.clone().setY(b.pos.y + 0.8), hh.S.color, 20, 4);
+    sfx.tone(300, 0.4, 'sine', 0.06, 1200); sfx.tone(900, 0.2, 'triangle', 0.04, 0, 0.3);
+    if (hh.active) { startSwoop(); buzz(40); }
+    if (!gatesUsed++) toast(api.toasts, 'Rift geyser — whoosh, back up!', 'good', 2000);
+    onStory('gate');
+  }
   function onEvents(evs) {
     if (!evs || !evs.length) return;
     for (const ev of evs) {
@@ -1344,7 +1551,12 @@ function play(api) {
         }
         case 'hurt': hurt(ev); break;
         case 'void': fell(ev); break;
+        case 'gate': onGate(ev); break;
+        case 'crumble':
+          if (ev.big && clock - quakeT > 0.6) { quakeT = clock; shakeCam(0.8); sfx.noise(0.9, 0.2, 500); sfx.tone(70, 0.7, 'sine', 0.09, 40); buzz([60, 40, 90]); }
+          break;
         case 'signal':
+          if (ev.on) onStory(String(ev.id));
           if (mode !== 'intro') {
             if (ev.on) { sfx.tone(660, 0.07, 'square', 0.03); sfx.tone(990, 0.1, 'square', 0.03, 0, 0.07); }
             else { sfx.tone(700, 0.07, 'square', 0.025); sfx.tone(470, 0.1, 'square', 0.025, 0, 0.07); }
@@ -1352,6 +1564,9 @@ function play(api) {
           break;
         case 'tip': if (mode === 'intro') pendingTips.push(ev.text); else tip(ev.text); break;
         case 'alarm':
+          if (ev.boss && ev.phase === 1) onStory(`${ev.boss}:start`);
+          if (ev.boss && ev.open) { toast(api.toasts, 'Shield down — ZAP it now!', 'good', 2000); sfx.power(); }
+          if (ev.kind === 'sweep') { sfx.tone(180, 0.5, 'sawtooth', 0.04, 360); toast(api.toasts, 'Floor beam! Jump it — or let Brick take it.', 'bad', 1800); break; }
           sfx.tone(880, 0.1, 'square', 0.04); sfx.tone(880, 0.1, 'square', 0.04, 0, 0.16);
           if (ev.pos) fx.text?.(toV3(ev.pos, new THREE.Vector3()).add(tB.set(0, 2.4, 0)), '!', '#ff5f6d');
           break;
@@ -1545,20 +1760,26 @@ function play(api) {
     const all = got >= total;
     const fast = st.time <= par;
     const stars = 1 + (all ? 1 : 0) + (fast ? 1 : 0);
-    const score = Math.max(100, 1000 + got * 100 + (all ? 500 : 0) + Math.max(0, Math.round((par - st.time) * 10)) + st.enemies * 50 - st.respawns * 50);
+    const met = missionMet();
+    const fresh = met ? saveMission(api.index + 1) : false;
+    const score = Math.max(100, 1000 + got * 100 + (all ? 500 : 0) + Math.max(0, Math.round((par - st.time) * 10)) + st.enemies * 50 - st.respawns * 50 + (met ? 1500 : 0));
+    talkEl.classList.remove('on'); talk.q.length = 0;
+    bossEl.classList.remove('on');
     heroes.forEach((hh) => { hh.gliding = false; if (hh.dashT > 0) endDash(hh, false); });
     for (const hh of heroes) fx.burst?.(hh.body.pos.clone().setY(hh.body.pos.y + 1), hh.S.color, 26, 4);
     view.classList.add('nr-won');
     cam.manualT = 0;
-    const say = stars === 3 ? 'Every shard, under par, everyone through. That’s how a team does it!'
+    const outro = Array.isArray(story.outro) && story.outro.length ? story.outro.map(([who, text]) => `${(CAST[who] || CAST.vera).name}: “${text}”`).join(' ') : null;
+    const say = outro || (stars === 3 ? 'Every shard, under par, everyone through. That’s how a team does it!'
       : !all && !fast ? 'We made it! There are shards left behind — and the clock beat us this time.'
-        : !all ? 'Through the rift! A few shards are still out there.' : 'Every shard! Now let’s do it under par.';
+        : !all ? 'Through the rift! A few shards are still out there.' : 'Every shard! Now let’s do it under par.');
     api.finish({
       won: true, stars, score,
       title: stars === 3 ? 'Flawless rift run' : 'Rift cleared',
       say,
       stats: [['Time', fmtTime(st.time)], ['Par', `${fmtTime(par)}${fast ? ' ✓' : ''}`], ['Shards', `${got} / ${total}`],
-        ['Respawns', String(st.respawns)], ...(st.enemies ? [['Enemies', String(st.enemies)]] : [])],
+        ['Respawns', String(st.respawns)], ...(st.enemies ? [['Enemies', String(st.enemies)]] : []),
+        ...(mission ? [['Mission', met ? `✓ ${mission.text}${fresh ? ' · NEW +1500' : ' +1500'}` : `✗ ${mission.text}`]] : [])],
       lesson: lv.lesson,
       delay: motion ? 1900 : 900,
     });
@@ -1647,6 +1868,10 @@ function play(api) {
     if (mode === 'intro' && intro) updateIntro(dt);
     else updateCamera(dt, input);
     paintHud(dt);
+    updateTalk(dt);
+    if (mode === 'play') { checkStoryAt(); updateMission(); }
+    updateDepth(dt);
+    paintBoss(dt);
     try { R.setShadowFocus?.(heroes[active].body.pos); } catch { /* ignore */ }
     try { fx.update?.(dt); } catch (err) { if (debug) console.warn(err); }
     try { R.render(dt); } catch (err) { if (debug) console.warn(err); }
@@ -1674,6 +1899,7 @@ function play(api) {
   }
 
   // ---------- start ----------
+  later(() => { speak(story.intro); if (mission) toast(api.toasts, `Mission: ${mission.text}`, 'info', 4200); }, motion ? 1300 : 300);
   paintTeam(); paintHint(); paintQuality();
   fit();
   if (motion) buildIntro();

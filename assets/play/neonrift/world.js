@@ -40,6 +40,7 @@ const SWITCH_R = 1.15;
 const SHARD_R = 0.95;         // shard to the hero's body axis
 const CHECK_R = 1.4;
 const PAD_R = 0.85;
+const GATE_R = 1.0;
 const LASER_R = 0.1;
 const ZAP_ASSIST = 0.45;      // the zap beam is this "fat" when it looks for targets
 const DOOR_SOLID = 0.8;       // a door blocks until it is this far open
@@ -348,7 +349,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
   function bst(body) {
     let s = body._nr;
     if (!s) {
-      s = body._nr = { wall: new THREE.Vector3(), carrier: null, cx: 0, cy: 0, cz: 0, hurtT: 0, safeT: 0, voidT: 0, inKill: false,
+      s = body._nr = { wall: new THREE.Vector3(), carrier: null, cx: 0, cy: 0, cz: 0, hurtT: 0, safeT: 0, voidT: 0, gateT: 0, inKill: false,
         lx: NaN, ly: NaN, lz: NaN, okX: 0, okY: 0, okZ: 0, ok: false };
     }
     return s;
@@ -419,6 +420,8 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
     if (!c || !Array.isArray(c.p) || !Array.isArray(c.s)) continue;
     const r = boxRec('crumble', c.p, c.s, c);
     r.state = 'idle'; r.t = 0; r.delay = Math.max(0, num(c.delay, 0.6)); r.back = Math.max(0.5, num(c.back, 3));
+    r.once = !!c.once;                       // gone for good once it falls
+    bindWhen(r, c.when, c.logic);            // with `when` it falls when its signal comes on (not when stepped on)
     const blk = { p: [0, 0, 0], s: [r.hx * 2, r.hy * 2, r.hz * 2], m: c.m || 'stone' };
     if (c.tint) blk.tint = c.tint;
     r.vis = newStatic([blk]);
@@ -428,7 +431,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
 
   // ---------------------------------------------------------------- items
   const shards = []; const checkpoints = []; const plates = []; const switches = []; const nodes = [];
-  const doors = []; const crates = []; const cracked = []; const pads = []; const signs = []; const portals = [];
+  const doors = []; const crates = []; const cracked = []; const pads = []; const signs = []; const portals = []; const gates = []; const triggers = [];
   for (const it of items) {
     if (!it || !it.type) continue;
     const p = it.p;
@@ -502,6 +505,20 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
         r.broken = 0; r.s = { broken: 0 };
         r.prop = newProp('cracked', { size: [r.hx * 2, r.hy * 2, r.hz * 2] }); r.prop.root.position.set(r.x, r.minY, r.z);
         cracked.push(r); dyn.push(r);
+        break;
+      }
+      case 'gate': {
+        // a rift geyser: step in and it throws you somewhere else (`to`, or the last checkpoint)
+        const r = { kind: 'gate', src: it, x, y, z, to: Array.isArray(it.to) ? V(at(it.to, 0), at(it.to, 1), at(it.to, 2)) : null,
+          yaw: Number.isFinite(+it.yaw) ? +it.yaw : null, fire: 0, s: { open: true, fire: 0, color: it.color || '#5ef2c0' } };
+        bindWhen(r, it.when, it.logic);
+        r.prop = newProp('gate', { color: it.color || '#5ef2c0' }); r.prop.root.position.set(x, y, z);
+        gates.push(r);
+        break;
+      }
+      case 'trigger': {
+        // invisible: the first hero inside latches signal `id` on for good (a bridge gives way, a door slams)
+        triggers.push({ x, y, z, r: num(it.r, 3), h: num(it.h, 4), sig: sig(it.id ?? 'trigger'), done: false });
         break;
       }
       case 'sign': {
@@ -1119,7 +1136,62 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
   // ---------------------------------------------------------------- enemies and shots
   const enemies = []; const crawlers = [];
   const warden = { rec: null };
-  const DEF_EYE = { sentry: [0, 0, 0], crawler: [0, 0.4, 0.35], turret: [0, 1.1, 0.25], warden: [0, 0, 0] };
+  const bosses = [];
+  const DEF_EYE = { sentry: [0, 0, 0], crawler: [0, 0.4, 0.35], turret: [0, 1.1, 0.25], warden: [0, 0, 0], maw: [0, 0, 0], queen: [0, 0, 0] };
+  // the floor under a point: the lowest of a few casts around it (a decoration right under it does not count)
+  function floorUnder(x, y, z, rr = 3) {
+    let ft = Infinity;
+    for (let k = 0; k < 5; k++) {
+      const a = (k / 4) * TAU; const r2 = k === 4 ? 0 : rr;
+      if (castSolid(x + Math.sin(a) * r2, y, z + Math.cos(a) * r2, 0, -1, 0, 40, null, true)) ft = Math.min(ft, y - RC.t);
+    }
+    return ft === Infinity ? y - 4 : ft;
+  }
+  // ---- data-driven bosses (the Maw, the Null Queen) ----
+  // src = { type: 'boss', kind: 'maw' | 'queen', id, name, p, wake = 20, reach = 30, sink, phases: [{
+  //   need: 'plates' | 'nodes' | 'switches' | 'cracked' | 'minions' | 'timer', ids: [...], window = 6, hits = 3,
+  //   at: [x, y, z] (the boss moves here for the phase), attacks: ['volley', 'ring', 'sweep', 'rain'],
+  //   minions: n (armoured crawlers; with need 'minions' they are the lock), adds: n (plain crawlers at the start),
+  //   rate = 1 (attack speed), sweepLen = 16 }] }
+  // Phase n done → signal `<id>:<n>` latches on (floors can fall, gates can open); defeat → signal `<id>`.
+  const sweepGeo = new THREE.BoxGeometry(1, 1, 1);
+  ownGeo.push(sweepGeo);
+  function newBoss(src, x, y, z) {
+    const kind = src.kind === 'queen' ? 'queen' : 'maw';
+    const e = newEnemy(src, kind, x, y, z);
+    e.boss = true; e.id = String(src.id || kind);   // e.type is 'maw' | 'queen' e.name = src.name || (kind === 'queen' ? 'The Null Queen' : 'The Maw');
+    e.wake = num(src.wake, 20); e.reach = num(src.reach, 30); e.sinkBy = num(src.sink, kind === 'maw' ? 2.4 : 1.8);
+    const ph = Array.isArray(src.phases) && src.phases.length ? src.phases : [{ need: 'timer' }];
+    e.phases = ph.map((P) => {
+      const ids = Array.isArray(P.ids) ? P.ids.map(String) : null;
+      const pick = (list) => list.filter((o) => !ids || ids.includes(String(o.id ?? (o.src && o.src.id))));
+      const need = ['plates', 'nodes', 'switches', 'cracked', 'minions'].includes(P.need) ? P.need : 'timer';
+      return { need, window: num(P.window, 6), hits: Math.max(1, Math.round(num(P.hits, 3))), rate: Math.max(0.3, num(P.rate, 1)),
+        at: Array.isArray(P.at) ? V(at(P.at, 0), at(P.at, 1), at(P.at, 2)) : null, attacks: Array.isArray(P.attacks) ? P.attacks : ['volley'],
+        minions: Math.max(0, Math.round(num(P.minions, need === 'minions' ? 3 : 0))), adds: Math.max(0, Math.round(num(P.adds, 0))),
+        sweepLen: num(P.sweepLen, 16), floor: fin(P.floor) ? +P.floor : fin(src.floor) ? +src.floor : null,
+        recs: need === 'plates' ? pick(plates) : need === 'nodes' ? pick(nodes) : need === 'switches' ? pick(switches) : need === 'cracked' ? pick(cracked) : [] };
+    });
+    e.hp = e.maxHp = e.phases.reduce((a, P) => a + P.hits, 0);
+    e.phase = 1; e.phHits = 0; e.started = false; e.window = 0; e.trans = 0; e.invT = 0; e.cycle = 0; e.used = false;
+    e.volley = 0; e.volleyT = 0; e.aimT = 1.5; e.ringT = 3; e.rainT = 2.5; e.minions = [];
+    e.base = V(x, y, z); e.goal = V(x, y, z); e.floorY = fin(src.floor) ? +src.floor : floorUnder(x, y, z);
+    // the sweep: a beam along the floor from the boss outward, telegraphed, then rotating
+    e.sw = { st: 'idle', t: 2.5, a: rnd() * TAU, dir: 1, len: 0, y: 0 };
+    const mk = (color, opacity) => {
+      const m = new THREE.MeshBasicMaterial({ color, transparent: true, opacity, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false });
+      ownMat.push(m);
+      const mesh = new THREE.Mesh(sweepGeo, m);
+      mesh.visible = false; mesh.frustumCulled = false; mesh.renderOrder = 3;
+      group.add(mesh);
+      return mesh;
+    };
+    e.sw.core = mk(new THREE.Color(kind === 'queen' ? 3 : 3, kind === 'queen' ? 1.6 : 0.5, kind === 'queen' ? 3 : 0.9), 1);
+    e.sw.glow = mk(new THREE.Color(kind === 'queen' ? 1.2 : 1.6, kind === 'queen' ? 0.4 : 0.2, kind === 'queen' ? 1.6 : 0.5), 0.5);
+    e.s.phase = 1; e.s.shield = true; e.s.phases = e.phases.length;
+    enemies.push(e);
+    return e;
+  }
   function anchorOff(vis, name, d) {
     const out = V(d[0], d[1], d[2]);
     const a = vis && vis.anchors && vis.anchors[name];
@@ -1208,12 +1280,14 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       e.s.phase = 1; e.s.shield = true;
       warden.rec = e;
       enemies.push(e);
+    } else if (src.type === 'boss') {
+      bosses.push(newBoss(src, x, y, z));
     }
   }
   for (const e of enemies) placeEnemy(e);
   function placeEnemy(e) {
     if (e.type === 'crawler') { e.x = e.body.pos.x; e.y = e.body.pos.y; e.z = e.body.pos.z; }
-    if (e.type === 'sentry' || e.type === 'warden') {
+    if (e.type === 'sentry' || e.type === 'warden' || e.boss) {
       // hovering: the eye is at the logical position
       const c = Math.cos(e.yaw); const s = Math.sin(e.yaw); const o = e.eyeOff;
       e.rx = e.x - (o.x * c + o.z * s); e.ry = e.y - o.y; e.rz = e.z - (-o.x * s + o.z * c);
@@ -1293,6 +1367,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
     if (e.type === 'turret') e.solid = true;     // the wreck stays put
     emit({ type: 'enemyDown', pos: V(e.x, e.y + (e.type === 'crawler' ? 0.35 : 0), e.z), kind: e.type, how });
     if (e.type === 'warden') { const s = sig('warden'); s.latch = true; }
+    if (e.boss) { sig(e.id).latch = true; e.vulnerable = false; }
   }
 
   // ---------------------------------------------------------------- per-frame systems
@@ -1309,6 +1384,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
         h.alive = m.alive !== false; h.active = !!m.active; h.seen = true; teamN++;
         const st = bst(m.body);
         st.hurtT = Math.max(0, st.hurtT - dt); st.safeT = Math.max(0, st.safeT - dt); st.voidT = Math.max(0, st.voidT - dt);
+        st.gateT = Math.max(0, st.gateT - dt);
         const p = m.body.pos;
         if (st.lx === st.lx) {
           const dx = p.x - st.lx; const dy = p.y - st.ly; const dz = p.z - st.lz;
@@ -1361,6 +1437,16 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
     for (let i = 0; i < nodes.length; i++) {
       const n = nodes[i];
       if (n.on && n.time > 0) { n.timer -= dt; if (n.timer <= 0) { n.timer = 0; n.on = false; } }
+    }
+    for (let i = 0; i < triggers.length; i++) {
+      const tr = triggers[i];
+      if (tr.done) continue;
+      for (let k = 0; k < heroRecs.length; k++) {
+        const b = heroRecs[k].body;
+        if (!heroRecs[k].alive || (b.pos.x - tr.x) ** 2 + (b.pos.z - tr.z) ** 2 > tr.r * tr.r || b.pos.y < tr.y - 1 || b.pos.y > tr.y + tr.h) continue;
+        tr.done = true; tr.sig.latch = true;
+        break;
+      }
     }
   }
   function evalSignals() {
@@ -1417,7 +1503,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       c.t += dt;
       const root = c.vis.root;
       if (c.state === 'idle') {
-        if (stoodOn(c)) { c.state = 'shake'; c.t = 0; emit({ type: 'crumble', pos: V(c.x, c.maxY, c.z) }); }
+        if (c.sigs ? cond(c) : stoodOn(c)) { c.state = 'shake'; c.t = 0; emit({ type: 'crumble', pos: V(c.x, c.maxY, c.z), big: !!c.sigs }); }
         root.position.set(c.x, c.y, c.z);
       } else if (c.state === 'shake') {
         const a = 0.04 + 0.06 * (c.t / Math.max(0.01, c.delay));
@@ -1426,7 +1512,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       } else if (c.state === 'fall') {
         root.position.set(c.x, c.y - 0.5 * GRAVITY * 0.6 * c.t * c.t, c.z);
         root.visible = c.t < 1.2;
-        if (c.t >= c.back) c.state = 'wait';
+        if (c.t >= c.back && !c.once) c.state = 'wait';
       } else if (c.state === 'wait') {
         if (!occupied(c, 0.05)) { c.state = 'return'; c.t = 0; c.solid = true; root.visible = true; root.position.set(c.x, c.y, c.z); }
       } else if (c.state === 'return') {
@@ -1537,6 +1623,22 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
         b.vel.y = p.power; b.grounded = false; b.ground = null; bst(b).carrier = null;
         p.fire = 1; p.s.fire = 1;
         emit({ type: 'bounce', hero: h.id, pos: V(p.x, p.y, p.z), power: p.power });
+      }
+    }
+    for (let i = 0; i < gates.length; i++) {
+      const g = gates[i];
+      const usable = !g.sigs || cond(g);
+      g.fire = Math.max(0, g.fire - dt * 1.5);
+      g.s.open = usable; g.s.fire = g.fire;
+      if (!usable) continue;
+      for (let k = 0; k < heroRecs.length; k++) {
+        const h = heroRecs[k];
+        if (!h.alive) continue;
+        const st = bst(h.body);
+        if (st.gateT > 0 || !nearPoint(h.body, g.x, g.y, g.z, GATE_R, 0.3, 2.2)) continue;
+        st.gateT = 1.2; g.fire = 1;
+        const to = g.to || checkpoint.pos;
+        emit({ type: 'gate', hero: h.id, from: V(g.x, g.y, g.z), to: to.clone(), yaw: g.yaw ?? (g.to ? null : checkpoint.yaw) });
       }
     }
     const act = activeHero();
@@ -1905,6 +2007,250 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
     }
     return 'damage';
   }
+  // ---- the bosses ----
+  const COL_MAW = new THREE.Color(3.0, 0.55, 0.2);
+  const COL_QUEEN = new THREE.Color(2.2, 0.9, 3.0);
+  function bossTarget(e) {
+    const ok = (h) => h && h.alive && bst(h.body).safeT <= 0 && (h.body.pos.x - e.base.x) ** 2 + (h.body.pos.z - e.base.z) ** 2 < e.reach * e.reach &&
+      Math.abs(h.body.pos.y - e.floorY) < 9;
+    const a = activeHero();
+    if (ok(a)) return a;
+    let best = null; let bd = Infinity;
+    for (let i = 0; i < heroRecs.length; i++) {
+      const h = heroRecs[i];
+      if (!ok(h)) continue;
+      const d = (h.body.pos.x - e.x) ** 2 + (h.body.pos.z - e.z) ** 2;
+      if (d < bd) { bd = d; best = h; }
+    }
+    return best;
+  }
+  function bossReset(e, P) {
+    if (P.need === 'nodes') for (const n of P.recs) { n.on = false; n.timer = 0; }
+    else if (P.need === 'switches') for (const w of P.recs) { w.on = false; w.timer = 0; w.pulse = 0; }
+    else if (P.need === 'cracked') {
+      // the anchors grow back (unless something stands in them)
+      for (const c of P.recs) {
+        if (c.solid || occupied(c, 0.05)) continue;
+        c.solid = true; c.broken = 0; c.s.broken = 0;
+        fx('burst', V(c.x, c.y, c.z), e.type === 'queen' ? '#c084fc' : '#ff8a3d', 16, 3);
+      }
+    }
+  }
+  function bossMinions(e, n, armoured) {
+    for (const m of e.minions) if (!m.alive && !m.gone) { m.gone = true; m.vis.root.visible = false; }
+    e.minions = e.minions.filter((m) => m.alive);
+    for (let i = e.minions.length; i < n; i++) {
+      const a = (i / n) * TAU + rnd();
+      let x = 0; let z = 0; let top = null;
+      for (const rr of [6, 9, 12, 14]) {
+        x = e.base.x + Math.sin(a) * rr; z = e.base.z + Math.cos(a) * rr;
+        top = castSolid(x, e.floorY + 6, z, 0, -1, 0, 12, null, false) ? e.floorY + 6 - RC.t : null;
+        if (top !== null && Math.abs(top - e.floorY) < 3) break;
+        top = null;
+      }
+      if (top === null) continue;
+      const m = addCrawler({ type: 'crawler', range: 30 }, x, top + 0.05, z, armoured);
+      m.range = 30; m.speed = 2.7;
+      e.minions.push(m);
+      placeEnemy(m);
+      fx('burst', V(x, top + 0.4, z), e.type === 'queen' ? '#c084fc' : '#ff5a1e', 18, 3);
+    }
+  }
+  function bossPhaseStart(e) {
+    const P = e.phases[e.phase - 1];
+    e.window = 0; e.cycle = 0; e.used = false; e.phHits = 0;
+    if (P.at) { e.goal.copy(P.at); }
+    if (P.floor !== null) e.floorY = P.floor;
+    if (P.adds) bossMinions(e, P.adds, false);
+  }
+  function updBoss(e, dt) {
+    const sw = e.sw;
+    if (!e.alive) {
+      e.deadT += dt;
+      e.y = Math.max(e.floorY + 0.8, e.y - dt * (1 + e.deadT * 3));
+      sw.st = 'idle'; sw.core.visible = sw.glow.visible = false;
+      return;
+    }
+    if (!e.started) {
+      e.state = 'idle';
+      for (let i = 0; i < heroRecs.length; i++) {
+        const h = heroRecs[i];
+        if (h.alive && (h.body.pos.x - e.base.x) ** 2 + (h.body.pos.z - e.base.z) ** 2 < e.wake * e.wake && Math.abs(h.body.pos.y - e.floorY) < 8) {
+          e.started = true; e.trans = 2; bossPhaseStart(e);
+          emit({ type: 'alarm', pos: V(e.x, e.y, e.z), kind: e.type, boss: e.id, phase: 1 });
+          break;
+        }
+      }
+      if (!e.started) return;
+    }
+    const P = e.phases[e.phase - 1];
+    e.invT = Math.max(0, e.invT - dt);
+    e.cycle += dt;
+    // glide to this phase's spot (the Queen drops into the Underside and climbs back out)
+    const gd = e.base.distanceTo(e.goal);
+    if (gd > 0.01) {
+      e.base.lerp(e.goal, Math.min(1, (dt * 7) / Math.max(gd, 0.5)));
+      if (e.base.distanceTo(e.goal) < 0.05) { e.base.copy(e.goal); if (P.floor === null) e.floorY = floorUnder(e.base.x, e.base.y, e.base.z); }
+    }
+    let open = false;
+    if (e.trans > 0) {
+      e.trans -= dt;
+      if (e.trans <= 0 && P.minions) bossMinions(e, P.minions, true);
+    } else if (P.need === 'plates') {
+      open = P.recs.length > 0 && P.recs.every((r) => r.pressed);
+    } else {
+      if (e.window <= 0) {
+        let ready = false;
+        if (P.need === 'nodes' || P.need === 'switches') ready = P.recs.length > 0 && P.recs.every((r) => r.on);
+        else if (P.need === 'cracked') ready = P.recs.length > 0 && P.recs.every((r) => !r.solid);
+        else if (P.need === 'minions') { ready = e.minions.length > 0 && e.minions.every((m) => !m.alive) && !e.used; }
+        else ready = e.cycle % 10 > 6.5;
+        if (ready) { e.window = P.need === 'timer' ? 3.5 : P.window; e.used = true; emit({ type: 'alarm', pos: V(e.x, e.y, e.z), kind: e.type, boss: e.id, open: true }); }
+      }
+      if (e.window > 0) {
+        e.window -= dt; open = true;
+        if (e.window <= 0) {
+          e.window = 0; e.used = false;
+          bossReset(e, P);
+          if (P.need === 'minions') bossMinions(e, P.minions || 3, true);
+        }
+      }
+    }
+    e.vulnerable = open && e.trans <= 0;
+    e.s.shield = !e.vulnerable;
+    // float: the Maw rears up out of its pit and slumps when exposed; the Queen drifts in a slow figure eight
+    const sink = e.vulnerable ? e.sinkBy : 0;
+    const bob = e.type === 'maw' ? Math.sin(CLK.now * 0.9) * 0.45 : Math.sin(CLK.now * 1.2) * 0.35;
+    const ty = e.base.y - sink + bob;
+    e.y += (ty - e.y) * Math.min(1, dt * 3);
+    if (e.type === 'queen') { e.x = e.base.x + Math.sin(CLK.now * 0.5) * 2.2; e.z = e.base.z + Math.sin(CLK.now * 1.0) * 1.2; }
+    else { e.x += (e.base.x - e.x) * Math.min(1, dt * 2); e.z += (e.base.z - e.z) * Math.min(1, dt * 2); }
+    const tgt = bossTarget(e);
+    if (tgt) { aimAt(e, tgt); e.yaw = turnTo(e.yaw, Math.atan2(e.aimV.x - e.x, e.aimV.z - e.z), 2.2 * dt); } else e.aimOn = false;
+    const fight = !e.vulnerable && e.trans <= 0 && gd < 0.5;
+    const has = (a) => P.attacks.includes(a);
+    const col = e.type === 'queen' ? COL_QUEEN : COL_MAW;
+    if (fight && tgt) {
+      if (has('volley')) {
+        e.aimT -= dt * P.rate;
+        if (e.aimT <= 0) { e.volley = e.type === 'queen' ? 4 : 3; e.volleyT = 0; e.aimT = 2.7; }
+        if (e.volley > 0) {
+          e.volleyT -= dt;
+          if (e.volleyT <= 0) {
+            e.volley--; e.volleyT = 0.2;
+            // the Queen fans her volley; the Maw spits straight
+            const spread = e.type === 'queen' ? (e.volley - 1.5) * 0.12 : 0;
+            const dx = e.aimV.x - e.x; const dz = e.aimV.z - e.z;
+            const c = Math.cos(spread); const sn = Math.sin(spread);
+            fire(e, e.x, e.y, e.z, dx * c + dz * sn, e.aimV.y - e.y, -dx * sn + dz * c, 6, 0.34, false, col, 6);
+            emit({ type: 'shot', pos: V(e.x, e.y, e.z), kind: e.type });
+          }
+        }
+      }
+      if (has('ring')) {
+        e.ringT -= dt * P.rate;
+        if (e.ringT <= 0) { e.ringT = 6; bossRing(e, col); }
+      }
+      if (has('rain')) {
+        e.rainT -= dt * P.rate;
+        if (e.rainT <= 0) {
+          e.rainT = 4.2;
+          const b = tgt.body;
+          for (let k = 0; k < 4; k++) {
+            const a = rnd() * TAU; const r = k === 0 ? 0 : 1.5 + rnd() * 2;
+            const px = b.pos.x + Math.sin(a) * r + b.vel.x * 0.6; const pz = b.pos.z + Math.cos(a) * r + b.vel.z * 0.6;
+            const gy = castSolid(px, b.pos.y + 3, pz, 0, -1, 0, 12, null, false) ? b.pos.y + 3 - RC.t : b.pos.y;
+            fx('shockwave', V(px, gy + 0.05, pz), e.type === 'queen' ? '#e879f9' : '#ff8a3d', 1.3);
+            const sh = fire(e, px, gy + 11 + k * 1.2, pz, 0, -1, 0, 9, 0.42, false, col, 3);
+            if (sh) sh.dmg = 1;
+          }
+          emit({ type: 'shot', pos: V(b.pos.x, b.pos.y, b.pos.z), kind: 'rain' });
+        }
+      }
+    }
+    // the sweep beam
+    if (fight && has('sweep')) {
+      sw.t -= dt * P.rate;
+      if (sw.st === 'idle' && sw.t <= 0) {
+        sw.st = 'warn'; sw.t = 1.1; sw.dir = rnd() < 0.5 ? -1 : 1;
+        sw.a = tgt ? Math.atan2(tgt.body.pos.x - e.base.x, tgt.body.pos.z - e.base.z) - sw.dir * 1.2 : rnd() * TAU;
+        emit({ type: 'alarm', pos: V(e.x, e.y, e.z), kind: 'sweep', boss: e.id });
+      } else if (sw.st === 'warn' && sw.t <= 0) { sw.st = 'on'; sw.t = 4.6; }
+      else if (sw.st === 'on') {
+        sw.a += sw.dir * 1.05 * dt * P.rate;
+        if (sw.t <= 0) { sw.st = 'idle'; sw.t = 4.5; }
+      }
+    } else if (sw.st !== 'idle') { sw.st = 'idle'; sw.t = 3; }
+    if (sw.st !== 'idle') bossSweep(e, sw, P);
+    else sw.core.visible = sw.glow.visible = false;
+    e.state = e.trans > 0 ? 'alert' : e.vulnerable ? 'stunned' : 'attack';
+    e.s.phase = e.phase;
+  }
+  function bossRing(e, col) {
+    const n = 16; const gap = Math.floor(rnd() * n); const y = e.floorY + 0.55;
+    for (let i = 0; i < n; i++) {
+      if ((i - gap + n) % n < 3) continue;
+      const a = (i / n) * TAU;
+      fire(e, e.base.x + Math.sin(a) * 2.4, y, e.base.z + Math.cos(a) * 2.4, Math.sin(a), 0, Math.cos(a), 4.6, 0.3, false, col, 7);
+    }
+    emit({ type: 'shot', pos: V(e.base.x, y, e.base.z), kind: 'ring' });
+  }
+  function bossSweep(e, sw, P) {
+    const dx = Math.sin(sw.a); const dz = Math.cos(sw.a);
+    const y = e.floorY + 0.5; const r0 = 2.2;
+    // pillars and crates are cover: the beam stops at the first solid thing
+    const len = castSolid(e.base.x + dx * r0, y, e.base.z + dz * r0, dx, 0, dz, P.sweepLen, null, false) ? RC.t : P.sweepLen;
+    sw.len = len; sw.y = y;
+    const on = sw.st === 'on';
+    const mx = e.base.x + dx * (r0 + len / 2); const mz = e.base.z + dz * (r0 + len / 2);
+    const flick = on ? 1 : 0.35 + 0.35 * Math.sin(CLK.now * 30);
+    sw.core.visible = sw.glow.visible = true;
+    sw.core.position.set(mx, y, mz); sw.core.rotation.set(0, sw.a, 0);
+    sw.core.scale.set(on ? 0.16 : 0.05, on ? 0.16 : 0.05, len);
+    sw.core.material.opacity = flick;
+    sw.glow.position.set(mx, y, mz); sw.glow.rotation.set(0, sw.a, 0);
+    sw.glow.scale.set(on ? 0.55 : 0.2, on ? 0.4 : 0.12, len);
+    sw.glow.material.opacity = on ? 0.5 : 0.25 * flick;
+    if (!on) return;
+    for (let i = 0; i < heroRecs.length; i++) {
+      const h = heroRecs[i];
+      if (!h.alive) continue;
+      const b = h.body;
+      if (b.pos.y > y + 0.05 || b.pos.y + b.height < y - 0.1) continue;   // jumped over it (or far below)
+      const px = b.pos.x - e.base.x; const pz = b.pos.z - e.base.z;
+      const along = px * dx + pz * dz;
+      if (along < r0 - b.radius || along > r0 + len + b.radius) continue;
+      const side = px * dz - pz * dx;
+      if (Math.abs(side) > b.radius + 0.2) continue;
+      if (b.heavy) { if (rnd() < 0.2) fx('sparkle', V(b.pos.x, y, b.pos.z), '#ffb347'); continue; }   // Brick is laser-proof
+      hurt(h, 1, b.pos.x - dx, y, b.pos.z - dz, side >= 0 ? dz : -dz, side >= 0 ? -dx : dx, 6, 'sweep');
+    }
+  }
+  function bossHit(e) {
+    if (!e.vulnerable || e.invT > 0) return 'shield';
+    e.invT = 0.45; e.hp--; e.phHits++;
+    e.s.hp01 = e.hp / e.maxHp;
+    const P = e.phases[e.phase - 1];
+    if (e.hp <= 0) { sig(`${e.id}:${e.phase}`).latch = true; killEnemy(e, 'zap'); return 'destroy'; }
+    if (e.phHits >= P.hits) {
+      sig(`${e.id}:${e.phase}`).latch = true;
+      bossReset(e, P);
+      for (const m of e.minions) if (m.alive) killEnemy(m, 'boss');
+      e.phase++; e.trans = 2.6; e.aimT = 1.5; e.ringT = 2.5; e.rainT = 2; e.sw.st = 'idle'; e.sw.t = 3;
+      bossPhaseStart(e);
+      emit({ type: 'alarm', pos: V(e.x, e.y, e.z), kind: e.type, boss: e.id, phase: e.phase });
+    }
+    return 'damage';
+  }
+  function bossInfo() {
+    for (let i = 0; i < bosses.length; i++) {
+      const e = bosses[i];
+      if (e.started && (e.alive || e.deadT < 2)) return { name: e.name, hp01: Math.max(0, e.hp) / e.maxHp, phase: e.phase, phases: e.phases.length, open: !!e.vulnerable && e.alive, alive: e.alive, kind: e.type };
+    }
+    const w = warden.rec;
+    if (w && w.started && (w.alive || w.deadT < 2)) return { name: 'The Warden', hp01: Math.max(0, w.hp) / w.maxHp, phase: w.phase, phases: 3, open: !!w.vulnerable && w.alive, alive: w.alive, kind: 'warden' };
+    return null;
+  }
   function updEnemies(dt) {
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
@@ -1913,6 +2259,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       else if (e.type === 'crawler') updCrawler(e, dt);
       else if (e.type === 'turret') updTurret(e, dt);
       else if (e.type === 'warden') updWarden(e, dt);
+      else if (e.boss) updBoss(e, dt);
       placeEnemy(e);
     }
   }
@@ -1972,6 +2319,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
     for (let i = 0; i < spikes.length; i++) spikes[i].prop.update(t, dt, spikes[i].s);
     for (let i = 0; i < signs.length; i++) signs[i].prop.update(t, dt, signs[i].s);
     for (let i = 0; i < portals.length; i++) portals[i].prop.update(t, dt, portals[i].s);
+    for (let i = 0; i < gates.length; i++) gates[i].prop.update(t, dt, gates[i].s);
     for (let i = 0; i < surfaces.length; i++) surfaces[i].vis.update(t);
     for (let i = 0; i < enemies.length; i++) {
       const e = enemies[i];
@@ -1984,6 +2332,12 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       s.charge = e.type === 'turret' ? clamp(e.charge / 0.5, 0, 1)
         : e.type === 'warden' ? (e.alive && e.started && !e.vulnerable && e.trans <= 0 ? clamp(1 - e.aimT / 0.8, 0, 1) : 0) : null;
       if (e.type === 'warden') { s.phase = e.phase; s.shield = !e.vulnerable && e.alive; }
+      if (e.boss) {
+        s.phase = e.phase; s.shield = !e.vulnerable && e.alive;
+        s.charge = e.alive && e.started && !e.vulnerable && e.trans <= 0 ? Math.max(clamp(1 - e.aimT / 0.8, 0, 1), e.sw.st === 'warn' ? 1 : 0) : 0;
+        s.sweep = e.sw.st === 'on' ? 1 : e.sw.st === 'warn' ? 0.5 : 0;
+        s.awake = e.started;
+      }
       e.vis.update(t, dt, s);
     }
     let no = 0; let nb = 0;
@@ -2020,7 +2374,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
   function targetOf(o) {
     if (o.kind === 'enemy') {
       if (!o.alive || o.gone) return false;
-      if (o.type === 'sentry') { TG.x = o.eye.x; TG.z = o.eye.z; TG.y0 = o.eye.y - 0.3; TG.y1 = o.eye.y + 0.3; TG.r = 0.6; } else if (o.type === 'crawler') { TG.x = o.x; TG.z = o.z; TG.y0 = o.y + 0.15; TG.y1 = o.y + 0.55; TG.r = 0.5; } else if (o.type === 'turret') { TG.x = o.x; TG.z = o.z; TG.y0 = o.y + 0.25; TG.y1 = Math.max(o.y + 0.3, o.eye.y); TG.r = 0.6; } else { TG.x = o.x; TG.z = o.z; TG.y0 = o.y; TG.y1 = o.y; TG.r = 1.3; }
+      if (o.type === 'sentry') { TG.x = o.eye.x; TG.z = o.eye.z; TG.y0 = o.eye.y - 0.3; TG.y1 = o.eye.y + 0.3; TG.r = 0.6; } else if (o.type === 'crawler') { TG.x = o.x; TG.z = o.z; TG.y0 = o.y + 0.15; TG.y1 = o.y + 0.55; TG.r = 0.5; } else if (o.type === 'turret') { TG.x = o.x; TG.z = o.z; TG.y0 = o.y + 0.25; TG.y1 = Math.max(o.y + 0.3, o.eye.y); TG.r = 0.6; } else if (o.boss) { TG.x = o.x; TG.z = o.z; TG.y0 = o.y - 0.8; TG.y1 = o.y + 0.8; TG.r = 1.9; } else { TG.x = o.x; TG.z = o.z; TG.y0 = o.y; TG.y1 = o.y; TG.r = 1.3; }
       return true;
     }
     if (o.kind === 'node') { TG.x = o.x; TG.z = o.z; TG.y0 = o.y + 0.3; TG.y1 = o.y + 1.5; TG.r = 0.5; return true; }
@@ -2083,6 +2437,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
         o.hp--; o.stun = 0.8; o.charge = 0;
         if (o.hp <= 0) { killEnemy(o, 'zap'); effect = 'destroy'; } else effect = 'damage';
       } else if (o.type === 'warden') effect = wardenHit(o);
+      else if (o.boss) effect = bossHit(o);
     } else if (o.kind === 'node') {
       o.on = true; o.timer = o.time > 0 ? o.time : 0; effect = 'on';
     } else if (o.kind === 'switch') {
@@ -2194,9 +2549,10 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
     placeTeam: (pos, yaw) => placeTeam(pos.x, pos.y, pos.z, num(yaw, 0), false),
     signal: (id) => !!(signals.get(String(id)) && signals.get(String(id)).on),
     clearShots,
+    boss: bossInfo,                // the boss fight under way: { name, hp01, phase, phases, open, alive, kind } | null
     stats: () => ({ statics: statics.length, dynamic: dyn.length, cells: grid.nx * grid.nz, cell: grid.cell, movers: movers.length, crates: crates.length,
       enemies: enemies.length, shots: shots.reduce((a, s) => a + (s.on ? 1 : 0), 0), warnings: warnings.length }),
-    debug: { statics, movers, crumbles, crates, doors, cracked, plates, switches, nodes, shards, checkpoints, pads, portals, lasers, spikes, surfaces, enemies, crawlers, shots, signals, heroRecs, tips, warden },
+    debug: { statics, movers, crumbles, crates, doors, cracked, plates, switches, nodes, shards, checkpoints, pads, portals, lasers, spikes, surfaces, enemies, crawlers, shots, signals, heroRecs, tips, warden, bosses, gates },
   };
   return W;
 }

@@ -2627,10 +2627,289 @@ function buildWarden() {
   };
 }
 
+// ---------- the Maw: a colossal armoured eel rising out of its pit in the Underside ----------
+const MAW_HEX = ['#ff7a1a', '#ff3d6e', '#ffd23f'];
+function buildMaw() {
+  const k = owner();
+  const flash = { value: new THREE.Color(0, 0, 0) };
+  const G = {
+    skull: geo('maw.skull', () => new THREE.SphereGeometry(1, 40, 28).scale(1.25, 0.78, 1.65)),
+    jaw: geo('maw.jaw', () => new THREE.SphereGeometry(1, 32, 16, 0, TAU, Math.PI / 2, Math.PI / 2).scale(1.1, 0.55, 1.5).translate(0, 0, 1.1)),
+    tooth: geo('maw.tooth', () => new THREE.ConeGeometry(0.11, 0.48, 6)),
+    eye: geo('maw.eye', () => new THREE.SphereGeometry(0.2, 18, 12)),
+    heart: geo('maw.heart', () => new THREE.IcosahedronGeometry(0.62, 3)),
+    plate: geo('maw.plate', () => new THREE.ConeGeometry(0.55, 1.5, 5).rotateX(-0.5)),
+    seg: geo('maw.seg', () => new THREE.SphereGeometry(1, 28, 18).scale(1, 0.82, 1)),
+    spike: geo('maw.spike', () => new THREE.ConeGeometry(0.16, 0.9, 6)),
+    fin: geo('maw.fin', () => {
+      const sh = new THREE.Shape();
+      sh.moveTo(0, 0); sh.quadraticCurveTo(0.9, 0.5, 2.2, 1.6); sh.quadraticCurveTo(1.2, 0.2, 1.6, -0.7); sh.quadraticCurveTo(0.8, -0.3, 0, 0);
+      return new THREE.ShapeGeometry(sh, 10);
+    }),
+  };
+  const M = {
+    hide: k.own(rimStd({ color: '#2a1c24', roughness: 0.55, metalness: 0.35, envMap: TX.env(), envMapIntensity: 0.6 }, '#ff7a1a', 0.5, 2.4, flash)),
+    bone: k.own(rimStd({ color: '#d8cbb8', roughness: 0.6, metalness: 0.05, emissive: '#ff7a1a', emissiveIntensity: 0.15, envMap: TX.env(), envMapIntensity: 0.4 }, '#ffd0a0', 0.3, 2.6, flash)),
+    plate: k.own(rimStd({ color: '#3a2a30', roughness: 0.35, metalness: 0.75, emissive: '#ff7a1a', emissiveMap: TX.shield(), emissiveIntensity: 1.2, envMap: TX.env(), envMapIntensity: 0.9 }, '#ff7a1a', 0.5, 2.2, flash)),
+    heart: k.own(fxMaterial(FS_PLASMA, { uColor: { value: new THREE.Color() }, uHot: { value: new THREE.Color(1, 0.95, 0.8) }, uTime: { value: 0 }, uPower: { value: 1.4 } }, { transparent: false, blending: THREE.NormalBlending, depthWrite: true })),
+    eye: k.own(unlit('#ffd23f', 2.6)),
+    fin: k.own(additive('#ff7a1a', 0.9, TX.fade(), { side: THREE.DoubleSide, opacity: 0.55 })),
+    glow: k.own(spriteMat('#ff7a1a', 1.2)),
+    mouth: k.own(spriteMat('#ffb347', 1.6)),
+  };
+  const root = new THREE.Group();
+  root.name = 'enemy:maw';
+  const headG = grp(root);              // the head: yaw/pitch toward the aim; root origin = the head's centre
+  headG.rotation.order = 'YXZ';
+  const scaleG = grp(headG);
+  scaleG.scale.setScalar(1.35);
+  part(scaleG, G.skull, M.hide, [0, 0.25, 0.1], null, null, CAST);
+  // bony brow ridge and upper teeth
+  const upper = grp(scaleG, 0, 0, 0);
+  for (let i = 0; i < 9; i++) {
+    const a = -1.2 + i * 0.3;
+    part(upper, G.tooth, M.bone, [Math.sin(a) * 1.05, -0.32, 0.65 + Math.cos(a) * 1.05], [Math.PI, 0, 0], 0.9 + 0.3 * Math.cos(a));
+  }
+  const jaw = grp(scaleG, 0, -0.25, -0.55);
+  part(jaw, G.jaw, M.hide, [0, 0, 0], null, null, CAST);
+  for (let i = 0; i < 8; i++) {
+    const a = -1.05 + i * 0.3;
+    part(jaw, G.tooth, M.bone, [Math.sin(a) * 0.92, 0.12, 1.15 + Math.cos(a) * 0.95], null, 0.8);
+  }
+  const heart = part(scaleG, G.heart, M.heart, [0, -0.15, 0.75]);
+  const mouthGlow = sprite(scaleG, M.mouth, [0, -0.2, 1.2], 2.6);
+  // four eyes along the brow
+  const eyes = [[-0.78, 0.55, 1.05], [0.78, 0.55, 1.05], [-1.0, 0.35, 0.55], [1.0, 0.35, 0.55]].map((p, i) => part(scaleG, G.eye, M.eye, p, null, i < 2 ? 1 : 0.7));
+  // the armour: five plates along the skull ridge — they splay open when the Maw is exposed
+  const plates = [];
+  for (let i = 0; i < 5; i++) {
+    const piv = grp(scaleG, 0, 0.82 - i * 0.05, 0.9 - i * 0.55);
+    const m = part(piv, G.plate, M.plate, [0, 0.45, 0], null, 1 - i * 0.08, CAST);
+    plates.push({ piv, m, side: i % 2 ? 1 : -1 });
+  }
+  const fins = [-1, 1].map((sd) => {
+    const f = grp(scaleG, sd * 1.15, 0.15, -0.3);
+    const m = part(f, G.fin, M.fin, null, [0, sd > 0 ? -Math.PI / 2 : Math.PI / 2, 0], [sd > 0 ? 1 : -1, 1, 1]);
+    m.renderOrder = 2;
+    return f;
+  });
+  // the body: segments curving down into the pit
+  const body = grp(root);
+  const segs = [];
+  for (let i = 0; i < 7; i++) {
+    const g = grp(body);
+    const r = 1.35 + i * 0.12;
+    part(g, G.seg, M.hide, null, null, r, CAST);
+    for (let j = 0; j < 3; j++) part(g, G.spike, M.bone, [Math.sin(j * 2.1) * r * 0.6, r * 0.75, Math.cos(j * 2.1) * r * 0.6 - 0.2], [-0.3, 0, 0], 0.8 + i * 0.08);
+    segs.push({ g, r });
+  }
+  const halo = sprite(root, M.glow, [0, 0, 0], 7);
+  const eye = grp(scaleG, 0, 0, 1.4);
+  const muzzle = grp(scaleG, 0, -0.1, 1.8);
+  const sparks = makeSparks(k, scaleG, 24, '#ffd0a0', 0.18);
+  const e = newFoe();
+  const phaseCol = new THREE.Color(MAW_HEX[0]);
+  let openK = 0; let deadK = 0; let jawK = 0; let lastPhase = 0; let phaseT = 9; let awakeK = 0;
+  function update(t, dt, s) {
+    s = s || ENEMY_DEFAULT;
+    dt = safeDt(dt);
+    foeStep(e, s, dt, root);
+    const pi = clamp(Math.floor(num(s.phase, 1) || 1) - 1, 0, 2);
+    if (pi !== lastPhase) { lastPhase = pi; phaseT = 0; }
+    phaseT += dt;
+    phaseCol.lerp(col(MAW_HEX[pi]), 1 - Math.exp(-4 * dt));
+    const st = e.state; const dead = st === 'dead'; const stun = st === 'stunned';
+    deadK = approach(deadK, dead ? 1 : 0, 1.2, dt);
+    awakeK = approach(awakeK, s.awake ? 1 : 0, 1.5, dt);
+    const shield = Number.isFinite(s.shield) ? clamp(s.shield) : stun || dead ? 0 : 1;
+    openK = approach(openK, 1 - (typeof s.shield === 'boolean' ? (s.shield ? 1 : 0) : shield), 4, dt);
+    const charge = Number.isFinite(s.charge) ? clamp(s.charge) : 0;
+    const sweep = num(s.sweep, 0);
+    jawK = approach(jawK, Math.max(0.12 + 0.1 * Math.sin(t * 1.7), charge * 0.75, sweep > 0.6 ? 0.9 : sweep * 0.8, openK * 0.95), 7, dt);
+    jaw.rotation.x = jawK * 0.75;
+    // aim: the head turns to its target, droops when exposed
+    let ty = Math.sin(t * 0.3) * 0.5; let tp = -0.1;
+    if (finiteVec(s.aim) && !dead) { const a = aimAngles(root, s.aim, 0, 0, 0); ty = a.yaw; tp = clamp(a.pitch, -0.6, 0.7); }
+    e.yaw = approachAngle(e.yaw, ty, 3.5, dt);
+    e.pitch = approach(e.pitch, tp + openK * 0.45 + deadK * 0.8, 3, dt);
+    headG.rotation.set(e.pitch, e.yaw, Math.sin(t * 0.8) * 0.06 + (stun ? Math.sin(t * 3) * 0.08 : 0));
+    headG.position.y = -1.2 * (1 - awakeK) - 3 * deadK;
+    // body: a slow sine down into the pit, behind the head
+    for (let i = 0; i < segs.length; i++) {
+      const q = segs[i]; const d = i + 1;
+      q.g.position.set(Math.sin(t * 0.7 - d * 0.6) * 0.5 * d * 0.4 - Math.sin(e.yaw) * d * 0.9, -d * 1.75 - 1.2 * (1 - awakeK) - 3 * deadK, Math.cos(t * 0.6 - d * 0.5) * 0.35 * d * 0.4 - Math.cos(e.yaw) * d * 0.9);
+      q.g.rotation.set(Math.sin(t * 0.5 + d) * 0.2, e.yaw + d * 0.2, 0);
+    }
+    for (let i = 0; i < plates.length; i++) {
+      const p = plates[i];
+      p.piv.rotation.set(-openK * (0.7 + i * 0.1), 0, p.side * openK * 0.55 + Math.sin(t * 2 + i) * 0.03);
+    }
+    for (let i = 0; i < 2; i++) fins[i].rotation.y = (i ? -1 : 1) * (0.2 + 0.25 * Math.sin(t * 2.4 + i)) - openK * 0.3 * (i ? -1 : 1);
+    const life = 1 - deadK;
+    const pf = phaseT < 0.8 ? 1 - phaseT / 0.8 : 0;
+    const pulse = 1 + 0.25 * Math.sin(t * 3) + 0.9 * charge + 1.2 * pf;
+    M.heart.uniforms.uColor.value.copy(phaseCol);
+    M.heart.uniforms.uTime.value = t * 1.4;
+    M.heart.uniforms.uPower.value = (0.4 + 1.4 * openK + 0.5 * charge) * (0.1 + 0.9 * life);
+    heart.scale.setScalar(0.8 + 0.35 * openK + 0.06 * Math.sin(t * 6));
+    M.eye.color.copy(phaseCol).lerp(col('#ffffff'), 0.35).multiplyScalar((1.6 + charge * 1.6) * life + 0.05);
+    for (let i = 0; i < eyes.length; i++) eyes[i].scale.setScalar((i < 2 ? 1 : 0.7) * (1 - 0.6 * openK));
+    M.plate.emissive.copy(phaseCol); M.plate.emissiveIntensity = (1 + 0.8 * charge) * life * (1 - 0.6 * openK);
+    M.bone.emissive.copy(phaseCol); M.bone.emissiveIntensity = (0.1 + 0.4 * charge) * life;
+    M.fin.color.copy(phaseCol).multiplyScalar(0.8 * pulse * life);
+    M.glow.color.copy(phaseCol).multiplyScalar(0.35 * pulse * life * awakeK);
+    M.mouth.color.copy(phaseCol).lerp(col('#fff2c0'), 0.4).multiplyScalar((0.3 + 1.2 * jawK + 0.8 * openK) * life);
+    mouthGlow.scale.setScalar(2 + 2.2 * jawK);
+    halo.scale.setScalar(6 + 3 * pf);
+    setRimColor(M.hide, phaseCol, 0.5 * life);
+    setRimColor(M.plate, phaseCol, 0.5 * life);
+    hitFlash(e, flash);
+    sparks.update(t, Math.max(stun ? 0.7 : 0, e.hitT < 0.3 ? 1 : 0, deadK * (1 - sstep(0.7, 1, deadK))), 0, 0, 0.8, 1.2, 1.6);
+    root.visible = !(dead && e.stT > 5);
+  }
+  return {
+    root, update, type: 'maw', anchors: { eye, muzzle, core: heart },
+    dispose() { k.dispose(); root.removeFromParent(); },
+  };
+}
+
+// ---------- the Null Queen: a floating crystal sovereign in a lattice cage ----------
+const QUEEN_HEX = ['#c084fc', '#22d3ee', '#ff4fd8'];
+function buildQueen() {
+  const k = owner();
+  const flash = { value: new THREE.Color(0, 0, 0) };
+  const G = {
+    body: geo('queen.body', () => new THREE.OctahedronGeometry(1, 0).scale(0.75, 2.1, 0.55)),
+    head: geo('queen.head', () => new THREE.OctahedronGeometry(1, 1).scale(0.48, 0.62, 0.44)),
+    mask: geo('queen.mask', () => new THREE.SphereGeometry(0.46, 24, 16, -0.9, 1.8, 0.5, 1.6).scale(1, 1.25, 1)),
+    eye: geo('queen.eye', () => new THREE.SphereGeometry(0.075, 12, 8).scale(1.8, 0.7, 0.6)),
+    spike: geo('queen.spike', () => new THREE.ConeGeometry(0.07, 1, 5).translate(0, 0.5, 0)),
+    shard: geo('queen.shard', () => new THREE.OctahedronGeometry(0.3, 0).scale(0.6, 1.8, 0.6)),
+    hand: geo('queen.hand', () => merged([
+      [new THREE.OctahedronGeometry(0.32, 0).scale(0.8, 1.6, 0.8), [0, 0, 0]],
+      [new THREE.OctahedronGeometry(0.18, 0).scale(0.6, 1.6, 0.6), [0.28, -0.2, 0.05], [0, 0, 0.6]],
+      [new THREE.OctahedronGeometry(0.18, 0).scale(0.6, 1.6, 0.6), [-0.28, -0.2, 0.05], [0, 0, -0.6]],
+    ])),
+    core: geo('queen.core', () => new THREE.IcosahedronGeometry(0.42, 3)),
+    cage: geo('queen.cage', () => new THREE.IcosahedronGeometry(2.9, 1)),
+    ribbon: geo('queen.ribbon', () => new THREE.PlaneGeometry(0.5, 4.2, 1, 12).translate(0, -2.1, 0)),
+  };
+  const M = {
+    crystal: k.own(rimStd({ color: '#20123a', roughness: 0.12, metalness: 0.4, emissive: '#c084fc', emissiveIntensity: 0.35, flatShading: true, envMap: TX.env(), envMapIntensity: 1.2 }, '#c084fc', 0.9, 2.0, flash)),
+    mask: k.own(rimStd({ color: '#e9e2ff', roughness: 0.2, metalness: 0.6, emissive: '#c084fc', emissiveIntensity: 0.15, envMap: TX.env(), envMapIntensity: 1.1 }, '#ffffff', 0.5, 2.4, flash)),
+    eye: k.own(unlit('#ffffff', 3)),
+    spike: k.own(unlit('#c084fc', 1.8)),
+    core: k.own(fxMaterial(FS_PLASMA, { uColor: { value: new THREE.Color() }, uHot: { value: new THREE.Color(1, 0.95, 1) }, uTime: { value: 0 }, uPower: { value: 1.4 } }, { transparent: false, blending: THREE.NormalBlending, depthWrite: true })),
+    cage: k.own(new THREE.MeshBasicMaterial({ color: new THREE.Color('#c084fc').multiplyScalar(1.4), wireframe: true, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })),
+    ribbon: k.own(additive('#c084fc', 1.0, TX.fade(), { side: THREE.DoubleSide, opacity: 0.7 })),
+    halo: k.own(spriteMat('#c084fc', 1.1)),
+  };
+  const root = new THREE.Group();
+  root.name = 'enemy:queen';
+  const float = grp(root);
+  float.scale.setScalar(1.25);
+  const bodyG = grp(float);
+  part(bodyG, G.body, M.crystal, [0, -0.6, 0], null, null, CAST);
+  const core = part(bodyG, G.core, M.core, [0, -0.2, 0.18]);
+  const headG = grp(float, 0, 1.75, 0);
+  headG.rotation.order = 'YXZ';
+  part(headG, G.head, M.crystal, null, null, null, CAST);
+  part(headG, G.mask, M.mask, [0, -0.02, 0.06]);
+  part(headG, G.eye, M.eye, [-0.17, 0.08, 0.47], [0, -0.3, -0.2]);
+  part(headG, G.eye, M.eye, [0.17, 0.08, 0.47], [0, 0.3, 0.2]);
+  // crown: seven spikes fanned upward
+  const crown = grp(headG, 0, 0.35, -0.05);
+  for (let i = 0; i < 7; i++) { const a = (i - 3) * 0.32; part(crown, G.spike, M.spike, [Math.sin(a) * 0.32, 0, -0.1], [-0.15, 0, -a], 0.9 + (i === 3 ? 0.6 : 0.4 - Math.abs(i - 3) * 0.1)); }
+  // skirt of shards and trailing ribbons
+  const skirt = grp(float, 0, -1.9, 0);
+  const shards = [];
+  for (let i = 0; i < 10; i++) {
+    const a = (i / 10) * TAU;
+    const m = part(skirt, G.shard, M.crystal, [Math.sin(a) * 0.8, 0, Math.cos(a) * 0.8], [Math.PI, 0, 0], 0.9 + (i % 3) * 0.25, CAST);
+    shards.push({ m, a });
+  }
+  const ribbons = [0, 1, 2, 3].map((i) => { const r = part(float, G.ribbon, M.ribbon, [(i - 1.5) * 0.35, 0.3, -0.45], [0, 0, 0]); r.renderOrder = 2; return r; });
+  const hands = [-1, 1].map((sd) => part(float, G.hand, M.crystal, [sd * 1.9, 0.2, 0.4], null, 1, CAST));
+  const cage = part(root, G.cage, M.cage, [0, 0.2, 0]);
+  cage.renderOrder = 3;
+  const halo = sprite(float, M.halo, [0, 0.4, 0], 6);
+  const eye = grp(headG, 0, 0, 0.5);
+  const muzzle = grp(float, 0, -0.2, 0.9);
+  const sparks = makeSparks(k, float, 28, '#f5d0fe', 0.16);
+  const arcs = makeArcs(k, float, '#f0abfc');
+  const e = newFoe();
+  const phaseCol = new THREE.Color(QUEEN_HEX[0]);
+  let openK = 0; let deadK = 0; let lastPhase = 0; let phaseT = 9;
+  function update(t, dt, s) {
+    s = s || ENEMY_DEFAULT;
+    dt = safeDt(dt);
+    foeStep(e, s, dt, root);
+    const pi = clamp(Math.floor(num(s.phase, 1) || 1) - 1, 0, 2);
+    if (pi !== lastPhase) { lastPhase = pi; phaseT = 0; }
+    phaseT += dt;
+    phaseCol.lerp(col(QUEEN_HEX[pi]), 1 - Math.exp(-4 * dt));
+    const st = e.state; const dead = st === 'dead'; const stun = st === 'stunned';
+    deadK = approach(deadK, dead ? 1 : 0, 1.0, dt);
+    openK = approach(openK, s.shield === false || stun || dead ? 1 : 0, 4, dt);
+    const charge = Number.isFinite(s.charge) ? clamp(s.charge) : 0;
+    float.position.y = 0.2 * Math.sin(t * 1.4) - 0.6 * openK - 2.5 * easeInOut(deadK);
+    float.rotation.z = 0.05 * Math.sin(t * 0.8) + (stun ? 0.1 * Math.sin(t * 2.6) : 0);
+    let ty = 0; let tp = 0.1;
+    if (finiteVec(s.aim) && !dead) { const a = aimAngles(root, s.aim, 0, 1.75 * 1.25, 0); ty = a.yaw; tp = clamp(a.pitch, -0.7, 0.7); }
+    e.yaw = approachAngle(e.yaw, ty, 4, dt);
+    e.pitch = approach(e.pitch, tp + openK * 0.35, 4, dt);
+    bodyG.rotation.y = e.yaw * 0.6;
+    headG.rotation.set(e.pitch, e.yaw, 0);
+    crown.rotation.y = Math.sin(t * 0.7) * 0.1;
+    skirt.rotation.y = t * (0.4 + pi * 0.3);
+    for (let i = 0; i < shards.length; i++) {
+      const q = shards[i];
+      q.m.position.set(Math.sin(q.a) * (0.8 + 0.5 * openK), -0.15 * Math.sin(t * 2 + i) - 2 * deadK * (i % 3), Math.cos(q.a) * (0.8 + 0.5 * openK));
+    }
+    for (let i = 0; i < 4; i++) ribbons[i].rotation.set(0.25 + 0.15 * Math.sin(t * 1.6 + i), Math.sin(t * 0.9 + i) * 0.2, (i - 1.5) * 0.15);
+    // hands orbit, raised while charging (casting)
+    for (let i = 0; i < 2; i++) {
+      const sd = i ? 1 : -1; const a = t * 0.8 + i * Math.PI;
+      hands[i].position.set(sd * (1.7 + 0.25 * Math.sin(a)), 0.2 + charge * 1.2 + 0.25 * Math.cos(a), 0.5 + 0.3 * Math.sin(a * 0.7));
+      hands[i].rotation.set(0.3 * Math.sin(a), a * 0.5, sd * (0.4 + charge * 0.6));
+    }
+    // the cage: spins while she is shielded, flies apart (scales up, fades) when exposed
+    cage.rotation.set(t * 0.31, t * (0.5 + pi * 0.25), 0);
+    cage.scale.setScalar(1 + openK * 0.7);
+    M.cage.opacity = (0.55 + 0.25 * charge) * (1 - openK) * (1 - deadK);
+    cage.visible = M.cage.opacity > 0.01;
+    const life = 1 - deadK;
+    const pf = phaseT < 0.8 ? 1 - phaseT / 0.8 : 0;
+    const pulse = 1 + 0.25 * Math.sin(t * 2.5) + 0.9 * charge + 1.2 * pf;
+    M.cage.color.copy(phaseCol).multiplyScalar(1.4 * pulse);
+    M.core.uniforms.uColor.value.copy(phaseCol);
+    M.core.uniforms.uTime.value = t * (1.2 + pi * 0.4);
+    M.core.uniforms.uPower.value = (0.6 + 1.2 * openK + 0.6 * charge) * (0.1 + 0.9 * life);
+    core.scale.setScalar(1 + 0.5 * openK + 0.08 * Math.sin(t * 5));
+    M.crystal.emissive.copy(phaseCol); M.crystal.emissiveIntensity = (0.3 + 0.5 * charge + 0.4 * openK) * life;
+    M.spike.color.copy(phaseCol).multiplyScalar(1.8 * pulse * life);
+    M.ribbon.color.copy(phaseCol).multiplyScalar(0.9 * pulse * life);
+    M.eye.color.setRGB(3, 2.8, 3).multiplyScalar((0.5 + 0.5 * pulse) * life + 0.03);
+    M.halo.color.copy(phaseCol).multiplyScalar(0.45 * pulse * life);
+    halo.scale.setScalar(5.5 + 1.5 * charge + 3 * pf);
+    setRimColor(M.crystal, phaseCol, 0.9 * life);
+    hitFlash(e, flash);
+    sparks.update(t, Math.max(stun ? 1 : 0, e.hitT < 0.3 ? 1 : 0, deadK * (1 - sstep(0.7, 1, deadK))), 0, 0, 0, 1.2, 1.6);
+    arcs.update(t, stun ? 1 : e.hp < 0.35 ? 0.5 : 0, 0, 0, 0, 1.3);
+    root.visible = !(dead && e.stT > 5);
+  }
+  return {
+    root, update, type: 'queen', anchors: { eye, muzzle, core },
+    dispose() { k.dispose(); root.removeFromParent(); },
+  };
+}
+
 export function makeEnemy(type) {
   if (type === 'crawler') return buildCrawler();
   if (type === 'turret') return buildTurret();
   if (type === 'warden') return buildWarden();
+  if (type === 'maw') return buildMaw();
+  if (type === 'queen') return buildQueen();
   return buildSentry();
 }
 
@@ -3440,11 +3719,71 @@ function buildUnknown(type) {
   return done(root, k, () => {});
 }
 
+
+// gate: a rift geyser — a column of light that throws whoever steps in back up (or somewhere else)
+function buildGate(opts) {
+  const k = owner();
+  const root = prop('gate');
+  const hex = typeof (opts && opts.color) === 'string' ? opts.color : '#5ef2c0';
+  const G = {
+    dais: geo('gate.dais', () => merged([
+      [new THREE.CylinderGeometry(1.15, 1.3, 0.14, 40), [0, 0.07, 0]],
+      [new THREE.CylinderGeometry(1.02, 1.02, 0.04, 40), [0, 0.15, 0]],
+    ])),
+    disc: geo('gate.disc', () => new THREE.CircleGeometry(1.0, 48).rotateX(-Math.PI / 2)),
+    column: geo('gate.column', () => new THREE.CylinderGeometry(0.85, 1.0, 7, 32, 1, true).translate(0, 3.5, 0)),
+    ring: geo('portal.ring', () => new THREE.TorusGeometry(1, 0.03, 6, 96)),
+  };
+  const M = {
+    disc: k.own(fxMaterial(FS_SWIRL, { uColorA: { value: new THREE.Color() }, uColorB: { value: new THREE.Color() }, uTime: { value: 0 }, uPower: { value: 0.6 } })),
+    column: k.own(fxMaterial(FS_COLUMN, { uColor: { value: new THREE.Color() }, uTime: { value: 0 }, uPower: { value: 0.6 } }, { side: THREE.DoubleSide })),
+    rings: k.own(unlit(hex, 1.5)),
+    halo: k.own(spriteMat(hex, 1)),
+  };
+  part(root, G.dais, SM.dark(), null, null, null, RECV);
+  part(root, G.disc, M.disc, [0, 0.18, 0]);
+  const column = part(root, G.column, M.column, [0, 0.18, 0]);
+  const rings = [0, 1, 2].map(() => part(root, G.ring, M.rings, [0, 0.5, 0], [Math.PI / 2, 0, 0], 0.8));
+  const halo = sprite(root, M.halo, [0, 1.2, 0], 2.6);
+  const base = col(hex).clone();
+  const c = new THREE.Color();
+  let openK = 1;
+  let fire = 0;
+  function update(t, dt, s) {
+    s = s || PROP_DEFAULT;
+    dt = safeDt(dt);
+    openK = approach(openK, s.open === false ? 0 : 1, 3, dt);
+    fire = Math.max(num(s.fire, 0), fire - dt * 2);
+    c.copy(base).multiplyScalar(0.15 + 0.85 * openK);
+    const u = M.disc.uniforms;
+    u.uColorA.value.copy(c).multiplyScalar(1.7 + fire);
+    u.uColorB.value.copy(c).multiplyScalar(0.5);
+    u.uTime.value = t * (1.5 + fire * 3);
+    u.uPower.value = 0.3 + 0.6 * openK + fire;
+    const cu = M.column.uniforms;
+    cu.uColor.value.copy(c).multiplyScalar(1 + fire);
+    cu.uTime.value = t * 2.2;
+    cu.uPower.value = (0.15 + 0.7 * openK) * (1 + fire);
+    column.scale.set(1 - 0.3 * fire, 0.25 + 0.75 * openK + fire * 0.3, 1 - 0.3 * fire);
+    M.rings.color.copy(c).multiplyScalar(1.4 + fire * 2);
+    for (let i = 0; i < 3; i++) {
+      const ph = (t * 0.45 + i / 3) % 1;
+      const r = rings[i];
+      r.position.y = 0.3 + ph * 6 * (0.3 + 0.7 * openK);
+      r.scale.setScalar(0.9 - 0.25 * ph);
+      r.visible = openK > 0.05;
+    }
+    M.halo.color.copy(c).multiplyScalar(0.8 + fire * 1.5);
+    halo.scale.setScalar(2.4 + fire * 2.5);
+  }
+  return done(root, k, update);
+}
 export function makeProp(type, opts = {}) {
   switch (type) {
     case 'shard': return buildShard();
     case 'checkpoint': return buildCheckpoint();
     case 'portal': return buildPortal();
+    case 'gate': return buildGate(opts);
     case 'switch': return buildSwitch();
     case 'node': return buildNode();
     case 'plate': return buildPlate(opts);

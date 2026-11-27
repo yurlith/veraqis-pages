@@ -1,4 +1,4 @@
-// NEON RIFT — level data (8 levels: Neon ×2, Crystal ×2, Sky ×2, Lava ×2).
+// NEON RIFT — level data. Chapter 1 (1–8): Neon ×2, Crystal ×2, Sky ×2, Lava ×2. Chapter 2 (9–12): the Underside.
 // Schema: _dev/NEONRIFT.md. Metres, y up, yaw 0 faces +Z. Blocks are centre + size; a block's top is p.y + s.y / 2.
 // Point items (checkpoint, portal, plate, switch, node, bounce, sign) stand on the floor at p; shards float at p.
 // `solve` (next to `def`) is the intended solution: _dev/levels/validate.mjs replays it step by step against a
@@ -1037,6 +1037,438 @@ function theWarden() {
   };
 }
 
+
+// =====================================================================================================
+// CHAPTER 2 · THE UNDERSIDE — everything that falls ends up below the city. Levels 9–12 have a whole second
+// world under them (`under` = the height below which the game fades into it); rift geysers ('gate' items)
+// throw a hero back up. Physics budget as above.
+// =====================================================================================================
+const U = -40;                                   // the Underside floor
+const gate = (x, y, z, to, extra = {}) => ({ type: 'gate', p: [x, y, z], to, ...extra });
+const crack = (id, x, y, z, s = [1.6, 2.4, 1.6]) => ({ type: 'cracked', id, p: [x, y, z], s });
+
+// ---------- 9 · FREEFALL (neon above, the Underside below) ----------
+// The skybridge gives way under the team (trigger 'quake'); they land 40 m down in a glowing cavern, cross a
+// chasm on a shuttle and ride a rift geyser up to the far roof, where the portal is.
+function freefall() {
+  const blocks = [
+    // A — the start roof
+    roof(-8, -6, 8, 12, 0),
+    span(-6, 3, -3.5, 5.5, 0, 1.2, 'metal'), span(3.5, 7, 6.5, 9.5, 0, 1, 'metal'),
+    post(-4.5, 11.4, 0.3, 0, 4, 'metal'), post(4.5, 11.4, 0.3, 0, 4, 'metal'),
+    span(-4.5, 11.3, 4.5, 11.6, 3, 4, 'glow:#ff2bd6'),              // gateway sign over the bridge
+    // bridge towers (the deck itself is made of crumbles)
+    post(-4.5, 12.6, 1, -26, 9, 'metal'), post(4.5, 12.6, 1, -26, 9, 'metal'),
+    post(-4.5, 39.4, 1, -26, 9, 'metal'), post(4.5, 39.4, 1, -26, 9, 'metal'),
+    span(-4.6, 12.4, -4.4, 39.6, 8.6, 8.9, 'glow:#22d3ee'), span(4.4, 12.4, 4.6, 39.6, 8.6, 8.9, 'glow:#22d3ee'),
+    // C — the far roof with the portal (reachable only from below)
+    roof(-8, 64, 8, 86, 0),
+    span(-6.5, 72, -4, 74.5, 0, 1.2, 'metal'),
+    post(6, 82, 0.4, 0, 6, 'metal'), span(5.8, 76, 6.2, 84, 3, 6, 'glow:#ff2bd6'),
+    // U1 — the landing cavern
+    span(-14, -10, 14, 46, U - 4, U, 'rock'),
+    span(-14.6, -10, -14, 46, U, U + 9, 'rock'), span(14, -10, 14.6, 46, U, U + 9, 'rock'), span(-14, -10.6, 14, -10, U, U + 9, 'rock'),
+    post(-7, 2, 1.4, U, U + 1.2, 'crystal'), post(8, -4, 1, U, U + 0.8, 'crystal'), post(-9, 24, 1.2, U, U + 1, 'crystal'),
+    span(-0.15, 14, 0.15, 40, U, U + 0.05, 'glow:#14b8a6'), span(-3.2, 22, -2.95, 34, U, U + 0.05, 'glow:#14b8a6'),   // glowing roots
+    post(9, 30, 1.6, U, U + 2.2, 'crystal'),                          // deep shard pillar (Pix)
+    post(-5, 30, 1.4, U, U + 2.4, 'rock'), post(4, 18, 1.4, U, U + 2.4, 'rock'),   // cover
+    // the laser niche (west wall) and the Pix duct (east wall)
+    span(-14, 33, -10, 33.4, U, U + 3, 'rock'), span(-14, 40.6, -10, 41, U, U + 3, 'rock'), span(-14, 33, -10, 41, U + 3, U + 3.4, 'rock'),
+    span(10, 2, 14, 4.6, U, U + 3, 'rock'), span(10, 9.4, 14, 12, U, U + 3, 'rock'),
+    ...duct(10, 4.6, 14, 9.4, U, 'x', 'rock'),
+    // the chasm (z 46–54) and U2 beyond it
+    span(-10, 54, 10, 74, U - 4, U, 'rock'),
+    span(-10.6, 54, -10, 74, U, U + 9, 'rock'), span(10, 54, 10.6, 74, U, U + 9, 'rock'), span(-10, 74, 10, 74.6, U, U + 9, 'rock'),
+    post(-6, 64, 2.2, U, U + 5, 'crystal'), post(6, 61, 1.6, U, U + 3.2, 'crystal'),
+  ];
+  // the skybridge: 14 deck plates that fall one after another once someone reaches the middle
+  const crumbles = [];
+  for (let i = 0; i < 14; i++) crumbles.push({ p: [0, -0.3, 13 + i * 2], s: [5, 0.6, 2], m: 'metal', when: 'quake', once: true, delay: 0.35 + Math.abs(i - 6) * 0.09 });
+  return {
+    chapter: 'Chapter 2 · The Underside',
+    name: 'Freefall',
+    blurb: 'The bridge gives way — welcome to the world below',
+    title: 'Freefall',
+    say: 'The Warden is gone, but the city keeps shaking. Something under the streets is waking up. Careful on that bridge…',
+    intro: 'With the Warden down, Neon City should be safe. It isn’t. Every night another street cracks open and its lights drain away — down, into the dark under the city. The team heads for Sector 9, where the cracks began.',
+    brief: [
+      ['UNDERSIDE', 'Fall off the level here and you don’t die — you drop into the Underside, a whole world below.', true],
+      ['GEYSER', 'A rift geyser ⇧ throws a hero back up. Every hero has to ride one to reach the portal.', true],
+      ['MISSION', 'Find all four deep shards in the Underside.', true],
+    ],
+    mission: { kind: 'deep', text: 'find all 4 deep shards in the Underside' },
+    lesson: 'falling is not the end here. The Underside is part of the level — explore it, then ride a geyser home.',
+    story: {
+      intro: [['vera', 'Sector 9. This is where the cracks started.'], ['pix', 'The bridge looks… fine? Mostly fine. Kind of fine.'], ['brick', 'Brick goes last. Brick is heavy.']],
+      at: [
+        { p: [0, U, 20], r: 7, lines: [['echo', '…you fell too. Everyone falls, sooner or later.'], ['vera', 'Who said that?'], ['echo', 'Call me Echo. Follow the light roots — the geyser beyond the chasm will carry you up.']] },
+        { p: [0, U, 58], r: 5, lines: [['echo', 'She is drinking the city’s light. The shards you gather are pieces of the Rift Heart.'], ['pix', 'She who? …I hate when voices say “she”.']] },
+        { p: [0, 0, 70], r: 5, lines: [['brick', 'Up again. Brick likes up.']] },
+      ],
+      on: {
+        quake: [['pix', 'Uh-oh. UH-OH!'], ['vera', 'Hold on — we’re going down!']],
+        under: [['vera', 'We’re alive… and we’re under the city.']],
+      },
+      outro: [['echo', 'Go deeper when you are ready. Her foundry is below. I will be waiting.']],
+    },
+    def: {
+      theme: 'neon',
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      under: -14,
+      killY: -75,
+      par: 170,
+      blocks,
+      crumbles,
+      surfaces: [{ type: 'void', p: [0, U - 10, 50], s: [44, 10] }],
+      movers: [
+        { p: [0, U - 0.25, 47.5], s: [3, 0.5, 3], m: 'metal', path: [[0, U - 0.25, 47.5], [0, U - 0.25, 52.5]], speed: 2.2, wait: 1, mode: 'pingpong' },
+      ],
+      hazards: [
+        ...curtain(-10, -10, 33.4, U + 0.35, 5).map((l) => ({ ...l, to: [-10, l.to[1], 40.6] })),     // the niche
+      ],
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(-4.75, 1.2 + SH, 4.25),            // on an AC unit
+        shard(0, U + SH, 26),                    // on the glowing root
+        shard(9, U + 2.2 + SH, 30),              // deep · crystal pillar (Pix)
+        shard(-12, U + SH, 37),                  // deep · behind the lasers (Brick)
+        shard(12.8, U + SH, 7),                  // deep · end of the duct (Pix)
+        shard(-5.25, 1.2 + SH, 73.25),           // far roof, AC unit
+        shard(6, 0 + SH, 85),                    // far roof, behind the billboard
+        { type: 'trigger', id: 'quake', p: [0, -0.5, 25], r: 3.2, h: 4 },
+        checkpoint(0, U, 20, 'u1'),
+        checkpoint(-3, U, 57, 'u2'),
+        checkpoint(0, 0, 71, 'roof'),
+        gate(0, U, 68, [0, 0, 70.3], { yaw: 0 }),
+        { type: 'portal', p: [0, 0, 80] },
+        sign(3, 0, -3, 'SECTOR 9 · GROUND UNSTABLE'),
+        sign(-3, U, 50, 'NO WAY UP · except the light'),
+      ],
+      enemies: [
+        { type: 'crawler', p: [-6, U, 12], range: 8 },
+        { type: 'crawler', p: [5, U, 40], range: 8 },
+        { type: 'sentry', p: [0, U + 3.5, 60], path: [[-6, U + 3.5, 60], [6, U + 3.5, 60]], speed: 1.6, range: 10 },
+        { type: 'sentry', p: [0, 3, 75], path: [[-5, 3, 75], [5, 3, 75]], speed: 1.8, range: 9 },
+      ],
+      tips: [
+        tip(0, 0, 9, 3, 'The skybridge leads to the far roof. Looks solid. Probably.'),
+        tip(0, U, 14, 4, 'You landed in the Underside! Everyone has to come down here — the only way up is a rift geyser.'),
+        tip(-9, U, 37, 3, 'A niche behind lasers — Brick strolls in.'),
+        tip(9, U, 7, 3, 'A low duct in the wall: only Pix fits.'),
+        tip(0, U, 44, 3, 'Ride the shuttle over the chasm. Down there it really is the end.'),
+        tip(0, U, 64, 3, 'The rift geyser! Step in to fly back up to the far roof.'),
+      ],
+    },
+  };
+}
+
+// ---------- 10 · THE SUNKEN FOUNDRY (abyss) ----------
+// Deep in the Underside: crumbling catwalks over the abyss, a turret hall with a crate puzzle, shuttles under a
+// sentry, and a geyser to the portal ledge that only runs while Vera keeps its node lit.
+function sunkenFoundry() {
+  const M = 'metal';
+  const R = 'rock';
+  const blocks = [
+    span(-6, -6, 6, 6, -4, 0, M),                                                  // start
+    span(-6.6, -6, -6, 6, 0, 1, M), span(6, -6, 6.6, 6, 0, 1, M),
+    span(-6, 22, 6, 30, -4, 0, M),                                                 // P1
+    // the turret hall
+    span(-7, 30, 7, 58, -4, 0, M),
+    span(-7.6, 30, -7, 58, 0, 4.5, M), span(7, 30, 7.6, 58, 0, 4.5, M),
+    post(-3.5, 46, 1.2, 0, 2.4, M), post(2.5, 46, 1.2, 0, 2.4, M),
+    span(-7, 37, -5, 39, 0, 1.4, M),                                               // a ledge for a shard (Pix)
+    span(-7, 57.4, -3, 58, 0, 4.5, M), span(3, 57.4, 7, 58, 0, 4.5, M), span(-3, 57.4, 3, 58, 3.4, 4.5, M),   // the gate wall
+    span(-6, 58, 6, 64, -4, 0, M),                                                 // P2
+    span(-3, 76, 3, 80, -4, 0, R),                                                 // island I1
+    // P3 and the high ledge with the portal
+    span(-7, 88, 7, 100, -4, 0, M),
+    span(-6, 100, 6, 112, -4, 4, M),
+    post(6.2, 96, 1.2, 0, 2.6, M),                                                 // node pillar
+    span(-7, 94, -5, 96, 0, 2.2, M),                                               // shard perch (Pix)
+    post(-2, 109, 0.4, 4, 9, M), post(2, 109, 0.4, 4, 9, M), span(-2, 108.9, 2, 109.1, 7, 9, 'glow:#2ee6c8'),
+  ];
+  const crumbles = [8, 11.2, 14.4, 17.6, 20.8].map((z, i) => ({ p: [i % 2 ? 1 : -1, -0.25, z], s: [2.6, 0.5, 2.4], m: R, delay: 0.55, back: 2.5 }));
+  return {
+    name: 'The Sunken Foundry',
+    blurb: 'The Queen’s machines melt the city’s light',
+    title: 'The Sunken Foundry',
+    say: 'Echo says the Queen melts down whatever falls into a dark she calls “null”. Her foundry is right below us.',
+    intro: 'Echo leads the team down the Underside’s roots to a foundry built from fallen streetlights. Turrets guard it; shuttles cross the abyss; a geyser at the far end only flows while its node is lit.',
+    brief: [
+      ['ABYSS', 'There is no world below this one. Fall here and you are back at the checkpoint.', false],
+      ['COVER', 'Turrets shoot bolts — Brick shrugs them off. Push the crate onto the heavy plate to keep the gate open.', true],
+      ['GEYSER', 'The last geyser runs only while its node is lit. Vera keeps it lit; everyone rides up.', true],
+      ['MISSION', 'Hard: reach the portal without a single hit.', true],
+    ],
+    mission: { kind: 'nohit', text: 'no hero gets hit or falls' },
+    lesson: 'cover and timing. Brick soaks the bolts, crates block the turrets’ view — and nobody has to get hit at all.',
+    story: {
+      intro: [['echo', 'Her foundry. Everything that falls is melted here into null.'], ['pix', 'Null. Great name for a place. Super welcoming.'], ['vera', 'Stay together. Brick in front.']],
+      at: [
+        { p: [0, 0, 34], r: 4, lines: [['brick', 'Bolts tickle. Brick goes first.']] },
+        { p: [0, 0, 61], r: 4, lines: [['echo', 'Beyond the shuttles lies the road to the Maw. Her beast. Her jailer.']] },
+        { p: [0, 0, 92], r: 4, lines: [['vera', 'The geyser is dead. If I light that node, it should run.']] },
+      ],
+      outro: [['echo', 'You are strong. Good. The Maw will not let you pass gently.'], ['brick', 'Brick does not pass gently either.']],
+    },
+    def: {
+      theme: 'abyss',
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      killY: -20,
+      par: 180,
+      blocks,
+      crumbles,
+      surfaces: [{ type: 'void', p: [0, -9, 55], s: [70, 150] }],
+      movers: [
+        { p: [0, -0.25, 65.5], s: [3, 0.5, 3], m: M, path: [[0, -0.25, 65.5], [0, -0.25, 74.5]], speed: 2.6, wait: 1, mode: 'pingpong' },
+        { p: [0, -0.25, 86.5], s: [3, 0.5, 3], m: M, path: [[0, -0.25, 86.5], [0, -0.25, 81.5]], speed: 2.2, wait: 1, mode: 'pingpong' },
+      ],
+      hazards: [
+        { type: 'laser', from: [-3, 0.45, 14.4], to: [3, 0.45, 14.4], period: [1.4, 1.6] },
+        { type: 'laser', from: [-3, 0.45, 20.8], to: [3, 0.45, 20.8], period: [1.4, 1.6], phase: 1.5 },
+      ],
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(1, 1.8, 11.2),                     // over a catwalk tile
+        shard(-6, 1.4 + SH, 38),                 // on the hall ledge (Pix)
+        shard(2.5, 2.4 + SH, 46),                // on a cover pillar (Pix)
+        shard(6, 0 + SH, 31),                    // hall corner
+        shard(0, 1.9, 70),                       // over the first shuttle
+        shard(2.2, 0 + SH, 78),                  // island
+        shard(-6, 2.2 + SH, 95),                 // perch (Pix)
+        shard(-5, 4 + SH, 111),                  // behind the portal
+        checkpoint(-3, 0, 26, 'cp1'),
+        checkpoint(3, 0, 61, 'cp2'),
+        checkpoint(-4, 0, 90, 'cp3'),
+        { type: 'crate', p: [4.5, 0, 42] },
+        { type: 'plate', id: 'fp', p: [4.5, 0, 52], heavy: true },
+        { type: 'door', p: [0, 0, 57.7], s: [6, 3.4, 0.6], when: 'fp' },
+        { type: 'node', id: 'fn', p: [6.2, 2.6, 96], time: 14 },
+        gate(0, 0, 97, [0, 4, 103], { when: 'fn', yaw: 0 }),
+        { type: 'portal', p: [0, 4, 106] },
+        sign(3, 0, -3, 'FOUNDRY · all light becomes null'),
+      ],
+      enemies: [
+        { type: 'turret', p: [-4.5, 0, 55], range: 17, rate: 1.2 },
+        { type: 'turret', p: [4.5, 0, 55], range: 17, rate: 1.2 },
+        { type: 'crawler', p: [-3, 0, 33], range: 8 },
+        { type: 'sentry', p: [0, 3.2, 70], path: [[-4, 3.2, 66], [4, 3.2, 78], [-4, 3.2, 84]], speed: 1.6, range: 10, fov: 60 },
+        { type: 'turret', p: [5, 4, 110], range: 15, rate: 1 },
+      ],
+      tips: [
+        tip(0, 0, 5, 3, 'Catwalk tiles crumble under you — keep moving. The lasers blink: watch the beat.'),
+        tip(0, 0, 31, 3, 'Two turrets. Brick walks through bolts; the others hide behind pillars and crates. Vera can zap them — three hits each.'),
+        tip(4.5, 0, 46, 3, 'Brick: push this crate onto the heavy plate. The gate stays open while it sits there.'),
+        tip(0, 0, 63, 3, 'Shuttles over the abyss, a drone above them. Time your hops.'),
+        tip(0, 0, 93, 3, 'Vera: zap the node on the pillar. The geyser runs for 14 seconds — get everyone in!'),
+      ],
+    },
+  };
+}
+
+// ---------- 11 · THE MAW (abyss boss) ----------
+// A square arena around a pit. The Maw rears out of it. 1 · Brick pounds its three chain anchors → zap ×3.
+// 2 · light the three timed switches on the corner perches (Pix climbs, Vera zaps) → zap ×3.
+// 3 · armoured crawlers (Brick pounds) → zap ×3. It sweeps a floor beam: jump it, hide behind a pillar, or be Brick.
+function theMaw() {
+  const R = 'rock';
+  const M = 'metal';
+  const blocks = [
+    span(-5, -6, 5, 6, -4, 0, M),                                   // start
+    span(-2, 6, 2, 26, -4, 0, M),                                   // bridge
+    span(-5, 26, 5, 32, -4, 0, M),                                  // the arena gate
+    post(-4.5, 31.5, 0.6, 0, 6, M), post(4.5, 31.5, 0.6, 0, 6, M),
+    post(-4.5, 31.5, 0.7, 5.6, 5.9, 'glow:#ff7a1a'), post(4.5, 31.5, 0.7, 5.6, 5.9, 'glow:#ff7a1a'),
+    // the arena: a square ring around the pit (x ±6.5, z 43.5–56.5)
+    span(-18, 32, 18, 43.5, -4, 0, R), span(-18, 56.5, 18, 68, -4, 0, R),
+    span(-18, 43.5, -6.5, 56.5, -4, 0, R), span(6.5, 43.5, 18, 56.5, -4, 0, R),
+    span(-6.6, 43.4, 6.6, 43.6, 0, 0.12, 'glow:#ff7a1a'), span(-6.6, 56.4, 6.6, 56.6, 0, 0.12, 'glow:#ff7a1a'),
+    span(-6.6, 43.4, -6.4, 56.6, 0, 0.12, 'glow:#ff7a1a'), span(6.4, 43.4, 6.6, 56.6, 0, 0.12, 'glow:#ff7a1a'),
+    // cover pillars and the corner perches (2.2 m: Pix, or Vera's zap)
+    post(-10, 38, 1.4, 0, 2.6, R), post(10, 38, 1.4, 0, 2.6, R), post(-10, 62, 1.4, 0, 2.6, R), post(10, 62, 1.4, 0, 2.6, R),
+    post(-15.5, 34.5, 1.8, 0, 2.2, M), post(15.5, 34.5, 1.8, 0, 2.2, M), post(0, 65.5, 1.8, 0, 2.2, M),
+    span(-1.5, 62.6, 1.5, 64.6, 0, 0.9, M),                       // a step up to the north perch (Vera can climb it too)
+    // the portal terrace
+    span(-4, 68, 4, 78, -4, 0, M),
+    post(-3.5, 77.5, 0.8, 0, 6, 'glow:#ff7a1a'), post(3.5, 77.5, 0.8, 0, 6, 'glow:#ff7a1a'),
+    // the arena walls
+    span(-18.6, 32, -18, 68, 0, 3, R), span(18, 32, 18.6, 68, 0, 3, R),
+  ];
+  return {
+    name: 'The Maw',
+    blurb: 'The Queen’s beast guards the deep road',
+    title: 'The Maw',
+    say: 'Something huge is moving in that pit. Three of us, three tricks. Let’s make it count.',
+    intro: 'The deep road ends in a pit, and in the pit lives the Maw — the Null Queen’s jailer, chained to the arena by three anchors. It sweeps the floor with a beam of null and spits fire at whoever moves.',
+    brief: [
+      ['PHASE 1', 'Brick: ground-pound the three chain anchors. The Maw slumps — Vera, zap its heart three times.', true],
+      ['PHASE 2 · 3', 'Light the three perch switches (Pix climbs, Vera can zap them), then pound its armoured brood. Zap after each.', true],
+      ['BEAM', 'It sweeps a beam along the floor: jump it, hide behind a pillar — Brick just walks through.', true],
+      ['MISSION', 'Hard: defeat the Maw and reach the portal in under 4:00.', true],
+    ],
+    mission: { kind: 'time', t: 240, text: 'clear it in under 4:00' },
+    lesson: 'three phases, three heroes. The Maw punished standing still — and every pillar was a place to breathe.',
+    story: {
+      intro: [['echo', 'The Maw. It holds the deep road closed for her.'], ['pix', 'That’s not a road. That’s a mouth.'], ['vera', 'Then we close it.']],
+      on: {
+        'maw:start': [['maw', 'GRRRAAAH…'], ['echo', 'The chains! Break its anchors!']],
+        'maw:1': [['vera', 'The chains are down! Pix — the switches on the perches!']],
+        'maw:2': [['echo', 'It calls its brood. Brick, they fear your fists.']],
+        maw: [['echo', 'The road is open. Beyond it… her throne. And the Heart.']],
+      },
+      outro: [['pix', 'Who’s a good giant eel? Not you. You were bad.'], ['echo', 'Rest. Then come to the Heart. She is waiting for you.']],
+    },
+    def: {
+      theme: 'abyss',
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      killY: -20,
+      par: 200,
+      blocks,
+      surfaces: [{ type: 'void', p: [0, -9, 40], s: [70, 110] }],
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(0, 1.6, 16),                       // over the bridge
+        shard(-15.5, 2.2 + SH, 34.5),            // perch (Pix)
+        shard(16.5, 0 + SH, 66.5),               // arena corner
+        shard(-16.5, 0 + SH, 66.5),              // arena corner
+        shard(10, 2.6 + SH, 62),                 // on a cover pillar (Pix)
+        shard(0, 1.4, 50),                       // over the pit — Pix's dash after the fight
+        shard(-3, 0 + SH, 76.5),                 // behind the portal
+        checkpoint(0, 0, 29, 'gate'),
+        crack('a1', 0, 0, 37.5),
+        crack('a2', -13, 0, 50),
+        crack('a3', 13, 0, 50),
+        { type: 'switch', id: 'm1', p: [-15.5, 2.2, 34.5], mode: 'timed', time: 12 },
+        { type: 'switch', id: 'm2', p: [15.5, 2.2, 34.5], mode: 'timed', time: 12 },
+        { type: 'switch', id: 'm3', p: [0, 2.2, 65.5], mode: 'timed', time: 12 },
+        { type: 'portal', p: [0, 0, 73], when: 'maw' },
+        sign(3, 0, -3, 'THE DEEP ROAD · closed'),
+      ],
+      enemies: [
+        { type: 'boss', kind: 'maw', id: 'maw', name: 'The Maw', p: [0, 4.6, 50], floor: 0, wake: 19, phases: [
+          { need: 'cracked', ids: ['a1', 'a2', 'a3'], window: 7, hits: 3, attacks: ['volley', 'sweep'] },
+          { need: 'switches', ids: ['m1', 'm2', 'm3'], window: 6, hits: 3, attacks: ['volley', 'ring', 'sweep'], rate: 1.1 },
+          { need: 'minions', minions: 3, window: 6, hits: 3, attacks: ['volley', 'ring', 'sweep'], rate: 1.25 },
+        ] },
+      ],
+      tips: [
+        tip(0, 0, 29, 3, 'The arena. Brick: pound the three glowing anchors. Everyone else: keep moving!'),
+        tip(-14, 0, 37, 3, 'Perch switches: Pix double-jumps up, Vera can zap them from the floor.'),
+      ],
+    },
+  };
+}
+
+// ---------- 12 · HEART OF THE RIFT (crystal above, the Underside below) — the final battle ----------
+// The Null Queen's throne floats over the Underside. 1 · plates on the rim (Brick heavy, Pix light) → zap ×3:
+// the throne floor shatters and she sinks below. 2 · in the Underside Brick pounds her three crystal anchors →
+// zap ×3; geysers lead back up. 3 · back on the rim: light the three nodes → zap ×3. The portal opens.
+function heartOfTheRift() {
+  const C = 'crystal';
+  const S = 'stone';
+  const blocks = [
+    span(-5, -6, 5, 6, -4, 0, S),                                  // start
+    span(-2.5, 6, 2.5, 26, -4, 0, S),                              // causeway
+    post(-2.3, 16, 0.6, 0, 1.6, C), post(2.3, 16, 0.6, 0, 1.6, C),
+    span(-6, 26, 6, 34, -4, 0, S),                                 // P1
+    // the throne rim (the middle, x ±11 / z 39–61, is made of crumbles that fall in phase 1)
+    span(-16, 34, 16, 39, -4, 0, S), span(-16, 61, 16, 66, -4, 0, S),
+    span(-16, 39, -11, 61, -4, 0, S), span(11, 39, 16, 61, -4, 0, S),
+    post(-13.5, 36.5, 1.4, 0, 2.2, C), post(13.5, 36.5, 1.4, 0, 2.2, C), post(0, 64.2, 1.4, 0, 2.2, C),   // node pillars
+    post(-14.5, 63.5, 1.2, 0, 2.6, S), post(14.5, 63.5, 1.2, 0, 2.6, S),                                  // cover
+    span(-4, 66, 4, 76, -4, 0, S),                                 // the portal terrace
+    post(-3.5, 75.5, 0.8, 0, 7, 'glow:#c084fc'), post(3.5, 75.5, 0.8, 0, 7, 'glow:#c084fc'),
+    // the Underside below the throne
+    span(-18, 32, 18, 68, U - 4, U, 'rock'),
+    span(-18.6, 32, -18, 68, U, U + 8, 'rock'), span(18, 32, 18.6, 68, U, U + 8, 'rock'),
+    span(-18, 31.4, 18, 32, U, U + 8, 'rock'), span(-18, 68, 18, 68.6, U, U + 8, 'rock'),
+    post(-6, 38, 1.4, U, U + 2.4, 'rock'), post(6, 62, 1.4, U, U + 2.4, 'rock'), post(12, 40, 1.4, U, U + 2.4, 'rock'),
+    span(-0.15, 33, 0.15, 67, U, U + 0.05, 'glow:#14b8a6'), span(-17, 49.85, 17, 50.15, U, U + 0.05, 'glow:#14b8a6'),
+  ];
+  const crumbles = [];
+  for (let ix = 0; ix < 4; ix++) for (let iz = 0; iz < 4; iz++) {
+    const d = Math.hypot(ix - 1.5, iz - 1.5);
+    crumbles.push({ p: [-8.25 + ix * 5.5, -0.5, 41.75 + iz * 5.5], s: [5.5, 1, 5.5], m: C, when: 'queen:1', once: true, delay: 0.4 + d * 0.25 });
+  }
+  return {
+    name: 'Heart of the Rift',
+    blurb: 'The Null Queen, two worlds, one last fight',
+    title: 'Heart of the Rift',
+    say: 'This is it. The Heart is under her throne. Everyone we’ve met down here is counting on us.',
+    intro: 'Above the Underside floats the Null Queen’s throne, and beneath it beats the Rift Heart — the light of the whole city, stolen shard by shard. Echo has one last secret: it was the Warden. It never held the rift shut to trap the city. It held it shut to keep her out.',
+    brief: [
+      ['PHASE 1', 'Rim plates: Brick on the heavy one, Pix on the light one. Vera zaps — and the floor will not hold.', true],
+      ['PHASE 2 · 3', 'Below, Brick pounds her three crystal anchors. Then up the geysers: light the three rim nodes. Zap after each.', true],
+      ['DODGE', 'A glowing ring on the ground means something is about to fall there.', true],
+      ['MISSION', 'Hard: defeat the Queen without a single hit or fall.', true],
+    ],
+    mission: { kind: 'nohit', text: 'defeat the Queen without a single hit' },
+    lesson: 'the whole adventure in one fight: plates, pounds, zaps and two worlds. The city’s lights are back — thanks to all three of you.',
+    story: {
+      intro: [['queen', 'Little lights. You came all the way down to give me the last of your shards?'], ['vera', 'We came to take the Heart back.'], ['queen', 'Then fall, like everything else.']],
+      at: [{ p: [0, 0, 30], r: 4, lines: [['echo', 'I was the Warden. I held the rift shut — against her. Finish what I could not.'], ['pix', 'Wait, WHAT? We punched you!'], ['echo', 'You set me free. Now set the city free.']] }],
+      on: {
+        'queen:start': [['queen', 'Kneel, and I will make it quick.']],
+        'queen:1': [['queen', 'Enough! Let the floor take you!'], ['brick', 'Brick knows falling. Brick is not scared.']],
+        'queen:2': [['echo', 'She flees upward! Ride the geysers!'], ['vera', 'Everyone up — finish it on the rim!']],
+        queen: [['queen', 'The light… it burns…'], ['echo', 'The Heart beats again. Look — the city is waking.']],
+      },
+      outro: [['vera', 'Every light in Neon City, back where it belongs.'], ['pix', 'Best. Team. Ever.'], ['brick', 'Brick agrees.'], ['echo', 'Thank you, heroes. The rift is quiet — for now.']],
+    },
+    def: {
+      theme: 'crystal',
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      under: -14,
+      killY: -75,
+      par: 260,
+      blocks,
+      crumbles,
+      surfaces: [{ type: 'void', p: [0, U - 10, 50], s: [80, 120] }],
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(0, 1.7, 16),                       // between the causeway crystals
+        shard(-13.5, 2.2 + SH, 36.5),            // on a node pillar (Pix)
+        shard(14.5, 2.6 + SH, 63.5),             // on a cover pillar (Pix)
+        shard(-15, U + SH, 66),                  // Underside corner
+        shard(12, U + 2.4 + SH, 40),             // Underside pillar (Pix)
+        shard(15, U + SH, 34),                   // Underside corner
+        shard(3, 0 + SH, 74.5),                  // behind the portal
+        checkpoint(-3, 0, 30, 'p1'),
+        checkpoint(0, U, 44, 'below'),
+        { type: 'plate', id: 'qp1', p: [-13.5, 0, 50], heavy: true },
+        { type: 'plate', id: 'qp2', p: [13.5, 0, 50] },
+        crack('qa1', -9, U, 46, [1.6, 2.6, 1.6]),
+        crack('qa2', 9, U, 46, [1.6, 2.6, 1.6]),
+        crack('qa3', 0, U, 60, [1.6, 2.6, 1.6]),
+        { type: 'node', id: 'qn1', p: [-13.5, 2.2, 36.5] },
+        { type: 'node', id: 'qn2', p: [13.5, 2.2, 36.5] },
+        { type: 'node', id: 'qn3', p: [0, 2.2, 64.2] },
+        gate(-15, U, 36, [-13.5, 0, 42], { yaw: Math.PI / 2 }),
+        gate(15, U, 64, [13.5, 0, 58], { yaw: -Math.PI / 2 }),
+        { type: 'portal', p: [0, 0, 71.5], when: 'queen' },
+        sign(3, 0, -3, 'THE HEART · beneath the throne'),
+      ],
+      enemies: [
+        { type: 'sentry', p: [0, 3, 18], path: [[-4, 3, 12], [4, 3, 22]], speed: 1.8, range: 9 },
+        { type: 'boss', kind: 'queen', id: 'queen', name: 'The Null Queen', p: [0, 6, 50], floor: 0, wake: 16, reach: 24, phases: [
+          { need: 'plates', ids: ['qp1', 'qp2'], hits: 3, attacks: ['volley', 'rain'] },
+          { need: 'cracked', ids: ['qa1', 'qa2', 'qa3'], at: [0, U + 6, 50], floor: U, window: 7, hits: 3, attacks: ['volley', 'sweep'], rate: 1.1 },
+          { need: 'nodes', ids: ['qn1', 'qn2', 'qn3'], at: [0, 6, 50], floor: 0, window: 6, hits: 3, attacks: ['volley', 'rain', 'ring'], rate: 1.2 },
+        ] },
+      ],
+      tips: [
+        tip(0, 0, 31, 3, 'The throne. Brick to the heavy plate on the left rim, Pix to the light one on the right.'),
+        tip(0, U, 40, 5, 'The Underside! Brick: pound her three crystal anchors. Vera: zap her when the cage opens.'),
+        tip(-14, U, 38, 3, 'A geyser back up to the rim.'),
+      ],
+    },
+  };
+}
+
 export const LEVELS = [
   rooftopRun(),
   foxInTheWires(),
@@ -1046,4 +1478,52 @@ export const LEVELS = [
   sentrySkies(),
   magmaWorks(),
   theWarden(),
+  freefall(),
+  sunkenFoundry(),
+  theMaw(),
+  heartOfTheRift(),
 ];
+
+// ---------- Chapter 1 story beats and missions (merged into levels 1–8) ----------
+const CH1 = [
+  { chapter: 'Chapter 1 · The City Above',
+    intro: 'Neon City runs on light, and the light is leaking away. Every night more of it gathers as glowing shards on the rooftops — and something pulls them toward a rift in the sky. Vera, a small maintenance robot with a big zapper, decides to bring the light home.',
+    mission: { kind: 'nohit', text: 'reach the portal without a hit' },
+    story: { intro: [['vera', 'Shards everywhere… pieces of the city’s light. Let’s bring them home.']], outro: [['vera', 'One tower down. I’m going to need friends for this.']] } },
+  { intro: 'In the wire-tangled alleys, Vera finds Pix — a neon fox who has been collecting shards on her own. She is fast, she is small, and she is not about to share. Until she sees what they can do together.',
+    mission: { kind: 'time', t: 95, text: 'clear it in under 1:35' },
+    story: { intro: [['pix', 'Those are MY shards. …Okay, fine. OUR shards. You zap, I squeeze.']], outro: [['pix', 'We’re a team now, right? Teams share the shiny stuff.']] } },
+  { intro: 'Under the crystal caves sits Brick, a golem who has guarded the same cracked floor for a hundred years. Nobody ever asked him to come along. Vera asks.',
+    mission: { kind: 'nofall', text: 'nobody falls' },
+    story: { intro: [['brick', 'Brick guards the floor. …Brick could guard you instead.'], ['vera', 'Welcome to the team, Brick.']], outro: [['brick', 'Brick likes teams.']] } },
+  { intro: 'The Echo Chamber answers every move: a plate here opens a door there. Crawlers nest in its corners. A voice whispers through the crystals — too faint to understand. Yet.',
+    mission: { kind: 'hunter', text: 'defeat every crawler' },
+    story: { intro: [['pix', 'Did anyone else hear that? Like… a whisper?'], ['vera', 'Just the echo. Probably.']], outro: [['vera', 'There it is again. Something is calling from below.']] } },
+  { intro: 'Above the clouds, the rift has torn the sky islands loose. They drift on updrafts; bridges crumble behind you. There is no floor down there. Not yet.',
+    mission: { kind: 'nofall', text: 'nobody falls' },
+    story: { intro: [['brick', 'Brick does not fly.'], ['pix', 'Brick does now! Bounce pads, big guy!']], outro: [['pix', 'Still not as fun as falling. Kidding. KIDDING.']] } },
+  { intro: 'The rift’s guardians patrol the high islands: drones that see in cones and turrets that never miss twice. The quiet way through is the clever way.',
+    mission: { kind: 'nohit', text: 'sneak through without a hit' },
+    story: { intro: [['vera', 'Drones on patrol. Stay out of their cones.'], ['brick', 'Brick can be quiet. Brick is mostly quiet.']], outro: [['vera', 'Not a sound. Well — mostly.']] } },
+  { intro: 'The Magma Works feed the rift with heat. Lasers blink on a beat, the raft only runs while someone stands on the plate, and the last gate waits for no one.',
+    mission: { kind: 'time', t: 120, text: 'clear it in under 2:00' },
+    story: { intro: [['pix', 'Hot hot hot hot—'], ['vera', 'Timers everywhere. Line up first, then go.']], outro: [['brick', 'Warm. Brick likes warm.']] } },
+  { intro: 'At the heart of the Magma Works waits the Warden, a floating core in rotating shields, holding the rift shut. Everyone says it is the reason the light is disappearing. Everyone is wrong.',
+    mission: { kind: 'nohit', text: 'beat the Warden without a hit' },
+    story: {
+      intro: [['vera', 'The Warden. It’s holding the rift shut — we end this here.']],
+      on: { warden: [['pix', 'It’s going down! We did it!'], ['echo', '…free… at last… but she… is free… too…']] },
+      outro: [['vera', 'Did that thing just… speak?'], ['brick', 'The floor is shaking. Brick does not like it.']] } },
+];
+CH1.forEach((x, i) => {
+  const lv = LEVELS[i];
+  if (!lv) return;
+  if (x.chapter) lv.chapter = x.chapter;
+  lv.intro = x.intro;
+  lv.mission = x.mission;
+  lv.story = x.story;
+  const m = x.mission.text[0].toUpperCase() + x.mission.text.slice(1) + '.';
+  // briefs stay at four lines at most: a full one carries the mission in the story paragraph instead
+  if ((lv.brief || []).length < 4) lv.brief = [...(lv.brief || []), ['MISSION', m, false]];
+  else lv.intro += ` Mission: ${m}`;
+});
