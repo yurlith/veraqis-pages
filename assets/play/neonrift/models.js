@@ -2904,12 +2904,131 @@ function buildQueen() {
   };
 }
 
+// The Architect (chapter 3 boss): a white lab mecha — rounded armour, a visor slit, a reactor in the chest,
+// four drone arms on an orbit and prism rings that lock around it while it is shielded.
+const ARCH_HEX = ['#3cffd0', '#38bdf8', '#ff4fd8'];
+function buildArchitect() {
+  const k = owner();
+  const flash = { value: new THREE.Color(0, 0, 0) };
+  const G = {
+    torso: geo('arch.torso', () => new THREE.RoundedBoxGeometry(1.5, 1.7, 1.0, 4, 0.32)),
+    pelvis: geo('arch.pelvis', () => new THREE.ConeGeometry(0.62, 1.3, 8, 1).rotateX(Math.PI)),
+    head: geo('arch.head', () => new THREE.RoundedBoxGeometry(0.9, 0.78, 0.82, 4, 0.3)),
+    visor: geo('arch.visor', () => new THREE.RoundedBoxGeometry(0.74, 0.16, 0.12, 2, 0.06)),
+    shoulder: geo('arch.shoulder', () => new THREE.SphereGeometry(0.36, 18, 12)),
+    arm: geo('arch.arm', () => new THREE.RoundedBoxGeometry(0.42, 0.42, 1.1, 3, 0.14)),
+    tip: geo('arch.tip', () => new THREE.ConeGeometry(0.16, 0.5, 8).rotateX(Math.PI / 2)),
+    core: geo('arch.core', () => new THREE.IcosahedronGeometry(0.36, 3)),
+    ring: geo('arch.ring', () => new THREE.TorusGeometry(2.4, 0.06, 8, 64)),
+    fin: geo('arch.fin', () => new THREE.BoxGeometry(0.08, 0.9, 0.5)),
+  };
+  const M = {
+    shell: k.own(rimStd({ color: '#e8f1f8', roughness: 0.32, metalness: 0.35, envMap: TX.env(), envMapIntensity: 1.1 }, '#3cffd0', 0.6, 2.2, flash)),
+    dark: k.own(rimStd({ color: '#1b2533', roughness: 0.45, metalness: 0.7, envMap: TX.env(), envMapIntensity: 0.9 }, '#38bdf8', 0.4, 2.4, flash)),
+    visor: k.own(unlit('#3cffd0', 2.6)),
+    tip: k.own(unlit('#3cffd0', 2)),
+    core: k.own(fxMaterial(FS_PLASMA, { uColor: { value: new THREE.Color() }, uHot: { value: new THREE.Color(0.9, 1, 1) }, uTime: { value: 0 }, uPower: { value: 1.4 } }, { transparent: false, blending: THREE.NormalBlending, depthWrite: true })),
+    ring: k.own(new THREE.MeshBasicMaterial({ color: new THREE.Color('#3cffd0').multiplyScalar(1.5), transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, toneMapped: false })),
+    halo: k.own(spriteMat('#3cffd0', 1.1)),
+  };
+  const root = new THREE.Group();
+  root.name = 'enemy:architect';
+  const float = grp(root);
+  float.scale.setScalar(1.2);
+  const bodyG = grp(float);
+  part(bodyG, G.torso, M.shell, [0, 0.1, 0], null, null, CAST);
+  part(bodyG, G.pelvis, M.dark, [0, -1.3, 0], null, null, CAST);
+  const core = part(bodyG, G.core, M.core, [0, 0.2, 0.46]);
+  for (const sd of [-1, 1]) part(bodyG, G.fin, M.dark, [sd * 0.78, 0.2, -0.25], [0, 0, sd * 0.25], null, CAST);
+  const headG = grp(float, 0, 1.45, 0);
+  headG.rotation.order = 'YXZ';
+  part(headG, G.head, M.shell, null, null, null, CAST);
+  part(headG, G.visor, M.visor, [0, 0.04, 0.4]);
+  const antenna = part(headG, G.tip, M.tip, [0, 0.52, -0.1], [-Math.PI / 2, 0, 0], 0.7);
+  const shoulders = [-1, 1].map((sd) => part(bodyG, G.shoulder, M.dark, [sd * 0.95, 0.75, 0], null, 1, CAST));
+  // four drone arms orbiting the body; they spread out while it casts
+  const arms = [0, 1, 2, 3].map((i) => {
+    const a = grp(float);
+    part(a, G.arm, M.shell, null, null, null, CAST);
+    part(a, G.tip, M.tip, [0, 0, 0.72]);
+    return a;
+  });
+  // prism rings: locked around it while shielded
+  const rings = [0, 1, 2].map((i) => { const r = part(root, G.ring, M.ring, [0, 0.4, 0]); r.renderOrder = 3; return r; });
+  const halo = sprite(float, M.halo, [0, 0.4, 0], 6);
+  const eye = grp(headG, 0, 0, 0.45);
+  const muzzle = grp(float, 0, 0.2, 0.9);
+  const sparks = makeSparks(k, float, 28, '#ccfbf1', 0.16);
+  const arcs = makeArcs(k, float, '#5eead4');
+  const e = newFoe();
+  const phaseCol = new THREE.Color(ARCH_HEX[0]);
+  let openK = 0; let deadK = 0; let lastPhase = 0; let phaseT = 9;
+  function update(t, dt, s) {
+    s = s || ENEMY_DEFAULT;
+    dt = safeDt(dt);
+    foeStep(e, s, dt, root);
+    const pi = clamp(Math.floor(num(s.phase, 1) || 1) - 1, 0, 2);
+    if (pi !== lastPhase) { lastPhase = pi; phaseT = 0; }
+    phaseT += dt;
+    phaseCol.lerp(col(ARCH_HEX[pi]), 1 - Math.exp(-4 * dt));
+    const st = e.state; const dead = st === 'dead'; const stun = st === 'stunned';
+    deadK = approach(deadK, dead ? 1 : 0, 1.0, dt);
+    openK = approach(openK, s.shield === false || stun || dead ? 1 : 0, 4, dt);
+    const charge = Number.isFinite(s.charge) ? clamp(s.charge) : 0;
+    float.position.y = 0.18 * Math.sin(t * 1.3) - 0.7 * openK - 2.6 * easeInOut(deadK);
+    float.rotation.z = 0.04 * Math.sin(t * 0.9) + (stun ? 0.12 * Math.sin(t * 2.8) : 0) + deadK * 0.5;
+    let ty = 0; let tp = 0.1;
+    if (finiteVec(s.aim) && !dead) { const a = aimAngles(root, s.aim, 0, 1.45 * 1.2, 0); ty = a.yaw; tp = clamp(a.pitch, -0.7, 0.7); }
+    e.yaw = approachAngle(e.yaw, ty, 4, dt);
+    e.pitch = approach(e.pitch, tp + openK * 0.4, 4, dt);
+    bodyG.rotation.y = e.yaw * 0.7;
+    headG.rotation.set(e.pitch, e.yaw, 0);
+    antenna.scale.setScalar(0.7 + 0.3 * Math.sin(t * 6) * charge);
+    for (let i = 0; i < 4; i++) {
+      const a = t * (0.9 + pi * 0.35) + (i * Math.PI) / 2;
+      const rad = 1.9 + 0.6 * charge + 0.5 * openK;
+      arms[i].position.set(Math.cos(a) * rad, 0.4 + 0.35 * Math.sin(a * 2 + i) - deadK * 2 * (i % 2), Math.sin(a) * rad);
+      arms[i].lookAt(0, 0.4 + (s.aim ? 0 : 0), 0);
+      arms[i].rotateY(Math.PI);
+    }
+    shoulders[0].rotation.z = 0.2 * Math.sin(t * 1.1); shoulders[1].rotation.z = -0.2 * Math.sin(t * 1.1);
+    rings.forEach((r, i) => {
+      r.rotation.set(t * (0.35 + i * 0.2) + i, t * (0.5 + pi * 0.25) * (i % 2 ? -1 : 1), i * 1.1);
+      r.scale.setScalar((1 - i * 0.14) * (1 + openK * 0.8));
+    });
+    M.ring.opacity = (0.55 + 0.3 * charge) * (1 - openK) * (1 - deadK);
+    for (const r of rings) r.visible = M.ring.opacity > 0.01;
+    const life = 1 - deadK;
+    const pf = phaseT < 0.8 ? 1 - phaseT / 0.8 : 0;
+    const pulse = 1 + 0.25 * Math.sin(t * 2.5) + 0.9 * charge + 1.2 * pf;
+    M.ring.color.copy(phaseCol).multiplyScalar(1.4 * pulse);
+    M.core.uniforms.uColor.value.copy(phaseCol);
+    M.core.uniforms.uTime.value = t * (1.2 + pi * 0.4);
+    M.core.uniforms.uPower.value = (0.6 + 1.2 * openK + 0.6 * charge) * (0.1 + 0.9 * life);
+    core.scale.setScalar(1 + 0.6 * openK + 0.08 * Math.sin(t * 5));
+    M.visor.color.copy(phaseCol).multiplyScalar(2.4 * pulse * life + 0.05);
+    M.tip.color.copy(phaseCol).multiplyScalar(1.8 * pulse * life);
+    M.halo.color.copy(phaseCol).multiplyScalar(0.4 * pulse * life);
+    halo.scale.setScalar(5 + 1.5 * charge + 3 * pf);
+    setRimColor(M.shell, phaseCol, 0.6 * life);
+    hitFlash(e, flash);
+    sparks.update(t, Math.max(stun ? 1 : 0, e.hitT < 0.3 ? 1 : 0, deadK * (1 - sstep(0.7, 1, deadK))), 0, 0, 0, 1.2, 1.6);
+    arcs.update(t, stun ? 1 : e.hp < 0.35 ? 0.5 : 0, 0, 0, 0, 1.3);
+    root.visible = !(dead && e.stT > 5);
+  }
+  return {
+    root, update, type: 'architect', anchors: { eye, muzzle, core },
+    dispose() { k.dispose(); root.removeFromParent(); },
+  };
+}
+
 export function makeEnemy(type) {
   if (type === 'crawler') return buildCrawler();
   if (type === 'turret') return buildTurret();
   if (type === 'warden') return buildWarden();
   if (type === 'maw') return buildMaw();
   if (type === 'queen') return buildQueen();
+  if (type === 'architect') return buildArchitect();
   return buildSentry();
 }
 

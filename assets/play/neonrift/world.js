@@ -1156,10 +1156,12 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
   // Phase n done → signal `<id>:<n>` latches on (floors can fall, gates can open); defeat → signal `<id>`.
   const sweepGeo = new THREE.BoxGeometry(1, 1, 1);
   ownGeo.push(sweepGeo);
+  const BHEX = { maw: '#ff8a3d', queen: '#c084fc', architect: '#3cffd0' };
   function newBoss(src, x, y, z) {
-    const kind = src.kind === 'queen' ? 'queen' : 'maw';
+    const kind = src.kind === 'queen' || src.kind === 'architect' ? src.kind : 'maw';
     const e = newEnemy(src, kind, x, y, z);
-    e.boss = true; e.id = String(src.id || kind);   // e.type is 'maw' | 'queen' e.name = src.name || (kind === 'queen' ? 'The Null Queen' : 'The Maw');
+    e.boss = true; e.id = String(src.id || kind);   // e.type is 'maw' | 'queen' | 'architect'
+    e.name = src.name || (kind === 'queen' ? 'The Null Queen' : kind === 'architect' ? 'The Architect' : 'The Maw');
     e.wake = num(src.wake, 20); e.reach = num(src.reach, 30); e.sinkBy = num(src.sink, kind === 'maw' ? 2.4 : 1.8);
     const ph = Array.isArray(src.phases) && src.phases.length ? src.phases : [{ need: 'timer' }];
     e.phases = ph.map((P) => {
@@ -1186,8 +1188,9 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       group.add(mesh);
       return mesh;
     };
-    e.sw.core = mk(new THREE.Color(kind === 'queen' ? 3 : 3, kind === 'queen' ? 1.6 : 0.5, kind === 'queen' ? 3 : 0.9), 1);
-    e.sw.glow = mk(new THREE.Color(kind === 'queen' ? 1.2 : 1.6, kind === 'queen' ? 0.4 : 0.2, kind === 'queen' ? 1.6 : 0.5), 0.5);
+    const SWC = { maw: [[3, 0.5, 0.9], [1.6, 0.2, 0.5]], queen: [[3, 1.6, 3], [1.2, 0.4, 1.6]], architect: [[0.8, 3, 2.4], [0.2, 1.4, 1.2]] }[kind];
+    e.sw.core = mk(new THREE.Color(...SWC[0]), 1);
+    e.sw.glow = mk(new THREE.Color(...SWC[1]), 0.5);
     e.s.phase = 1; e.s.shield = true; e.s.phases = e.phases.length;
     enemies.push(e);
     return e;
@@ -2010,6 +2013,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
   // ---- the bosses ----
   const COL_MAW = new THREE.Color(3.0, 0.55, 0.2);
   const COL_QUEEN = new THREE.Color(2.2, 0.9, 3.0);
+  const COL_ARCH = new THREE.Color(0.6, 3.0, 2.4);
   function bossTarget(e) {
     const ok = (h) => h && h.alive && bst(h.body).safeT <= 0 && (h.body.pos.x - e.base.x) ** 2 + (h.body.pos.z - e.base.z) ** 2 < e.reach * e.reach &&
       Math.abs(h.body.pos.y - e.floorY) < 9;
@@ -2032,7 +2036,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       for (const c of P.recs) {
         if (c.solid || occupied(c, 0.05)) continue;
         c.solid = true; c.broken = 0; c.s.broken = 0;
-        fx('burst', V(c.x, c.y, c.z), e.type === 'queen' ? '#c084fc' : '#ff8a3d', 16, 3);
+        fx('burst', V(c.x, c.y, c.z), BHEX[e.type] || '#ff8a3d', 16, 3);
       }
     }
   }
@@ -2053,7 +2057,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
       m.range = 30; m.speed = 2.7;
       e.minions.push(m);
       placeEnemy(m);
-      fx('burst', V(x, top + 0.4, z), e.type === 'queen' ? '#c084fc' : '#ff5a1e', 18, 3);
+      fx('burst', V(x, top + 0.4, z), BHEX[e.type] || '#ff5a1e', 18, 3);
     }
   }
   function bossPhaseStart(e) {
@@ -2124,22 +2128,23 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
     const ty = e.base.y - sink + bob;
     e.y += (ty - e.y) * Math.min(1, dt * 3);
     if (e.type === 'queen') { e.x = e.base.x + Math.sin(CLK.now * 0.5) * 2.2; e.z = e.base.z + Math.sin(CLK.now * 1.0) * 1.2; }
+    else if (e.type === 'architect') { const a = CLK.now * 0.42; e.x = e.base.x + Math.sin(a) * 4.2; e.z = e.base.z + Math.cos(a) * 3.2; }
     else { e.x += (e.base.x - e.x) * Math.min(1, dt * 2); e.z += (e.base.z - e.z) * Math.min(1, dt * 2); }
     const tgt = bossTarget(e);
     if (tgt) { aimAt(e, tgt); e.yaw = turnTo(e.yaw, Math.atan2(e.aimV.x - e.x, e.aimV.z - e.z), 2.2 * dt); } else e.aimOn = false;
     const fight = !e.vulnerable && e.trans <= 0 && gd < 0.5;
     const has = (a) => P.attacks.includes(a);
-    const col = e.type === 'queen' ? COL_QUEEN : COL_MAW;
+    const col = e.type === 'queen' ? COL_QUEEN : e.type === 'architect' ? COL_ARCH : COL_MAW;
     if (fight && tgt) {
       if (has('volley')) {
         e.aimT -= dt * P.rate;
-        if (e.aimT <= 0) { e.volley = e.type === 'queen' ? 4 : 3; e.volleyT = 0; e.aimT = 2.7; }
+        if (e.aimT <= 0) { e.volley = e.type === 'maw' ? 3 : e.type === 'architect' ? 5 : 4; e.volleyT = 0; e.aimT = 2.7; }
         if (e.volley > 0) {
           e.volleyT -= dt;
           if (e.volleyT <= 0) {
             e.volley--; e.volleyT = 0.2;
             // the Queen fans her volley; the Maw spits straight
-            const spread = e.type === 'queen' ? (e.volley - 1.5) * 0.12 : 0;
+            const spread = e.type === 'queen' ? (e.volley - 1.5) * 0.12 : e.type === 'architect' ? (e.volley - 2) * 0.16 : 0;
             const dx = e.aimV.x - e.x; const dz = e.aimV.z - e.z;
             const c = Math.cos(spread); const sn = Math.sin(spread);
             fire(e, e.x, e.y, e.z, dx * c + dz * sn, e.aimV.y - e.y, -dx * sn + dz * c, 6, 0.34, false, col, 6);
@@ -2160,7 +2165,7 @@ export function buildWorld(def, { R = null, models = null, render = null } = {})
             const a = rnd() * TAU; const r = k === 0 ? 0 : 1.5 + rnd() * 2;
             const px = b.pos.x + Math.sin(a) * r + b.vel.x * 0.6; const pz = b.pos.z + Math.cos(a) * r + b.vel.z * 0.6;
             const gy = castSolid(px, b.pos.y + 3, pz, 0, -1, 0, 12, null, false) ? b.pos.y + 3 - RC.t : b.pos.y;
-            fx('shockwave', V(px, gy + 0.05, pz), e.type === 'queen' ? '#e879f9' : '#ff8a3d', 1.3);
+            fx('shockwave', V(px, gy + 0.05, pz), e.type === 'queen' ? '#e879f9' : e.type === 'architect' ? '#3cffd0' : '#ff8a3d', 1.3);
             const sh = fire(e, px, gy + 11 + k * 1.2, pz, 0, -1, 0, 9, 0.42, false, col, 3);
             if (sh) sh.dmg = 1;
           }

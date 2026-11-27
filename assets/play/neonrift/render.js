@@ -87,6 +87,19 @@ const THEMES = {
       [0, 1, 0, 30, 30, '#0b1020', 0.8], [-0.4, 0.05, 0.9, 14, 6, '#22d3ee', 1.4]],
     scenery: 'spires', ambient: 'spores',
   },
+  // the Prism Labs: white towers over a sea of night clouds, a cold cyan rift eye, holo rings
+  lab: {
+    sky: { top: '#02060f', mid: '#061a30', hor: '#11506a', bot: '#05121c', glow: '#3cffd0', glowK: 9, glowI: 0.24 },
+    body: { type: 'moon', dir: [-0.42, 0.2, 0.88], size: 0.085, col: '#c8fff2', int: 1.35 },
+    stars: 1.0, starCol: '#c4f6ff', neb: { a: '#0e7490', b: '#5b21b6', amt: 0.24 },
+    fog: ['#081c2a', 0.0105], hemi: ['#a6dcff', '#1a3646', 1.05], key: ['#eefcff', 2.9, [0.26, 0.9, 0.34]], rim: ['#3cffd0', 2.6],
+    env: 0.85, envSky: 0.5, exposure: 1.04, bloom: [0.8, 0.5, 1.0], accent: ['#3cffd0', '#38bdf8'], crystal: '#7cffe0',
+    haze: '#0b2a3a', hazeK: 0.0046, vig: 0.3, sat: 1.05, heat: 0, dust: '#a5f3fc',
+    tint: { stone: '#e6eff5', rock: '#a9b8c8', metal: '#eef6ff', wood: '#d4dbe2', sand: '#dde5ea', grass: '#9fe8d0', ice: '#e4fbff', soil: '#b4c2cc' },
+    cards: [[-0.42, 0.2, 0.88, 8, 8, '#c8fff2', 2.2], [0.8, 0.1, -0.5, 18, 10, '#38bdf8', 2.2], [-0.7, 0.08, -0.6, 14, 6, '#3cffd0', 2.2],
+      [0, 1, 0.1, 30, 30, '#e6f6ff', 1.4], [0.3, -0.4, 0.8, 24, 8, '#0ea5e9', 0.9]],
+    scenery: 'labs', ambient: 'spores',
+  },
 };
 
 // The Underside mood that setDepth() blends any theme toward (a hero who fell below the level).
@@ -1891,7 +1904,65 @@ function sceneryLava(c) {
   return { lod(k) { cols.count = Math.max(1, Math.round(CN * k)); smokeLod(k); } };
 }
 
-const SCENERY = { skyline: sceneryNeon, spires: sceneryCrystal, islands: scenerySky, cliffs: sceneryLava };
+// The Prism Labs: white reactor towers ringed with light bands, rising out of the dark below the level,
+// and slow holo rings floating around the arena.
+function sceneryLab(c) {
+  const { A, bag, U, th, group } = c;
+  const r = rng(1601);
+  const cyl = bag.add(new THREE.CylinderGeometry(1, 1.08, 1, 18, 1));
+  cyl.translate(0, 0.5, 0);
+  const tmat = bag.add(litMaterial(U, th, { base: '#c9d8e4', rim: '#3cffd0', rimK: 0.45, keyK: 0.4, ambK: 0.34, glow: '#0ea5e9', glowK2: 0.35, glowY: A.minY - 30, glowK: 0.025 }));
+  const towers = [];
+  const pt = { x: 0, z: 0 };
+  for (let tries = 0; towers.length < 46 && tries < 1400; tries++) {
+    const ring = towers.length < 18 ? 0 : 1;
+    const d = ring ? 150 + r() * 150 : 60 + r() * 80;
+    ringPoint(A, r() * TAU, d, pt);
+    const rad = (ring ? 7 : 4) + r() * (ring ? 10 : 6);
+    if (towers.some((o) => (o.x - pt.x) ** 2 + (o.z - pt.z) ** 2 < (o.rad + rad + 6) ** 2)) continue;
+    const base = A.minY - 120;
+    const top = ring ? A.minY + 10 + r() * 120 : A.minY - 12 + r() * 50;
+    towers.push({ x: pt.x, z: pt.z, rad, base, top });
+  }
+  const tm = new THREE.InstancedMesh(cyl, tmat, towers.length);
+  towers.forEach((t, i) => { _m4.compose(_p.set(t.x, t.base, t.z), _q.identity(), _s.set(t.rad, t.top - t.base, t.rad)); tm.setMatrixAt(i, _m4); });
+  tm.frustumCulled = false;
+  group.add(tm);
+  // glowing bands around the towers and a cap light on each
+  const torus = bag.add(new THREE.TorusGeometry(1, 0.035, 6, 48));
+  torus.rotateX(Math.PI / 2);
+  const bmat = bag.add(new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false, fog: true }));
+  const bands = [];
+  for (const t of towers) {
+    const n = 2 + Math.floor(r() * 3);
+    for (let k = 0; k < n; k++) bands.push([t.x, t.top - 3 - k * (6 + r() * 8), t.z, t.rad * 1.12, r() < 0.7 ? '#3cffd0' : '#38bdf8']);
+    bands.push([t.x, t.top + 0.2, t.z, t.rad * 0.7, '#e6fffb']);
+  }
+  const bm = new THREE.InstancedMesh(torus, bmat, bands.length);
+  bands.forEach((b, i) => {
+    _m4.compose(_p.set(b[0], b[1], b[2]), _q.identity(), _s.set(b[3], b[3], b[3]));
+    bm.setMatrixAt(i, _m4);
+    bm.setColorAt(i, _c.set(b[4]).multiplyScalar(1.6));
+  });
+  bm.frustumCulled = false;
+  group.add(bm);
+  // holo rings floating around the level, tilted
+  const HN = 14;
+  const holo = new THREE.InstancedMesh(torus, bmat, HN);
+  for (let i = 0; i < HN; i++) {
+    ringPoint(A, r() * TAU, 22 + r() * 46, pt);
+    const s = 3 + r() * 7;
+    _e.set(Math.PI / 2 + (r() - 0.5) * 0.9, r() * TAU, (r() - 0.5) * 0.6);
+    _m4.compose(_p.set(pt.x, A.minY + 2 + r() * (A.maxY - A.minY + 18), pt.z), _q.setFromEuler(_e), _s.set(s, s, s));
+    holo.setMatrixAt(i, _m4);
+    holo.setColorAt(i, _c.set(i % 3 ? '#3cffd0' : '#a78bfa').multiplyScalar(1.3));
+  }
+  holo.frustumCulled = false;
+  group.add(holo);
+  const nT = towers.length; const nB = bands.length;
+  return { lod(k) { tm.count = Math.max(1, Math.round(nT * k)); bm.count = Math.round(nB * k); holo.count = Math.round(HN * k); } };
+}
+const SCENERY = { skyline: sceneryNeon, spires: sceneryCrystal, islands: scenerySky, cliffs: sceneryLava, labs: sceneryLab };
 
 // ---------- ambient particles per theme ----------
 function ambientParticles(c, kind) {

@@ -201,6 +201,8 @@
   .nr-pause-card{padding:16px}
   .nr-team{gap:6px}
   .nr-card{padding:4px 8px 4px 4px}
+  /* the HUD wraps to two rows here (values, then buttons): the team row and the power chips sit below it */
+  .nr-touchui .nr-team{top:calc(max(10px,env(safe-area-inset-top)) + 104px)}
 }
 /* short screens (a phone on its side): slimmer HUD and buttons */
 @media (max-height:500px){
@@ -257,3 +259,15 @@
 @keyframes nr-boss-open{to{filter:brightness(1.6)}}
 .nr-touchui .nr-boss{top:calc(max(10px,env(safe-area-inset-top)) + 150px);width:min(320px,60%)}
 @media (prefers-reduced-motion:reduce){.nr-talk,.nr-boss{transition:none}.nr-boss.open .nr-boss-fill{animation:none}}
+/* power-ups of the active hero: chips under the portal counter */
+.nr-powers{position:absolute;z-index:4;left:50%;top:calc(max(14px,env(safe-area-inset-top)) + 34px);transform:translateX(-50%);display:flex;gap:6px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.nr-powers.on{opacity:1}
+.nr-pw{font:700 12px var(--mono);letter-spacing:.4px;padding:4px 9px;border-radius:999px;background:rgba(10,8,26,.72);border:1px solid currentColor;white-space:nowrap}
+.nr-pw b{font-weight:800;text-transform:uppercase}
+.nr-pw--shield{color:#5ee7ff}.nr-pw--speed{color:#ffd166}.nr-pw--magnet{color:#ff4fd8}.nr-pw--blaster{color:#ff7a3d}
+.nr-pw.low{animation:nr-pw-blink .5s steps(2) infinite}
+@keyframes nr-pw-blink{50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.nr-pw.low{animation:none}}
+.hud-item--coins .hud-v{color:#ffd35a}
+@media (max-width:560px){.nr-touchui .nr-powers{top:calc(max(10px,env(safe-area-inset-top)) + 162px)}}
+@media (max-height:500px){.nr-touchui .nr-powers{top:auto;bottom:max(12px,env(safe-area-inset-bottom))}}

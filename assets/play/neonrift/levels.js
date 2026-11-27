@@ -1469,6 +1469,464 @@ function heartOfTheRift() {
   };
 }
 
+// =====================================================================================================
+// CHAPTER 3 · THE PRISM LABS — the labs that float over the clouds, where the rift was made. White decks,
+// teleporters, laser grids, a containment breach, a reactor climb and the Architect. Falling off a lab deck
+// drops you into the Underside cavern below (generated, `underside: true`). Physics budget as above.
+// =====================================================================================================
+const LAB = 'metal';
+const LG = 'glow:#3cffd0';
+
+// ---------- 13 · PRISM LABS (lab) ----------
+// Lobby: Brick pushes a crate onto the heavy plate to open the lab door. A corridor of blinking laser grids
+// (Brick walks through; a niche behind a steady grid hides a shard). The teleporter throws everyone up to the
+// upper deck; Vera lights the node that starts the shuttle to the far deck and the portal.
+function prismLabs() {
+  const blocks = [
+    span(-6, -6, 6, 8, -4, 0, LAB),                                        // start pad
+    span(-2, 8, 2, 16, -4, 0, LAB),                                        // bridge
+    span(-2.2, 8, -2, 16, 0, 0.9, 'glass'), span(2, 8, 2.2, 16, 0, 0.9, 'glass'),
+    // the lobby
+    span(-9, 16, 9, 34, -4, 0, LAB),
+    span(-9.6, 16, -9, 34, 0, 4, LAB), span(9, 16, 9.6, 34, 0, 4, LAB),
+    span(-9.6, 15.4, -2, 16, 0, 4, LAB), span(2, 15.4, 9.6, 16, 0, 4, LAB),
+    span(-2, 15.4, 2, 16, 3.4, 4, LAB),
+    ...wall('x', -9.6, 9.6, 34.3, 0.6, 0, 4, LAB, [[-2, 2, 0, 3.4]]),
+    span(-9.6, 33.9, 9.6, 34.05, 3.6, 3.75, LG),                          // light strip over the lab door
+    span(-3, 24, 3, 25.2, 0, 1.1, LAB),                                    // reception desk (shard)
+    span(-3, 24.5, 3, 24.7, 1.1, 1.3, LG),
+    post(7.5, 18.5, 1.6, 0, 2.2, LAB),                                     // specimen shelf (Pix)
+    // the laser corridor
+    span(-3, 34, 3, 52, -4, 0, LAB),
+    span(-3.6, 34.6, -3, 52, 0, 3.5, LAB), span(3, 34.6, 3.6, 44, 0, 3.5, LAB), span(3, 48, 3.6, 52, 0, 3.5, LAB),
+    span(-3.6, 34.6, 3.6, 34.9, 3.5, 3.7, LG), span(-3.6, 51.7, 3.6, 52, 3.5, 3.7, LG),
+    // the niche behind the steady grid (Brick)
+    span(3, 44, 6, 48, -4, 0, LAB), span(6, 44, 6.6, 48, 0, 3.5, LAB), span(3, 43.4, 6.6, 44, 0, 3.5, LAB), span(3, 48, 6.6, 48.6, 0, 3.5, LAB),
+    // the teleporter room
+    span(-8, 52, 8, 64, -4, 0, LAB),
+    span(-8.6, 52, -8, 64, 0, 4, LAB), span(8, 52, 8.6, 64, 0, 4, LAB), span(-8.6, 64, 8.6, 64.6, 0, 6, LAB),
+    span(-8.6, 52, -3, 52.6, 0, 4, LAB), span(3, 52, 8.6, 52.6, 0, 4, LAB),
+    post(-6, 62, 1.2, 0, 1.4, LAB), post(6, 62, 1.2, 0, 1.4, LAB),
+    // the upper deck
+    span(-6, 74, 6, 90, 2, 6, LAB),
+    post(4.5, 86, 1, 6, 7.2, LAB),                                         // node pedestal
+    span(-6, 74, -5.8, 90, 6, 6.9, 'glass'), span(5.8, 74, 6, 84, 6, 6.9, 'glass'),
+    // the far deck with the portal
+    span(-7, 102, 7, 118, 2, 6, LAB),
+    post(-6, 117, 0.5, 6, 10, LG), post(6, 117, 0.5, 6, 10, LG),
+    span(-6, 116.8, 6, 117.2, 9.6, 10, LG),
+    span(-6.5, 108, -4.5, 110, 6, 7.4, LAB),                               // a crate stack (shard, Pix / Vera)
+  ];
+  return {
+    chapter: 'Chapter 3 · The Prism Labs',
+    name: 'Prism Labs',
+    blurb: 'Above the clouds, where the rift was made',
+    title: 'Prism Labs',
+    say: 'The Heart’s light points up — above the clouds. There’s a lab up there that isn’t on any map.',
+    intro: 'With the Rift Heart back, Neon City glows again — but its light still bends toward the sky. The team follows it above the clouds to the Prism Labs, where someone built the Warden, opened the rift, and is still taking notes.',
+    brief: [
+      ['LOBBY', 'Brick: push the crate onto the heavy plate — the lab door opens while it sits there.', true],
+      ['LASERS', 'The laser grids blink: go between pulses. Brick walks straight through.', true],
+      ['TELEPORTER', 'The teleporter throws a hero up to the upper deck. Everyone has to ride it.', true],
+      ['MISSION', 'Collect {n} coins.', true],
+    ],
+    mission: { kind: 'coins', share: 0.6, text: 'collect {n} coins' },
+    lesson: 'labs reward the curious: coins in every corner, a niche only Brick reaches, a shelf only Pix climbs.',
+    story: {
+      intro: [['vera', 'A lab… above the clouds. Who builds a lab up here?'], ['echo', 'Someone who wanted to watch the city from very far away.'], ['pix', 'Creepy. Shiny. Mostly creepy.']],
+      at: [
+        { p: [0, 0, 36], r: 4, lines: [['brick', 'Lasers. Brick goes first. Lasers tickle.']] },
+        { p: [0, 0, 56], r: 4, lines: [['architect', 'Visitors. How… unscheduled.'], ['vera', 'Who’s there?'], ['architect', 'Keep walking. I am taking notes.']] },
+        { p: [0, 6, 80], r: 4, lines: [['vera', 'A node. If I light it, that shuttle should run.']] },
+      ],
+      outro: [['architect', 'Fascinating. Three variables I did not plan for.'], ['echo', 'That voice… I know it. He built the Warden.']],
+    },
+    def: {
+      theme: 'lab',
+      underside: true,
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      killY: -15,
+      par: 160,
+      blocks,
+      movers: [
+        { p: [0, 5.75, 92.5], s: [3, 0.5, 3], m: LAB, path: [[0, 5.75, 92.5], [0, 5.75, 99.5]], speed: 2.2, wait: 1, mode: 'pingpong', when: 'n1' },
+      ],
+      hazards: [
+        ...curtain(-3, 3, 39, 0.35, 4, { period: [1.3, 1.5] }),
+        ...curtain(-3, 3, 43, 0.35, 4, { period: [1.3, 1.5], phase: 0.9 }),
+        ...curtain(-3, 3, 47, 0.35, 4, { period: [1.3, 1.5], phase: 1.8 }),
+        ...curtain(3.3, 3.3, 44, 0.35, 7).map((l) => ({ ...l, to: [3.3, l.to[1], 48] })),      // the niche grid (steady, wall-high)
+      ],
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(7.5, 2.2 + SH, 18.5),              // specimen shelf (Pix)
+        shard(-7.5, 0 + SH, 32.5),               // lobby corner
+        shard(0, 1.1 + SH, 24.6),                // on the desk
+        shard(4.8, 0 + SH, 46),                  // the niche (Brick)
+        shard(0, 1.4, 41),                       // between two grids
+        shard(-6.5, 0 + SH, 62.5),               // teleporter room corner
+        shard(-5, 6 + SH, 88.5),                 // upper deck corner
+        shard(0, 7.4, 96),                       // over the shuttle
+        shard(-5.5, 7.4 + SH, 109),              // crate stack on the far deck
+        shard(6, 6 + SH, 116),                   // behind the portal
+        checkpoint(0, 0, 18, 'lobby'),
+        checkpoint(-5, 0, 55, 'tele'),
+        checkpoint(0, 6, 77, 'deck'),
+        checkpoint(-3, 6, 104, 'far'),
+        { type: 'crate', tag: 'c1', p: [-5, 0.7, 20], s: [1.4, 1.4, 1.4] },
+        { type: 'plate', id: 'lp', p: [-5, 0, 29], heavy: true },
+        { type: 'door', p: [0, 0, 34.3], s: [4, 3.4, 0.6], when: 'lp' },
+        { ...gate(0, 0, 60, [0, 6, 79], { yaw: 0, color: '#3cffd0' }), tag: 'g1' },
+        { type: 'node', id: 'n1', p: [4.5, 7.2, 86] },
+        { type: 'portal', p: [0, 6, 113] },
+        sign(3, 0, -3, 'PRISM LABS · visitors not expected'),
+        sign(-3, 0, 57, 'TELEPORTER ⇧ · upper deck'),
+      ],
+      enemies: [
+        { type: 'crawler', p: [6, 0, 28], range: 6 },
+        { type: 'crawler', p: [-5, 0, 59], range: 5 },
+        { type: 'sentry', p: [0, 3.2, 57], path: [[-5, 3.2, 57], [5, 3.2, 57]], speed: 1.5, range: 9 },
+        { type: 'turret', p: [5, 6, 111], range: 14, rate: 1 },
+      ],
+      tips: [
+        tip(0, 0, 12, 3, 'Coins everywhere in the labs! Collect them — every 25 gives a heart back.'),
+        tip(-5, 0, 19, 3, 'Brick: push this crate onto the heavy plate by the door.'),
+        tip(0, 0, 36, 3, 'Laser grids blink — wait for the gap. Brick can walk right through.'),
+        tip(0, 0, 58, 3, 'The teleporter! Each hero steps in to fly up to the upper deck.'),
+        tip(0, 6, 82, 3, 'Vera: zap the node on the pedestal to start the shuttle.'),
+      ],
+    },
+    solve: [
+      ['push', 'c1', [-5, 29]],
+      ['go', 'all', 'tele'],
+      ['ride', 'vera', 'g1'], ['ride', 'pix', 'g1'], ['ride', 'brick', 'g1'],
+      ['zap', 'n1'],
+      ['go', 'all', 'far'],
+      ['go', 'all', 'portal'],
+    ],
+  };
+}
+
+// ---------- 14 · CONTAINMENT BREACH (lab) — frags ----------
+// The Architect opens the cells. Hall: Pix squeezes through the low vent into a sealed cell to throw its
+// switch, Vera lights the node on the wall — together they open the bulkhead. Corridor: Brick pushes a crate
+// round a corner onto the heavy plate that holds the second bulkhead. Blasters lie around: everyone shoots.
+function containment() {
+  const blocks = [
+    span(-6, -6, 6, 6, -4, 0, LAB),                                        // start
+    // hall 1
+    span(-10, 6, 10, 40, -4, 0, LAB),
+    span(-10.6, 6, -10, 40, 0, 4, LAB), span(10, 6, 10.6, 40, 0, 4, LAB),
+    span(-10.6, 5.4, -2, 6, 0, 4, LAB), span(2, 5.4, 10.6, 6, 0, 4, LAB), span(-2, 5.4, 2, 6, 3.4, 4, LAB),
+    // the sealed cell (x −10..−6.5, z 12..20): a low vent in its east wall
+    ...wall('z', 11.4, 20.6, -6.2, 0.6, 0, 3.5, LAB, [[15, 17, 0, 1.1]]),
+    span(-10, 11.4, -6.5, 12, 0, 3.5, LAB), span(-10, 20, -6.5, 20.6, 0, 3.5, LAB),
+    span(-6.6, 11.4, -5.8, 20.6, 3.5, 3.7, LG),
+    post(9.2, 26, 1, 0, 3, LAB),                                           // node column
+    post(-3, 28, 1.4, 0, 2.2, LAB), post(3, 14, 1.4, 0, 2.2, LAB), post(4, 34, 1.4, 0, 2.2, LAB),   // cover
+    ...wall('x', -10.6, 10.6, 40.3, 0.6, 0, 4, LAB, [[-2, 2, 0, 3.4]]),   // bulkhead 1
+    // the corridor
+    span(-9, 40, 9, 76, -4, 0, LAB),
+    span(-9.6, 40.6, -9, 76, 0, 4, LAB), span(9, 40.6, 9.6, 76, 0, 4, LAB),
+    span(-9, 54, -4, 62, 0, 2.2, 'glass'), span(4, 64, 9, 70, 0, 2.2, 'glass'),   // specimen tanks
+    span(-9, 57.8, -4, 58.2, 2.2, 2.4, LG), span(4, 66.8, 9, 67.2, 2.2, 2.4, LG),
+    ...wall('x', -9.6, 9.6, 76.3, 0.6, 0, 4, LAB, [[-2, 2, 0, 3.4]]),     // bulkhead 2
+    // the final chamber
+    span(-10, 76, 10, 102, -4, 0, LAB),
+    span(-10.6, 76.6, -10, 102, 0, 4, LAB), span(10, 76.6, 10.6, 102, 0, 4, LAB), span(-10.6, 102, 10.6, 102.6, 0, 6, LAB),
+    ...stairs(-3, 86.5, 3, 91, '+z', 3, 0, 1.2, LAB),
+    span(-5, 91, 5, 99, -1, 1.2, LAB),                                     // the portal dais
+    post(-4.5, 98.5, 0.5, 1.2, 5, LG), post(4.5, 98.5, 0.5, 1.2, 5, LG),
+    post(-7, 84, 1.4, 0, 2.2, LAB), post(7, 84, 1.4, 0, 2.2, LAB),
+  ];
+  return {
+    name: 'Containment Breach',
+    blurb: 'The cells are open. Grab a blaster.',
+    title: 'Containment Breach',
+    say: 'Alarms everywhere. Whatever he kept in those cells is out — and it’s angry.',
+    intro: 'The Architect does not like visitors. He opens every containment cell in the Prism Labs at once. The team has blasters now — and a lot of crawlers, drones and turrets between them and the next deck.',
+    brief: [
+      ['BLASTER', 'Orange orbs are blasters: for 15 s every hero shoots with the ability button.', true],
+      ['BULKHEAD 1', 'Pix crawls through the low vent and throws the cell switch; Vera zaps the node on the wall.', true],
+      ['BULKHEAD 2', 'Brick: push the crate round the tanks onto the heavy plate.', true],
+      ['MISSION', 'Hard: frag every crawler, drone and turret.', true],
+    ],
+    mission: { kind: 'hunter', text: 'frag every crawler, drone and turret' },
+    lesson: 'frags win fights, cover wins frags. Blasters turn the whole team into shooters — Brick still soaks the bolts.',
+    story: {
+      intro: [['architect', 'Specimens, meet the specimens.'], ['pix', 'Did he just call US specimens?'], ['vera', 'Blasters on. Stay behind cover.']],
+      at: [
+        { p: [0, 0, 43], r: 4, lines: [['brick', 'Brick pushes. Everyone else shoots.']] },
+        { p: [0, 0, 79], r: 4, lines: [['architect', 'Remarkable. You cooperate. The Warden never did.'], ['echo', 'Because you built it to be alone.']] },
+      ],
+      outro: [['vera', 'All clear. Every last one.'], ['architect', 'Then come up to the reactor. I will show you what the light is for.']],
+    },
+    def: {
+      theme: 'lab',
+      underside: true,
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      killY: -15,
+      par: 200,
+      blocks,
+      hazards: [],
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(-8.2, 0 + SH, 13),                 // in the sealed cell (Pix)
+        shard(-3, 2.2 + SH, 28),                 // on a cover pillar (Pix)
+        shard(8.5, 0 + SH, 38.5),                // hall corner
+        shard(-6.5, 2.2 + SH, 58),               // on a specimen tank (Pix / Vera from the crate)
+        shard(7.5, 0 + SH, 42),                  // corridor corner
+        shard(0, 0 + SH, 73),                    // by bulkhead 2
+        shard(-8.5, 0 + SH, 100.5),              // chamber corner
+        shard(8.5, 0 + SH, 100.5),               // chamber corner
+        shard(7, 2.2 + SH, 84),                  // on a chamber pillar (Pix)
+        checkpoint(0, 0, 9, 'in'),
+        checkpoint(0, 0, 44, 'cor'),
+        checkpoint(0, 0, 80, 'end'),
+        { type: 'switch', id: 's1', p: [-8.5, 0, 16] },
+        { type: 'node', id: 'n2', p: [9.2, 3, 26] },
+        { type: 'door', p: [0, 0, 40.3], s: [4, 3.4, 0.6], when: ['s1', 'n2'] },
+        { type: 'crate', tag: 'c2', p: [6, 0.7, 50], s: [1.4, 1.4, 1.4] },
+        { type: 'plate', id: 'h1', p: [0, 0, 70], heavy: true },
+        { type: 'door', p: [0, 0, 76.3], s: [4, 3.4, 0.6], when: 'h1' },
+        { type: 'portal', p: [0, 1.2, 95] },
+        sign(3, 0, -3, 'CONTAINMENT · all cells open'),
+        sign(-4.5, 0, 22, 'CELL 3 · vent ⇢'),
+      ],
+      enemies: [
+        { type: 'crawler', p: [-5, 0, 24], range: 9 },
+        { type: 'crawler', p: [5, 0, 20], range: 9 },
+        { type: 'crawler', p: [0, 0, 33], range: 9 },
+        { type: 'sentry', p: [0, 3.2, 22], path: [[-6, 3.2, 18], [6, 3.2, 30]], speed: 1.6, range: 10, fov: 60 },
+        { type: 'turret', p: [-7.5, 0, 74], range: 15, rate: 1.1 },
+        { type: 'crawler', p: [0, 0, 60], range: 9 },
+        { type: 'crawler', p: [-5, 0, 66], range: 9 },
+        { type: 'crawler', p: [-6, 0, 90], range: 10 },
+        { type: 'crawler', p: [6, 0, 92], range: 10 },
+        { type: 'sentry', p: [0, 3.4, 86], path: [[-7, 3.4, 86], [7, 3.4, 86]], speed: 1.8, range: 10, fov: 60 },
+        { type: 'turret', p: [8, 0, 100], range: 15, rate: 1.1 },
+      ],
+      tips: [
+        tip(0, 0, 8, 3, 'Grab the orange blaster — then anyone can shoot with the ability button (E / ACTION).'),
+        tip(-5, 0, 16, 3, 'A low vent into the sealed cell — only Pix fits. The switch is inside.'),
+        tip(6, 0, 46, 3, 'Brick: push the crate left past the tanks, then up the corridor onto the heavy plate.'),
+      ],
+      powers: [{ kind: 'blaster', p: [0, 1, 8] }, { kind: 'blaster', p: [-6, 1, 44] }, { kind: 'shield', p: [6, 1, 44] }, { kind: 'blaster', p: [0, 1, 79] }, { kind: 'speed', p: [-8, 1, 80] }],
+    },
+    solve: [
+      ['hit', 'pix', 's1'],
+      ['zap', 'n2'],
+      ['go', 'all', 'cor'],
+      ['push', 'c2', [0, 50]],
+      ['push', 'c2', [0, 70]],
+      ['go', 'all', 'end'],
+      ['go', 'all', 'portal'],
+    ],
+  };
+}
+
+// ---------- 15 · THE REACTOR SPIRE (lab) — a climb against the clock ----------
+// Stairs to the first terrace, a catwalk that crumbles under you, a lift, a launch pad over a gap that nobody
+// can jump, and shuttles round the reactor to the top terrace. Fall, and the Underside catches you.
+function reactorSpire() {
+  const blocks = [
+    span(-6, -6, 6, 6, -4, 0, LAB),                                        // start
+    ...stairs(-3, 6, 3, 14, '+z', 4, 0, 2.4, LAB),
+    span(-6, 14, 6, 24, -2, 2.4, LAB),                                     // terrace 1
+    post(-5, 22.5, 1.2, 2.4, 4.6, LAB),                                    // a tall locker (Pix)
+    span(-6, 36, 6, 46, -2, 2.4, LAB),                                     // terrace 2
+    span(-6.2, 36, -6, 46, 2.4, 3.3, 'glass'), span(6, 36, 6.2, 46, 2.4, 3.3, 'glass'),
+    span(-6, 50, 6, 60, 3, 7.4, LAB),                                      // terrace 3 (the lift goes up here)
+    post(5, 57.5, 1, 7.4, 8.6, LAB),                                       // node pedestal
+    span(-6, 61.5, 6, 76, 8, 11.4, LAB),                                   // terrace 4
+    span(-2, 61.5, 2, 61.8, 11.4, 11.6, LG),
+    span(-7, 88, 7, 100, 8, 11.4, LAB),                                    // the top terrace
+    post(-6, 99, 0.5, 11.4, 15, LG), post(6, 99, 0.5, 11.4, 15, LG), span(-6, 98.8, 6, 99.2, 14.6, 15, LG),
+    // the reactor: a glowing column beside the climb (scenery you can stand on at its foot)
+    post(-14, 50, 5, -4, 22, 'glass'), post(-14, 50, 5.4, 6, 6.4, LG), post(-14, 50, 5.4, 14, 14.4, LG), post(-14, 50, 5.4, 21.6, 22, LG),
+  ];
+  const crumbles = [25.2, 27.6, 30, 32.4, 34.8].map((z, i) => ({ p: [i % 2 ? 0.6 : -0.6, 2.15, z], s: [3, 0.5, 2.2], m: LAB, delay: 0.6, back: 2.5 }));
+  return {
+    name: 'The Reactor Spire',
+    blurb: 'Up the spire before the reactor wakes',
+    title: 'The Reactor Spire',
+    say: 'He said “come up”. So we go up. Fast.',
+    intro: 'The Prism Labs run on a reactor that drinks the city’s light. Its spire climbs past crumbling catwalks, lifts and launch pads to the top terrace, where the Architect’s chamber waits. The higher you go, the further the fall — but the Underside always catches you.',
+    brief: [
+      ['CATWALK', 'The catwalk tiles crumble a moment after you step on them. Keep moving.', true],
+      ['LAUNCH PAD', 'Nobody can jump to terrace 4 — the launch pad throws you up. Steer forward in the air.', true],
+      ['SHUTTLE', 'Vera: zap the node on terrace 3 to start the shuttles.', true],
+      ['MISSION', 'Hard: reach the top in under 2:30.', true],
+    ],
+    mission: { kind: 'time', t: 150, text: 'clear it in under 2:30' },
+    lesson: 'momentum. Crumbling tiles, lifts and pads all punish waiting — the fastest route is the one you planned.',
+    story: {
+      intro: [['pix', 'Up? How far up?'], ['vera', 'All of it.'], ['brick', 'Brick does not like up. Brick will do up.']],
+      at: [
+        { p: [0, 7.4, 53], r: 4, lines: [['architect', 'Do you know what the Rift Heart is? A battery. The best I ever built.']] },
+        { p: [0, 11.4, 70], r: 4, lines: [['echo', 'He made the rift to fill it. The Queen was his first experiment.'], ['vera', 'And the city was his power plant.']] },
+      ],
+      outro: [['architect', 'Come in, then. Let us see how your little team does against its designer.']],
+    },
+    def: {
+      theme: 'lab',
+      underside: true,
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      killY: -15,
+      par: 150,
+      blocks,
+      crumbles,
+      movers: [
+        { p: [0, 2.15, 48], s: [3, 0.5, 3], m: LAB, path: [[0, 2.15, 48], [0, 7.15, 48]], speed: 1.6, wait: 1.5, mode: 'pingpong' },
+        { p: [-2, 11.15, 78.5], s: [3, 0.5, 3], m: LAB, path: [[-2, 11.15, 78.5], [-2, 11.15, 85.5]], speed: 2.4, wait: 1, mode: 'pingpong', when: 'n3' },
+        { p: [2, 11.15, 85.5], s: [3, 0.5, 3], m: LAB, path: [[2, 11.15, 85.5], [2, 11.15, 78.5]], speed: 2.4, wait: 1, mode: 'pingpong', when: 'n3' },
+      ],
+      hazards: [
+        ...curtain(-6, 6, 55, 7.75, 3, { period: [1.4, 1.6] }),
+      ],
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(-5, 4.6 + SH, 22.5),               // on the locker (Pix)
+        shard(0, 3.8, 30),                       // over the catwalk
+        shard(5, 2.4 + SH, 44.5),                // terrace 2 corner
+        shard(0, 4.6, 48),                       // in the lift shaft
+        shard(-5, 7.4 + SH, 58.5),               // terrace 3 corner
+        shard(4.5, 11.4 + SH, 74.5),             // terrace 4 corner
+        shard(-2, 12.8, 82),                     // over a shuttle
+        shard(6, 11.4 + SH, 89),                 // top terrace corner
+        shard(-5, 11.4 + SH, 98),                // behind the portal
+        checkpoint(0, 2.4, 17, 't1'),
+        checkpoint(-3, 7.4, 52, 't3'),
+        checkpoint(0, 11.4, 64, 't4'),
+        { type: 'bounce', p: [0, 7.4, 59], power: 16 },
+        { type: 'node', id: 'n3', p: [5, 8.6, 57.5] },
+        { type: 'portal', p: [0, 11.4, 95] },
+        sign(3, 0, -3, 'REACTOR SPIRE · authorised staff only'),
+      ],
+      enemies: [
+        { type: 'crawler', p: [3, 2.4, 40], range: 6 },
+        { type: 'sentry', p: [0, 13.5, 82], path: [[-5, 13.5, 82], [5, 13.5, 82]], speed: 1.8, range: 10, fov: 60 },
+        { type: 'turret', p: [-5, 11.4, 92], range: 14, rate: 1 },
+      ],
+      tips: [
+        tip(0, 2.4, 22, 3, 'The catwalk crumbles — keep running. Fall and the Underside catches you.'),
+        tip(0, 2.4, 44, 3, 'The lift rises to terrace 3. Hop on.'),
+        tip(0, 7.4, 56, 3, 'Launch pad! It throws you up — steer forward onto terrace 4. Vera: zap the node first.'),
+      ],
+    },
+    solve: [
+      ['go', 'all', 't1'],
+      ['go', 'all', 't3'],
+      ['zap', 'n3'],
+      ['go', 'all', 't4'],
+      ['go', 'all', 'portal'],
+    ],
+  };
+}
+
+// ---------- 16 · THE ARCHITECT (lab boss) ----------
+// A round lab floor over the clouds. 1 · Brick holds the heavy plate, Pix the light one → the shield drops: zap ×3.
+// 2 · Vera lights the three timed nodes on the pylons → zap ×3. 3 · its armoured drones (Brick pounds them)
+// → zap ×3. Blasters let everyone shoot when it is open. It sweeps a beam, fans volleys, rains light.
+function theArchitect() {
+  const blocks = [
+    span(-5, -6, 5, 6, -4, 0, LAB),                                        // start
+    span(-2, 6, 2, 24, -4, 0, LAB),                                        // bridge
+    span(-2.2, 6, -2, 24, 0, 0.9, 'glass'), span(2, 6, 2.2, 24, 0, 0.9, 'glass'),
+    span(-6, 24, 6, 30, -4, 0, LAB),                                       // the gate
+    post(-5, 29.5, 0.6, 0, 6, LAB), post(5, 29.5, 0.6, 0, 6, LAB), span(-5, 29.3, 5, 29.7, 5.6, 6, LG),
+    // the arena floor and its rings
+    span(-18, 30, 18, 70, -4, 0, LAB),
+    ...ring(0, 50, 8, 24, 0, (Math.PI * 2) / 24, (x, z) => post(x, z, 0.5, 0, 0.06, LG)),
+    // cover pillars and the node pylons (2.2 m)
+    post(-10, 40, 1.4, 0, 2.2, LAB), post(10, 40, 1.4, 0, 2.2, LAB), post(-10, 60, 1.4, 0, 2.2, LAB), post(10, 60, 1.4, 0, 2.2, LAB),
+    post(-15, 50, 1.2, 0, 2.2, LAB), post(15, 50, 1.2, 0, 2.2, LAB), post(0, 66, 1.2, 0, 2.2, LAB),
+    // the walls with glass windows
+    span(-18.6, 30, -18, 70, 0, 1.2, LAB), span(18, 30, 18.6, 70, 0, 1.2, LAB), span(-18.6, 30, -18, 70, 1.2, 3, 'glass'), span(18, 30, 18.6, 70, 1.2, 3, 'glass'),
+    span(-18, 70, -4, 70.6, 0, 3, LAB), span(4, 70, 18, 70.6, 0, 3, LAB),
+    // the portal terrace
+    span(-4, 70, 4, 80, -4, 0, LAB),
+    post(-3.5, 79.5, 0.6, 0, 6, LG), post(3.5, 79.5, 0.6, 0, 6, LG), span(-3.5, 79.3, 3.5, 79.7, 5.6, 6, LG),
+  ];
+  return {
+    name: 'The Architect',
+    blurb: 'Its designer wants the Heart back',
+    title: 'The Architect',
+    say: 'This is him. He made the rift, the Warden, the Queen — all of it. Let’s end it together.',
+    intro: 'At the top of the spire, in a round lab above the clouds, the Architect waits in a white shell of his own design. He wants the Rift Heart back in his reactor — and the city dark for good. He has planned for everything except three heroes who work as one.',
+    brief: [
+      ['PHASE 1', 'Brick holds the heavy plate, Pix the light one: its prism shield drops — zap it three times.', true],
+      ['PHASE 2', 'Vera: light the three timed nodes on the pylons, then zap it three times.', true],
+      ['PHASE 3', 'Brick pounds its armoured drones; zap after. Blasters let everyone shoot it when it is open.', true],
+      ['MISSION', 'Expert: win without a single power-up.', true],
+    ],
+    mission: { kind: 'nopower', text: 'win without a single power-up' },
+    lesson: 'no plan survives three heroes. The Architect counted on you being alone — together, every phase had an answer.',
+    story: {
+      intro: [['architect', 'Welcome to my lab. Return the Heart, and I will let you watch the city go dark from up here.'], ['vera', 'No deal.'], ['architect', 'Then I shall take you apart and see how you work.']],
+      on: {
+        'architect:start': [['architect', 'Begin the experiment.'], ['echo', 'The plates! Its shield draws power through them!']],
+        'architect:1': [['architect', 'Interesting. Again.'], ['vera', 'The pylons — I’ll light them!']],
+        'architect:2': [['architect', 'Drones! Restrain them!'], ['brick', 'Brick restrains. Brick pounds.']],
+        architect: [['architect', 'Impossible… three variables… I did not…'], ['echo', 'It’s over. The light goes home.']],
+      },
+      outro: [['echo', 'The rift is closing. Every shard you carried is going home.'], ['pix', 'So… what do we do tomorrow?'], ['vera', 'Same as always. Look after the city — together.']],
+    },
+    def: {
+      theme: 'lab',
+      heroes: ['vera', 'pix', 'brick'],
+      start: { p: [0, 0, 0], yaw: 0 },
+      killY: -15,
+      par: 210,
+      blocks,
+      items: [
+        shard(0, 0 + SH, -4.5),                  // behind the start
+        shard(0, 1.6, 15),                       // over the bridge
+        shard(-10, 2.2 + SH, 40),                // on a pillar (Pix)
+        shard(10, 2.2 + SH, 60),                 // on a pillar (Pix)
+        shard(-16.5, 0 + SH, 68.5),              // arena corner
+        shard(16.5, 0 + SH, 31.5),               // arena corner
+        shard(-16.5, 0 + SH, 31.5),              // arena corner
+        shard(16.5, 0 + SH, 68.5),               // arena corner
+        shard(0, 1.4, 50),                       // the centre — after the fight
+        shard(3, 0 + SH, 78.5),                  // behind the portal
+        checkpoint(0, 0, 27, 'gate'),
+        checkpoint(-14, 0, 34, 'arena'),
+        { type: 'plate', id: 'ap1', p: [-12, 0, 50], heavy: true },
+        { type: 'plate', id: 'ap2', p: [12, 0, 50] },
+        { type: 'node', id: 'an1', p: [-15, 2.2, 50], time: 12 },
+        { type: 'node', id: 'an2', p: [15, 2.2, 50], time: 12 },
+        { type: 'node', id: 'an3', p: [0, 2.2, 66], time: 12 },
+        { type: 'portal', p: [0, 0, 75], when: 'architect' },
+        sign(3, 0, -3, 'THE ARCHITECT · do not disturb'),
+      ],
+      enemies: [
+        { type: 'boss', kind: 'architect', id: 'architect', name: 'The Architect', p: [0, 5.2, 50], floor: 0, wake: 18, reach: 30, phases: [
+          { need: 'plates', ids: ['ap1', 'ap2'], window: 7, hits: 3, attacks: ['volley', 'sweep'] },
+          { need: 'nodes', ids: ['an1', 'an2', 'an3'], window: 6, hits: 3, attacks: ['volley', 'ring', 'sweep'], rate: 1.15 },
+          { need: 'minions', minions: 3, window: 6, hits: 3, attacks: ['volley', 'ring', 'sweep', 'rain'], rate: 1.3 },
+        ] },
+      ],
+      tips: [
+        tip(0, 0, 27, 3, 'The Architect’s lab. Brick: the heavy plate on the left. Pix: the light plate on the right.'),
+        tip(-14, 0, 46, 3, 'Node pylons: Vera zaps all three — they stay lit for 12 s.'),
+      ],
+      powers: [{ kind: 'blaster', p: [-16, 1, 36] }, { kind: 'shield', p: [16, 1, 36] }, { kind: 'blaster', p: [16, 1, 64] }, { kind: 'speed', p: [-16, 1, 64] }],
+    },
+    solve: [
+      ['go', 'all', 'arena'],
+      ['go', 'brick', 'ap1'], ['go', 'pix', 'ap2'],
+      ['zap', 'an1'], ['zap', 'an2'], ['zap', 'an3'],
+      ['set', 'architect', 60],
+      ['expire', 'an1'], ['expire', 'an2'], ['expire', 'an3'],
+      ['go', 'all', 'portal'],
+    ],
+  };
+}
+
 export const LEVELS = [
   rooftopRun(),
   foxInTheWires(),
@@ -1482,6 +1940,10 @@ export const LEVELS = [
   sunkenFoundry(),
   theMaw(),
   heartOfTheRift(),
+  prismLabs(),
+  containment(),
+  reactorSpire(),
+  theArchitect(),
 ];
 
 // ---------- Chapter 1 story beats and missions (merged into levels 1–8) ----------
@@ -1526,4 +1988,162 @@ CH1.forEach((x, i) => {
   // briefs stay at four lines at most: a full one carries the mission in the story paragraph instead
   if ((lv.brief || []).length < 4) lv.brief = [...(lv.brief || []), ['MISSION', m, false]];
   else lv.intro += ` Mission: ${m}`;
+});
+
+// =====================================================================================================
+// THE UNDERSIDE UNDER EVERY CITY LEVEL, COINS AND POWER-UPS
+// Chapter 1 levels without lava get a cavern far below: a hero who falls off lands there instead of losing a
+// heart, and rift geysers ⇧ (gates with no `to`) throw them back to the last checkpoint. Coins sit on floors
+// near the places a level already proves reachable (shards, checkpoints, plates, the portal); power-ups wait
+// next to checkpoints and in the cavern. All of it is generated, deterministic and data-only.
+// =====================================================================================================
+const POWERS = ['shield', 'speed', 'magnet', 'blaster'];
+function rng(seed) { let s = seed >>> 0 || 1; return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return ((s >>> 0) % 100000) / 100000; }; }
+const top = (b) => b.p[1] + b.s[1] / 2;
+const bot = (b) => b.p[1] - b.s[1] / 2;
+function inside(blocks, x, y, z, pad = 0.35) {
+  for (const b of blocks) {
+    if (Math.abs(x - b.p[0]) < b.s[0] / 2 + pad && Math.abs(z - b.p[2]) < b.s[2] / 2 + pad && y > bot(b) - pad && y < top(b) + pad) return true;
+  }
+  return false;
+}
+// the floor block right under (x, y, z) within `drop` metres, or null
+function floorUnder(blocks, x, y, z, drop = 0.7) {
+  let best = null;
+  for (const b of blocks) {
+    if (Math.abs(x - b.p[0]) > b.s[0] / 2 - 0.25 || Math.abs(z - b.p[2]) > b.s[2] / 2 - 0.25) continue;
+    const t = top(b);
+    if (t <= y + 0.05 && t >= y - drop && (!best || t > top(best))) best = b;
+  }
+  return best;
+}
+function underside(def, seed) {
+  const r = rng(seed * 7919 + 13);
+  const blocks = def.blocks;
+  const walk = blocks.filter((b) => top(b) > -4);
+  let x0 = Infinity; let x1 = -Infinity; let z0 = Infinity; let z1 = -Infinity; let minB = 0;
+  for (const b of walk) {
+    x0 = Math.min(x0, b.p[0] - b.s[0] / 2); x1 = Math.max(x1, b.p[0] + b.s[0] / 2);
+    z0 = Math.min(z0, b.p[2] - b.s[2] / 2); z1 = Math.max(z1, b.p[2] + b.s[2] / 2);
+  }
+  for (const b of blocks) minB = Math.min(minB, bot(b));
+  const Y = q(Math.min(-30, minB - 12));
+  x0 = Math.floor(x0 - 8); x1 = Math.ceil(x1 + 8); z0 = Math.floor(z0 - 8); z1 = Math.ceil(z1 + 8);
+  const cx = (x0 + x1) / 2;
+  const out = [
+    span(x0, z0, x1, z1, Y - 4, Y, 'rock'),
+    span(x0 - 0.6, z0, x0, z1, Y, Y + 10, 'rock'), span(x1, z0, x1 + 0.6, z1, Y, Y + 10, 'rock'),
+    span(x0, z0 - 0.6, x1, z0, Y, Y + 10, 'rock'), span(x0, z1, x1, z1 + 0.6, Y, Y + 10, 'rock'),
+  ];
+  const items = []; const coins = []; const powers = []; const enemies = [];
+  // rift geysers along the cavern, about every 18 m, each throwing a hero to the last checkpoint
+  const n = Math.max(2, Math.round((z1 - z0) / 18));
+  const geysers = [];
+  for (let i = 0; i < n; i++) {
+    const z = q(z0 + (z1 - z0) * (i + 0.5) / n);
+    const x = q(cx + (i % 2 ? 1 : -1) * Math.min(4, (x1 - x0) / 5));
+    geysers.push([x, z]);
+    items.push(gate(x, Y, z, undefined, { color: '#5ef2c0' }));
+    items.push(sign(x + 2.2, Y, z, 'RIFT GEYSER ⇧ · back up'));
+  }
+  const near = (x, z, d) => geysers.some(([gx, gz]) => Math.hypot(gx - x, gz - z) < d);
+  // crystals, rock pillars and glowing roots
+  for (let i = 0; i < Math.round((x1 - x0) * (z1 - z0) / 160); i++) {
+    const x = q(x0 + 2 + r() * (x1 - x0 - 4)); const z = q(z0 + 2 + r() * (z1 - z0 - 4));
+    if (near(x, z, 4)) continue;
+    const k = r();
+    if (k < 0.45) out.push(post(x, z, q(0.8 + r() * 1.2), Y, q(Y + 0.6 + r() * 2.2), 'crystal'));
+    else if (k < 0.7) out.push(post(x, z, q(1.2 + r() * 1.4), Y, q(Y + 1 + r() * 2.6), 'rock'));
+    else out.push(span(x - 0.15, z - 4, x + 0.15, z + 4, Y, Y + 0.05, 'glow:#14b8a6'));
+  }
+  // coin rings around the geysers and a coin trail down the middle
+  geysers.forEach(([gx, gz], i) => {
+    for (let k = 0; k < 6; k++) {
+      const a = (k / 6) * Math.PI * 2 + i;
+      const x = q(gx + Math.cos(a) * 3.2); const z = q(gz + Math.sin(a) * 3.2);
+      if (!inside(out, x, Y + 0.9, z)) coins.push([x, q(Y + 0.9), z]);
+    }
+    const kind = POWERS[(seed + i) % POWERS.length];
+    if ((i === 0 || i === Math.floor(n / 2)) && !inside(out, gx, Y + 1, q(gz + 5.5))) powers.push({ kind, p: [gx, q(Y + 1), q(gz + 5.5)] });
+  });
+  // a couple of crawlers live down here
+  for (let i = 0; i < Math.min(3, n); i++) {
+    const [gx, gz] = geysers[i];
+    enemies.push({ type: 'crawler', p: [q(gx + (i % 2 ? -6 : 6)), Y, q(gz + 3)], range: 6 });
+  }
+  // generated parts carry `gen` (the level validator leaves the cavern out of its model)
+  for (const o of [...out, ...items, ...enemies]) o.gen = 1;
+  def.blocks = [...blocks, ...out];
+  def.items = [...(def.items || []), ...items];
+  def.enemies = [...(def.enemies || []), ...enemies.filter((e) => !inside(out, e.p[0], e.p[1] + 0.5, e.p[2], 0.6))];
+  def.under = Math.max(-12, q(minB + 6) > -4 ? -8 : q(Math.min(-8, minB + 10)));
+  def.killY = Y - 25;
+  def.pocket = { y: Y, x0, x1, z0, z1 };
+  return { coins, powers };
+}
+// Coins: rows on floors near points the level already proves reachable.
+function placeCoins(def, seed, max = 48) {
+  const r = rng(seed * 104729 + 7);
+  const blocks = def.blocks;
+  const anchors = (def.items || []).filter((it) => ['shard', 'checkpoint', 'plate', 'switch', 'portal', 'node', 'bounce'].includes(it.type)).map((it) => it.p);
+  if (def.start && def.start.p) anchors.push(def.start.p);
+  const cands = [];
+  for (const b of blocks) {
+    if (String(b.m || '').startsWith('glow') || b.s[0] < 1.2 || b.s[2] < 1.2) continue;
+    if (def.pocket && top(b) < def.pocket.y + 0.5) continue;      // the cavern has its own coins
+    const t = top(b);
+    const ok = anchors.some((a) => Math.abs(a[1] - t) < 2.4 && Math.hypot(a[0] - b.p[0], a[2] - b.p[2]) < 14 + Math.max(b.s[0], b.s[2]) / 2);
+    if (ok) cands.push(b);
+  }
+  // shuffle, then lay a short row along each block's long side
+  for (let i = cands.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [cands[i], cands[j]] = [cands[j], cands[i]]; }
+  const coins = [];
+  const taken = (x, y, z) => coins.some((c) => Math.hypot(c[0] - x, c[2] - z) < 1.1 && Math.abs(c[1] - y) < 1);
+  for (const b of cands) {
+    if (coins.length >= max) break;
+    const along = b.s[0] >= b.s[2] ? 0 : 2;
+    const len = b.s[along];
+    const k = Math.max(1, Math.min(5, Math.floor(len / 2.2)));
+    const t = top(b);
+    const row = [];
+    for (let i = 0; i < k; i++) {
+      const u = (i - (k - 1) / 2) * 1.6;
+      const x = q(b.p[0] + (along === 0 ? u : 0)); const z = q(b.p[2] + (along === 2 ? u : 0)); const y = q(t + 0.9);
+      if (inside(blocks, x, y, z, 0.3) || inside(blocks, x, t + 0.3, z, 0.25) || taken(x, y, z)) continue;
+      row.push([x, y, z]);
+    }
+    coins.push(...row.slice(0, max - coins.length));
+  }
+  return coins;
+}
+// Power-ups next to checkpoints (on solid floor, not in a wall).
+function placePowers(def, seed) {
+  const out = [];
+  const cps = (def.items || []).filter((it) => it.type === 'checkpoint' && (!def.pocket || it.p[1] > def.pocket.y + 1));
+  cps.forEach((c, i) => {
+    for (const [ox, oz] of [[1.8, 1.2], [-1.8, 1.2], [1.8, -1.2], [-1.8, -1.2], [0, 2.2], [0, -2.2]]) {
+      const x = q(c.p[0] + ox); const z = q(c.p[2] + oz); const y = q(c.p[1] + 1);
+      if (inside(def.blocks, x, y, z, 0.3) || !floorUnder(def.blocks, x, c.p[1] + 0.02, z)) continue;
+      out.push({ kind: POWERS[(seed + i + 1) % POWERS.length], p: [x, y, z] });
+      break;
+    }
+  });
+  return out;
+}
+LEVELS.forEach((lv, i) => {
+  const d = lv.def;
+  if (!d || !Array.isArray(d.blocks)) return;
+  let extra = { coins: [], powers: [] };
+  const lava = (d.surfaces || []).some((s) => s.type === 'lava');
+  if ((i < 8 || d.underside) && !lava && !Number.isFinite(d.under)) extra = underside(d, i + 1);
+  if (!d.coins) d.coins = [...placeCoins(d, i + 1), ...extra.coins];
+  if (!d.powers) d.powers = [...placePowers(d, i), ...extra.powers];
+  else d.powers = [...d.powers, ...extra.powers];
+  // a coin mission asks for a share of what the level holds
+  if (lv.mission && lv.mission.kind === 'coins') {
+    const n = Math.max(5, Math.round(d.coins.length * (lv.mission.share || 0.6)));
+    lv.mission.n = n;
+    lv.mission.text = lv.mission.text.replace('{n}', n);
+    for (const b of lv.brief || []) b[1] = b[1].replace('{n}', n);
+  }
 });

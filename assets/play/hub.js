@@ -3,7 +3,7 @@
 import { FX, GAMES, totalStars, loop, reducedMotion } from './core.js';
 import { drawVera, drawSlipper, drawRot, drawBomblet, drawLinker, drawBlock, drawHole } from './characters.js';
 
-const RANKS = [[0, 'Visitor'], [8, 'Apprentice'], [24, 'Analyst'], [48, 'Investigator'], [72, 'Forensic lead'], [108, 'Proof-first']];
+const RANKS = [[0, 'Visitor'], [8, 'Apprentice'], [24, 'Analyst'], [48, 'Investigator'], [72, 'Forensic lead'], [120, 'Proof-first']];
 
 const panel = document.getElementById('arcade');
 if (panel) new FX(panel);

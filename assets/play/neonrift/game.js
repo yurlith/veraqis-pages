@@ -12,6 +12,7 @@ import * as render from './render.js';
 import * as models from './models.js';
 import { buildWorld } from './world.js';
 import { LEVELS } from './levels.js';
+import { createPickups, POWER } from './pickups.js';
 
 // ---------- physics and hero tuning (level design depends on the contract's numbers) ----------
 const G = 26;                 // gravity, m/s²
@@ -50,9 +51,21 @@ const HEROES = {
 const CAST = {
   vera: { name: 'Vera', color: '#c4b5fd' }, pix: { name: 'Pix', color: '#5ee7ff' }, brick: { name: 'Brick', color: '#ffb347' },
   echo: { name: 'Echo', color: '#5ef2c0' }, queen: { name: 'The Null Queen', color: '#e879f9' }, maw: { name: 'The Maw', color: '#ff8a3d' },
+  architect: { name: 'The Architect', color: '#5eead4' },
 };
 const MKEY = 'veraqis.neonrift.missions';
 function missionsDone() { try { const v = JSON.parse(window.localStorage.getItem(MKEY) || '[]'); return Array.isArray(v) ? v : []; } catch { return []; } }
+const CKEY = 'veraqis.neonrift.coins';
+// best coin count per level; returns the best so far (after this run)
+function saveCoins(n, got) {
+  try {
+    const v = JSON.parse(window.localStorage.getItem(CKEY) || '{}') || {};
+    const best = Math.max(Number(v[n]) || 0, got);
+    v[n] = best;
+    window.localStorage.setItem(CKEY, JSON.stringify(v));
+    return best;
+  } catch { return got; }
+}
 function saveMission(n) {
   const all = missionsDone();
   if (all.includes(n)) return false;
@@ -175,6 +188,18 @@ function drawFace(c, id, s) {
     c.strokeStyle = 'rgba(192,132,252,.8)'; c.lineWidth = 1.6;
     c.beginPath(); c.moveTo(-6, 16); c.quadraticCurveTo(0, 19, 6, 16); c.stroke();
     c.beginPath(); c.moveTo(0, -24); c.lineTo(0, -10); c.stroke();
+  } else if (id === 'architect') {
+    // the Architect: a white helmet with a glowing visor slit and an antenna
+    c.strokeStyle = '#5eead4'; c.lineWidth = 3; glow('#3cffd0', 1.4);
+    c.beginPath(); c.moveTo(0, -30); c.lineTo(0, -46); c.stroke();
+    c.fillStyle = '#3cffd0'; c.beginPath(); c.arc(0, -47, 4, 0, TAU); c.fill(); c.shadowBlur = 0;
+    const ag = c.createLinearGradient(0, -32, 0, 40);
+    ag.addColorStop(0, '#f4f9fc'); ag.addColorStop(1, '#9fb3c4');
+    c.fillStyle = ag; rrect(c, -34, -32, 68, 66, 22); c.fill();
+    c.fillStyle = '#1b2533'; rrect(c, -36, 22, 72, 22, 9); c.fill();
+    c.fillStyle = '#0b1220'; rrect(c, -28, -10, 56, 16, 8); c.fill();
+    c.fillStyle = '#3cffd0'; glow('#3cffd0', 1.8); rrect(c, -24, -5, 48, 6, 3); c.fill(); c.shadowBlur = 0;
+    c.fillStyle = '#5eead4'; c.beginPath(); c.arc(0, 32, 5, 0, TAU); c.fill();
   } else if (id === 'maw') {
     // the Maw: an armoured eel head, jaws open, four amber eyes
     c.fillStyle = '#2a1c24'; c.beginPath(); c.ellipse(0, -4, 40, 30, 0, 0, TAU); c.fill();
@@ -320,11 +345,16 @@ function play(api) {
       airJumps: S.airJumps, dashReady: true, dashT: 0, dashCd: 0, dashDir: new THREE.Vector3(), dashGround: false, trail: null,
       dashFrom: new THREE.Vector3(), lastDash: 0,
       glideFuel: GLIDE_TIME, gliding: false, pound: null, poundT: 0, zapT: 0, zapCd: 0, sniffCd: 0,
-      speedSm: 0, prev: new THREE.Vector3(), hintShown: false,
+      speedSm: 0, prev: new THREE.Vector3(), hintShown: false, pw: { shield: 0, speed: 0, magnet: 0, blaster: 0 },
       s: { speed: 0, vy: 0, grounded: true, action: 'idle', active: false, blink: false },
     };
   });
   nearFade(scene);
+  // coins and power-ups (levels.js places them; pickups.js draws them and reports pick-ups)
+  let pk = null;
+  try { pk = createPickups({ scene, def }); } catch (err) { console.warn('Neon Rift: pick-ups off', err); }
+  const pwLeft = (hh, kind) => (hh.pw && hh.pw[kind]) || 0;
+  const coinState = { got: 0, life: 0 };
   let active = 0;
   heroes[0].active = true;
   const heroIndex = (id) => heroes.findIndex((hh) => hh.id === id);
@@ -383,6 +413,7 @@ function play(api) {
   const bar = hud(view, [
     ['lv', 'Level', String(api.index + 1)],
     ['shards', 'Shards', `0/${W.shardsTotal || 0}`],
+    ...(pk && pk.total ? [['coins', 'Coins', `0/${pk.total}`]] : []),
     ['time', 'Time', h('span', { class: 'nr-time' }, timeEl, parEl)],
   ], () => api.quit());
   const pauseIc = h('span', { class: 'nr-pause-ic', 'aria-hidden': 'true' }, '❚❚');
@@ -477,7 +508,8 @@ function play(api) {
   const bossPips = h('span', { class: 'nr-boss-pips' });
   const bossFill = h('i', { class: 'nr-boss-fill' });
   const bossEl = h('div', { class: 'nr-boss', 'aria-hidden': 'true' }, h('span', { class: 'nr-boss-top' }, bossName, bossPips), h('span', { class: 'nr-boss-bar' }, bossFill));
-  view.append(cine, flash, teamEl, hintEl, portalEl, banner, touchEl, pauseEl, talkEl, bossEl);
+  const powersEl = h('div', { class: 'nr-powers', 'aria-hidden': 'true' });
+  view.append(cine, flash, teamEl, hintEl, portalEl, powersEl, banner, touchEl, pauseEl, talkEl, bossEl);
   api.area.append(tips);
 
   // ---------- input ----------
@@ -1063,10 +1095,11 @@ function play(api) {
     return best < Infinity;
   }
   const zapFrom = new THREE.Vector3();
-  function zap(hh) {
+  function zap(hh, blast = false) {
     if (hh.zapCd > 0) return;
     const b = hh.body;
-    hh.zapCd = ZAP_CD; hh.zapT = 0.3; st.zaps++;
+    const col = blast ? POWER.blaster.color : '#5ee7ff';
+    hh.zapCd = blast ? 0.2 : ZAP_CD; hh.zapT = 0.3; st.zaps++;
     tA.set(b.pos.x, b.pos.y + hh.S.height * 0.68, b.pos.z);
     let found = false;
     if (typeof W.aim === 'function') {
@@ -1094,9 +1127,9 @@ function play(api) {
     let hit = null;
     try { hit = W.zap(zapFrom.clone(), dir.clone(), ZAP_RANGE); } catch { hit = null; }
     const end = hit && hit.point ? hit.point.clone() : zapFrom.clone().addScaledVector(dir, ZAP_RANGE);
-    fx.beam?.(zapFrom.clone(), end, '#5ee7ff', 0.07);
-    if (hit) fx.sparkle?.(end.clone(), '#5ee7ff');
-    sfx.zap();
+    fx.beam?.(zapFrom.clone(), end, col, blast ? 0.11 : 0.07);
+    if (hit) fx.sparkle?.(end.clone(), col);
+    if (blast) sfx.tone(300, 0.09, 'sawtooth', 0.035, 140); else sfx.zap();
     if (hit && ZAPPABLE.has(hit.kind)) sfx.tone(1320, 0.08, 'triangle', 0.04, 0, 0.05);
   }
   function sniff(hh) {
@@ -1123,7 +1156,9 @@ function play(api) {
     toast(api.toasts, `Pix smells a shard ${Math.round(bd)} m ${where}${up}.`, 'info', 2600);
   }
   function action(hh, input, onGround) {
-    if (hh.S.glide) zap(hh);
+    // the blaster: everyone shoots (Brick still pounds in the air)
+    if (pwLeft(hh, 'blaster') > 0 && !(hh.S.pound && !onGround)) zap(hh, true);
+    else if (hh.S.glide) zap(hh);
     else if (hh.S.pound) startPound(hh, onGround);
     else sniff(hh);
     if (input) input.actionPressed = false;
@@ -1146,6 +1181,7 @@ function play(api) {
     hh.jumpBuf = Math.max(0, hh.jumpBuf - dt);
     hh.dashCd = Math.max(0, hh.dashCd - dt);
     hh.doubleT = Math.max(0, hh.doubleT - dt);
+    for (const k in hh.pw) if (hh.pw[k] > 0) hh.pw[k] = Math.max(0, hh.pw[k] - dt);
     const onGround = b.grounded && b.vel.y <= 0.01;
     if (onGround) {
       hh.sinceGround = 0; hh.airJumps = S.airJumps; hh.glideFuel = GLIDE_TIME; hh.jumped = false; hh.cut = false;
@@ -1183,8 +1219,9 @@ function play(api) {
     } else {
       const ctrl = !input ? 0 : hh.hurtT > 0 ? 0.25 : 1;
       const mag = input ? input.mag * ctrl : 0;
-      const tx = input ? input.wx * S.run * mag : 0;
-      const tz = input ? input.wz * S.run * mag : 0;
+      const run = S.run * (hh.pw.speed > 0 ? 1.45 : 1);
+      const tx = input ? input.wx * run * mag : 0;
+      const tz = input ? input.wz * run * mag : 0;
       let a;
       if (mag > 0.04) {
         a = onGround ? S.accel : S.airAccel;
@@ -1266,6 +1303,12 @@ function play(api) {
     if (i < 0 || over) return;
     const hh = heroes[i];
     if (hh.inv > 0 || !hh.alive) return;
+    if (pwLeft(hh, 'shield') > 0) {
+      hh.inv = 0.5;
+      fx.burst?.(hh.body.pos.clone().setY(hh.body.pos.y + hh.S.height * 0.6), POWER.shield.color, 14, 3);
+      sfx.tone(980, 0.08, 'triangle', 0.04, 0, 0.02);
+      return;
+    }
     const dmg = Math.max(1, Math.round(ev.dmg || 1));
     hh.hearts = Math.max(0, hh.hearts - dmg);
     if (mission && mission.kind === 'nohit') failMission(`${hh.S.name} was hit`);
@@ -1418,8 +1461,15 @@ function play(api) {
     depthK += (tgt - depthK) * Math.min(1, dt * 2.2);
     try { R.setDepth?.(depthK); } catch { /* ignore */ }
     for (const hh of heroes) {
+      if (def.pocket && fellUnder.has(hh.id) && hh.body.pos.y > under + 2) fellUnder.delete(hh.id);   // back up: a new fall counts again
       if (!hh.alive || fellUnder.has(hh.id) || hh.body.pos.y > under - 3) continue;
       fellUnder.add(hh.id);
+      if (def.pocket) {
+        ms.falls++;
+        if (mission && mission.kind === 'nofall') failMission(`${hh.S.name} fell`);
+        toast(api.toasts, `${hh.S.name} fell into the Underside! Grab the coins, then ride a rift geyser ⇧ back up.`, 'info', 3600);
+        continue;
+      }
       if (fellUnder.size === 1) {
         toast(api.toasts, `${hh.S.name} fell into the Underside! Find a rift geyser ⇧ to get back up.`, 'info', 4200);
         onStory('under');
@@ -1430,7 +1480,7 @@ function play(api) {
   // ---------- missions ----------
   const mission = lv.mission || null;
   const ms = { failed: false, falls: 0, said: false };
-  const defEnemies = (def.enemies || []).filter((e) => e && e.type !== 'warden' && e.type !== 'boss');
+  const defEnemies = (def.enemies || []).filter((e) => e && !e.gen && e.type !== 'warden' && e.type !== 'boss');
   function failMission(why) {
     if (!mission || ms.failed || over) return;
     ms.failed = true;
@@ -1449,6 +1499,8 @@ function play(api) {
         return recs.filter((e) => defEnemies.includes(e.src)).every((e) => !e.alive);
       }
       case 'shards': return (W.shards || 0) >= (W.shardsTotal || 0);
+      case 'coins': return coinState.got >= (Number(mission.n) || 1);
+      case 'nopower': return !st.powers;
       default: return false;
     }
   }
@@ -1508,6 +1560,55 @@ function play(api) {
   }
   let gatesUsed = 0;
   let quakeT = -9;
+  // ---------- coins and power-ups ----------
+  const COINS_PER_HEART = 25;
+  function onPickups(evs) {
+    for (const ev of evs) {
+      const hh = heroes[heroIndex(ev.hero)];
+      if (!hh) continue;
+      if (ev.type === 'coin') {
+        coinState.got++; coinState.life++;
+        fx.sparkle?.(ev.pos, '#ffd35a');
+        sfx.tone(1560 + (coinState.got % 5) * 90, 0.06, 'square', 0.022, 0, 0.0);
+        if (coinState.life % COINS_PER_HEART === 0) {
+          // a heart back for whoever is lowest (or a burst of score if nobody is hurt)
+          let best = null;
+          for (const o of heroes) if (o.hearts < o.S.hearts && (!best || o.hearts / o.S.hearts < best.hearts / best.S.hearts)) best = o;
+          if (best) {
+            best.hearts++; paintHearts(heroes.indexOf(best), false);
+            toast(api.toasts, `${COINS_PER_HEART} coins — +1 ♥ for ${best.S.name}!`, 'good', 2200);
+          } else toast(api.toasts, `${COINS_PER_HEART} coins — +250 score!`, 'good', 1800);
+          sfx.power();
+        }
+      } else if (ev.type === 'power') {
+        const P = POWER[ev.kind];
+        if (!P) continue;
+        hh.pw[ev.kind] = P.time;
+        st.powers = (st.powers || 0) + 1;
+        if (mission && mission.kind === 'nopower') failMission(`${hh.S.name} took a power-up`);
+        fx.burst?.(ev.pos, P.color, 22, 4);
+        sfx.power();
+        toast(api.toasts, `${hh.S.name}: ${P.say}`, 'good', 2600);
+        api.say(`${hh.S.name} picked up ${P.name}.`);
+      }
+    }
+  }
+  let shownPowers = '';
+  function paintPowers() {
+    const hh = heroes[active];
+    const list = Object.keys(POWER).filter((k) => hh.pw[k] > 0);
+    const key = list.map((k) => k + Math.ceil(hh.pw[k])).join('|');
+    if (key === shownPowers) return;
+    shownPowers = key;
+    powersEl.textContent = '';
+    for (const k of list) {
+      const left = hh.pw[k];
+      const chip = h('span', { class: 'nr-pw nr-pw--' + k + (left < 3 ? ' low' : '') }, h('b', null, POWER[k].name), ' ', String(Math.ceil(left)));
+      powersEl.append(chip);
+    }
+    powersEl.classList.toggle('on', list.length > 0);
+  }
+
   function onGate(ev) {
     const i = heroIndex(ev.hero);
     if (i < 0 || over) return;
@@ -1677,6 +1778,7 @@ function play(api) {
   }
   let shownSec = -1;
   let shownShards = -1;
+  let shownCoins = -1;
   let shownMeter = -1;
   let shownCd = -1;
   let qPaintT = 0;
@@ -1693,6 +1795,12 @@ function play(api) {
       shownShards = W.shards;
       bar.set('shards', `${W.shards}/${W.shardsTotal || 0}`, (W.shardsTotal && W.shards >= W.shardsTotal ? 'good' : '') + (first ? '' : ' bump'));
     }
+    if (pk && pk.total && coinState.got !== shownCoins) {
+      const first = shownCoins < 0;
+      shownCoins = coinState.got;
+      bar.set('coins', `${coinState.got}/${pk.total}`, (coinState.got >= pk.total ? 'good' : '') + (first ? '' : ' bump'));
+    }
+    paintPowers();
     const hh = heroes[active];
     let m = -1;
     if (hh.S.glide) m = hh.glideFuel / GLIDE_TIME;
@@ -1762,7 +1870,8 @@ function play(api) {
     const stars = 1 + (all ? 1 : 0) + (fast ? 1 : 0);
     const met = missionMet();
     const fresh = met ? saveMission(api.index + 1) : false;
-    const score = Math.max(100, 1000 + got * 100 + (all ? 500 : 0) + Math.max(0, Math.round((par - st.time) * 10)) + st.enemies * 50 - st.respawns * 50 + (met ? 1500 : 0));
+    const score = Math.max(100, 1000 + got * 100 + (all ? 500 : 0) + Math.max(0, Math.round((par - st.time) * 10)) + st.enemies * 50 - st.respawns * 50 + (met ? 1500 : 0) + coinState.got * 10);
+    const coinBest = saveCoins(api.index + 1, coinState.got);
     talkEl.classList.remove('on'); talk.q.length = 0;
     bossEl.classList.remove('on');
     heroes.forEach((hh) => { hh.gliding = false; if (hh.dashT > 0) endDash(hh, false); });
@@ -1778,7 +1887,8 @@ function play(api) {
       title: stars === 3 ? 'Flawless rift run' : 'Rift cleared',
       say,
       stats: [['Time', fmtTime(st.time)], ['Par', `${fmtTime(par)}${fast ? ' ✓' : ''}`], ['Shards', `${got} / ${total}`],
-        ['Respawns', String(st.respawns)], ...(st.enemies ? [['Enemies', String(st.enemies)]] : []),
+        ...(pk && pk.total ? [['Coins', `${coinState.got} / ${pk.total}${coinBest > coinState.got ? ` · best ${coinBest}` : coinState.got >= pk.total ? ' ✓' : ''}`]] : []),
+        ['Respawns', String(st.respawns)], ...(st.enemies ? [['Frags', String(st.enemies)]] : []),
         ...(mission ? [['Mission', met ? `✓ ${mission.text}${fresh ? ' · NEW +1500' : ' +1500'}` : `✗ ${mission.text}`]] : [])],
       lesson: lv.lesson,
       delay: motion ? 1900 : 900,
@@ -1864,6 +1974,7 @@ function play(api) {
     let evs = null;
     try { evs = W.update(clock, dt, heroes); } catch (err) { if (debug) console.warn(err); }
     onEvents(evs);
+    if (pk) { let pe = null; try { pe = pk.update(clock, dt, heroes, pwLeft); } catch (err) { if (debug) console.warn(err); } if (pe && pe.length) onPickups(pe); }
     for (const hh of heroes) animateHero(hh, dt);
     if (mode === 'intro' && intro) updateIntro(dt);
     else updateCamera(dt, input);
@@ -1917,6 +2028,10 @@ function play(api) {
     const virtBtn = { jump: 0, action: 0, dash: 0 };
     window.__nr = {
       world: W,
+      pk,
+      coins: () => coinState.got,
+      power: (kind, t = 10) => { heroes[active].pw[kind] = t; },
+      pw: () => ({ ...heroes[active].pw }),
       get R() { return R; },
       THREE,
       state: () => ({
@@ -1995,6 +2110,7 @@ function play(api) {
     canvas.removeEventListener('webglcontextlost', onLost);
     ro?.disconnect();
     for (const hh of heroes) { try { hh.trail?.stop(); } catch { /* ignore */ } }
+    try { pk?.dispose(); } catch { /* ignore */ }
     try { W.dispose(); } catch (err) { console.warn('Neon Rift: world cleanup failed', err); }
     for (const hh of heroes) {
       hh.root.removeFromParent();
