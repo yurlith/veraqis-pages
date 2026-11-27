@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Neon Rift — a free 3D puzzle platformer in your browser | VERAQIS</title>
+<meta name="description" content="Free 3D browser adventure: Vera, Pix and Brick fight through 16 story levels, four bosses, coins and blasters — and the Underside catches every fall. No install." />
+<link rel="canonical" href="https://veraqis.tech/play/neon-rift/" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/veraqis.css" />
+<link rel="stylesheet" href="/assets/play/play.css" />
+<link rel="stylesheet" href="/assets/play/neonrift/neonrift.css" />
+<link rel="modulepreload" href="/assets/play/vendor/three.min.js" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="VERAQIS" />
+<meta property="og:title" content="Neon Rift — a free 3D puzzle platformer" />
+<meta property="og:description" content="A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core, the Underside below the city and the Prism Labs above the clouds. Sixteen levels in three chapters, four bosses, coins, power-ups and blasters, a hard mission on every level; fall off and the Underside catches you. Keyboard, touch and gamepad, nothing to install." />
+<meta property="og:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="VERAQIS" />
+<meta property="og:url" content="https://veraqis.tech/play/neon-rift/" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Neon Rift — a free 3D puzzle platformer" />
+<meta name="twitter:description" content="A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core, the Underside below the city and the Prism Labs above the clouds. Sixteen levels in three chapters, four bosses, coins, power-ups and blasters, a hard mission on every level; fall off and the Underside catches you. Keyboard, touch and gamepad, nothing to install." />
+<meta name="twitter:image" content="https://veraqis.tech/assets/veraqis-card.png" />
+<script type="application/ld+json" data-veraqis-schema="page">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://veraqis.tech/#organization",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "logo": "https://veraqis.tech/assets/favicon.svg",
+      "description": "VERAQIS builds proof-first, offline-first safety tools for archives and damaged files."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://veraqis.tech/#website",
+      "name": "VERAQIS",
+      "url": "https://veraqis.tech/",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://veraqis.tech/play/neon-rift/#webpage",
+      "url": "https://veraqis.tech/play/neon-rift/",
+      "name": "Neon Rift — a free 3D puzzle platformer in your browser | VERAQIS",
+      "description": "A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core, the Underside below the city and the Prism Labs above the clouds. Sixteen levels in three chapters, four bosses, coins, power-ups and blasters, a hard mission on every level; fall off and the Underside catches you. Keyboard, touch and gamepad, nothing to install.",
+      "datePublished": "2026-11-24",
+      "dateModified": "2026-11-27",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://veraqis.tech/#website"
+      },
+      "about": {
+        "@id": "https://veraqis.tech/play/neon-rift/#game"
+      }
+    },
+    {
+      "@type": "VideoGame",
+      "@id": "https://veraqis.tech/play/neon-rift/#game",
+      "name": "Neon Rift",
+      "url": "https://veraqis.tech/play/neon-rift/",
+      "description": "A free 3D story adventure in your browser. Switch between three heroes — Vera the gliding robot, Pix the dashing neon fox and Brick the laser-proof golem — across neon rooftops, crystal caves, sky islands, a lava core, the Underside below the city and the Prism Labs above the clouds. Sixteen levels in three chapters, four bosses, coins, power-ups and blasters, a hard mission on every level; fall off and the Underside catches you. Keyboard, touch and gamepad, nothing to install.",
+      "genre": [
+        "Puzzle",
+        "Platformer",
+        "Adventure"
+      ],
+      "gamePlatform": "Web browser",
+      "applicationCategory": "Game",
+      "operatingSystem": "Any",
+      "playMode": "SinglePlayer",
+      "isAccessibleForFree": true,
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://veraqis.tech/#organization"
+      },
+      "character": [
+        {
+          "@type": "Person",
+          "name": "Vera",
+          "description": "The team leader. Zaps drones and far-away energy nodes, and glides across gaps nobody else can cross."
+        },
+        {
+          "@type": "Person",
+          "name": "Pix",
+          "description": "The fastest of the three. Double-jumps, dashes through the air, and slips through tunnels too low for the others."
+        },
+        {
+          "@type": "Person",
+          "name": "Brick",
+          "description": "Slow and unstoppable. Pushes heavy crates, holds down heavy plates, smashes cracked floors and walks straight through lasers."
+        },
+        {
+          "@type": "Person",
+          "name": "Echo",
+          "description": "A voice in the Underside that guides the team — and the last spark of the Warden."
+        },
+        {
+          "@type": "Person",
+          "name": "The Null Queen",
+          "description": "The boss of chapter 2. She rules the Underside and drinks the city's light."
+        },
+        {
+          "@type": "Person",
+          "name": "The Architect",
+          "description": "The final boss. The scientist in a white lab mecha who built the Warden, opened the rift and wants the city dark."
+        }
+      ],
+      "numberOfPlayers": {
+        "@type": "QuantitativeValue",
+        "value": 1
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://veraqis.tech/play/neon-rift/#breadcrumbs",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "VERAQIS",
+          "item": "https://veraqis.tech/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Play",
+          "item": "https://veraqis.tech/play/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Neon Rift",
+          "item": "https://veraqis.tech/play/neon-rift/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://veraqis.tech/play/neon-rift/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need to install anything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Neon Rift runs in your browser with WebGL on a computer, a phone or a tablet. There is no sign-up and nothing is uploaded; your progress stays in this browser."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do the three heroes work together?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Switch between them at any time. A hero you leave behind stays where you left them — still standing on a pressure plate, still holding a door open. Most puzzles need two or three of them, and the exit portal opens only when the whole team stands in it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I play on a phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Start a level and the game opens full screen. The thumb stick on the left walks, drag anywhere else to turn the camera, pinch to zoom, and the buttons on the right jump, use the hero’s ability and switch heroes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the Underside?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The world below the city. Falling off a level does not end your run: the hero drops into the Underside, a glowing cavern with coins, power-ups and its own enemies, and rides a rift geyser back up to the last checkpoint. In chapter 2 the Underside is part of the levels themselves, with hidden deep shards."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are missions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every level has one optional hard mission on top of the three stars — no hits, a time limit, nobody falls, every enemy fragged, a share of the coins, every deep shard found, or the last boss without power-ups. A completed mission adds 1,500 points and is remembered in your browser."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What do coins and power-ups do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Coins lie all over every level and in the Underside; every 25 give a heart back to the hero who needs it most, and each one adds to your score. Power-ups float in rings: a shield that blocks all damage, speed boots, a coin magnet and a blaster that lets every hero shoot with the ability button."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will it run on my device?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It picks a graphics quality automatically and lowers it if the frame rate drops. You can also choose Auto, High, Medium or Low in the game."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#content">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        VERAQIS
+      </a>
+      <span class="pill beta">beta</span>
+      <div class="links">
+        <a href="/recovery.html">Recovery</a>
+        <a href="/studio/engine/">Engine</a>
+        <a href="/mobile.html">Android</a>
+        <a href="/play/">Play</a>
+        <a href="/guides/">Guides</a>
+        <a href="/research/">Research</a>
+        <a href="/sqlite/">SQLite</a>
+        <a href="/archives/">Archives</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/download.html">Download</a>
+      </div>
+    </nav>
+  </div>
+</header>
+<main id="content">
+<div class="page-head page-head--game">
+  <div class="wrap">
+    <div class="crumb"><a href="/">VERAQIS</a> / <a href="/play/">Play</a> / Neon Rift</div>
+    <h1>Neon Rift</h1>
+    <p class="lead">A 3D story adventure for three heroes. Switch between Vera, Pix and Brick, leave one holding a door while another runs ahead, grab a blaster and clear the labs, beat four bosses — and when you fall, the Underside, the world below the city, catches you.</p>
+    <p class="note mt-8">Free · 16 levels · 4 bosses · coins and power-ups · hard missions · keyboard, touch and gamepad · progress stays in this browser</p>
+  </div>
+</div>
+<section class="play-section">
+  <div class="wrap">
+    <div id="game" class="game-root">
+      <noscript><div class="callout warn"><strong>Neon Rift needs JavaScript and WebGL.</strong> Everything runs in your browser; nothing is uploaded.</div></noscript>
+      <div class="stage stage--loading"><div class="stage-view"><p class="g-kicker">VERAQIS Play · 3D</p><h2>Loading…</h2></div></div>
+    </div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Three heroes, one team</h2>
+    <p class="sub">Each hero can do something the others cannot. Most rooms need at least two of them — and the portal opens only for the whole team.</p>
+    <div class="grid g3">
+      <div class="card nr-hero-card nr-hero-card--vera"><p class="nr-hero-tag">Robot · zap and glide</p><h3>Vera</h3><p>The team leader. Zaps drones and far-away energy nodes, and glides across gaps nobody else can cross.</p></div>
+      <div class="card nr-hero-card nr-hero-card--pix"><p class="nr-hero-tag">Neon fox · double jump and dash</p><h3>Pix</h3><p>The fastest of the three. Double-jumps, dashes through the air, and slips through tunnels too low for the others.</p></div>
+      <div class="card nr-hero-card nr-hero-card--brick"><p class="nr-hero-tag">Golem · push, pound, laser-proof</p><h3>Brick</h3><p>Slow and unstoppable. Pushes heavy crates, holds down heavy plates, smashes cracked floors and walks straight through lasers.</p></div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Three chapters, sixteen levels</h2>
+    <p class="sub">Chapter 1 · The City Above — the light of Neon City is draining away, and three unlikely heroes go after it.</p>
+    <div class="grid g4">
+      <div class="card"><div class="ic">NEON</div><h3>Neon rooftops</h3><p>Night-city roofs in the rain. Learn to glide, then meet Pix in the wires.</p></div>
+      <div class="card"><div class="ic">CRYSTAL</div><h3>Crystal caves</h3><p>Glowing caverns, heavy crates and laser grids — Brick joins the team.</p></div>
+      <div class="card"><div class="ic">SKY</div><h3>Sky islands</h3><p>Moving platforms, bounce pads, crumbling bridges and drones that watch.</p></div>
+      <div class="card"><div class="ic">LAVA</div><h3>Lava core</h3><p>Timed lasers over magma, and the Warden waiting at the bottom.</p></div>
+    </div>
+    <p class="sub mt-26">Chapter 2 · The Underside — the Warden falls, the streets crack, and the team drops into the world below.</p>
+    <div class="grid g4">
+      <div class="card"><div class="ic">9</div><h3>Freefall</h3><p>The skybridge gives way. Land in a glowing cavern 40 metres down and ride a rift geyser home.</p></div>
+      <div class="card"><div class="ic">10</div><h3>The Sunken Foundry</h3><p>Turrets, crumbling catwalks over the abyss and a geyser that only runs while Vera keeps it lit.</p></div>
+      <div class="card"><div class="ic">BOSS</div><h3>The Maw</h3><p>A colossal armoured eel in a pit. Break its chains, light the perches, pound its brood.</p></div>
+      <div class="card"><div class="ic">BOSS</div><h3>Heart of the Rift</h3><p>The Null Queen. Her throne shatters mid-fight and the battle drops into the Underside — then climbs back out.</p></div>
+    </div>
+    <p class="sub mt-26">Chapter 3 · The Prism Labs — the light points up, to a lab above the clouds where the rift was made.</p>
+    <div class="grid g4">
+      <div class="card"><div class="ic">13</div><h3>Prism Labs</h3><p>White decks over the clouds, blinking laser grids, a teleporter and a shuttle Vera has to power.</p></div>
+      <div class="card"><div class="ic">14</div><h3>Containment Breach</h3><p>Every cell is open. Grab a blaster — the whole team shoots — and frag every crawler, drone and turret.</p></div>
+      <div class="card"><div class="ic">15</div><h3>The Reactor Spire</h3><p>A climb against the clock: crumbling catwalks, a lift, a launch pad and shuttles round the reactor.</p></div>
+      <div class="card"><div class="ic">FINAL</div><h3>The Architect</h3><p>The scientist who built the Warden, in a white lab mecha. Plates, nodes, drones — and a beam that sweeps the floor.</p></div>
+    </div>
+    <h2 class="mt-36">Story, bosses and missions</h2>
+    <div class="grid g3">
+      <div class="card"><h3>A story with voices</h3><p>The heroes talk as they play, and a mysterious voice called Echo guides them through the dark. Who Echo really is changes everything.</p></div>
+      <div class="card"><h3>Four bosses</h3><p>The Warden, the Maw, the Null Queen and the Architect. Each fight has three phases, and each phase needs a different hero — plates, pounds, perches, nodes and zaps.</p></div>
+      <div class="card"><h3>Hard missions</h3><p>Every level has one optional mission on top of its three stars: no hits, beat the clock, nobody falls, frag every enemy, collect the coins, find every deep shard — or beat the last boss without a single power-up.</p></div>
+    </div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>Controls</h2>
+    <div class="gd-keys">
+      <div class="card"><h3>Keyboard and mouse</h3><p>WASD or the arrow keys walk — forward is wherever the camera looks. Space jumps; hold it for a higher jump, and as Vera keep holding to glide. E uses the hero’s ability: Vera zaps, Brick ground-pounds from the air, Pix sniffs out shards. Shift dashes as Pix. Tab or 1, 2, 3 switch heroes. Drag with the mouse or press Z and X to turn the camera; the wheel zooms. P pauses, F goes full screen, M mutes, Esc returns to the levels.</p></div>
+      <div class="card"><h3>Phone and tablet</h3><p>The game opens full screen. The thumb stick walks, drag anywhere else to turn the camera, pinch to zoom; the buttons on the right jump, use the ability and switch heroes.</p></div>
+      <div class="card"><h3>Gamepad</h3><p>Left stick walks, right stick turns the camera, the triggers zoom. A jumps, X uses the ability, B dashes, LB and RB switch heroes, Start pauses. Any standard controller connected to the browser works.</p></div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq">
+      <div class="qa"><h3>Do I need to install anything?</h3><p>No. Neon Rift runs in your browser with WebGL on a computer, a phone or a tablet. There is no sign-up and nothing is uploaded; your progress stays in this browser.</p></div>
+      <div class="qa"><h3>How do the three heroes work together?</h3><p>Switch between them at any time. A hero you leave behind stays where you left them — still standing on a pressure plate, still holding a door open. Most puzzles need two or three of them, and the exit portal opens only when the whole team stands in it.</p></div>
+      <div class="qa"><h3>How do I play on a phone?</h3><p>Start a level and the game opens full screen. The thumb stick on the left walks, drag anywhere else to turn the camera, pinch to zoom, and the buttons on the right jump, use the hero’s ability and switch heroes.</p></div>
+      <div class="qa"><h3>What is the Underside?</h3><p>The world below the city. Falling off a level does not end your run: the hero drops into the Underside, a glowing cavern with coins, power-ups and its own enemies, and rides a rift geyser back up to the last checkpoint. In chapter 2 the Underside is part of the levels themselves, with hidden deep shards.</p></div>
+      <div class="qa"><h3>What are missions?</h3><p>Every level has one optional hard mission on top of the three stars — no hits, a time limit, nobody falls, every enemy fragged, a share of the coins, every deep shard found, or the last boss without power-ups. A completed mission adds 1,500 points and is remembered in your browser.</p></div>
+      <div class="qa"><h3>What do coins and power-ups do?</h3><p>Coins lie all over every level and in the Underside; every 25 give a heart back to the hero who needs it most, and each one adds to your score. Power-ups float in rings: a shield that blocks all damage, speed boots, a coin magnet and a blaster that lets every hero shoot with the ability button.</p></div>
+      <div class="qa"><h3>Will it run on my device?</h3><p>It picks a graphics quality automatically and lowers it if the frame rate drops. You can also choose Auto, High, Medium or Low in the game.</p></div>
+    </div>
+  </div>
+</section>
+<section class="band">
+  <div class="wrap">
+    <h2>More games</h2>
+    <div class="grid g4">
+      <a class="card link-card" href="/play/guardian/"><div class="ic">VERA</div><h3>Archive Guardian</h3><p>Vera’s 2D action game: eight levels, an endless mode and a boss.</p></a>
+      <a class="card link-card" href="/play/gatekeeper/"><div class="ic">GATE</div><h3>Gatekeeper</h3><p>A fast arcade game about what may and may not come through.</p></a>
+      <a class="card link-card" href="/play/magic-bytes/"><div class="ic">HEX</div><h3>Magic Bytes</h3><p>Name a file from its first bytes, against the clock.</p></a>
+      <a class="card link-card" href="/play/"><div class="ic">ALL</div><h3>All games</h3><p>Progress, ranks and every game in one place.</p></a>
+    </div>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="/"><svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2c1.5 2.5 1 5-1 6.5 3-1 5.5.5 6.5 3-1-.5-2.5-.3-3.5.5 2 1 3 3.5 2.5 6-1.3-2-3.5-3-6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2c-1.5 2.5-1 5 1 6.5-3-1-5.5.5-6.5 3 1-.5 2.5-.3 3.5.5-2 1-3 3.5-2.5 6 1.3-2 3.5-3 6-2.8" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 12v9M9 21h6" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> VERAQIS</a>
+        <p class="note mt-10">Proof-first safety tools.</p>
+      </div>
+            <div>
+        <div class="colhead">Fix an error</div>
+        <a href="/guides/repair-corrupted-zip/">Corrupted ZIP file</a>
+        <a href="/guides/zip-file-wont-open/">A ZIP that will not open</a>
+        <a href="/guides/central-directory-not-found/">End of central directory not found</a>
+        <a href="/guides/zip-crc-error/">CRC failed</a>
+        <a href="/guides/unexpected-end-of-zip/">Unexpected end of archive</a>
+        <a href="/tools/zip-checker/">Check a ZIP in your browser</a>
+        <a href="/guides/">All guides</a>
+      </div>
+      <div>
+        <div class="colhead">Products</div>
+        <a href="/studio/engine/">Full engine — free in your browser</a>
+        <a href="/engine/">How the engine works</a>
+        <a href="/recovery.html">Verified ZIP recovery</a>
+        <a href="/mobile.html">VERAQIS Archiver for Android</a>
+        <a href="/studio/">VERAQIS Studio (in-browser)</a>
+        <a href="/download.html">Downloads &amp; release status</a>
+        <a href="/pricing.html">Pricing</a>
+      </div>
+      <div>
+        <div class="colhead">Evidence</div>
+        <a href="/reference/evidence-model/">Evidence model</a>
+        <a href="/testing.html">Test record</a>
+        <a href="/research/">Research</a>
+        <a href="/formats/zip/">ZIP format reference</a>
+        <a href="/formats/">All format references</a>
+        <a href="/play/">Archive safety games</a>
+        <a href="/reference/">Reference &amp; glossary</a>
+        <a href="/reports.html">Reports &amp; verification</a>
+      </div>
+      <div>
+        <div class="colhead">Company</div>
+        <a href="/about.html">About VERAQIS</a>
+        <a href="/contact.html">Contact / Support</a>
+        <a href="/security.html">Security</a>
+        <a href="/changelog.html">Changelog</a>
+      </div>
+    </div>
+    <hr>
+    <p class="note">© 2026 VERAQIS · <span class="mono">v0.2.1 beta</span></p>
+  </div>
+</footer>
+<script src="/assets/play/neonrift/game.js" type="module"></script>
+</body>
+</html>

@@ -8,6 +8,7 @@ import { veraPortrait } from './characters.js';
 
 const KEY = 'veraqis.play.v1';
 export const GAMES = {
+  'neon-rift': { title: 'Neon Rift', href: '/play/neon-rift/', levels: 16 },
   guardian: { title: 'Vera: Archive Guardian', href: '/play/guardian/', levels: 8 },
   gatekeeper: { title: 'Gatekeeper', href: '/play/gatekeeper/', levels: 8 },
   'magic-bytes': { title: 'Magic Bytes', href: '/play/magic-bytes/', levels: 8 },
@@ -537,6 +538,7 @@ export class Game {
         open ? starsEl(rec ? rec.stars : 0) : h('span', { class: 'lv-lock' }, '🔒 clear the level before'),
         rec && rec.best ? h('span', { class: 'lv-best' }, `best ${fmtInt(rec.best)}`) : null));
       if (open && !rec && !firstOpen) firstOpen = btn;
+      if (lv.chapter) grid.append(h('h3', { class: 'lv-chapter' }, lv.chapter));
       grid.append(btn);
     });
     if (this.cfg.endless) {
